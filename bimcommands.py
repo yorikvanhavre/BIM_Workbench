@@ -24,7 +24,32 @@
 
 import os,FreeCAD,FreeCADGui
 
-def QT_TRANSLATE_NOOP(ctx,txt): return txt
+def QT_TRANSLATE_NOOP(ctx,txt): return txt # dummy function for the QT translator
+
+
+
+class BIM_Welcome:
+
+
+    def GetResources(self):
+
+        return {'Pixmap'  : ":icons/preferences-system.svg",
+                'MenuText': QT_TRANSLATE_NOOP("BIM_Welcome", "Welcome screen"),
+                'ToolTip' : QT_TRANSLATE_NOOP("BIM_Welcome", "Show the welcome screen")}
+
+    def Activated(self):
+        
+        # load dialog
+        form = FreeCADGui.PySideUic.loadUi(os.path.join(os.path.dirname(__file__),"dialogWelcome.ui"))
+        
+        # center the dialog over FreeCAD window
+        mw = FreeCADGui.getMainWindow()
+        form.move(mw.frameGeometry().topLeft() + mw.rect().center() - form.rect().center())
+
+        # show dialog and run setup dialog afterwards if OK was pressed
+        result = form.exec_()
+        if result:
+            FreeCADGui.runCommand("BIM_Setup")
 
 
 
@@ -34,10 +59,12 @@ class BIM_Setup:
     def GetResources(self):
 
         return {'Pixmap'  : ":icons/preferences-system.svg",
-                'MenuText': QT_TRANSLATE_NOOP("BIM_Setup", "Setup"),
-                'ToolTip' : QT_TRANSLATE_NOOP("BIM_Setup", "Set some common preferences form BIM workflow")}
+                'MenuText': QT_TRANSLATE_NOOP("BIM_Setup", "BIM Setup"),
+                'ToolTip' : QT_TRANSLATE_NOOP("BIM_Setup", "Set some common FreeCAD preferences for BIM workflow")}
 
     def Activated(self):
+        
+        TECHDRAWDIMFACTOR = 0.16 # How many times TechDraw dim arrows are smaller than Draft
 
         # load dialog
         from PySide import QtGui
@@ -46,11 +73,6 @@ class BIM_Setup:
         # center the dialog over FreeCAD window
         mw = FreeCADGui.getMainWindow()
         form.move(mw.frameGeometry().topLeft() + mw.rect().center() - form.rect().center())
-
-        # show/hide first time text
-        firsttime = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM").GetBool("FirstTime",True)
-        if not firsttime:
-            form.welcometext.hide()
 
         # fill values from current settings
         unit = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Units").GetInt("UserSchema",0)
@@ -87,6 +109,7 @@ class BIM_Setup:
         form.settingNewdocument.setChecked(newdoc)
         bkp = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Document").GetInt("CountBackupFiles",2)
         form.settingBackupfiles.setValue(bkp)
+        # TODO - antialiasing?
 
         # show dialog and exit if cancelled
         result = form.exec_()
@@ -125,7 +148,7 @@ class BIM_Setup:
         asize = form.settingArrowsize.text()
         asize = FreeCAD.Units.Quantity(asize).Value
         FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").SetFloat("arrowsize",asize)
-        FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/TechDraw/Dimensions").SetFloat("ArrowSize",asize)
+        FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/TechDraw/Dimensions").SetFloat("ArrowSize",asize*TECHDRAWDIMFACTOR)
         author = form.settingAuthor.text()
         FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Document").SetString("prefAuthor",author)
         lic = form.settingLicense.currentIndex()
@@ -160,14 +183,94 @@ class BIM_Setup:
             FreeCADGui.draftToolBar.fontsizeButton.setValue(tsize)
 
 
+
+class BIM_Levels:
+
+
+    def GetResources(self):
+
+        return {'Pixmap'  : os.path.join(os.path.dirname(__file__),"icons","BIM_Levels.svg"),
+                'MenuText': QT_TRANSLATE_NOOP("BIM_Levels", "Manage levels..."),
+                'ToolTip' : QT_TRANSLATE_NOOP("BIM_Levels", "Set/modify the different levels of your BIM project")}
+
+    def Activated(self):
+        FreeCADGui.Control.showDialog(BIM_Levels_TaskPanel())
+
+
+
+class BIM_Levels_TaskPanel:
+
+    
+    def __init__(self):
+
+        from PySide import QtGui
+        self.form = FreeCADGui.PySideUic.loadUi(os.path.join(os.path.dirname(__file__),"dialogLevels.ui"))
+        self.form.setWindowIcon(QtGui.QIcon(os.path.join(os.path.dirname(__file__),"icons","BIM_Levels.svg")))
+        #QtCore.QObject.connect(self.form.buttonRefresh, QtCore.SIGNAL("clicked()"), self.getFiles)
+
+    def getStandardButtons(self):
+
+        from PySide import QtGui
+        return int(QtGui.QDialogButtonBox.Close)
+
+    def accept(self):
+
+        FreeCADGui.Control.closeDialog()
+
+    def reject(self):
+
+        FreeCADGui.Control.closeDialog()
+
+
+
+class BIM_Windows:
+
+
+    def GetResources(self):
+
+        return {'Pixmap'  : os.path.join(os.path.dirname(__file__),"icons","BIM_Windows.svg"),
+                'MenuText': QT_TRANSLATE_NOOP("BIM_Windows", "Manage doors and windows..."),
+                'ToolTip' : QT_TRANSLATE_NOOP("BIM_Levels", "Manage the different doors and windows of your BIM project")}
+
+    def Activated(self):
+        FreeCADGui.Control.showDialog(BIM_Windows_TaskPanel())
+
+
+
+class BIM_Windows_TaskPanel:
+
+    
+    def __init__(self):
+
+        from PySide import QtGui
+        self.form = FreeCADGui.PySideUic.loadUi(os.path.join(os.path.dirname(__file__),"dialogWindows.ui"))
+        self.form.setWindowIcon(QtGui.QIcon(os.path.join(os.path.dirname(__file__),"icons","BIM_Windows.svg")))
+        #QtCore.QObject.connect(self.form.buttonRefresh, QtCore.SIGNAL("clicked()"), self.getFiles)
+
+    def getStandardButtons(self):
+
+        from PySide import QtGui
+        return int(QtGui.QDialogButtonBox.Close)
+
+    def accept(self):
+
+        FreeCADGui.Control.closeDialog()
+
+    def reject(self):
+
+        FreeCADGui.Control.closeDialog()
+
+
+
 class BIM_TogglePanels:
 
 
     def GetResources(self):
 
-        return {'Pixmap'  : ":icons/preferences-display.svg",
+        return {'Pixmap'  : os.path.join(os.path.dirname(__file__),"icons","BIM_TogglePanels.svg"),
                 'MenuText': QT_TRANSLATE_NOOP("BIM_TogglePanels", "Toggle panels"),
-                'ToolTip' : QT_TRANSLATE_NOOP("BIM_TogglePanels", "Toggle report panels on/off")}
+                'ToolTip' : QT_TRANSLATE_NOOP("BIM_TogglePanels", "Toggle report panels on/off"),
+                'Accel': 'Ctrl+0'}
 
     def Activated(self):
 
@@ -181,5 +284,38 @@ class BIM_TogglePanels:
             for w in windows:
                 w.show()
 
+
+
+FreeCADGui.addCommand('BIM_Welcome',BIM_Welcome())
 FreeCADGui.addCommand('BIM_Setup',BIM_Setup())
+FreeCADGui.addCommand('BIM_Levels',BIM_Levels())
+FreeCADGui.addCommand('BIM_Windows',BIM_Windows())
 FreeCADGui.addCommand('BIM_TogglePanels',BIM_TogglePanels())
+
+
+
+def setStatusIcons(show=True):
+    
+    "shows or hides the BIM icons in the status bar"
+    
+    def toggle(): FreeCADGui.runCommand("BIM_TogglePanels")
+
+    mw = FreeCADGui.getMainWindow()
+    if mw:
+        st = mw.statusBar()
+        from PySide import QtCore,QtGui
+        statuswidget = st.findChild(QtGui.QPushButton,"BIMStatusWidget")
+        if show:
+            if statuswidget:
+                statuswidget.show()
+            else:
+                statuswidget = QtGui.QPushButton()
+                statuswidget.setIcon(QtGui.QIcon(os.path.join(os.path.dirname(__file__),"icons","BIM_TogglePanels.svg")))
+                statuswidget.setText("")
+                statuswidget.setToolTip("Toggle report panels on/off")
+                statuswidget.setObjectName("BIMStatusWidget")
+                QtCore.QObject.connect(statuswidget,QtCore.SIGNAL("pressed()"),toggle)
+                st.addPermanentWidget(statuswidget)
+        else:
+            if statuswidget:
+                statuswidget.hide()

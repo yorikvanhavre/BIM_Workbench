@@ -108,8 +108,10 @@ static char * IFC_xpm[] = {
                   "Draft_Mirror","Part_Extrude","Part_Cut","Part_Fuse","Part_Common",
                   "Part_Compound","Draft_Upgrade", "Draft_Downgrade", "Draft_Shape2DView",
                   "Draft_Draft2Sketch","Draft_Clone","Arch_CutPlane","Arch_Add","Arch_Remove"]
+                  
+        manage = ["BIM_Setup","BIM_Levels","BIM_Windows"]
 
-        utils = ["BIM_Setup","BIM_TogglePanels",
+        utils = ["BIM_TogglePanels",
                  "Draft_VisGroup","Draft_Slope","Draft_SetWorkingPlaneProxy","Draft_AddConstruction",
                  "Arch_Component","Arch_CloneComponent","Arch_SplitMesh","Arch_MeshToShape",
                  "Arch_SelectNonSolidMeshes","Arch_RemoveShape",
@@ -154,6 +156,7 @@ static char * IFC_xpm[] = {
         self.appendToolbar("Draft tools",draft)
         self.appendToolbar("Arch tools",arch)
         self.appendToolbar("Mod tools",modify)
+        self.appendToolbar("Manage tools",manage)
         if flamingo:
             self.appendToolbar("Flamingo tools",flamingo)
 
@@ -168,31 +171,43 @@ static char * IFC_xpm[] = {
             self.appendMenu(QT_TRANSLATE_NOOP("BIM","&Fasteners"),fasteners)
         self.appendMenu(QT_TRANSLATE_NOOP("BIM","&Snapping"),snap)
         self.appendMenu(QT_TRANSLATE_NOOP("BIM","&Modify"),modify)
+        self.appendMenu(QT_TRANSLATE_NOOP("BIM","&Manage"),manage)
         self.appendMenu(QT_TRANSLATE_NOOP("BIM","&Utils"),utils)
-
-
+        self.appendMenu("&Help",["BIM_Welcome"])
 
         Log ('Loading BIM module... done\n')
 
+
     def Activated(self):
+
         if hasattr(FreeCADGui,"draftToolBar"):
             FreeCADGui.draftToolBar.Activated()
         if hasattr(FreeCADGui,"Snapper"):
             FreeCADGui.Snapper.show()
-        Msg("BIM workbench activated\n")
+        from DraftGui import todo
+        import bimcommands
         if FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM").GetBool("FirstTime",True):
-            from DraftGui import todo
-            todo.delay(FreeCADGui.runCommand,"BIM_Setup")
+            todo.delay(FreeCADGui.runCommand,"BIM_Welcome")
+        todo.delay(bimcommands.setStatusIcons,True)
+
+        Log("BIM workbench activated\n")
+
 
     def Deactivated(self):
+
         if hasattr(FreeCADGui,"draftToolBar"):
             FreeCADGui.draftToolBar.Deactivated()
         if hasattr(FreeCADGui,"Snapper"):
             FreeCADGui.Snapper.hide()
-        Msg("BIM workbench deactivated\n")
+        import bimcommands
+        bimcommands.setStatusIcons(False)
+
+        Log("BIM workbench deactivated\n")
+
 
     def GetClassName(self):
         return "Gui::PythonWorkbench"
+
 
 FreeCADGui.addWorkbench(BIMWorkbench)
 

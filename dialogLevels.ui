@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Form</class>
+ <widget class="QWidget" name="Form">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>290</width>
+    <height>576</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Levels manager</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>The list below contains all the levels of your project. Levels in FreeCAD don't necessarily need to be horizontal or stacked, you can change a level placement directly in each level's properties</string>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="label_5">
+     <property name="text">
+      <string>Double-clicking a level, here or in the tree view, will set the working plane (and view if configured so) to that level</string>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QListWidget" name="levels">
+     <property name="toolTip">
+      <string>The list of levels found in the active document</string>
+     </property>
+     <property name="movement">
+      <enum>QListView::Static</enum>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QPushButton" name="buttonAdd">
+       <property name="toolTip">
+        <string>Add a new level using the values entered below</string>
+       </property>
+       <property name="text">
+        <string>New</string>
+       </property>
+       <property name="icon">
+        <iconset theme="add">
+         <normaloff/>
+        </iconset>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="buttonUpdate">
+       <property name="toolTip">
+        <string>Gives the values entered below to all selected levels</string>
+       </property>
+       <property name="text">
+        <string>Update</string>
+       </property>
+       <property name="icon">
+        <iconset theme="reload">
+         <normaloff/>
+        </iconset>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="buttonDelete">
+       <property name="toolTip">
+        <string>Deletes all selected levels</string>
+       </property>
+       <property name="text">
+        <string>Delete</string>
+       </property>
+       <property name="icon">
+        <iconset theme="cancel">
+         <normaloff/>
+        </iconset>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QLabel" name="label_2">
+     <property name="text">
+      <string>Level name</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLineEdit" name="levelName">
+     <property name="toolTip">
+      <string>A name for this level</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="label_3">
+     <property name="text">
+      <string>Level base Z coordinate (floor height)</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="Gui::InputField" name="levelCoord">
+     <property name="toolTip">
+      <string>The base height of this level, that is, the vertical distance between this floor and the ground plane</string>
+     </property>
+     <property name="unit" stdset="0">
+      <string notr="true"/>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="label_4">
+     <property name="text">
+      <string>Level height (ceiling height above floor)</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="Gui::InputField" name="levelHeight">
+     <property name="toolTip">
+      <string>The height between the floor and the ceiling of this level</string>
+     </property>
+     <property name="unit" stdset="0">
+      <string notr="true"/>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <item>
+      <widget class="QCheckBox" name="checkBox">
+       <property name="toolTip">
+        <string>Check this to make the level adopt a stored view angle when double-clicked</string>
+       </property>
+       <property name="text">
+        <string>Set view on double-click</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushButton">
+       <property name="toolTip">
+        <string>Stores the current view angle to the selected levels</string>
+       </property>
+       <property name="text">
+        <string>Use current</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QCheckBox" name="checkBox_2">
+     <property name="toolTip">
+      <string>Check this to make this level hide all other levels when double-clicked</string>
+     </property>
+     <property name="text">
+      <string>Hide all other levels on double-click</string>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>Gui::InputField</class>
+   <extends>QLineEdit</extends>
+   <header>Gui/InputField.h</header>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>
