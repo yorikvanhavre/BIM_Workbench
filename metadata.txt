@@ -3,4 +3,4 @@
 name=BIM
 description=Meta-workbench that gathers BIM tools
 [dependencies]
-workbenches=arch,flamingo
+workbenches=ArchWorkbench,flamingoToolsWorkbench,WebToolsWorkbench
