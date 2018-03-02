@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>323</width>
+    <width>329</width>
     <height>478</height>
    </rect>
   </property>
@@ -71,7 +71,7 @@
    <item>
     <widget class="QLabel" name="label_5">
      <property name="text">
-      <string>A good way to start building a BIM model is by setting up the different levels of your project, under menu 3D BIM -&gt; Levels</string>
+      <string>A good way to start building a BIM model is by setting up the different levels of your project, under menu Manage -&gt; Levels</string>
      </property>
      <property name="wordWrap">
       <bool>true</bool>

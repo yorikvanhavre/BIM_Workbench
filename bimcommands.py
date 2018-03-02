@@ -38,10 +38,10 @@ class BIM_Welcome:
                 'ToolTip' : QT_TRANSLATE_NOOP("BIM_Welcome", "Show the welcome screen")}
 
     def Activated(self):
-        
+
         # load dialog
         form = FreeCADGui.PySideUic.loadUi(os.path.join(os.path.dirname(__file__),"dialogWelcome.ui"))
-        
+
         # center the dialog over FreeCAD window
         mw = FreeCADGui.getMainWindow()
         form.move(mw.frameGeometry().topLeft() + mw.rect().center() - form.rect().center())
@@ -63,7 +63,7 @@ class BIM_Setup:
                 'ToolTip' : QT_TRANSLATE_NOOP("BIM_Setup", "Set some common FreeCAD preferences for BIM workflow")}
 
     def Activated(self):
-        
+
         TECHDRAWDIMFACTOR = 0.16 # How many times TechDraw dim arrows are smaller than Draft
 
         # load dialog
@@ -165,18 +165,18 @@ class BIM_Setup:
 
         # set the working plane
         if hasattr(FreeCAD,"DraftWorkingPlane") and hasattr(FreeCADGui,"draftToolBar"):
-            if wp == 1: 
+            if wp == 1:
                 FreeCAD.DraftWorkingPlane.alignToPointAndAxis(Vector(0,0,0), Vector(0,0,1), 0)
                 FreeCADGui.draftToolBar.wplabel.setText("Top(XY)")
-            elif wp == 2: 
+            elif wp == 2:
                 FreeCAD.DraftWorkingPlane.alignToPointAndAxis(Vector(0,0,0), Vector(0,1,0), 0)
                 FreeCADGui.draftToolBar.wplabel.setText("Front(XZ)")
-            elif wp == 3: 
+            elif wp == 3:
                 FreeCAD.DraftWorkingPlane.alignToPointAndAxis(Vector(0,0,0), Vector(1,0,0), 0)
                 FreeCADGui.draftToolBar.wplabel.setText("Side(YZ)")
             else:
                 FreeCADGui.draftToolBar.wplabel.setText("Auto")
-                
+
         # set Draft toolbar
         if hasattr(FreeCADGui,"draftToolBar"):
             FreeCADGui.draftToolBar.widthButton.setValue(linewidth)
@@ -200,13 +200,25 @@ class BIM_Levels:
 
 class BIM_Levels_TaskPanel:
 
-    
+
     def __init__(self):
 
-        from PySide import QtGui
+        from PySide import QtCore,QtGui
         self.form = FreeCADGui.PySideUic.loadUi(os.path.join(os.path.dirname(__file__),"dialogLevels.ui"))
         self.form.setWindowIcon(QtGui.QIcon(os.path.join(os.path.dirname(__file__),"icons","BIM_Levels.svg")))
-        #QtCore.QObject.connect(self.form.buttonRefresh, QtCore.SIGNAL("clicked()"), self.getFiles)
+        self.form.levels.setColumnWidth(0,190)
+        self.form.levels.setColumnWidth(1,70)
+        QtCore.QObject.connect(self.form.levels, QtCore.SIGNAL("itemClicked(QTreeWidgetItem *, int)"), self.editLevel)
+        QtCore.QObject.connect(self.form.levels, QtCore.SIGNAL("itemDoubleClicked(QTreeWidgetItem *, int)"), self.showLevel)
+        QtCore.QObject.connect(self.form.buttonStore, QtCore.SIGNAL("clicked()"), self.storeView)
+        QtCore.QObject.connect(self.form.buttonAdd, QtCore.SIGNAL("clicked()"), self.addLevel)
+        QtCore.QObject.connect(self.form.levelName, QtCore.SIGNAL("returnPressed()"), self.updateLevels)
+        QtCore.QObject.connect(self.form.levelCoord, QtCore.SIGNAL("returnPressed()"), self.updateLevels)
+        QtCore.QObject.connect(self.form.levelHeight, QtCore.SIGNAL("returnPressed()"), self.updateLevels)
+        QtCore.QObject.connect(self.form.restoreView, QtCore.SIGNAL("stateChanged(int)"), self.updateLevels)
+        QtCore.QObject.connect(self.form.restoreState, QtCore.SIGNAL("stateChanged(int)"), self.updateLevels)
+        QtCore.QObject.connect(self.form.buttonDelete, QtCore.SIGNAL("clicked()"), self.deleteLevels)
+        self.update()
 
     def getStandardButtons(self):
 
@@ -221,7 +233,96 @@ class BIM_Levels_TaskPanel:
 
         FreeCADGui.Control.closeDialog()
 
+    def update(self,keepSelection=False):
 
+        sel = [it.toolTip(0) for it in self.form.levels.selectedItems()]
+        import Draft,Arch_rc
+        from PySide import QtGui
+        self.form.levels.clear()
+        levels = [o for o in FreeCAD.ActiveDocument.Objects if (Draft.getType(o) == "Floor")]
+        for level in levels:
+            s1 = level.Label
+            s2 = FreeCAD.Units.Quantity(level.Placement.Base.z,FreeCAD.Units.Length).UserString
+            it = QtGui.QTreeWidgetItem([s1,s2])
+            it.setIcon(0,QtGui.QIcon(":/icons/Arch_Floor_Tree.svg"))
+            it.setToolTip(0,level.Name)
+            self.form.levels.addTopLevelItem(it)
+        if keepSelection and sel:
+            for i in range(self.form.levels.topLevelItemCount()):
+                it = self.form.levels.topLevelItem(i)
+                if it.toolTip(0) in sel:
+                    self.form.levels.setCurrentItem(it)
+
+    def showLevel(self,item,column):
+
+        level = FreeCAD.ActiveDocument.getObject(item.toolTip(0))
+        if level:
+            if hasattr(level.Proxy,"show"):
+                level.Proxy.show()
+
+    def editLevel(self,item,column):
+
+        if len(self.form.levels.selectedItems()) == 1:
+            # dont change the contents if we have more than one floor selected
+            level = FreeCAD.ActiveDocument.getObject(item.toolTip(0))
+            if level:
+                self.form.levelName.setText(level.Label)
+                self.form.levelCoord.setText(FreeCAD.Units.Quantity(level.Placement.Base.z,FreeCAD.Units.Length).UserString)
+                if hasattr(level,"Height"):
+                    self.form.levelHeight.setText(FreeCAD.Units.Quantity(level.Height,FreeCAD.Units.Length).UserString)
+                if hasattr(level,"RestoreView"):
+                    self.form.restoreView.setChecked(level.RestoreView)
+                if hasattr(level,"RestoreState"):
+                    self.form.restoreState.setChecked(level.RestoreState)
+
+    def storeView(self):
+
+        for it in self.form.levels.selectedItems():
+            level = FreeCAD.ActiveDocument.getObject(it.toolTip(0))
+            if level:
+                if hasattr(level.Proxy,"writeCamera"):
+                    level.Proxy.writeCamera()
+
+    def addLevel(self):
+        
+        import Arch
+        level = Arch.makeFloor()
+        self.setLevel(level)
+        self.update()
+        
+    def setLevel(self,level):
+
+        if self.form.levelName.text():
+            level.Label = self.form.levelName.text()
+        if self.form.levelCoord.text():
+            p = FreeCAD.Placement()
+            p.Base = FreeCAD.Vector(0,0,FreeCAD.Units.Quantity(self.form.levelCoord.text()).Value)
+            level.Placement = p
+        if self.form.levelHeight.text():
+            level.Height = FreeCAD.Units.Quantity(self.form.levelHeight.text()).Value
+        if hasattr(level,"RestoreView"):
+            level.RestoreView = self.form.restoreView.isChecked()
+        if hasattr(level,"RestoreState"):
+            level.RestoreState = self.form.restoreState.isChecked()
+
+    def updateLevels(self,arg=None):
+        
+        for it in self.form.levels.selectedItems():
+            level = FreeCAD.ActiveDocument.getObject(it.toolTip(0))
+            if level:
+                self.setLevel(level)
+        self.update(keepSelection=True)
+
+    def deleteLevels(self):
+
+        dels = []
+        for it in self.form.levels.selectedItems():
+            level = FreeCAD.ActiveDocument.getObject(it.toolTip(0))
+            if level:
+                dels.append(level.Name)
+        for d in dels:
+            FreeCAD.ActiveDocument.removeObject(d)
+        self.update()
 
 class BIM_Windows:
 
@@ -239,7 +340,7 @@ class BIM_Windows:
 
 class BIM_Windows_TaskPanel:
 
-    
+
     def __init__(self):
 
         from PySide import QtGui
@@ -295,9 +396,9 @@ FreeCADGui.addCommand('BIM_TogglePanels',BIM_TogglePanels())
 
 
 def setStatusIcons(show=True):
-    
+
     "shows or hides the BIM icons in the status bar"
-    
+
     def toggle(): FreeCADGui.runCommand("BIM_TogglePanels")
 
     mw = FreeCADGui.getMainWindow()

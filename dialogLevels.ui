@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>290</width>
-    <height>576</height>
+    <width>276</width>
+    <height>585</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -35,13 +35,38 @@
     </widget>
    </item>
    <item>
-    <widget class="QListWidget" name="levels">
-     <property name="toolTip">
-      <string>The list of levels found in the active document</string>
+    <widget class="QTreeWidget" name="levels">
+     <property name="selectionMode">
+      <enum>QAbstractItemView::SingleSelection</enum>
      </property>
-     <property name="movement">
-      <enum>QListView::Static</enum>
+     <property name="allColumnsShowFocus">
+      <bool>false</bool>
      </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+     <property name="columnCount">
+      <number>2</number>
+     </property>
+     <attribute name="headerVisible">
+      <bool>false</bool>
+     </attribute>
+     <attribute name="headerCascadingSectionResizes">
+      <bool>true</bool>
+     </attribute>
+     <attribute name="headerDefaultSectionSize">
+      <number>100</number>
+     </attribute>
+     <column>
+      <property name="text">
+       <string>Level</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Height</string>
+      </property>
+     </column>
     </widget>
    </item>
    <item>
@@ -56,21 +81,6 @@
        </property>
        <property name="icon">
         <iconset theme="add">
-         <normaloff/>
-        </iconset>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="buttonUpdate">
-       <property name="toolTip">
-        <string>Gives the values entered below to all selected levels</string>
-       </property>
-       <property name="text">
-        <string>Update</string>
-       </property>
-       <property name="icon">
-        <iconset theme="reload">
          <normaloff/>
         </iconset>
        </property>
@@ -144,7 +154,7 @@
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout_2">
      <item>
-      <widget class="QCheckBox" name="checkBox">
+      <widget class="QCheckBox" name="restoreView">
        <property name="toolTip">
         <string>Check this to make the level adopt a stored view angle when double-clicked</string>
        </property>
@@ -154,7 +164,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="pushButton">
+      <widget class="QPushButton" name="buttonStore">
        <property name="toolTip">
         <string>Stores the current view angle to the selected levels</string>
        </property>
@@ -166,7 +176,7 @@
     </layout>
    </item>
    <item>
-    <widget class="QCheckBox" name="checkBox_2">
+    <widget class="QCheckBox" name="restoreState">
      <property name="toolTip">
       <string>Check this to make this level hide all other levels when double-clicked</string>
      </property>
