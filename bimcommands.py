@@ -206,8 +206,6 @@ class BIM_Levels_TaskPanel:
         from PySide import QtCore,QtGui
         self.form = FreeCADGui.PySideUic.loadUi(os.path.join(os.path.dirname(__file__),"dialogLevels.ui"))
         self.form.setWindowIcon(QtGui.QIcon(os.path.join(os.path.dirname(__file__),"icons","BIM_Levels.svg")))
-        self.form.levels.setColumnWidth(0,190)
-        self.form.levels.setColumnWidth(1,70)
         QtCore.QObject.connect(self.form.levels, QtCore.SIGNAL("itemClicked(QTreeWidgetItem *, int)"), self.editLevel)
         QtCore.QObject.connect(self.form.levels, QtCore.SIGNAL("itemDoubleClicked(QTreeWidgetItem *, int)"), self.showLevel)
         QtCore.QObject.connect(self.form.buttonStore, QtCore.SIGNAL("clicked()"), self.storeView)
@@ -218,6 +216,7 @@ class BIM_Levels_TaskPanel:
         QtCore.QObject.connect(self.form.restoreView, QtCore.SIGNAL("stateChanged(int)"), self.updateLevels)
         QtCore.QObject.connect(self.form.restoreState, QtCore.SIGNAL("stateChanged(int)"), self.updateLevels)
         QtCore.QObject.connect(self.form.buttonDelete, QtCore.SIGNAL("clicked()"), self.deleteLevels)
+        self.form.levels.header().setResizeMode(0,QtGui.QHeaderView.Stretch)
         self.update()
 
     def getStandardButtons(self):
@@ -225,13 +224,10 @@ class BIM_Levels_TaskPanel:
         from PySide import QtGui
         return int(QtGui.QDialogButtonBox.Close)
 
-    def accept(self):
-
-        FreeCADGui.Control.closeDialog()
-
     def reject(self):
 
         FreeCADGui.Control.closeDialog()
+        FreeCAD.ActiveDocument.recompute()
 
     def update(self,keepSelection=False):
 
@@ -324,6 +320,8 @@ class BIM_Levels_TaskPanel:
             FreeCAD.ActiveDocument.removeObject(d)
         self.update()
 
+
+
 class BIM_Windows:
 
 
@@ -343,24 +341,193 @@ class BIM_Windows_TaskPanel:
 
     def __init__(self):
 
-        from PySide import QtGui
+        from PySide import QtCore,QtGui
         self.form = FreeCADGui.PySideUic.loadUi(os.path.join(os.path.dirname(__file__),"dialogWindows.ui"))
         self.form.setWindowIcon(QtGui.QIcon(os.path.join(os.path.dirname(__file__),"icons","BIM_Windows.svg")))
-        #QtCore.QObject.connect(self.form.buttonRefresh, QtCore.SIGNAL("clicked()"), self.getFiles)
+        QtCore.QObject.connect(self.form.groupMode, QtCore.SIGNAL("currentIndexChanged(int)"), self.update)
+        QtCore.QObject.connect(self.form.windows, QtCore.SIGNAL("itemClicked(QTreeWidgetItem *, int)"), self.editWindow)
+        QtCore.QObject.connect(self.form.windows, QtCore.SIGNAL("itemDoubleClicked(QTreeWidgetItem *, int)"), self.showWindow)
+        QtCore.QObject.connect(self.form.windowLabel, QtCore.SIGNAL("returnPressed()"), self.setLabel)
+        QtCore.QObject.connect(self.form.windowDescription, QtCore.SIGNAL("returnPressed()"), self.setDescription)
+        QtCore.QObject.connect(self.form.windowTag, QtCore.SIGNAL("returnPressed()"), self.setTag)
+        QtCore.QObject.connect(self.form.windowHeight, QtCore.SIGNAL("returnPressed()"), self.setHeight)
+        QtCore.QObject.connect(self.form.windowWidth, QtCore.SIGNAL("returnPressed()"), self.setWidth)
+        QtCore.QObject.connect(self.form.windowMaterial, QtCore.SIGNAL("clicked()"), self.setMaterial)
+        self.form.windows.header().setResizeMode(0,QtGui.QHeaderView.Stretch)
+        self.update()
 
     def getStandardButtons(self):
 
         from PySide import QtGui
         return int(QtGui.QDialogButtonBox.Close)
 
-    def accept(self):
-
-        FreeCADGui.Control.closeDialog()
-
     def reject(self):
 
         FreeCADGui.Control.closeDialog()
+        FreeCAD.ActiveDocument.recompute()
 
+    def update(self,index=None):
+        
+        import Draft,Arch_rc
+        from PySide import QtGui
+        self.form.windows.clear()
+        windows = [o for o in FreeCAD.ActiveDocument.Objects if Draft.getType(o) == "Window"]
+        if self.form.groupMode.currentIndex() == 0:
+            for window in windows:
+                s1 = window.Label
+                s2 = window.Tag
+                it = QtGui.QTreeWidgetItem([s1,s2])
+                it.setIcon(0,QtGui.QIcon(":/icons/Arch_Window_Tree.svg"))
+                it.setToolTip(0,window.Name)
+                self.form.windows.addTopLevelItem(it)
+        else:
+            groups = {}
+            for window in windows:
+                group = None
+                if self.form.groupMode.currentIndex() == 1:
+                    group = window.Width.UserString + " x " + window.Height.UserString
+                elif self.form.groupMode.currentIndex() == 2:
+                    if window.CloneOf:
+                        group = window.CloneOf.Label
+                    else:
+                        group = window.Name
+                elif self.form.groupMode.currentIndex() == 3:
+                    group = window.Tag
+                else:
+                    if window.Material:
+                        group = window.Material.Label
+                if not group:
+                    group = "None"
+                if group in groups:
+                    groups[group].append(window)
+                else:
+                    groups[group] = [window]
+            for group in groups.keys():
+                s1 = group
+                top = QtGui.QTreeWidgetItem([s1,""])
+                top.setExpanded(True)
+                self.form.windows.addTopLevelItem(top)
+                for window in groups[group]:
+                    s1 = window.Label
+                    s2 = window.Tag
+                    it = QtGui.QTreeWidgetItem([s1,s2])
+                    it.setIcon(0,QtGui.QIcon(":/icons/Arch_Window_Tree.svg"))
+                    it.setToolTip(0,window.Name)
+                    top.addChild(it)
+            self.form.windowsexpandAll()
+        self.form.windowsCount.setText(str(len([w for w in windows if w.Role == "Window"])))
+        self.form.doorsCount.setText(str(len([w for w in windows if w.Role == "Door"])))
+
+    def editWindow(self,item,column):
+
+        if len(self.form.windows.selectedItems()) == 1:
+            # dont change the contents if we have more than one floor selected
+            window = FreeCAD.ActiveDocument.getObject(item.toolTip(0))
+            if window:
+                self.form.windowLabel.setText(window.Label)
+                self.form.windowDescription.setText(window.Description)
+                self.form.windowTag.setText(window.Tag)
+                self.form.windowWidth.setText(window.Width.UserString)
+                self.form.windowHeight.setText(window.Height.UserString)
+                if window.Material:
+                    self.form.windowMaterial.setText(window.Material.Label)
+
+    def showWindow(self,item,column):
+
+        window = FreeCAD.ActiveDocument.getObject(window.toolTip(0))
+        if window:
+            FreeCADGui.Selection.clearSelection()
+            FreeCADGui.Selection.addSelection(window)
+            FreeCADGui.SendMsgToActiveView("ViewSelection")
+
+    def setWidth(self):
+        
+        val = FreeCAD.Units.Quantity(self.form.windowWidth.text()).Value
+        if val:
+            for it in self.form.windows.selectedItems():
+                window = FreeCAD.ActiveDocument.getObject(it.toolTip(0))
+                if window:
+                    window.Width = val
+            self.update()
+
+    def setHeight(self):
+        
+        val = FreeCAD.Units.Quantity(self.form.windowHeight.text()).Value
+        if val:
+            for it in self.form.windows.selectedItems():
+                window = FreeCAD.ActiveDocument.getObject(it.toolTip(0))
+                if window:
+                    window.Height = val
+            self.update()
+
+    def setLabel(self):
+        
+        val = self.form.windowLabel.text()
+        if val:
+            for it in self.form.windows.selectedItems():
+                window = FreeCAD.ActiveDocument.getObject(it.toolTip(0))
+                if window:
+                    window.Label = val
+            self.update()
+
+    def setTag(self):
+        
+        for it in self.form.windows.selectedItems():
+            window = FreeCAD.ActiveDocument.getObject(it.toolTip(0))
+            if window:
+                window.Tag = self.form.windowTag.text()
+        self.update()
+
+    def setDescription(self):
+        
+        for it in self.form.windows.selectedItems():
+            window = FreeCAD.ActiveDocument.getObject(it.toolTip(0))
+            if window:
+                window.Description = self.form.windowDescription.text()
+        self.update()
+
+    def setMaterial(self):
+
+        import Draft,Arch_rc
+        from PySide import QtGui
+        form = FreeCADGui.PySideUic.loadUi(os.path.join(os.path.dirname(__file__),"dialogMaterialChooser.ui"))
+        mw = FreeCADGui.getMainWindow()
+        form.move(mw.frameGeometry().topLeft() + mw.rect().center() - form.rect().center())
+        materials = [o for o in FreeCAD.ActiveDocument.Objects if Draft.getType(o) == "Material"]
+        it = QtGui.QListWidgetItem("None")
+        it.setIcon(QtGui.QIcon(":/icons/button_invalid.svg"))
+        it.setToolTip("__None__")
+        form.list.addItem(it)
+        for mat in materials:
+            it = QtGui.QListWidgetItem(mat.Label)
+            it.setIcon(QtGui.QIcon(":/icons/Arch_Material.svg"))
+            it.setToolTip(mat.Name)
+            form.list.addItem(it)
+        result = form.exec_()
+        if result:
+            mat = None
+            sel = form.list.selectedItems()
+            if sel:
+                sel = sel[0]
+                if sel.toolTip() != "__None__":
+                    mat = FreeCAD.ActiveDocument.getObject(str(sel.toolTip()))
+                for it in self.form.windows.selectedItems():
+                    window = FreeCAD.ActiveDocument.getObject(it.toolTip(0))
+                    if window:
+                        if mat:
+                            window.Material = mat
+                        else:
+                            window.Material = None
+                if mat:
+                    self.form.windowMaterial.setText(mat.Label)
+                self.update()
+
+
+
+
+
+
+        
 
 
 class BIM_TogglePanels:

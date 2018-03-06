@@ -57,6 +57,9 @@
      <attribute name="headerDefaultSectionSize">
       <number>100</number>
      </attribute>
+     <attribute name="headerStretchLastSection">
+      <bool>false</bool>
+     </attribute>
      <column>
       <property name="text">
        <string>Level</string>
