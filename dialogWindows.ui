@@ -229,6 +229,13 @@
      </item>
     </layout>
    </item>
+   <item>
+    <widget class="QPushButton" name="pushButton">
+     <property name="text">
+      <string>Update Spreadsheet</string>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
  <customwidgets>
