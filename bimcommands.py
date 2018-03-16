@@ -184,6 +184,127 @@ class BIM_Setup:
 
 
 
+class BIM_Project:
+
+
+    def GetResources(self):
+
+        return {'Pixmap'  : os.path.join(os.path.dirname(__file__),"icons","BIM_Project.svg"),
+                'MenuText': QT_TRANSLATE_NOOP("BIM_Levels", "Manage project..."),
+                'ToolTip' : QT_TRANSLATE_NOOP("BIM_Levels", "Setup your BIM project")}
+
+    def Activated(self):
+
+        FreeCADGui.Control.showDialog(BIM_Project_TaskPanel())
+
+
+
+class BIM_Project_TaskPanel:
+
+
+    def __init__(self):
+
+        from PySide import QtCore,QtGui
+        self.form = FreeCADGui.PySideUic.loadUi(os.path.join(os.path.dirname(__file__),"dialogProject.ui"))
+        self.form.setWindowIcon(QtGui.QIcon(os.path.join(os.path.dirname(__file__),"icons","BIM_Project.svg")))
+        import Arch
+        self.form.buildingUse.addItems(Arch.BuildingTypes)
+
+    def accept(self):
+        
+        if self.form.groupNewDocument.isChecked() or (FreeCAD.ActiveDocument == None):
+            doc = FreeCAD.newDocument()
+            if self.form.projectName.text():
+                doc.Label = self.form.projectName.text()
+            FreeCAD.ActiveDocument = doc
+        if not FreeCAD.ActiveDocument:
+            FreeCAD.Console.PrintError("No active document, aborting.\n")
+        import Arch
+        site = None
+        outline = None
+        if self.form.groupSite.isChecked():
+            site = Arch.makeSite()
+            site.Label = self.form.siteName.text()
+            site.Address = self.form.siteAddress.text()
+            site.Longitude = self.form.siteLongitude.value()
+            site.Latitude = self.form.siteLatitude.value()
+            site.NorthDeviation = self.form.siteDeviation.value()
+            site.Elevation = FreeCAD.Units.Quantity(self.form.siteElevation.text()).Value
+        if self.form.groupBuilding.isChecked():
+            building = Arch.makeBuilding()
+            if site: 
+                site.Group = [building]
+            building.Label = self.form.buildingName.text()
+            building.BuildingType = self.form.buildingUse.currentText()
+            buildingWidth = FreeCAD.Units.Quantity(self.form.buildingWidth.text()).Value
+            buildingLength = FreeCAD.Units.Quantity(self.form.buildingLength.text()).Value
+            distVAxes = FreeCAD.Units.Quantity(self.form.distVAxes.text()).Value
+            distHAxes = FreeCAD.Units.Quantity(self.form.distHAxes.text()).Value
+            levelHeight = FreeCAD.Units.Quantity(self.form.levelHeight.text()).Value
+            color = self.form.lineColor.property("color").getRgbF()[:3]
+            if buildingWidth and buildingLength:
+                import Draft
+                outline = Draft.makeRectangle(buildingLength,buildingWidth,face=False)
+                outline.Label = "Building Outline"
+                outline.ViewObject.DrawStyle = "Dashed"
+                outline.ViewObject.LineColor = color
+                outline.ViewObject.LineWidth = self.form.lineWidth.value()
+                grp = FreeCAD.ActiveDocument.addObject("App::DocumentObjectGroup")
+                grp.Label = "Layout"
+                building.addObject(grp)
+                grp.addObject(outline)
+                if self.form.buildingName.text():
+                    outtext = Draft.makeText([self.form.buildingName.text()],point=FreeCAD.Vector(0,-Draft.getParam("textheight",0.20)*1.43,0))
+                    outtext.Label = "Building Label"
+                    outtext.ViewObject.TextColor = color
+                    grp.addObject(outtext)
+            if self.form.countVAxes.value() and distVAxes:
+                axisV = Arch.makeAxis(num = self.form.countVAxes.value(), size = distVAxes, name="vaxis")
+                axisV.Label = "Vertical Axes"
+                axisV.ViewObject.BubblePosition = "Both"
+                axisV.ViewObject.LineWidth = self.form.lineWidth.value()
+                axisV.ViewObject.FontSize = Draft.getParam("textheight",0.20)
+                axisV.ViewObject.BubbleSize = Draft.getParam("textheight",0.20)*1.43
+                axisV.ViewObject.LineColor = color
+                if outline:
+                    axisV.setExpression('Length', outline.Name+'.Height * 1.1')
+                    axisV.setExpression('Placement.Base.y', outline.Name+'.Placement.Base.y - '+axisV.Name+'.Length * 0.05')
+                    axisV.setExpression('Placement.Base.x', outline.Name+'.Placement.Base.x')
+                    grp.addObject(axisV)
+            if self.form.countHAxes.value() and distHAxes:
+                axisH = Arch.makeAxis(num = self.form.countHAxes.value(), size = distHAxes, name="haxis")
+                axisH.Label = "Horizontal Axes"
+                axisH.ViewObject.BubblePosition = "Both"
+                axisH.ViewObject.NumberingStyle = "A,B,C"
+                axisH.ViewObject.LineWidth = self.form.lineWidth.value()
+                axisH.ViewObject.FontSize = Draft.getParam("textheight",0.20)
+                axisH.ViewObject.BubbleSize = Draft.getParam("textheight",0.20)*1.43
+                axisH.Placement.Rotation = FreeCAD.Rotation(FreeCAD.Vector(0,0,1),90)
+                axisH.ViewObject.LineColor = color
+                if outline:
+                    axisH.setExpression('Length', outline.Name+'.Length * 1.1')
+                    axisH.setExpression('Placement.Base.x', outline.Name+'.Placement.Base.x + '+axisH.Name+'.Length * 0.945')
+                    axisH.setExpression('Placement.Base.y', outline.Name+'.Placement.Base.y')
+                    grp.addObject(axisH)
+            if self.form.countLevels.value() and levelHeight:
+                h = 0
+                for i in range(self.form.countLevels.value()):
+                    lev = Arch.makeFloor()
+                    lev.Label = "Level "+str(i)
+                    lev.Height = levelHeight
+                    lev.Placement.move(FreeCAD.Vector(0,0,h))
+                    h += levelHeight
+                    building.addObject(lev)
+        FreeCADGui.Control.closeDialog()
+        FreeCAD.ActiveDocument.recompute()
+        if outline:
+            FreeCADGui.Selection.clearSelection()
+            FreeCADGui.Selection.addSelection(outline)
+            FreeCADGui.SendMsgToActiveView("ViewSelection")
+
+
+
+
 class BIM_Levels:
 
 
@@ -556,6 +677,7 @@ class BIM_TogglePanels:
 
 FreeCADGui.addCommand('BIM_Welcome',BIM_Welcome())
 FreeCADGui.addCommand('BIM_Setup',BIM_Setup())
+FreeCADGui.addCommand('BIM_Project',BIM_Project())
 FreeCADGui.addCommand('BIM_Levels',BIM_Levels())
 FreeCADGui.addCommand('BIM_Windows',BIM_Windows())
 FreeCADGui.addCommand('BIM_TogglePanels',BIM_TogglePanels())

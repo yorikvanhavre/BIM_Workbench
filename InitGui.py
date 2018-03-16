@@ -109,7 +109,7 @@ static char * IFC_xpm[] = {
                   "Part_Compound","Draft_Upgrade", "Draft_Downgrade", "Draft_Shape2DView",
                   "Draft_Draft2Sketch","Draft_Clone","Arch_CutPlane","Arch_Add","Arch_Remove"]
                   
-        manage = ["BIM_Setup","BIM_Levels","BIM_Windows"]
+        manage = ["BIM_Setup","BIM_Project","BIM_Levels","BIM_Windows"]
 
         utils = ["BIM_TogglePanels",
                  "Draft_VisGroup","Draft_Slope","Draft_SetWorkingPlaneProxy","Draft_AddConstruction",
