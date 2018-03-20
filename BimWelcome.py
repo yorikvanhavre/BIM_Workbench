@@ -27,61 +27,29 @@ import os,FreeCAD,FreeCADGui
 def QT_TRANSLATE_NOOP(ctx,txt): return txt # dummy function for the QT translator
 
 
-# import commands that are defined in their separate files
 
-import BimWelcome,BimSetup,BimProject,BimLevels,BimWindows
-
-
-class BIM_TogglePanels:
+class BIM_Welcome:
 
 
     def GetResources(self):
 
-        return {'Pixmap'  : os.path.join(os.path.dirname(__file__),"icons","BIM_TogglePanels.svg"),
-                'MenuText': QT_TRANSLATE_NOOP("BIM_TogglePanels", "Toggle panels"),
-                'ToolTip' : QT_TRANSLATE_NOOP("BIM_TogglePanels", "Toggle report panels on/off"),
-                'Accel': 'Ctrl+0'}
+        return {'Pixmap'  : ":icons/preferences-system.svg",
+                'MenuText': QT_TRANSLATE_NOOP("BIM_Welcome", "Welcome screen"),
+                'ToolTip' : QT_TRANSLATE_NOOP("BIM_Welcome", "Show the welcome screen")}
 
     def Activated(self):
 
-        from  PySide import QtGui
+        # load dialog
+        form = FreeCADGui.PySideUic.loadUi(os.path.join(os.path.dirname(__file__),"dialogWelcome.ui"))
+
+        # center the dialog over FreeCAD window
         mw = FreeCADGui.getMainWindow()
-        windows = [mw.findChild(QtGui.QWidget,"Python console"),mw.findChild(QtGui.QWidget,"Selection view"),mw.findChild(QtGui.QWidget,"Report view")]
-        if windows[0].isVisible():
-            for w in windows:
-                w.hide()
-        else:
-            for w in windows:
-                w.show()
+        form.move(mw.frameGeometry().topLeft() + mw.rect().center() - form.rect().center())
+
+        # show dialog and run setup dialog afterwards if OK was pressed
+        result = form.exec_()
+        if result:
+            FreeCADGui.runCommand("BIM_Setup")
 
 
-
-FreeCADGui.addCommand('BIM_TogglePanels',BIM_TogglePanels())
-
-
-
-def setStatusIcons(show=True):
-
-    "shows or hides the BIM icons in the status bar"
-
-    def toggle(): FreeCADGui.runCommand("BIM_TogglePanels")
-
-    mw = FreeCADGui.getMainWindow()
-    if mw:
-        st = mw.statusBar()
-        from PySide import QtCore,QtGui
-        statuswidget = st.findChild(QtGui.QPushButton,"BIMStatusWidget")
-        if show:
-            if statuswidget:
-                statuswidget.show()
-            else:
-                statuswidget = QtGui.QPushButton()
-                statuswidget.setIcon(QtGui.QIcon(os.path.join(os.path.dirname(__file__),"icons","BIM_TogglePanels.svg")))
-                statuswidget.setText("")
-                statuswidget.setToolTip("Toggle report panels on/off")
-                statuswidget.setObjectName("BIMStatusWidget")
-                QtCore.QObject.connect(statuswidget,QtCore.SIGNAL("pressed()"),toggle)
-                st.addPermanentWidget(statuswidget)
-        else:
-            if statuswidget:
-                statuswidget.hide()
+FreeCADGui.addCommand('BIM_Welcome',BIM_Welcome())
