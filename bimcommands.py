@@ -552,10 +552,16 @@ class BIM_Windows_TaskPanel:
                 self.form.windowHeight.setText(window.Height.UserString)
                 if window.Material:
                     self.form.windowMaterial.setText(window.Material.Label)
+        # select objects
+        FreeCADGui.Selection.clearSelection()
+        for item in self.form.windows.selectedItems():
+            o = FreeCAD.ActiveDocument.getObject(item.toolTip(0))
+            if o:
+                FreeCADGui.Selection.addSelection(o)
 
     def showWindow(self,item,column):
 
-        window = FreeCAD.ActiveDocument.getObject(window.toolTip(0))
+        window = FreeCAD.ActiveDocument.getObject(item.toolTip(0))
         if window:
             FreeCADGui.Selection.clearSelection()
             FreeCADGui.Selection.addSelection(window)
