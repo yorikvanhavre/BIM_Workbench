@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>288</width>
-    <height>1008</height>
+    <width>290</width>
+    <height>1179</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -289,13 +289,6 @@
           </property>
          </widget>
         </item>
-        <item row="11" column="0">
-         <widget class="QLabel" name="label_15">
-          <property name="text">
-           <string>Number of levels</string>
-          </property>
-         </widget>
-        </item>
         <item row="3" column="0">
          <widget class="QLabel" name="label_10">
           <property name="text">
@@ -303,25 +296,8 @@
           </property>
          </widget>
         </item>
-        <item row="12" column="0">
-         <widget class="QLabel" name="label_16">
-          <property name="text">
-           <string>Level height</string>
-          </property>
-         </widget>
-        </item>
         <item row="9" column="1">
          <widget class="QSpinBox" name="countHAxes">
-          <property name="value">
-           <number>0</number>
-          </property>
-         </widget>
-        </item>
-        <item row="11" column="1">
-         <widget class="QSpinBox" name="countLevels">
-          <property name="singleStep">
-           <number>1</number>
-          </property>
           <property name="value">
            <number>0</number>
           </property>
@@ -381,16 +357,6 @@
           </property>
          </widget>
         </item>
-        <item row="12" column="1">
-         <widget class="Gui::InputField" name="levelHeight">
-          <property name="text">
-           <string>0 </string>
-          </property>
-          <property name="unit" stdset="0">
-           <string notr="true"/>
-          </property>
-         </widget>
-        </item>
         <item row="14" column="1">
          <widget class="Gui::ColorButton" name="lineColor">
           <property name="color">
@@ -411,10 +377,71 @@
         </item>
        </layout>
       </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="groupBox">
+     <property name="title">
+      <string>Levels</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_4">
+      <item>
+       <layout class="QGridLayout" name="gridLayout_4">
+        <item row="0" column="1">
+         <widget class="QSpinBox" name="countLevels">
+          <property name="singleStep">
+           <number>1</number>
+          </property>
+          <property name="value">
+           <number>0</number>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="label_16">
+          <property name="text">
+           <string>Level height</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="Gui::InputField" name="levelHeight">
+          <property name="text">
+           <string>0 </string>
+          </property>
+          <property name="unit" stdset="0">
+           <string notr="true"/>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="0">
+         <widget class="QLabel" name="label_15">
+          <property name="text">
+           <string>Number of levels</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="levelsAxis">
+        <property name="text">
+         <string>Bind levels to vertical axes</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="levelsWP">
+        <property name="text">
+         <string>Define a working plane for each level</string>
+        </property>
+       </widget>
+      </item>
       <item>
        <widget class="QLabel" name="label_17">
         <property name="text">
-         <string>Groups to be added to each floor</string>
+         <string>Groups to be added to each level</string>
         </property>
        </widget>
       </item>
@@ -459,29 +486,29 @@
         </item>
        </layout>
       </item>
-      <item>
-       <widget class="QLabel" name="label_24">
-        <property name="text">
-         <string>The above settings can be saved as a preset. Presets are stored as .txt files in your FreeCAD user folder</string>
-        </property>
-        <property name="wordWrap">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="buttonSave">
-        <property name="text">
-         <string>Save preset</string>
-        </property>
-        <property name="icon">
-         <iconset theme="gtk-save">
-          <normaloff/>
-         </iconset>
-        </property>
-       </widget>
-      </item>
      </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="label_24">
+     <property name="text">
+      <string>The above settings can be saved as a preset. Presets are stored as .txt files in your FreeCAD user folder</string>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QPushButton" name="buttonSave">
+     <property name="text">
+      <string>Save preset</string>
+     </property>
+     <property name="icon">
+      <iconset theme="gtk-save">
+       <normaloff/>
+      </iconset>
+     </property>
     </widget>
    </item>
   </layout>

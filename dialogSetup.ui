@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>504</width>
-    <height>641</height>
+    <height>637</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -24,6 +24,13 @@
      </property>
      <property name="wordWrap">
       <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="label_18">
+     <property name="text">
+      <string>Hover your mouse on each setting for additional info.</string>
      </property>
     </widget>
    </item>
@@ -57,7 +64,7 @@
        </property>
        <item>
         <property name="text">
-         <string>Auto (adapts to view)</string>
+         <string>Auto (continuously adapts to the current view)</string>
         </property>
        </item>
        <item>
@@ -146,7 +153,7 @@
      <item row="0" column="1">
       <widget class="QComboBox" name="settingUnits">
        <property name="toolTip">
-        <string>The unit you prefer to work with, that will be used in dialogs and measurements. It doesn't prevent you from using other units when entering distances, though</string>
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The unit you prefer to work with, that will be used everywhere: in dialogs,  measurements and dimensions. However, you can enter any other unit anytime. For example, if you configured FreeCAD to work in millimeters, you can still enter measures as &amp;quot;10m&amp;quot; or &amp;quot;5ft&amp;quot;. You can also change the working unit anytime without causing any modification to your model.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
        <item>
         <property name="text">
@@ -321,7 +328,7 @@
         <string>This is the size of the smallest square of the grid</string>
        </property>
        <property name="text">
-        <string>1 m</string>
+        <string>0 </string>
        </property>
        <property name="unit" stdset="0">
         <string notr="true"/>
@@ -334,7 +341,7 @@
         <string>The default size of texts and dimension texts</string>
        </property>
        <property name="text">
-        <string>2 cm</string>
+        <string>0 </string>
        </property>
        <property name="unit" stdset="0">
         <string notr="true"/>
@@ -347,7 +354,7 @@
         <string>Default dimension arrow size</string>
        </property>
        <property name="text">
-        <string>7.5 mm</string>
+        <string>0 </string>
        </property>
        <property name="unit" stdset="0">
         <string notr="true"/>

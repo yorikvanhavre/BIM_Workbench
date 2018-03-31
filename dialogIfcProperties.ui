@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>448</width>
-    <height>528</height>
+    <width>367</width>
+    <height>661</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -51,7 +51,9 @@
          <string>Add</string>
         </property>
         <property name="icon">
-         <iconset theme="add"/>
+         <iconset theme="add">
+          <normaloff/>
+         </iconset>
         </property>
        </widget>
       </item>
@@ -106,7 +108,9 @@
          <string>Add</string>
         </property>
         <property name="icon">
-         <iconset theme="add"/>
+         <iconset theme="add">
+          <normaloff/>
+         </iconset>
         </property>
        </widget>
       </item>
@@ -138,7 +142,9 @@
          <string>Delete</string>
         </property>
         <property name="icon">
-         <iconset theme="cancel"/>
+         <iconset theme="gtk-delete">
+          <normaloff/>
+         </iconset>
         </property>
        </widget>
       </item>

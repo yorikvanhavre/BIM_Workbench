@@ -85,3 +85,26 @@ def setStatusIcons(show=True):
         else:
             if statuswidget:
                 statuswidget.hide()
+
+
+
+class BimSelectionObserver:
+    
+    def __init__(self):
+        self.enabled = []
+
+    def addSelection(self,doc,obj,sub,pnt):
+        obj = FreeCAD.getDocument(doc).getObject(obj)
+        if obj:
+            if hasattr(obj,"Subtractions"):
+                for sub in obj.Subtractions:
+                    if not sub.ViewObject.Visibility:
+                        sub.ViewObject.show()
+                        if not sub in self.enabled:
+                            self.enabled.append(sub)
+
+    def clearSelection(self,doc):
+        for sub in self.enabled:
+            for sub in obj.Subtractions:
+                sub.ViewObject.hide()
+        self.enabled = []

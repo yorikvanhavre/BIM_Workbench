@@ -106,7 +106,7 @@ static char * IFC_xpm[] = {
         modify = ["Draft_Move","Draft_Rotate","Draft_Offset", "Part_Offset2D", "Draft_Trimex",
                   "Draft_Scale","Draft_Stretch","Draft_Array","Draft_PathArray",
                   "Draft_Mirror","Part_Extrude","Part_Cut","Part_Fuse","Part_Common",
-                  "Part_Compound","Draft_Upgrade", "Draft_Downgrade", "Draft_Shape2DView",
+                  "Part_Compound","Part_SimpleCopy","Draft_Upgrade", "Draft_Downgrade", "Draft_Shape2DView",
                   "Draft_Draft2Sketch","Draft_Clone","Arch_CutPlane","Arch_Add","Arch_Remove"]
                   
         manage = ["BIM_Setup","BIM_Project","BIM_Levels","BIM_Windows"]
@@ -189,6 +189,10 @@ static char * IFC_xpm[] = {
         if FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM").GetBool("FirstTime",True):
             todo.delay(FreeCADGui.runCommand,"BIM_Welcome")
         todo.delay(bimcommands.setStatusIcons,True)
+        if not hasattr(FreeCADGui,"BimSelectionObserver"):
+            FreeCADGui.BimSelectionObserver = bimcommands.BimSelectionObserver()
+            FreeCADGui.Selection.addObserver(FreeCADGui.BimSelectionObserver)
+            Log("Adding FreeCADGui.BimSelectionObserver\n")
 
         Log("BIM workbench activated\n")
 
@@ -201,6 +205,10 @@ static char * IFC_xpm[] = {
             FreeCADGui.Snapper.hide()
         import bimcommands
         bimcommands.setStatusIcons(False)
+        if hasattr(FreeCADGui,"BimSelectionObserver"):
+            FreeCADGui.Selection.removeObserver(FreeCADGui.BimSelectionObserver)
+            del FreeCADGui.BimSelectionObserver
+            Log("Removing FreeCADGui.BimSelectionObserver\n")
 
         Log("BIM workbench deactivated\n")
 

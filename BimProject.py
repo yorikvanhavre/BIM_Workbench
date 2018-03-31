@@ -68,7 +68,7 @@ class BIM_Project_TaskPanel:
             FreeCAD.ActiveDocument = doc
         if not FreeCAD.ActiveDocument:
             FreeCAD.Console.PrintError("No active document, aborting.\n")
-        import Arch
+        import Draft,Arch
         site = None
         outline = None
         if self.form.groupSite.isChecked():
@@ -92,7 +92,6 @@ class BIM_Project_TaskPanel:
             levelHeight = FreeCAD.Units.Quantity(self.form.levelHeight.text()).Value
             color = self.form.lineColor.property("color").getRgbF()[:3]
             if buildingWidth and buildingLength:
-                import Draft
                 outline = Draft.makeRectangle(buildingLength,buildingWidth,face=False)
                 outline.Label = "Building Outline"
                 outline.ViewObject.DrawStyle = "Dashed"
@@ -135,15 +134,38 @@ class BIM_Project_TaskPanel:
                     axisH.setExpression('Placement.Base.x', outline.Name+'.Placement.Base.x + '+axisH.Name+'.Length * 0.945')
                     axisH.setExpression('Placement.Base.y', outline.Name+'.Placement.Base.y')
                     grp.addObject(axisH)
-            if self.form.countLevels.value() and levelHeight:
+            if self.form.countLevels.value() and levelHeight:                    
                 h = 0
+                alabels = []
                 for i in range(self.form.countLevels.value()):
                     lev = Arch.makeFloor()
                     lev.Label = "Level "+str(i)
+                    alabels.append(lev.Label)
                     lev.Height = levelHeight
                     lev.Placement.move(FreeCAD.Vector(0,0,h))
                     h += levelHeight
                     building.addObject(lev)
+                    if self.form.levelsWP.isChecked():
+                        prx = Draft.makeWorkingPlaneProxy(FreeCAD.Placement())
+                        prx.Placement.move(FreeCAD.Vector(0,0,h))
+                        lev.addObject(prx)
+                if self.form.levelsAxis.isChecked():
+                    axisL = Arch.makeAxis(num = self.form.countLevels.value(), size = levelHeight, name="laxis")
+                    axisL.Label = "Level Axes"
+                    axisL.ViewObject.BubblePosition = "None"
+                    axisL.ViewObject.LineWidth = self.form.lineWidth.value()
+                    axisL.ViewObject.FontSize = Draft.getParam("textheight",0.20)
+                    axisL.Placement.Rotation = FreeCAD.Rotation(FreeCAD.Vector (0.577350269189626, -0.5773502691896257, 0.5773502691896257),120)
+                    axisL.ViewObject.LineColor = color
+                    axisL.ViewObject.LabelOffset.Rotation = FreeCAD.Rotation(FreeCAD.Vector(1,0,0),90)
+                    axisL.Labels = alabels
+                    axisL.ViewObject.ShowLabel = True
+                    if outline:
+                        axisL.setExpression('Length', outline.Name+'.Length * 1.1')
+                        axisL.setExpression('Placement.Base.x', outline.Name+'.Placement.Base.x + '+axisL.Name+'.Length * 0.945')
+                        axisL.setExpression('Placement.Base.y', outline.Name+'.Placement.Base.y')
+                        grp.addObject(axisL)
+                        axisL.ViewObject.LabelOffset.Base = FreeCAD.Vector(-axisL.Length.Value + Draft.getParam("textheight",0.20)*0.43,0,Draft.getParam("textheight",0.20)*0.43)
         FreeCADGui.Control.closeDialog()
         FreeCAD.ActiveDocument.recompute()
         if outline:
@@ -207,7 +229,10 @@ class BIM_Project_TaskPanel:
             s += "levelHeight="+self.form.levelHeight.text()+"\n"
             s += "lineWidth="+str(self.form.lineWidth.value())+"\n"
             s += "lineColor="+str(self.form.lineColor.property("color").getRgbF()[:3])+"\n"
-            s += "groups="+";;".join(groups)
+            s += "groups="+";;".join(groups)+"\n"
+            
+            s += "levelsWP="+str(int(self.form.levelsWP.isChecked()))+"\n"
+            s += "levelsAxis="+str(int(self.form.levelsAxis.isChecked()))+"\n"
 
             f = open(os.path.join(presetdir,name+".txt"),"wb")
             f.write(s)
@@ -235,59 +260,63 @@ class BIM_Project_TaskPanel:
             f.close()
             lines = buf.split("\n")
             for line in lines:
-                if line[0] != "#":
-                    s = line.split("=")
-                    if s[0] ==   "groupNewDocument":
-                        self.form.groupNewDocument.setChecked(bool(int(s[1])))
-                    elif s[0] == "projectName":
-                        self.form.projectName.setText(s[1])
-                    elif s[0] == "groupSite":
-                        self.form.groupSite.setChecked(bool(int(s[1])))
-                    elif s[0] == "siteName":
-                        self.form.siteName.setText(s[1])
-                    elif s[0] == "siteAddress":
-                        self.form.siteAddress.setText(s[1])
-                    elif s[0] == "siteLongitude":
-                        self.form.siteLongitude.setValue(float(s[1]))
-                    elif s[0] == "siteLatitude":
-                        self.form.siteLatitude.setValue(float(s[1]))
-                    elif s[0] == "siteDeviation":
-                        self.form.siteDeviation.setValue(float(s[1]))
-                    elif s[0] == "siteElevation":
-                        self.form.siteElevation.setText(s[1])
-                    elif s[0] == "groupBuilding":
-                        self.form.groupBuilding.setChecked(bool(int(s[1])))
-                    elif s[0] == "buildingName":
-                        self.form.buildingName.setText(s[1])
-                    elif s[0] == "buildingUse":
-                        self.form.buildingUse.setCurrentIndex(int(s[1]))
-                    elif s[0] == "buildingLength":
-                        self.form.buildingLength.setText(s[1])
-                    elif s[0] == "buildingWidth":
-                        self.form.buildingWidth.setText(s[1])
-                    elif s[0] == "countVAxes":
-                        self.form.countVAxes.setValue(int(s[1]))
-                    elif s[0] == "distVAxes":
-                        self.form.distVAxes.setText(s[1])
-                    elif s[0] == "countHAxes":
-                        self.form.countHAxes.setValue(int(s[1]))
-                    elif s[0] == "distHAxes":
-                        self.form.distHAxes.setText(s[1])
-                    elif s[0] == "countLevels":
-                        self.form.countLevels.setValue(int(s[1]))
-                    elif s[0] == "levelHeight":
-                        self.form.levelHeight.setText(s[1])
-                    elif s[0] == "lineWidth":
-                        self.form.lineWidth.setValue(int(s[1]))
-                    elif s[0] == "lineColor":
-                        col = tuple([float(t) for t in s[1].strip("(").strip(")").split(",")])
-                        col = QtGui.QColor.fromRgbF(*col)
-                        self.form.lineColor.setProperty("color",col)
-                    elif s[0] == "groups":
-                        groups = s[1].split(";;")
-                        self.form.groupsList.clear()
-                        self.form.groupsList.addItems(groups)
-
+                if line:
+                    if line[0] != "#":
+                        s = line.split("=")
+                        if s[0] ==   "groupNewDocument":
+                            self.form.groupNewDocument.setChecked(bool(int(s[1])))
+                        elif s[0] == "projectName":
+                            self.form.projectName.setText(s[1])
+                        elif s[0] == "groupSite":
+                            self.form.groupSite.setChecked(bool(int(s[1])))
+                        elif s[0] == "siteName":
+                            self.form.siteName.setText(s[1])
+                        elif s[0] == "siteAddress":
+                            self.form.siteAddress.setText(s[1])
+                        elif s[0] == "siteLongitude":
+                            self.form.siteLongitude.setValue(float(s[1]))
+                        elif s[0] == "siteLatitude":
+                            self.form.siteLatitude.setValue(float(s[1]))
+                        elif s[0] == "siteDeviation":
+                            self.form.siteDeviation.setValue(float(s[1]))
+                        elif s[0] == "siteElevation":
+                            self.form.siteElevation.setText(s[1])
+                        elif s[0] == "groupBuilding":
+                            self.form.groupBuilding.setChecked(bool(int(s[1])))
+                        elif s[0] == "buildingName":
+                            self.form.buildingName.setText(s[1])
+                        elif s[0] == "buildingUse":
+                            self.form.buildingUse.setCurrentIndex(int(s[1]))
+                        elif s[0] == "buildingLength":
+                            self.form.buildingLength.setText(s[1])
+                        elif s[0] == "buildingWidth":
+                            self.form.buildingWidth.setText(s[1])
+                        elif s[0] == "countVAxes":
+                            self.form.countVAxes.setValue(int(s[1]))
+                        elif s[0] == "distVAxes":
+                            self.form.distVAxes.setText(s[1])
+                        elif s[0] == "countHAxes":
+                            self.form.countHAxes.setValue(int(s[1]))
+                        elif s[0] == "distHAxes":
+                            self.form.distHAxes.setText(s[1])
+                        elif s[0] == "countLevels":
+                            self.form.countLevels.setValue(int(s[1]))
+                        elif s[0] == "levelHeight":
+                            self.form.levelHeight.setText(s[1])
+                        elif s[0] == "lineWidth":
+                            self.form.lineWidth.setValue(int(s[1]))
+                        elif s[0] == "lineColor":
+                            col = tuple([float(t) for t in s[1].strip("(").strip(")").split(",")])
+                            col = QtGui.QColor.fromRgbF(*col)
+                            self.form.lineColor.setProperty("color",col)
+                        elif s[0] == "groups":
+                            groups = s[1].split(";;")
+                            self.form.groupsList.clear()
+                            self.form.groupsList.addItems(groups)
+                        elif s[0] == "levelsWP":
+                            self.form.levelsWP.setChecked(bool(int(s[1])))
+                        elif s[0] == "levelsAxis":
+                            self.form.levelsAxis.setChecked(bool(int(s[1])))
 
 
 FreeCADGui.addCommand('BIM_Project',BIM_Project())
