@@ -32,6 +32,7 @@ def QT_TRANSLATE_NOOP(ctx,txt): return txt # dummy function for the QT translato
 import BimWelcome,BimSetup,BimProject,BimLevels,BimWindows
 
 
+
 class BIM_TogglePanels:
 
 
@@ -56,7 +57,40 @@ class BIM_TogglePanels:
 
 
 
+class BIM_Trash:
+
+
+    def GetResources(self):
+
+        return {'Pixmap'  : os.path.join(os.path.dirname(__file__),"icons","BIM_Trash.svg"),
+                'MenuText': QT_TRANSLATE_NOOP("BIM_TogglePanels", "Move to Trash"),
+                'ToolTip' : QT_TRANSLATE_NOOP("BIM_TogglePanels", "Moves the selected objects to the Trash folder"),
+                'Accel': 'Shift+Del'}
+
+    def Activated(self):
+
+        if FreeCADGui.Selection.getSelection():
+            trash = FreeCAD.ActiveDocument.getObject("Trash")
+            if trash:
+                if not trash.isDerivedFrom("App::DocumentObjectGroup"):
+                    trash = None
+            if not trash:
+                trash = FreeCAD.ActiveDocument.addObject("App::DocumentObjectGroup","Trash")
+            for obj in FreeCADGui.Selection.getSelection():
+                trash.addObject(obj)
+                obj.ViewObject.hide()
+
+    def IsActive(self):
+
+        if FreeCADGui.Selection.getSelection():
+            return True
+        else:
+            return False
+
+
+
 FreeCADGui.addCommand('BIM_TogglePanels',BIM_TogglePanels())
+FreeCADGui.addCommand('BIM_Trash',BIM_Trash())
 
 
 
@@ -89,7 +123,8 @@ def setStatusIcons(show=True):
 
 
 class BimSelectionObserver:
-    
+
+
     def __init__(self):
         self.enabled = []
 

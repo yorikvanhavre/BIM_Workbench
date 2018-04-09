@@ -111,7 +111,7 @@ static char * IFC_xpm[] = {
                   
         manage = ["BIM_Setup","BIM_Project","BIM_Levels","BIM_Windows"]
 
-        utils = ["BIM_TogglePanels",
+        utils = ["BIM_TogglePanels","BIM_Trash",
                  "Draft_VisGroup","Draft_Slope","Draft_SetWorkingPlaneProxy","Draft_AddConstruction",
                  "Arch_Component","Arch_CloneComponent","Arch_SplitMesh","Arch_MeshToShape",
                  "Arch_SelectNonSolidMeshes","Arch_RemoveShape",
@@ -189,10 +189,10 @@ static char * IFC_xpm[] = {
         if FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM").GetBool("FirstTime",True):
             todo.delay(FreeCADGui.runCommand,"BIM_Welcome")
         todo.delay(bimcommands.setStatusIcons,True)
-        if not hasattr(FreeCADGui,"BimSelectionObserver"):
-            FreeCADGui.BimSelectionObserver = bimcommands.BimSelectionObserver()
-            FreeCADGui.Selection.addObserver(FreeCADGui.BimSelectionObserver)
-            Log("Adding FreeCADGui.BimSelectionObserver\n")
+#        if not hasattr(FreeCADGui,"BimSelectionObserver"):
+#            FreeCADGui.BimSelectionObserver = bimcommands.BimSelectionObserver()
+#            FreeCADGui.Selection.addObserver(FreeCADGui.BimSelectionObserver)
+#            Log("Adding FreeCADGui.BimSelectionObserver\n")
 
         Log("BIM workbench activated\n")
 
@@ -205,13 +205,16 @@ static char * IFC_xpm[] = {
             FreeCADGui.Snapper.hide()
         import bimcommands
         bimcommands.setStatusIcons(False)
-        if hasattr(FreeCADGui,"BimSelectionObserver"):
-            FreeCADGui.Selection.removeObserver(FreeCADGui.BimSelectionObserver)
-            del FreeCADGui.BimSelectionObserver
-            Log("Removing FreeCADGui.BimSelectionObserver\n")
+#        if hasattr(FreeCADGui,"BimSelectionObserver"):
+#            FreeCADGui.Selection.removeObserver(FreeCADGui.BimSelectionObserver)
+#            del FreeCADGui.BimSelectionObserver
+#            Log("Removing FreeCADGui.BimSelectionObserver\n")
 
         Log("BIM workbench deactivated\n")
 
+    def ContextMenu(self, recipient):
+        import bimcommands
+        self.appendContextMenu("","BIM_Trash")
 
     def GetClassName(self):
         return "Gui::PythonWorkbench"
