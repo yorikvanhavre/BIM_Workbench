@@ -85,6 +85,37 @@ class BIM_Setup:
         bkp = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Document").GetInt("CountBackupFiles",2)
         form.settingBackupfiles.setValue(bkp)
         # TODO - antialiasing?
+        colTop = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/View").GetUnsigned("BackgroundColor2",775244287)
+        form.colorButtonTop.setProperty("color",getPrefColor(colTop))
+        colBottom = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/View").GetUnsigned("BackgroundColor3",1905041919)
+        form.colorButtonBottom.setProperty("color",getPrefColor(colBottom))
+        colFace = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/View").GetUnsigned("DefaultShapeColor",4294967295)
+        form.colorButtonFaces.setProperty("color",getPrefColor(colFace))
+        colLine = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/View").GetUnsigned("DefaultShapeLineColor",255)
+        form.colorButtonLines.setProperty("color",getPrefColor(colLine))
+        
+        # check missing addons
+        form.labelMissingWorkbenches.hide()
+        m = []
+        try:
+            import RebarTools
+        except:
+            m.append("Reinforcement")
+        try:
+            import BIMServer
+        except:
+            m.append("WebTools")
+        try:
+            import CommandsFrame
+        except:
+            m.append("Flamingo")
+        try:
+            import FastenerBase
+        except:
+            m.append("Fasteners")
+        if m:
+            form.labelMissingWorkbenches.setText("Tip: Some additional workbenches are not installed, that extend BIM functionality: <b>"+",".join(m)+"</b>. You can install them from menu Tools -> Addon manager.")
+            form.labelMissingWorkbenches.show()
 
         # show dialog and exit if cancelled
         result = form.exec_()
@@ -137,6 +168,11 @@ class BIM_Setup:
         FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Document").SetBool("CreateNewDoc",newdoc)
         bkp = form.settingBackupfiles.value()
         FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Document").SetInt("CountBackupFiles",bkp)
+        FreeCAD.ParamGet("User parameter:BaseApp/Preferences/View").SetUnsigned("BackgroundColor2",form.colorButtonTop.property("color").rgb()<<8)
+        FreeCAD.ParamGet("User parameter:BaseApp/Preferences/View").SetUnsigned("BackgroundColor3",form.colorButtonBottom.property("color").rgb()<<8)
+        FreeCAD.ParamGet("User parameter:BaseApp/Preferences/View").SetUnsigned("DefaultShapeColor",form.colorButtonFaces.property("color").rgb()<<8)
+        FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").SetUnsigned("color",form.colorButtonFaces.property("color").rgb()<<8)
+        FreeCAD.ParamGet("User parameter:BaseApp/Preferences/View").SetUnsigned("DefaultShapeLineColor",form.colorButtonLines.property("color").rgb()<<8)
 
         # set the working plane
         if hasattr(FreeCAD,"DraftWorkingPlane") and hasattr(FreeCADGui,"draftToolBar"):
@@ -156,6 +192,14 @@ class BIM_Setup:
         if hasattr(FreeCADGui,"draftToolBar"):
             FreeCADGui.draftToolBar.widthButton.setValue(linewidth)
             FreeCADGui.draftToolBar.fontsizeButton.setValue(tsize)
+
+def getPrefColor(color):
+    r = ((color>>24)&0xFF)/255.0
+    g = ((color>>16)&0xFF)/255.0
+    b = ((color>>8)&0xFF)/255.0
+    from PySide import QtGui
+    return QtGui.QColor.fromRgbF(r,g,b)
+
 
 
 FreeCADGui.addCommand('BIM_Setup',BIM_Setup())

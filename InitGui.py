@@ -21,29 +21,6 @@
 #***************************************************************************
 
 
-
-# create popup group for Rebar tools
-class RebarGroupCommand:
-
-    def GetCommands(self):
-        try:
-            import RebarTools
-        except:
-            return ("Arch_Rebar")
-        else:
-            return tuple(RebarTools.RebarCommands+["Arch_Rebar"])
-
-    def GetResources(self):
-        return { 'MenuText': 'Rebar tools',
-                 'ToolTip': 'Rebar tools'
-               }
-
-    def IsActive(self):
-        return not FreeCAD.ActiveDocument is None
-
-FreeCADGui.addCommand('Arch_RebarTools', RebarGroupCommand())
-
-
 # main workbench class
 class BIMWorkbench(Workbench):
 
@@ -91,11 +68,35 @@ static char * IFC_xpm[] = {
                  "Draft_Point","Draft_Text", "Draft_ShapeString", "Draft_Dimension",
                  "Draft_Label"]
 
-        arch = ["Arch_Wall","Arch_Structure","Arch_RebarTools","Arch_Floor","Arch_Building",
+        arch = ["Arch_Wall","Arch_Structure","Arch_Rebar","Arch_Floor","Arch_Building",
                 "Arch_Site", "Arch_Window","Arch_Roof","Arch_AxisTools", "Arch_SectionPlane",
                 "Arch_Space","Arch_Stairs","Arch_PanelTools","Arch_Equipment","Arch_Frame",
                 "Arch_MaterialTools","Arch_Schedule","Arch_PipeTools","Draft_Facebinder",
                 "Part_Box","Part_Builder"]
+
+        # load rebar tools (Reinforcement addon)
+
+        try:
+            import RebarTools
+        except:
+            pass
+        else:
+            # create popup group for Rebar tools
+            class RebarGroupCommand:
+
+                def GetCommands(self):
+                    return tuple(RebarTools.RebarCommands+["Arch_Rebar"])
+
+                def GetResources(self):
+                    return { 'MenuText': 'Rebar tools',
+                             'ToolTip': 'Rebar tools'
+                           }
+
+                def IsActive(self):
+                    return not FreeCAD.ActiveDocument is None
+
+            FreeCADGui.addCommand('Arch_RebarTools', RebarGroupCommand())
+            arch[2] = "Arch_RebarTools"
 
         snap = ['Draft_Snap_Lock','Draft_Snap_Midpoint','Draft_Snap_Perpendicular',
                 'Draft_Snap_Grid','Draft_Snap_Intersection','Draft_Snap_Parallel',
@@ -108,7 +109,7 @@ static char * IFC_xpm[] = {
                   "Draft_Mirror","Part_Extrude","Part_Cut","Part_Fuse","Part_Common",
                   "Part_Compound","Part_SimpleCopy","Draft_Upgrade", "Draft_Downgrade", "Draft_Shape2DView",
                   "Draft_Draft2Sketch","Draft_Clone","Arch_CutPlane","Arch_Add","Arch_Remove"]
-                  
+
         manage = ["BIM_Setup","BIM_Project","BIM_Levels","BIM_Windows"]
 
         utils = ["BIM_TogglePanels","BIM_Trash",
@@ -213,8 +214,8 @@ static char * IFC_xpm[] = {
         Log("BIM workbench deactivated\n")
 
     def ContextMenu(self, recipient):
-        import bimcommands
-        self.appendContextMenu("","BIM_Trash")
+        import bimcommands,DraftTools
+        self.appendContextMenu("",["BIM_Trash","Draft_AddConstruction"])
 
     def GetClassName(self):
         return "Gui::PythonWorkbench"
