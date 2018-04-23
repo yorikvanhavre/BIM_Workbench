@@ -68,7 +68,7 @@ class BIM_Setup:
         linewidth = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/View").GetInt("DefautShapeLineWidth",2)
         form.settingLinewidth.setValue(linewidth)
         dimstyle = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").GetInt("dimsymbol",0)
-        dimstyle = [0,0,1,2][dimstyle] # less choices in our simplified dialog
+        dimstyle = [0,0,1,2,3][dimstyle] # less choices in our simplified dialog
         form.settingDimstyle.setCurrentIndex(dimstyle)
         asize = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").GetFloat("arrowsize",5)
         asize = FreeCAD.Units.Quantity(asize,FreeCAD.Units.Length).UserString
@@ -147,7 +147,7 @@ class BIM_Setup:
         FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").SetInt("linewidth",linewidth)
         # TODO - TechDraw default line styles
         dimstyle = form.settingDimstyle.currentIndex()
-        ddimstyle = [0,2,3][dimstyle] # less choices in our simplified dialog
+        ddimstyle = [0,2,3,4][dimstyle] # less choices in our simplified dialog
         FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").SetInt("dimsymbol",ddimstyle)
         tdimstyle = [3,0,2][dimstyle] # TechDraw has different order than Draft
         FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/TechDraw/Dimensions").SetInt("dimsymbol",tdimstyle)

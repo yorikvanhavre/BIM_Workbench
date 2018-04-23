@@ -168,6 +168,11 @@
          <string>slash</string>
         </property>
        </item>
+       <item>
+        <property name="text">
+         <string>thick slash</string>
+        </property>
+       </item>
       </widget>
      </item>
      <item row="6" column="0">

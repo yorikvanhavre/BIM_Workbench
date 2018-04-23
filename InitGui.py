@@ -73,6 +73,14 @@ static char * IFC_xpm[] = {
                 "Arch_Space","Arch_Stairs","Arch_PanelTools","Arch_Equipment","Arch_Frame",
                 "Arch_MaterialTools","Arch_Schedule","Arch_PipeTools","Draft_Facebinder",
                 "Part_Box","Part_Builder"]
+        
+        # Replace Floor with BuildingPart (v0.18)
+        try:
+            import ArchBuildingPart
+        except:
+            pass
+        else:
+            arch[3] = "Arch_BuildingPart"
 
         # load rebar tools (Reinforcement addon)
 
