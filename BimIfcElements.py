@@ -1,6 +1,6 @@
 #***************************************************************************
 #*                                                                         *
-#*   Copyright (c) 2017 Yorik van Havre <yorik@uncreated.net>              *
+#*   Copyright (c) 2018 Yorik van Havre <yorik@uncreated.net>              *
 #*                                                                         *
 #*   This program is free software; you can redistribute it and/or modify  *
 #*   it under the terms of the GNU Lesser General Public License (LGPL)    *
@@ -28,21 +28,21 @@ def QT_TRANSLATE_NOOP(ctx,txt): return txt # dummy function for the QT translato
 
 
 
-class BIM_Windows:
+class BIM_IfcElements:
 
 
     def GetResources(self):
 
-        return {'Pixmap'  : os.path.join(os.path.dirname(__file__),"icons","BIM_Windows.svg"),
-                'MenuText': QT_TRANSLATE_NOOP("BIM_Windows", "Manage doors and windows..."),
-                'ToolTip' : QT_TRANSLATE_NOOP("BIM_Levels", "Manage the different doors and windows of your BIM project")}
+        return {'Pixmap'  : os.path.join(os.path.dirname(__file__),"icons","BIM_IFC.svg"),
+                'MenuText': QT_TRANSLATE_NOOP("BIM_IfcElements", "Manage IFC elements..."),
+                'ToolTip' : QT_TRANSLATE_NOOP("BIM_IfcElements", "Manage how the different elements of of your BIM project will be exported to IFC")}
 
     def Activated(self):
-        FreeCADGui.Control.showDialog(BIM_Windows_TaskPanel())
+        FreeCADGui.Control.showDialog(BIM_IfcElements_TaskPanel())
 
 
 
-class BIM_Windows_TaskPanel:
+class BIM_IfcElements_TaskPanel:
 
 
     def __init__(self):
@@ -121,19 +121,8 @@ class BIM_Windows_TaskPanel:
                     it.setToolTip(0,window.Name)
                     top.addChild(it)
             self.form.windowsexpandAll()
-        wc = 0
-        dc = 0
-        for w in windows:
-            if hasattr(w,"IfcRole"):
-                r = w.IfcRole
-            else:
-                r = w.Role
-            if "Window" in r:
-                wc += 1
-            elif "Door" in r:
-                dc += 1
-        self.form.windowsCount.setText(str(wc))
-        self.form.doorsCount.setText(str(dc))
+        self.form.windowsCount.setText(str(len([w for w in windows if w.Role == "Window"])))
+        self.form.doorsCount.setText(str(len([w for w in windows if w.Role == "Door"])))
 
     def editWindow(self,item,column):
 
