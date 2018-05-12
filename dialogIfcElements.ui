@@ -6,14 +6,24 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>491</width>
-    <height>486</height>
+    <width>400</width>
+    <height>476</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QLabel" name="label_2">
+     <property name="text">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;This dialog lets you change the IFC type associated with any BIM object in this document. Double-click the IFC type to change, or use the drop-down menu below the list.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
@@ -24,13 +34,15 @@
       </widget>
      </item>
      <item>
-      <widget class="QComboBox" name="comboBox">
+      <widget class="QComboBox" name="groupMode">
        <item>
         <property name="text">
          <string>Alphabetical</string>
         </property>
         <property name="icon">
-         <iconset theme="format-text-direction-ltr"/>
+         <iconset theme="format-text-direction-ltr">
+          <normaloff/>
+         </iconset>
         </property>
        </item>
        <item>
@@ -38,7 +50,9 @@
          <string>IFC type</string>
         </property>
         <property name="icon">
-         <iconset theme="application-drawing"/>
+         <iconset theme="application-drawing">
+          <normaloff/>
+         </iconset>
         </property>
        </item>
       </widget>
@@ -46,16 +60,38 @@
     </layout>
    </item>
    <item>
-    <widget class="QTreeWidget" name="treeWidget">
-     <attribute name="headerVisible">
-      <bool>false</bool>
-     </attribute>
-     <column>
-      <property name="text">
-       <string notr="true">1</string>
-      </property>
-     </column>
+    <widget class="QCheckBox" name="onlyVisible">
+     <property name="text">
+      <string>only visible BIM objects</string>
+     </property>
     </widget>
+   </item>
+   <item>
+    <widget class="QTreeView" name="tree">
+     <property name="selectionMode">
+      <enum>QAbstractItemView::ExtendedSelection</enum>
+     </property>
+     <attribute name="headerDefaultSectionSize">
+      <number>250</number>
+     </attribute>
+     <attribute name="headerStretchLastSection">
+      <bool>true</bool>
+     </attribute>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <item>
+      <widget class="QLabel" name="label_3">
+       <property name="text">
+        <string>change selected objects to:</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="globalMode"/>
+     </item>
+    </layout>
    </item>
    <item>
     <widget class="QDialogButtonBox" name="buttonBox">

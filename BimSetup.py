@@ -34,7 +34,7 @@ class BIM_Setup:
     def GetResources(self):
 
         return {'Pixmap'  : ":icons/preferences-system.svg",
-                'MenuText': QT_TRANSLATE_NOOP("BIM_Setup", "BIM Setup"),
+                'MenuText': QT_TRANSLATE_NOOP("BIM_Setup", "BIM Setup..."),
                 'ToolTip' : QT_TRANSLATE_NOOP("BIM_Setup", "Set some common FreeCAD preferences for BIM workflow")}
 
     def Activated(self):

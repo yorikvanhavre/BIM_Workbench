@@ -23,6 +23,8 @@
 """This module contains FreeCAD commands for the BIM workbench"""
 
 import os,FreeCAD,FreeCADGui
+from PySide import QtCore,QtGui
+
 
 def QT_TRANSLATE_NOOP(ctx,txt): return txt # dummy function for the QT translator
 
@@ -33,207 +35,225 @@ class BIM_IfcElements:
 
     def GetResources(self):
 
-        return {'Pixmap'  : os.path.join(os.path.dirname(__file__),"icons","BIM_IFC.svg"),
+        return {'Pixmap'  : os.path.join(os.path.dirname(__file__),"icons","BIM_IfcElements.svg"),
                 'MenuText': QT_TRANSLATE_NOOP("BIM_IfcElements", "Manage IFC elements..."),
                 'ToolTip' : QT_TRANSLATE_NOOP("BIM_IfcElements", "Manage how the different elements of of your BIM project will be exported to IFC")}
+                
+    def IsActive(self):
+
+        if FreeCAD.ActiveDocument:
+            return True
+        else:
+            return False
 
     def Activated(self):
-        FreeCADGui.Control.showDialog(BIM_IfcElements_TaskPanel())
 
+        # build objects list
+        self.objectslist = {}
+        for obj in FreeCAD.ActiveDocument.Objects:
+            if hasattr(obj,"IfcRole"):
+                self.objectslist[obj.Name] = obj.IfcRole
+        import ArchComponent
+        self.ifcroles = ArchComponent.IfcRoles
 
-
-class BIM_IfcElements_TaskPanel:
-
-
-    def __init__(self):
-
-        from PySide import QtCore,QtGui
-        self.form = FreeCADGui.PySideUic.loadUi(os.path.join(os.path.dirname(__file__),"dialogWindows.ui"))
-        self.form.setWindowIcon(QtGui.QIcon(os.path.join(os.path.dirname(__file__),"icons","BIM_Windows.svg")))
+        # load the form and set the tree model up
+        self.form = FreeCADGui.PySideUic.loadUi(os.path.join(os.path.dirname(__file__),"dialogIfcElements.ui"))
+        self.form.setWindowIcon(QtGui.QIcon(os.path.join(os.path.dirname(__file__),"icons","BIM_IfcElements.svg")))
+        self.model = QtGui.QStandardItemModel()
+        self.form.tree.setModel(self.model)
+        self.form.tree.setUniformRowHeights(True)
+        self.form.tree.setItemDelegate(IfcElementsDelegate(dialog=self))
+        self.form.globalMode.addItems([" "]+self.ifcroles)
         QtCore.QObject.connect(self.form.groupMode, QtCore.SIGNAL("currentIndexChanged(int)"), self.update)
-        QtCore.QObject.connect(self.form.windows, QtCore.SIGNAL("itemClicked(QTreeWidgetItem *, int)"), self.editWindow)
-        QtCore.QObject.connect(self.form.windows, QtCore.SIGNAL("itemDoubleClicked(QTreeWidgetItem *, int)"), self.showWindow)
-        QtCore.QObject.connect(self.form.windowLabel, QtCore.SIGNAL("returnPressed()"), self.setLabel)
-        QtCore.QObject.connect(self.form.windowDescription, QtCore.SIGNAL("returnPressed()"), self.setDescription)
-        QtCore.QObject.connect(self.form.windowTag, QtCore.SIGNAL("returnPressed()"), self.setTag)
-        QtCore.QObject.connect(self.form.windowHeight, QtCore.SIGNAL("returnPressed()"), self.setHeight)
-        QtCore.QObject.connect(self.form.windowWidth, QtCore.SIGNAL("returnPressed()"), self.setWidth)
-        QtCore.QObject.connect(self.form.windowMaterial, QtCore.SIGNAL("clicked()"), self.setMaterial)
-        self.form.windows.header().setResizeMode(0,QtGui.QHeaderView.Stretch)
+        QtCore.QObject.connect(self.form.tree, QtCore.SIGNAL("clicked(QModelIndex)"), self.setGlobalMode)
+        QtCore.QObject.connect(self.form.onlyVisible, QtCore.SIGNAL("stateChanged(int)"), self.update)
+        QtCore.QObject.connect(self.form.buttonBox, QtCore.SIGNAL("accepted()"), self.accept)
+        QtCore.QObject.connect(self.form.globalMode, QtCore.SIGNAL("currentIndexChanged(int)"), self.getGlobalMode)
+
+
+        # center the dialog over FreeCAD window
+        mw = FreeCADGui.getMainWindow()
+        self.form.move(mw.frameGeometry().topLeft() + mw.rect().center() - self.form.rect().center())
+
         self.update()
-
-    def getStandardButtons(self):
-
-        from PySide import QtGui
-        return int(QtGui.QDialogButtonBox.Close)
-
-    def reject(self):
-
-        FreeCADGui.Control.closeDialog()
-        FreeCAD.ActiveDocument.recompute()
+        self.form.show()
 
     def update(self,index=None):
         
         import Draft,Arch_rc
-        from PySide import QtGui
-        self.form.windows.clear()
-        windows = [o for o in FreeCAD.ActiveDocument.Objects if Draft.getType(o) == "Window"]
-        if self.form.groupMode.currentIndex() == 0:
-            for window in windows:
-                s1 = window.Label
-                s2 = window.Tag
-                it = QtGui.QTreeWidgetItem([s1,s2])
-                it.setIcon(0,QtGui.QIcon(":/icons/Arch_Window_Tree.svg"))
-                it.setToolTip(0,window.Name)
-                self.form.windows.addTopLevelItem(it)
-        else:
+        
+        # store current state of tree into self.objectslist before redrawing
+        for row in range(self.model.rowCount()):
+            name = self.model.item(row,0).toolTip()
+            if name:
+                self.objectslist[name] = self.model.item(row,1).text()
+            if self.model.item(row,0).hasChildren():
+                for childrow in range(self.model.item(row,0).rowCount()):
+                    name = self.model.item(row,0).child(childrow,0).toolTip()
+                    if name:
+                        self.objectslist[name] = self.model.item(row,0).child(childrow,1).text()
+        self.model.clear()
+        self.model.setHorizontalHeaderLabels(["Name","IFC type"])
+        
+        if self.form.groupMode.currentIndex() == 1: # group by type
+    
             groups = {}
-            for window in windows:
-                group = None
-                if self.form.groupMode.currentIndex() == 1:
-                    group = window.Width.UserString + " x " + window.Height.UserString
-                elif self.form.groupMode.currentIndex() == 2:
-                    if window.CloneOf:
-                        group = window.CloneOf.Label
-                    else:
-                        group = window.Name
-                elif self.form.groupMode.currentIndex() == 3:
-                    group = window.Tag
-                else:
-                    if window.Material:
-                        group = window.Material.Label
-                if not group:
-                    group = "None"
-                if group in groups:
-                    groups[group].append(window)
-                else:
-                    groups[group] = [window]
+            for name,role in self.objectslist.items():
+                obj = FreeCAD.ActiveDocument.getObject(name)
+                if obj:
+                    if (not self.form.onlyVisible.isChecked()) or obj.ViewObject.isVisible():
+                        groups.setdefault(role,[]).append(name)
+
             for group in groups.keys():
-                s1 = group
-                top = QtGui.QTreeWidgetItem([s1,""])
-                top.setExpanded(True)
-                self.form.windows.addTopLevelItem(top)
-                for window in groups[group]:
-                    s1 = window.Label
-                    s2 = window.Tag
-                    it = QtGui.QTreeWidgetItem([s1,s2])
-                    it.setIcon(0,QtGui.QIcon(":/icons/Arch_Window_Tree.svg"))
-                    it.setToolTip(0,window.Name)
-                    top.addChild(it)
-            self.form.windowsexpandAll()
-        self.form.windowsCount.setText(str(len([w for w in windows if w.Role == "Window"])))
-        self.form.doorsCount.setText(str(len([w for w in windows if w.Role == "Door"])))
-
-    def editWindow(self,item,column):
-
-        if len(self.form.windows.selectedItems()) == 1:
-            # dont change the contents if we have more than one floor selected
-            window = FreeCAD.ActiveDocument.getObject(item.toolTip(0))
-            if window:
-                self.form.windowLabel.setText(window.Label)
-                self.form.windowDescription.setText(window.Description)
-                self.form.windowTag.setText(window.Tag)
-                self.form.windowWidth.setText(window.Width.UserString)
-                self.form.windowHeight.setText(window.Height.UserString)
-                if window.Material:
-                    self.form.windowMaterial.setText(window.Material.Label)
-        # select objects
-        FreeCADGui.Selection.clearSelection()
-        for item in self.form.windows.selectedItems():
-            o = FreeCAD.ActiveDocument.getObject(item.toolTip(0))
-            if o:
-                FreeCADGui.Selection.addSelection(o)
-
-    def showWindow(self,item,column):
-
-        window = FreeCAD.ActiveDocument.getObject(item.toolTip(0))
-        if window:
-            FreeCADGui.Selection.clearSelection()
-            FreeCADGui.Selection.addSelection(window)
-            FreeCADGui.SendMsgToActiveView("ViewSelection")
-
-    def setWidth(self):
-        
-        val = FreeCAD.Units.Quantity(self.form.windowWidth.text()).Value
-        if val:
-            for it in self.form.windows.selectedItems():
-                window = FreeCAD.ActiveDocument.getObject(it.toolTip(0))
-                if window:
-                    window.Width = val
-            self.update()
-
-    def setHeight(self):
-        
-        val = FreeCAD.Units.Quantity(self.form.windowHeight.text()).Value
-        if val:
-            for it in self.form.windows.selectedItems():
-                window = FreeCAD.ActiveDocument.getObject(it.toolTip(0))
-                if window:
-                    window.Height = val
-            self.update()
-
-    def setLabel(self):
-        
-        val = self.form.windowLabel.text()
-        if val:
-            for it in self.form.windows.selectedItems():
-                window = FreeCAD.ActiveDocument.getObject(it.toolTip(0))
-                if window:
-                    window.Label = val
-            self.update()
-
-    def setTag(self):
-        
-        for it in self.form.windows.selectedItems():
-            window = FreeCAD.ActiveDocument.getObject(it.toolTip(0))
-            if window:
-                window.Tag = self.form.windowTag.text()
-        self.update()
-
-    def setDescription(self):
-        
-        for it in self.form.windows.selectedItems():
-            window = FreeCAD.ActiveDocument.getObject(it.toolTip(0))
-            if window:
-                window.Description = self.form.windowDescription.text()
-        self.update()
-
-    def setMaterial(self):
-
-        import Draft,Arch_rc
-        from PySide import QtGui
-        form = FreeCADGui.PySideUic.loadUi(os.path.join(os.path.dirname(__file__),"dialogMaterialChooser.ui"))
-        mw = FreeCADGui.getMainWindow()
-        form.move(mw.frameGeometry().topLeft() + mw.rect().center() - form.rect().center())
-        materials = [o for o in FreeCAD.ActiveDocument.Objects if Draft.getType(o) == "Material"]
-        it = QtGui.QListWidgetItem("None")
-        it.setIcon(QtGui.QIcon(":/icons/button_invalid.svg"))
-        it.setToolTip("__None__")
-        form.list.addItem(it)
-        for mat in materials:
-            it = QtGui.QListWidgetItem(mat.Label)
-            it.setIcon(QtGui.QIcon(":/icons/Arch_Material.svg"))
-            it.setToolTip(mat.Name)
-            form.list.addItem(it)
-        result = form.exec_()
-        if result:
-            mat = None
-            sel = form.list.selectedItems()
-            if sel:
-                sel = sel[0]
-                if sel.toolTip() != "__None__":
-                    mat = FreeCAD.ActiveDocument.getObject(str(sel.toolTip()))
-                for it in self.form.windows.selectedItems():
-                    window = FreeCAD.ActiveDocument.getObject(it.toolTip(0))
-                    if window:
-                        if mat:
-                            window.Material = mat
+                s1 = group + " ("+str(len(groups[group]))+")"
+                top = QtGui.QStandardItem(s1)
+                self.model.appendRow([top,QtGui.QStandardItem()])
+                for name in groups[group]:
+                    obj = FreeCAD.ActiveDocument.getObject(name)
+                    if obj:
+                        it1 = QtGui.QStandardItem(obj.Label)
+                        if QtCore.QFileInfo(":/icons/Arch_"+obj.Proxy.Type+"_Tree.svg").exists():
+                            icon = QtGui.QIcon(":/icons/Arch_"+obj.Proxy.Type+"_Tree.svg")
                         else:
-                            window.Material = None
-                if mat:
-                    self.form.windowMaterial.setText(mat.Label)
-                self.update()
+                            icon = QtGui.QIcon(":/icons/Arch_Component.svg")
+                        it1.setIcon(icon)
+                        it1.setToolTip(obj.Name)
+                        it2 = QtGui.QStandardItem(group)
+                        if group != obj.IfcRole:
+                            it2.setIcon(QtGui.QIcon(":/icons/edit-edit.svg"))
+                        top.appendRow([it1,it2])
+                top.sortChildren(0)
+            self.form.tree.expandAll()
+
+        else: # alphabetic order
+
+            for name,role in self.objectslist.items():
+                obj = FreeCAD.ActiveDocument.getObject(name)
+                if obj:
+                    if (not self.form.onlyVisible.isChecked()) or obj.ViewObject.isVisible():
+                        it1 = QtGui.QStandardItem(obj.Label)
+                        if QtCore.QFileInfo(":/icons/Arch_"+obj.Proxy.Type+"_Tree.svg").exists():
+                            icon = QtGui.QIcon(":/icons/Arch_"+obj.Proxy.Type+"_Tree.svg")
+                        else:
+                            icon = QtGui.QIcon(":/icons/Arch_Component.svg")
+                        it1.setIcon(icon)
+                        it1.setToolTip(obj.Name)
+                        it2 = QtGui.QStandardItem(role)
+                        if role != obj.IfcRole:
+                            it2.setIcon(QtGui.QIcon(":/icons/edit-edit.svg"))
+                        self.model.appendRow([it1,it2])
+        
+        self.model.sort(0)
+
+    def setGlobalMode(self,index=None):
+
+        FreeCADGui.Selection.clearSelection()
+        sel = self.form.tree.selectedIndexes()
+        mode = None
+        for index in sel:
+            if index.column() == 0:
+                obj = FreeCAD.ActiveDocument.getObject(self.model.itemFromIndex(index).toolTip())
+                if obj:
+                    FreeCADGui.Selection.addSelection(obj)
+        for index in sel:
+            if index.column() == 1:
+                if index.data() in self.ifcroles:
+                    if mode:
+                        if index.data() != mode:
+                            mode = None
+                            break
+                    else:
+                        mode = index.data()
+        if mode:
+            self.form.globalMode.setCurrentIndex(self.ifcroles.index(mode)+1)
+        else:
+            self.form.globalMode.setCurrentIndex(0)
+
+    def getGlobalMode(self,index=-1):
+
+        changed = False
+        if index >= 1:
+            role = self.ifcroles[index-1]
+            sel = self.form.tree.selectedIndexes()
+            for index in sel:
+                if index.column() == 1:
+                    if role:
+                        if index.data() != role:
+                            self.model.setData(index, role)
+                            changed = True
+        if changed:
+            self.update()
+
+    def accept(self):
+
+        # get current state of tree
+        self.form.hide()
+        for row in range(self.model.rowCount()):
+            name = self.model.item(row,0).toolTip()
+            if name:
+                self.objectslist[name] = self.model.item(row,1).text()
+            if self.model.item(row,0).hasChildren():
+                for childrow in range(self.model.item(row,0).rowCount()):
+                    name = self.model.item(row,0).child(childrow,0).toolTip()
+                    if name:
+                        self.objectslist[name] = self.model.item(row,0).child(childrow,1).text()
+        changed = False
+        for name,role in self.objectslist.items():
+            obj = FreeCAD.ActiveDocument.getObject(name)
+            if obj:
+                if obj.IfcRole != role:
+                    if not changed:
+                        FreeCAD.ActiveDocument.openTransaction("Change IFC role")
+                        changed = True
+                    obj.IfcRole = role
+        if changed:
+            FreeCAD.ActiveDocument.commitTransaction()
+            FreeCAD.ActiveDocument.recompute()
 
 
+class IfcElementsDelegate(QtGui.QStyledItemDelegate):
 
-FreeCADGui.addCommand('BIM_Windows',BIM_Windows())
+
+    def __init__(self, parent=None, dialog=None, *args):
+
+        import ArchComponent
+        self.roles = ArchComponent.IfcRoles
+        self.dialog = dialog
+        QtGui.QStyledItemDelegate.__init__(self, parent, *args)
+
+    def createEditor(self,parent,option,index):
+
+        if index.column() == 1:
+            editor = QtGui.QComboBox(parent)
+        else:
+            editor = QtGui.QLineEdit(parent)
+        return editor
+
+    def setEditorData(self, editor, index):
+
+        if index.column() == 1:
+            idx = -1
+            editor.addItems(self.roles)
+            if index.data() in self.roles:
+                idx = self.roles.index(index.data())
+            editor.setCurrentIndex(idx)
+        else:
+            editor.setText(index.data())
+
+    def setModelData(self, editor, model, index):
+
+        if index.column() == 1:
+            if editor.currentIndex() == -1:
+                model.setData(index, "")
+            else:
+                model.setData(index,self.roles[editor.currentIndex()])
+        else:
+            model.setData(index,editor.text())
+            item = model.itemFromIndex(index)
+            obj = FreeCAD.ActiveDocument.getObject(item.toolTip())
+            if obj:
+                obj.Label = editor.text()
+        self.dialog.update()
+
+
+FreeCADGui.addCommand('BIM_IfcElements',BIM_IfcElements())
