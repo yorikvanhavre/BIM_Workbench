@@ -29,7 +29,7 @@ def QT_TRANSLATE_NOOP(ctx,txt): return txt # dummy function for the QT translato
 
 # import commands that are defined in their separate files
 
-import BimWelcome,BimSetup,BimProject,BimLevels,BimWindows,BimIfcElements
+import BimWelcome,BimSetup,BimProject,BimLevels,BimWindows,BimIfcElements,BimViews
 
 
 
@@ -88,53 +88,23 @@ class BIM_Trash:
             return False
 
 
-class BIM_Symbol:
-
-
-    def GetResources(self):
-
-        return {'Pixmap'  : os.path.join(os.path.dirname(__file__),"icons","BIM_Symbol.svg"),
-                'MenuText': QT_TRANSLATE_NOOP("BIM_Symbol", "Add symbol"),
-                'ToolTip' : QT_TRANSLATE_NOOP("BIM_Symbol", "Inserts a symbol object to the current document"),
-                'Accel': 'Shift+Del'}
-
-    def Activated(self):
-        self.symbol = None
-        FreeCADGui.Snapper.getPoint(callback=self.insert,extradlg=self.taskbox())
-
-    def taskbox(self):
-        from PySide import QtCore,QtGui
-        w = QtGui.QWidget()
-        w.setWindowTitle(translate("Arch","Symbol options", utf8_decode=True))
-        lay = QtGui.QVBoxLayout(w)
-        combo = QtGui.QComboBox()
-        for symbol in symbolShapes.keys():
-            combo.addItem(symbol)
-        lay.addWidget(combo)
-        QtCore.QObject.connect(combo,QtCore.SIGNAL("currentIndexChanged(int)"),self.setSymbol)
-        return w
-
-    def setSymbol(self,i):
-        if i >= 0:
-            self.symbol = symbolShapes[i]
-
-    def insert(self,point=None,obj=None):
-        if self.point and self.symbol:
-            makeSymbol(self.symbol,self.point)
-
-def makeSymbol(symbol,point):
-    points = [FreeCAD.Vector(p[0],p[1],0) for p in symbolShapes[symbol]]
-    points.append(points[0])
-    import Part
-    shape = Part.makePolygon(points)
-    shape = Part.Face(shape)
-    shape.show()
-
-
 
 FreeCADGui.addCommand('BIM_TogglePanels',BIM_TogglePanels())
 FreeCADGui.addCommand('BIM_Trash',BIM_Trash())
-FreeCADGui.addCommand('BIM_Symbol',BIM_Symbol())
+
+
+
+class BimSelectionObserver:
+    
+    "a multipurpose selection observer that stays active while in BIM workbench"
+
+    def addSelection(self,document, object, element, position):
+
+        BimViews.update()
+
+    def clearSelection(self,document):
+        
+        BimViews.update()
 
 
 
