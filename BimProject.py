@@ -77,7 +77,10 @@ class BIM_Project_TaskPanel:
             site.Address = self.form.siteAddress.text()
             site.Longitude = self.form.siteLongitude.value()
             site.Latitude = self.form.siteLatitude.value()
-            site.NorthDeviation = self.form.siteDeviation.value()
+            if hasattr(site,"NorthDeviation"):
+                site.NorthDeviation = self.form.siteDeviation.value()
+            if hasattr(site,"Declination"):
+                site.NorthDeviation = self.form.siteDeviation.value()
             site.Elevation = FreeCAD.Units.Quantity(self.form.siteElevation.text()).Value
         if self.form.groupBuilding.isChecked():
             building = Arch.makeBuilding()
@@ -134,7 +137,7 @@ class BIM_Project_TaskPanel:
                     axisH.setExpression('Placement.Base.x', outline.Name+'.Placement.Base.x + '+axisH.Name+'.Length * 0.945')
                     axisH.setExpression('Placement.Base.y', outline.Name+'.Placement.Base.y')
                     grp.addObject(axisH)
-            if self.form.countLevels.value() and levelHeight:                    
+            if self.form.countLevels.value() and levelHeight:
                 h = 0
                 alabels = []
                 for i in range(self.form.countLevels.value()):
@@ -230,7 +233,7 @@ class BIM_Project_TaskPanel:
             s += "lineWidth="+str(self.form.lineWidth.value())+"\n"
             s += "lineColor="+str(self.form.lineColor.property("color").getRgbF()[:3])+"\n"
             s += "groups="+";;".join(groups)+"\n"
-            
+
             s += "levelsWP="+str(int(self.form.levelsWP.isChecked()))+"\n"
             s += "levelsAxis="+str(int(self.form.levelsAxis.isChecked()))+"\n"
 

@@ -29,7 +29,7 @@
    <item>
     <widget class="QLabel" name="label_2">
      <property name="text">
-      <string>This appears to be the first time that you are using the BIM workbench. If you press OK, the next screen will propose you to set a couple of typical FreeCAD options that are suitable for BIM work. You can change these options anytime later under menu Utils -&gt; Setup, or access directly the complete FreeCAD preferences under menu Edit -&gt;Preferences.</string>
+      <string>This appears to be the first time that you are using the BIM workbench. If you press OK, the next screen will propose you to set a couple of typical FreeCAD options that are suitable for BIM work. You can change these options anytime later under menu Manage -&gt; Setup, or access directly the complete FreeCAD preferences under menu Edit -&gt;Preferences.</string>
      </property>
      <property name="wordWrap">
       <bool>true</bool>

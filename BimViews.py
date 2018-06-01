@@ -27,7 +27,6 @@ import os,FreeCAD,FreeCADGui
 def QT_TRANSLATE_NOOP(ctx,txt): return txt # dummy function for the QT translator
 
 
-
 class BIM_Views:
 
 
@@ -39,9 +38,7 @@ class BIM_Views:
 
     def Activated(self):
         from PySide import QtCore,QtGui
-        mw = FreeCADGui.getMainWindow()
-        combo = mw.findChild(QtGui.QDockWidget,"Combo View")
-        vm = combo.findChild(QtGui.QListWidget,"Views Manager")
+        vm = findWidget()
         if vm:
             if vm.isVisible():
                 vm.hide()
@@ -54,26 +51,41 @@ class BIM_Views:
             vm.setSortingEnabled(True)
             vm.setIconSize(QtCore.QSize(16,16))
             QtCore.QObject.connect(vm, QtCore.SIGNAL("itemDoubleClicked(QListWidgetItem*)"),show)
-            s = combo.findChild(QtGui.QSplitter)
-            s.addWidget(vm)
+            mw = FreeCADGui.getMainWindow()
+            combo = mw.findChild(QtGui.QDockWidget,"Combo View")
+            if combo:
+                s = combo.findChild(QtGui.QSplitter)
+                if s:
+                    s.addWidget(vm)
             update()
 
 
 FreeCADGui.addCommand('BIM_Views',BIM_Views())
 
 
-def update():
-
-    "updates the view manager"
+def findWidget():
+    
+    "finds the manager widget, if present"
 
     from PySide import QtGui
     mw = FreeCADGui.getMainWindow()
     combo = mw.findChild(QtGui.QDockWidget,"Combo View")
     vm = combo.findChild(QtGui.QListWidget,"Views Manager")
     if vm:
+        return vm
+    return None
+
+
+def update():
+
+    "updates the view manager"
+
+    vm = findWidget()
+    if vm:
         if vm.isVisible():
             vm.clear()
             import Draft
+            from PySide import QtGui
             for obj in FreeCAD.ActiveDocument.Objects:
                 if Draft.getType(obj) == "WorkingPlaneProxy":
                     it = QtGui.QListWidgetItem(vm)
