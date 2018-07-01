@@ -6,18 +6,18 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>476</height>
+    <width>337</width>
+    <height>489</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>IFC Elements Manager</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <widget class="QLabel" name="label_2">
      <property name="text">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;This dialog lets you change the IFC type associated with any BIM object in this document. Double-click the IFC type to change, or use the drop-down menu below the list.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;This dialog lets you change the IFC type or material associated with any BIM object in this document. Double-click the IFC type to change, or use the drop-down menu below the list.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="wordWrap">
       <bool>true</bool>
@@ -55,6 +55,11 @@
          </iconset>
         </property>
        </item>
+       <item>
+        <property name="text">
+         <string>Material</string>
+        </property>
+       </item>
       </widget>
      </item>
     </layout>
@@ -75,7 +80,7 @@
       <number>250</number>
      </attribute>
      <attribute name="headerStretchLastSection">
-      <bool>true</bool>
+      <bool>false</bool>
      </attribute>
     </widget>
    </item>
@@ -84,12 +89,26 @@
      <item>
       <widget class="QLabel" name="label_3">
        <property name="text">
-        <string>change selected objects to:</string>
+        <string>change type to:</string>
        </property>
       </widget>
      </item>
      <item>
       <widget class="QComboBox" name="globalMode"/>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_3">
+     <item>
+      <widget class="QLabel" name="label_4">
+       <property name="text">
+        <string>change material to:</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="globalMaterial"/>
      </item>
     </layout>
    </item>
