@@ -53,6 +53,8 @@ for i,pset in enumerate(psets):
         print "    Unable to retrieve ",pset,". Skipping..."
         failed.append(pset)
     psetdefs += p
+psetdefs = psetdefs.replace('<?xml version="1.0" encoding="utf-8"?>','')
+psetdefs = '<?xml version="1.0" encoding="utf-8"?>\n<Root>\n'+psetdefs+'</Root>'
 
 f = open("pset_definitions.xml","wb")
 f.write(psetdefs)

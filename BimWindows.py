@@ -120,7 +120,7 @@ class BIM_Windows_TaskPanel:
                     it.setIcon(0,QtGui.QIcon(":/icons/Arch_Window_Tree.svg"))
                     it.setToolTip(0,window.Name)
                     top.addChild(it)
-            self.form.windowsexpandAll()
+            self.form.windows.expandAll()
         wc = 0
         dc = 0
         for w in windows:
