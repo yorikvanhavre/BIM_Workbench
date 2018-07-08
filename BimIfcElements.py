@@ -68,6 +68,8 @@ class BIM_IfcElements:
         self.form.tree.setItemDelegate(IfcElementsDelegate(dialog=self))
         self.form.globalMode.addItems([" "]+self.ifcroles)
         self.form.groupMode.setItemIcon(2,QtGui.QIcon(":/icons/Arch_Material.svg"))
+        self.form.groupMode.setItemIcon(3,QtGui.QIcon(":/icons/Document.svg"))
+        self.form.buttonEdit.setIcon(QtGui.QIcon(":/icons/IFC.svg"))
         self.form.globalMaterial.addItem(" ")
         self.materials = []
         for o in FreeCAD.ActiveDocument.Objects:
@@ -80,6 +82,7 @@ class BIM_IfcElements:
         QtCore.QObject.connect(self.form.buttonBox, QtCore.SIGNAL("accepted()"), self.accept)
         QtCore.QObject.connect(self.form.globalMode, QtCore.SIGNAL("currentIndexChanged(int)"), self.getGlobalMode)
         QtCore.QObject.connect(self.form.globalMaterial, QtCore.SIGNAL("currentIndexChanged(int)"), self.getGlobalMaterial)
+        QtCore.QObject.connect(self.form.buttonEdit, QtCore.SIGNAL("clicked()"), self.editProperties)
 
 
         # center the dialog over FreeCAD window
@@ -154,6 +157,13 @@ class BIM_IfcElements:
                 top.sortChildren(0)
             self.form.tree.expandAll()
 
+            # span top levels
+            if self.form.groupMode.currentIndex() in [1,2]:
+                idx = self.model.invisibleRootItem().index()
+                for i in range(self.model.rowCount()):
+                    if self.model.item(i,0).hasChildren():
+                        self.form.tree.setFirstColumnSpanned(i, idx, True)
+
         elif self.form.groupMode.currentIndex() == 2: # group by material
 
             groups = {}
@@ -205,6 +215,88 @@ class BIM_IfcElements:
                                 it3.setIcon(QtGui.QIcon(":/icons/edit-edit.svg"))
                         top.appendRow([it1,it2,it3])
                 top.sortChildren(0)
+            self.form.tree.expandAll()
+
+            # span top levels
+            if self.form.groupMode.currentIndex() in [1,2]:
+                idx = self.model.invisibleRootItem().index()
+                for i in range(self.model.rowCount()):
+                    if self.model.item(i,0).hasChildren():
+                        self.form.tree.setFirstColumnSpanned(i, idx, True)
+                    
+        elif self.form.groupMode.currentIndex() == 3: # group by model structure
+
+            # order by hierarchy
+            def istop(obj):
+                for parent in obj.InList:
+                    if parent.Name in self.objectslist.keys():
+                        return False
+                return True
+                
+            rel = []
+            deps = []
+            for name in self.objectslist.keys():
+                obj = FreeCAD.ActiveDocument.getObject(name)
+                if obj:
+                    if istop(obj):
+                        rel.append(obj)
+                    else:
+                        deps.append(obj)
+            pa = 1
+            while deps:
+                for obj in rel:
+                    for child in obj.OutList:
+                        if child in deps:
+                            rel.append(child)
+                            deps.remove(child)
+                pa += 1
+                if pa == 10: # max 10 hierarchy levels, okay? Let's keep civilised
+                    rel.extend(deps)
+                    break
+            
+            #print "rel:",[o.Label for o in rel]
+            
+            done = {}
+            for obj in rel:
+                rolemat = self.objectslist[obj.Name]
+                role = rolemat[0]
+                mat = rolemat[1]
+
+                if (not self.form.onlyVisible.isChecked()) or obj.ViewObject.isVisible():
+                    it1 = QtGui.QStandardItem(obj.Label)
+                    if QtCore.QFileInfo(":/icons/Arch_"+obj.Proxy.Type+"_Tree.svg").exists():
+                        icon = QtGui.QIcon(":/icons/Arch_"+obj.Proxy.Type+"_Tree.svg")
+                    else:
+                        icon = QtGui.QIcon(":/icons/Arch_Component.svg")
+                    it1.setIcon(icon)
+                    it1.setToolTip(obj.Name)
+                    it2 = QtGui.QStandardItem(role)
+                    if role != obj.IfcRole:
+                        it2.setIcon(QtGui.QIcon(":/icons/edit-edit.svg"))
+                    matlabel = ""
+                    if mat:
+                        matobj = FreeCAD.ActiveDocument.getObject(mat)
+                        if matobj:
+                            matlabel = matobj.Label
+                    else:
+                        mat = ""
+                    it3 = QtGui.QStandardItem(matlabel)
+                    it3.setToolTip(mat)
+                    omat = ""
+                    if hasattr(obj,"Material") and obj.Material:
+                        omat = obj.Material.Name
+                        if omat != mat:
+                            it3.setIcon(QtGui.QIcon(":/icons/edit-edit.svg"))
+                    ok = False
+                    for par in obj.InList:
+                        if par.Name in done:
+                            done[par.Name].appendRow([it1,it2,it3])
+                            done[obj.Name] = it1
+                            ok = True
+                            break
+                    if not ok:
+                        self.model.appendRow([it1,it2,it3])
+                        done[obj.Name] = it1
             self.form.tree.expandAll()
 
         else: # alphabetic order
@@ -281,6 +373,10 @@ class BIM_IfcElements:
             self.form.globalMaterial.setCurrentIndex(self.materials.index(mat.Name)+1)
         else:
             self.form.globalMaterial.setCurrentIndex(0)
+        if len(sel) > 3:
+            self.form.buttonEdit.setEnabled(False)
+        else:
+            self.form.buttonEdit.setEnabled(True)
 
     def getGlobalMode(self,index=-1):
 
@@ -360,13 +456,24 @@ class BIM_IfcElements:
             FreeCAD.ActiveDocument.commitTransaction()
             FreeCAD.ActiveDocument.recompute()
 
+    def editProperties(self):
+
+        sel = self.form.tree.selectedIndexes()
+        if len(sel) <= 3:
+            obj = FreeCAD.ActiveDocument.getObject(self.model.itemFromIndex(sel[0]).toolTip())
+            if obj:
+                import ArchComponent
+                p = ArchComponent.ComponentTaskPanel()
+                p.obj = obj
+                p.editIfcProperties()
+
 
 class IfcElementsDelegate(QtGui.QStyledItemDelegate):
 
 
     def __init__(self, parent=None, dialog=None, *args):
 
-        import ArchComponent
+        import ArchComponent,Arch_rc
         self.roles = ArchComponent.IfcRoles
         self.mats = []
         self.matlabels = []
@@ -375,7 +482,21 @@ class IfcElementsDelegate(QtGui.QStyledItemDelegate):
                 self.mats.append(o.Name)
                 self.matlabels.append(o.Label)
         self.dialog = dialog
+        self.btn = QtGui.QPushButton()
+        self.btn.setIcon(QtGui.QIcon(":/icons/IFC.svg"))
+        self.btn.setText("")
         QtGui.QStyledItemDelegate.__init__(self, parent, *args)
+
+    def paint(self, painter, option, index):
+        # not used - ugly and fake!
+        if index.column() == 3:
+            self.btn.setGeometry(option.rect)
+            if option.state == QtGui.QStyle.State_Selected:
+                painter.fillRect(option.rect, option.palette.highlight())
+            p = QtGui.QPixmap.grabWidget(self.btn)
+            painter.drawPixmap(option.rect.x(),option.rect.y(),p)
+        else:
+            QtGui.QStyledItemDelegate.paint(self, painter, option, index)
 
     def createEditor(self,parent,option,index):
 
