@@ -79,8 +79,8 @@ class BIM_Project_TaskPanel:
             site.Latitude = self.form.siteLatitude.value()
             if hasattr(site,"NorthDeviation"):
                 site.NorthDeviation = self.form.siteDeviation.value()
-            if hasattr(site,"Declination"):
-                site.NorthDeviation = self.form.siteDeviation.value()
+            elif hasattr(site,"Declination"):
+                site.Declination = self.form.siteDeviation.value()
             site.Elevation = FreeCAD.Units.Quantity(self.form.siteElevation.text()).Value
         if self.form.groupBuilding.isChecked():
             building = Arch.makeBuilding()
