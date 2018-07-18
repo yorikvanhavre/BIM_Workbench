@@ -149,7 +149,7 @@ class BIM_Setup:
         dimstyle = form.settingDimstyle.currentIndex()
         ddimstyle = [0,2,3,4][dimstyle] # less choices in our simplified dialog
         FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").SetInt("dimsymbol",ddimstyle)
-        tdimstyle = [3,0,2][dimstyle] # TechDraw has different order than Draft
+        tdimstyle = [3,0,2,2][dimstyle] # TechDraw has different order than Draft
         FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/TechDraw/Dimensions").SetInt("dimsymbol",tdimstyle)
         asize = form.settingArrowsize.text()
         asize = FreeCAD.Units.Quantity(asize).Value
