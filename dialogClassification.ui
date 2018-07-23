@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>518</width>
-    <height>415</height>
+    <width>677</width>
+    <height>539</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -18,6 +18,12 @@
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
       <widget class="QGroupBox" name="groupBox">
+       <property name="maximumSize">
+        <size>
+         <width>260</width>
+         <height>16777215</height>
+        </size>
+       </property>
        <property name="title">
         <string>Materials</string>
        </property>
@@ -27,11 +33,14 @@
           <property name="horizontalScrollBarPolicy">
            <enum>Qt::ScrollBarAlwaysOff</enum>
           </property>
+          <property name="selectionMode">
+           <enum>QAbstractItemView::ExtendedSelection</enum>
+          </property>
           <property name="autoExpandDelay">
            <number>-1</number>
           </property>
           <attribute name="headerStretchLastSection">
-           <bool>false</bool>
+           <bool>true</bool>
           </attribute>
           <column>
            <property name="text">
@@ -49,31 +58,9 @@
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="buttonApply">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="minimumSize">
-        <size>
-         <width>16</width>
-         <height>0</height>
-        </size>
-       </property>
-       <property name="toolTip">
-        <string>Apply to selected materials</string>
-       </property>
-       <property name="text">
-        <string>&lt;</string>
-       </property>
-      </widget>
-     </item>
-     <item>
       <widget class="QGroupBox" name="groupBox_2">
        <property name="title">
-        <string>Classification</string>
+        <string>Available classification systems</string>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_3">
         <item>
@@ -82,7 +69,7 @@
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_2">
           <item>
-           <widget class="QLineEdit" name="lineEdit">
+           <widget class="QLineEdit" name="search">
             <property name="toolTip">
              <string>Search this classification system</string>
             </property>
@@ -105,6 +92,28 @@
           </column>
          </widget>
         </item>
+        <item>
+         <widget class="QPushButton" name="buttonApply">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>16</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="toolTip">
+           <string>Apply to selected materials</string>
+          </property>
+          <property name="text">
+           <string>&lt;&lt; Apply to selected</string>
+          </property>
+         </widget>
+        </item>
        </layout>
       </widget>
      </item>
@@ -113,9 +122,12 @@
    <item>
     <widget class="QLabel" name="labelDownload">
      <property name="text">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;XML files of several classification systems can be downloaded from &lt;a href=&quot;http://www.graphisoft.com/downloads/archicad/BIM_Data.html&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;http://www.graphisoft.com/downloads/archicad/BIM_Data.html&lt;/span&gt;&lt;/a&gt; and placed in&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;XML files of several classification systems can be downloaded from &lt;a href=&quot;http://www.graphisoft.com/downloads/archicad/BIM_Data.html&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;http://www.graphisoft.com/downloads/archicad/BIM_Data.html&lt;/span&gt;&lt;/a&gt; and placed in %s&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+     <property name="openExternalLinks">
       <bool>true</bool>
      </property>
     </widget>

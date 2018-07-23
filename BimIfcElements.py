@@ -42,6 +42,9 @@ class BIM_IfcElements:
     def IsActive(self):
 
         if FreeCAD.ActiveDocument:
+            # disable for pre-v0.18
+            if float(FreeCAD.Version()[0]+"."+FreeCAD.Version()[1]) < 0.18:
+                return False
             return True
         else:
             return False

@@ -24,7 +24,7 @@ from __future__ import print_function
 
 """This module contains FreeCAD commands for the BIM workbench"""
 
-import os,FreeCAD,FreeCADGui,Arch_rc,xml.sax
+import os,FreeCAD,FreeCADGui,Arch_rc
 from PySide import QtCore,QtGui
 
 
@@ -40,7 +40,7 @@ class BIM_Classification:
         return {'Pixmap'  : os.path.join(os.path.dirname(__file__),"icons","BIM_Classification.svg"),
                 'MenuText': QT_TRANSLATE_NOOP("BIM_Classification", "Manage Material classification..."),
                 'ToolTip' : QT_TRANSLATE_NOOP("BIM_Classification", "Manage how the different materials of this documents use classification systems")}
-                
+
     def IsActive(self):
 
         if FreeCAD.ActiveDocument:
@@ -56,10 +56,10 @@ class BIM_Classification:
 
         # load the form and set the tree model up
         self.form = FreeCADGui.PySideUic.loadUi(os.path.join(os.path.dirname(__file__),"dialogClassification.ui"))
-        self.form.setWindowIcon(QtGui.QIcon(os.path.join(os.path.dirname(__file__),"icons","BIM_IfcElements.svg")))
-        
+        self.form.setWindowIcon(QtGui.QIcon(os.path.join(os.path.dirname(__file__),"icons","BIM_Classification.svg")))
+
         # set help line
-        self.form.labelDownload.setText(self.form.labelDownload.text()+" "+os.path.join(FreeCAD.getUserAppDataDir(),"BIM","Classification"))
+        self.form.labelDownload.setText(self.form.labelDownload.text().replace("%s",os.path.join(FreeCAD.getUserAppDataDir(),"BIM","Classification")))
 
         # fill materials list
         for obj in FreeCAD.ActiveDocument.Objects:
@@ -67,14 +67,14 @@ class BIM_Classification:
                 s1 = obj.Label
                 s2 = ""
                 if "StandardCode" in obj.Material:
-                    s2 = obj.Material.StandardCode
+                    s2 = obj.Material["StandardCode"]
                 it = QtGui.QTreeWidgetItem([s1,s2])
                 it.setIcon(0,QtGui.QIcon(":/icons/Arch_Material.svg"))
                 it.setToolTip(0,obj.Name)
                 self.form.treeMaterials.addTopLevelItem(it)
-                if obj in Gui.Selection.getSelection():
+                if obj in FreeCADGui.Selection.getSelection():
                     self.form.treeMaterials.setCurrentItem(it)
-        
+
         # fill available classifications
         presetdir = os.path.join(FreeCAD.getUserAppDataDir(),"BIM","Classification")
         if os.path.isdir(presetdir):
@@ -85,7 +85,8 @@ class BIM_Classification:
         # connect signals
         QtCore.QObject.connect(self.form.comboSystem, QtCore.SIGNAL("currentIndexChanged(int)"), self.update)
         QtCore.QObject.connect(self.form.buttonApply, QtCore.SIGNAL("clicked()"), self.apply)
-        QtCore.QObject.connect(self.form.buttonApply, QtCore.SIGNAL("textEdited(QString)"), self.update)
+        QtCore.QObject.connect(self.form.search, QtCore.SIGNAL("textEdited(QString)"), self.update)
+        QtCore.QObject.connect(self.form.buttonBox, QtCore.SIGNAL("accepted()"), self.accept)
 
         # center the dialog over FreeCAD window
         mw = FreeCADGui.getMainWindow()
@@ -95,55 +96,96 @@ class BIM_Classification:
         self.form.show()
 
     def update(self,search=""):
-        
+
         self.form.treeClass.clear()
+
+        if isinstance(search,int):
+            search = ""
+        if self.form.search.text():
+            search = self.form.search.text()
+        if search:
+            search = search.lower()
 
         system = self.form.comboSystem.currentText()
         if not system:
             return
-        
+
         if not system in self.Classes:
             self.Classes[system] = self.build(system)
         if not self.Classes[system]:
             return
 
         for cl in self.Classes[system]:
-            top = self.form.treeClass.addTopLevelItem(c[0]+" "+cl[1])
+            it = None
+            if not cl[1]: cl[1] = ""
+            if search:
+                if (search in cl[0].lower()) or (search in cl[1].lower()):
+                    it = QtGui.QTreeWidgetItem([cl[0]+" "+cl[1]])
+                    self.form.treeClass.addTopLevelItem(it)
+            else:
+                it = QtGui.QTreeWidgetItem([cl[0]+" "+cl[1]])
+                self.form.treeClass.addTopLevelItem(it)
             if cl[2]:
-                self.addChildren(cl[2],top)
-        
-    def addChildren(self,children,parent):
-        
+                self.addChildren(cl[2],it,search)
+
+    def addChildren(self,children,parent,search=""):
+
         if children:
             for c in children:
-                top = parent.addChild(c[0]+" "+c[1])
+                it = None
+                if not c[1]: c[1] = ""
+                if search:
+                    if (search in c[0].lower()) or (search in c[1].lower()):
+                        it = QtGui.QTreeWidgetItem([c[0]+" "+c[1]])
+                        self.form.treeClass.addTopLevelItem(it)
+                else:
+                    it = QtGui.QTreeWidgetItem([c[0]+" "+c[1]])
+                    if parent:
+                        parent.addChild(it)
                 if c[2]:
-                    addChildren(c[2],top)
+                    self.addChildren(c[2],it,search)
 
     def build(self,system):
+        
+        # a replacement function to parse xml that doesn't depend on expat
 
-        print("Building tables for",system,"...")
         preset = os.path.join(FreeCAD.getUserAppDataDir(),"BIM","Classification",system+".xml")
         if not os.path.exists(preset):
             return None
-        handler = ClassHandler()
-        parser = xml.sax.make_parser()
-        parser.setContentHandler(handler)
-        parser.parse(preset)
-        return handler.classes
+        import codecs,re
+        d = Item(None)
+        with codecs.open(preset,"r","utf-8") as f:
+            currentItem = d
+            for l in f:
+                if "<Item>" in l:
+                    currentItem = Item(currentItem)
+                    currentItem.parent.children.append(currentItem)
+                if "</Item>" in l:
+                    currentItem = currentItem.parent
+                elif currentItem and re.findall("<ID>(.*?)</ID>",l):
+                    currentItem.ID = re.findall("<ID>(.*?)</ID>",l)[0]
+                elif currentItem and re.findall("<Name>(.*?)</Name>",l):
+                    currentItem.Name = re.findall("<Name>(.*?)</Name>",l)[0]
+                elif currentItem and re.findall("<Description>(.*?)</Description>",l) and not currentItem.Name:
+                    currentItem.Name = re.findall("<Description>(.*?)</Description>",l)[0]
+        return [self.listize(c) for c in d.children]
 
-    def buildOld(self,system):
+    def listize(self,item):
+        return [item.ID, item.Name, [self.listize(it) for it in item.children]]
 
-        print("Building tables for",system,"...")
+    def build_xmddom(self,system):
+
+        # currently not working for me because of the infamous expat/coin bug in debian...
+
         preset = os.path.join(FreeCAD.getUserAppDataDir(),"BIM","Classification",system+".xml")
         if not os.path.exists(preset):
             return None
         import xml.dom.minidom
         d = xml.dom.minidom.parse(preset)
         return self.getChildren(d.getElementsByTagName("Items")[0])
-            
+
     def getChildren(self,node):
-        
+
         children = []
         for child in node.childNodes:
             if child.hasChildNodes():
@@ -162,52 +204,47 @@ class BIM_Classification:
                     children.append([ID,name,children])
 
     def apply(self):
-        pass
+        
+        if self.form.treeMaterials.selectedItems() and len(self.form.treeClass.selectedItems()) == 1:
+            c = self.form.treeClass.selectedItems()[0].text(0)
+            for m in self.form.treeMaterials.selectedItems():
+                m.setText(1,c)
 
     def accept(self):
-        pass
-
-
-class ClassHandler(xml.sax.ContentHandler):
-
-    "A XML handler to process class definitions"
-
-    def __init__(self):
-
-        self.classes = []
-        self.currentparent = None
-        self.currentID = None
-        self.currentName = None
-        self.currentlist = []
-        self.charbuffer = []
-        self.writing = False
         
-    # Call when raw text is read
-    
-    def characters(self, data):
-        
-        if self.writing:
-            self.charbuffer.append(data)
+        root = self.form.treeMaterials.invisibleRootItem()
+        first = True
+        standard = self.form.comboSystem.currentText()
+        for i in range(root.childCount()):
+            item = root.child(i)
+            code = item.text(1)
+            if code:
+                obj = FreeCAD.ActiveDocument.getObject(item.toolTip(0))
+                if obj:
+                    if first:
+                        FreeCAD.ActiveDocument.openTransaction("Change material codes")
+                        first = False
+                    m = obj.Material
+                    m["StandardCode"] = standard+" "+code
+                    obj.Material = m
+                    if obj.ViewObject.isEditing():
+                        if hasattr(obj.ViewObject,"Proxy") and hasattr(obj.ViewObject.Proxy,"taskd"):
+                            obj.ViewObject.Proxy.taskd.form.FieldCode.setText(standard+" "+code)
+        if not first:
+            FreeCAD.ActiveDocument.commitTransaction()
+            FreeCAD.ActiveDocument.recompute()
+        self.form.hide()
+        return True
 
-    # Call when an element starts
+class Item:
 
-    def startElement(self, tag, attributes):
+    # only used by the non-expat version
 
-        if tag == "ID":
-            self.writing = True
-        if tag == "Name":
-            self.writing = True
-
-    # Call when an elements ends
-
-    def endElement(self, tag):
-
-        if tag == "ID":
-            self.writing = False
-            self.currentID = "".join(self.charbuffer)
-        elif tag == "Name":
-            self.writing = False
-            self.currentName = "".join(self.charbuffer)
+    def __init__(self,parent):
+        self.parent = parent
+        self.ID = None
+        self.Name = None
+        self.children = []
 
 
 FreeCADGui.addCommand('BIM_Classification',BIM_Classification())
