@@ -68,19 +68,25 @@ static char * IFC_xpm[] = {
                  "Draft_Point","Draft_Text", "Draft_ShapeString", "Draft_Dimension",
                  "Draft_Label"]
 
-        arch = ["Arch_Wall","Arch_Structure","Arch_Rebar","Arch_Floor","Arch_Building",
-                "Arch_Site", "Arch_Window","Arch_Roof","Arch_AxisTools", "Arch_SectionPlane",
-                "Arch_Space","Arch_Stairs","Arch_PanelTools","Arch_Equipment","Arch_Frame",
-                "Arch_MaterialTools","Arch_Schedule","Arch_PipeTools","Draft_Facebinder",
-                "Part_Box","Part_Builder"]
+        arch = ["Arch_Floor","Arch_Building","Arch_Site",
+                "Arch_Wall","Arch_Structure","Arch_Rebar","Arch_Window","Arch_PipeTools",
+                "Arch_Stairs","Arch_Roof","Arch_PanelTools","Arch_Equipment","Arch_Frame",
+                "Part_Box","Part_Builder","Draft_Facebinder","Arch_Space",
+                "Arch_AxisTools","Arch_SectionPlane","Arch_MaterialTools","Arch_Schedule"]
         
-        # Replace Floor with BuildingPart (v0.18)
+        # Support v0.18 tools
         try:
             import ArchBuildingPart
         except:
             pass
         else:
-            arch[3] = "Arch_BuildingPart"
+            arch[0] = "Arch_BuildingPart"
+        try:
+            import ArchReference
+        except:
+            pass
+        else:
+            arch.insert(4,"Arch_Reference")
 
         # load rebar tools (Reinforcement addon)
 
@@ -104,7 +110,7 @@ static char * IFC_xpm[] = {
                     return not FreeCAD.ActiveDocument is None
 
             FreeCADGui.addCommand('Arch_RebarTools', RebarGroupCommand())
-            arch[2] = "Arch_RebarTools"
+            arch[arch.index("Arch_Rebar")] = "Arch_RebarTools"
 
         snap = ['Draft_Snap_Lock','Draft_Snap_Midpoint','Draft_Snap_Perpendicular',
                 'Draft_Snap_Grid','Draft_Snap_Intersection','Draft_Snap_Parallel',
