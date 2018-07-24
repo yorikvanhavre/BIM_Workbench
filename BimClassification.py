@@ -76,15 +76,20 @@ class BIM_Classification:
                     self.form.treeMaterials.setCurrentItem(it)
 
         # fill available classifications
+        p = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Arch").GetString("DefaultClassificationSystem","")
         presetdir = os.path.join(FreeCAD.getUserAppDataDir(),"BIM","Classification")
         if os.path.isdir(presetdir):
             for f in os.listdir(presetdir):
                 if f.endswith(".xml"):
-                    self.form.comboSystem.addItem(os.path.splitext(f)[0])
+                    n = os.path.splitext(f)[0]
+                    self.form.comboSystem.addItem(n)
+                    if n == p:
+                        self.form.comboSystem.setCurrentIndex(self.form.comboSystem.count()-1)
 
         # connect signals
         QtCore.QObject.connect(self.form.comboSystem, QtCore.SIGNAL("currentIndexChanged(int)"), self.update)
         QtCore.QObject.connect(self.form.buttonApply, QtCore.SIGNAL("clicked()"), self.apply)
+        QtCore.QObject.connect(self.form.buttonRename, QtCore.SIGNAL("clicked()"), self.rename)
         QtCore.QObject.connect(self.form.search, QtCore.SIGNAL("textEdited(QString)"), self.update)
         QtCore.QObject.connect(self.form.buttonBox, QtCore.SIGNAL("accepted()"), self.accept)
 
@@ -98,6 +103,9 @@ class BIM_Classification:
     def update(self,search=""):
 
         self.form.treeClass.clear()
+        
+        # save as default
+        FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Arch").SetString("DefaultClassificationSystem",self.form.comboSystem.currentText())
 
         if isinstance(search,int):
             search = ""
@@ -115,18 +123,20 @@ class BIM_Classification:
         if not self.Classes[system]:
             return
 
-        for cl in self.Classes[system]:
+        for c in self.Classes[system]:
             it = None
-            if not cl[1]: cl[1] = ""
+            if not c[1]: c[1] = ""
             if search:
-                if (search in cl[0].lower()) or (search in cl[1].lower()):
-                    it = QtGui.QTreeWidgetItem([cl[0]+" "+cl[1]])
+                if (search in c[0].lower()) or (search in c[1].lower()):
+                    it = QtGui.QTreeWidgetItem([c[0]+" "+c[1]])
+                    it.setToolTip(0,c[1])
                     self.form.treeClass.addTopLevelItem(it)
             else:
-                it = QtGui.QTreeWidgetItem([cl[0]+" "+cl[1]])
+                it = QtGui.QTreeWidgetItem([c[0]+" "+c[1]])
+                it.setToolTip(0,c[1])
                 self.form.treeClass.addTopLevelItem(it)
-            if cl[2]:
-                self.addChildren(cl[2],it,search)
+            if c[2]:
+                self.addChildren(c[2],it,search)
 
     def addChildren(self,children,parent,search=""):
 
@@ -137,9 +147,11 @@ class BIM_Classification:
                 if search:
                     if (search in c[0].lower()) or (search in c[1].lower()):
                         it = QtGui.QTreeWidgetItem([c[0]+" "+c[1]])
+                        it.setToolTip(0,c[1])
                         self.form.treeClass.addTopLevelItem(it)
                 else:
                     it = QtGui.QTreeWidgetItem([c[0]+" "+c[1]])
+                    it.setToolTip(0,c[1])
                     if parent:
                         parent.addChild(it)
                 if c[2]:
@@ -210,6 +222,13 @@ class BIM_Classification:
             for m in self.form.treeMaterials.selectedItems():
                 m.setText(1,c)
 
+    def rename(self):
+        
+        if self.form.treeMaterials.selectedItems() and len(self.form.treeClass.selectedItems()) == 1:
+            c = self.form.treeClass.selectedItems()[0].toolTip(0)
+            for m in self.form.treeMaterials.selectedItems():
+                m.setText(0,c)
+
     def accept(self):
         
         root = self.form.treeMaterials.invisibleRootItem()
@@ -218,18 +237,26 @@ class BIM_Classification:
         for i in range(root.childCount()):
             item = root.child(i)
             code = item.text(1)
+            l = item.text(0)
             if code:
                 obj = FreeCAD.ActiveDocument.getObject(item.toolTip(0))
                 if obj:
-                    if first:
-                        FreeCAD.ActiveDocument.openTransaction("Change material codes")
-                        first = False
                     m = obj.Material
                     m["StandardCode"] = standard+" "+code
-                    obj.Material = m
+                    if m != obj.Material:
+                        if first:
+                            FreeCAD.ActiveDocument.openTransaction("Change material codes")
+                            first = False
+                        obj.Material = m
+                    if l != obj.Label:
+                        if first:
+                            FreeCAD.ActiveDocument.openTransaction("Change material codes")
+                            first = False
+                        obj.Label = l
                     if obj.ViewObject.isEditing():
                         if hasattr(obj.ViewObject,"Proxy") and hasattr(obj.ViewObject.Proxy,"taskd"):
                             obj.ViewObject.Proxy.taskd.form.FieldCode.setText(standard+" "+code)
+                            obj.ViewObject.Proxy.taskd.form.FieldName.setText(l)
         if not first:
             FreeCAD.ActiveDocument.commitTransaction()
             FreeCAD.ActiveDocument.recompute()

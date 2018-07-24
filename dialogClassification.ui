@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>677</width>
-    <height>539</height>
+    <width>623</width>
+    <height>544</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -64,7 +64,11 @@
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_3">
         <item>
-         <widget class="QComboBox" name="comboSystem"/>
+         <widget class="QComboBox" name="comboSystem">
+          <property name="toolTip">
+           <string>Classification systems found on this computer</string>
+          </property>
+         </widget>
         </item>
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_2">
@@ -93,26 +97,40 @@
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="buttonApply">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="minimumSize">
-           <size>
-            <width>16</width>
-            <height>0</height>
-           </size>
-          </property>
-          <property name="toolTip">
-           <string>Apply to selected materials</string>
-          </property>
-          <property name="text">
-           <string>&lt;&lt; Apply to selected</string>
-          </property>
-         </widget>
+         <layout class="QHBoxLayout" name="horizontalLayout_3">
+          <item>
+           <widget class="QPushButton" name="buttonApply">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>16</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="toolTip">
+             <string>Apply the selected class to selected materials</string>
+            </property>
+            <property name="text">
+             <string>&lt;&lt; Apply to selected</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="buttonRename">
+            <property name="toolTip">
+             <string>Use this class as material name</string>
+            </property>
+            <property name="text">
+             <string>&lt;&lt; Set as name</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </item>
        </layout>
       </widget>
