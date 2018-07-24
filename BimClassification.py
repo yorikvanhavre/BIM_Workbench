@@ -61,6 +61,13 @@ class BIM_Classification:
         # set help line
         self.form.labelDownload.setText(self.form.labelDownload.text().replace("%s",os.path.join(FreeCAD.getUserAppDataDir(),"BIM","Classification")))
 
+        # hide materials list if we are editing an object
+        if len(FreeCADGui.Selection.getSelection()) == 1:
+            if FreeCADGui.Selection.getSelection()[0].ViewObject.isEditing():
+                self.form.groupMaterials.hide()
+                self.form.buttonApply.hide()
+                self.form.buttonRename.hide()
+
         # fill materials list
         for obj in FreeCAD.ActiveDocument.Objects:
             if obj.isDerivedFrom("App::MaterialObject"):
@@ -103,7 +110,7 @@ class BIM_Classification:
     def update(self,search=""):
 
         self.form.treeClass.clear()
-        
+
         # save as default
         FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Arch").SetString("DefaultClassificationSystem",self.form.comboSystem.currentText())
 
@@ -158,7 +165,7 @@ class BIM_Classification:
                     self.addChildren(c[2],it,search)
 
     def build(self,system):
-        
+
         # a replacement function to parse xml that doesn't depend on expat
 
         preset = os.path.join(FreeCAD.getUserAppDataDir(),"BIM","Classification",system+".xml")
@@ -216,50 +223,63 @@ class BIM_Classification:
                     children.append([ID,name,children])
 
     def apply(self):
-        
+
         if self.form.treeMaterials.selectedItems() and len(self.form.treeClass.selectedItems()) == 1:
             c = self.form.treeClass.selectedItems()[0].text(0)
             for m in self.form.treeMaterials.selectedItems():
                 m.setText(1,c)
 
     def rename(self):
-        
+
         if self.form.treeMaterials.selectedItems() and len(self.form.treeClass.selectedItems()) == 1:
             c = self.form.treeClass.selectedItems()[0].toolTip(0)
             for m in self.form.treeMaterials.selectedItems():
                 m.setText(0,c)
 
     def accept(self):
-        
-        root = self.form.treeMaterials.invisibleRootItem()
-        first = True
+
         standard = self.form.comboSystem.currentText()
-        for i in range(root.childCount()):
-            item = root.child(i)
-            code = item.text(1)
-            l = item.text(0)
-            if code:
-                obj = FreeCAD.ActiveDocument.getObject(item.toolTip(0))
-                if obj:
-                    m = obj.Material
-                    m["StandardCode"] = standard+" "+code
-                    if m != obj.Material:
-                        if first:
-                            FreeCAD.ActiveDocument.openTransaction("Change material codes")
-                            first = False
-                        obj.Material = m
-                    if l != obj.Label:
-                        if first:
-                            FreeCAD.ActiveDocument.openTransaction("Change material codes")
-                            first = False
-                        obj.Label = l
+        if self.form.groupMaterials.isVisible():
+            root = self.form.treeMaterials.invisibleRootItem()
+            first = True
+            for i in range(root.childCount()):
+                item = root.child(i)
+                code = item.text(1)
+                l = item.text(0)
+                if code:
+                    obj = FreeCAD.ActiveDocument.getObject(item.toolTip(0))
+                    if obj:
+                        m = obj.Material
+                        m["StandardCode"] = standard+" "+code
+                        if m != obj.Material:
+                            if first:
+                                FreeCAD.ActiveDocument.openTransaction("Change material codes")
+                                first = False
+                            obj.Material = m
+                        if l != obj.Label:
+                            if first:
+                                FreeCAD.ActiveDocument.openTransaction("Change material codes")
+                                first = False
+                            obj.Label = l
+                        if obj.ViewObject.isEditing():
+                            if hasattr(obj.ViewObject,"Proxy") and hasattr(obj.ViewObject.Proxy,"taskd"):
+                                obj.ViewObject.Proxy.taskd.form.FieldCode.setText(standard+" "+code)
+                                obj.ViewObject.Proxy.taskd.form.FieldName.setText(l)
+            if not first:
+                FreeCAD.ActiveDocument.commitTransaction()
+                FreeCAD.ActiveDocument.recompute()
+        else:
+            if len(self.form.treeClass.selectedItems()) == 1:
+                code = self.form.treeClass.selectedItems()[0].text(0)
+                if len(FreeCADGui.Selection.getSelection()) == 1:
+                    obj = FreeCADGui.Selection.getSelection()[0]
                     if obj.ViewObject.isEditing():
-                        if hasattr(obj.ViewObject,"Proxy") and hasattr(obj.ViewObject.Proxy,"taskd"):
-                            obj.ViewObject.Proxy.taskd.form.FieldCode.setText(standard+" "+code)
-                            obj.ViewObject.Proxy.taskd.form.FieldName.setText(l)
-        if not first:
-            FreeCAD.ActiveDocument.commitTransaction()
-            FreeCAD.ActiveDocument.recompute()
+                        if obj.isDerivedFrom("App::MaterialObject"):
+                            if hasattr(obj.ViewObject,"Proxy") and hasattr(obj.ViewObject.Proxy,"taskd"):
+                                obj.ViewObject.Proxy.taskd.form.FieldCode.setText(standard+" "+code)
+                                obj.ViewObject.Proxy.taskd.form.FieldName.setText(l)
+                        elif hasattr(obj,"StandardCode"):
+                            obj.StandardCode = standard+" "+code
         self.form.hide()
         return True
 
