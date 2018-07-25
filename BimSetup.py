@@ -93,6 +93,10 @@ class BIM_Setup:
         form.colorButtonFaces.setProperty("color",getPrefColor(colFace))
         colLine = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/View").GetUnsigned("DefaultShapeLineColor",255)
         form.colorButtonLines.setProperty("color",getPrefColor(colLine))
+        colHelp = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Arch").GetUnsigned("ColorHelpers",674321151)
+        form.colorButtonHelpers.setProperty("color",getPrefColor(colHelp))
+        colConst = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").GetUnsigned("constructioncolor",746455039)
+        form.colorButtonConstruction.setProperty("color",getPrefColor(colConst))
         
         # check missing addons
         form.labelMissingWorkbenches.hide()
@@ -173,6 +177,10 @@ class BIM_Setup:
         FreeCAD.ParamGet("User parameter:BaseApp/Preferences/View").SetUnsigned("DefaultShapeColor",form.colorButtonFaces.property("color").rgb()<<8)
         FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").SetUnsigned("color",form.colorButtonFaces.property("color").rgb()<<8)
         FreeCAD.ParamGet("User parameter:BaseApp/Preferences/View").SetUnsigned("DefaultShapeLineColor",form.colorButtonLines.property("color").rgb()<<8)
+        FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Arch").SetUnsigned("ColorHelpers",form.colorButtonHelpers.property("color").rgb()<<8)
+        FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").SetUnsigned("constructioncolor",form.colorButtonConstruction.property("color").rgb()<<8)
+        FreeCAD.ParamGet("User parameter:BaseApp/Preferences/View").SetUnsigned("ConstructionColor",form.colorButtonConstruction.property("color").rgb()<<8)
+
 
         # set the working plane
         if hasattr(FreeCAD,"DraftWorkingPlane") and hasattr(FreeCADGui,"draftToolBar"):
