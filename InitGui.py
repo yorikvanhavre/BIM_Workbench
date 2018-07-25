@@ -120,7 +120,7 @@ static char * IFC_xpm[] = {
                 'Draft_Snap_Extension','Draft_Snap_Near','Draft_Snap_Ortho',
                 'Draft_Snap_Special','Draft_Snap_Dimensions','Draft_Snap_WorkingPlane']
 
-        modify = ["Draft_Move","Draft_Rotate","Draft_Offset", "Part_Offset2D", "Draft_Trimex",
+        modify = ["Draft_Move","BIM_Copy","Draft_Rotate","Draft_Offset", "Part_Offset2D", "Draft_Trimex",
                   "Draft_Scale","Draft_Stretch","Draft_Array","Draft_PathArray",
                   "Draft_Mirror","Part_Extrude","Part_Cut","Part_Fuse","Part_Common",
                   "Part_Compound","Part_SimpleCopy","Draft_Upgrade", "Draft_Downgrade", "Draft_Shape2DView",

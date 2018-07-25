@@ -22,7 +22,7 @@
 
 """This module contains FreeCAD commands for the BIM workbench"""
 
-import os,FreeCAD,FreeCADGui
+import os,FreeCAD,FreeCADGui,DraftTools
 
 def QT_TRANSLATE_NOOP(ctx,txt): return txt # dummy function for the QT translator
 
@@ -89,9 +89,26 @@ class BIM_Trash:
 
 
 
+class BIM_Copy(DraftTools.Move):
+
+
+    def __init__(self):
+        DraftTools.Move.__init__(self)
+        self.copymode = True
+
+    def GetResources(self):
+
+        return {'Pixmap'  : os.path.join(os.path.dirname(__file__),"icons","BIM_Copy.svg"),
+                'MenuText': QT_TRANSLATE_NOOP("BIM_Copy", "Copy"),
+                'ToolTip' : QT_TRANSLATE_NOOP("BIM_TogglePanels", "Copies selected objects to another location"),
+                'Accel': 'C,P'}
+
+
+
+
 FreeCADGui.addCommand('BIM_TogglePanels',BIM_TogglePanels())
 FreeCADGui.addCommand('BIM_Trash',BIM_Trash())
-
+FreeCADGui.addCommand('BIM_Copy',BIM_Copy())
 
 
 class BimSelectionObserver:
