@@ -22,6 +22,7 @@
 
 
 # main workbench class
+
 class BIMWorkbench(Workbench):
 
 
@@ -73,8 +74,9 @@ static char * IFC_xpm[] = {
                 "Arch_Stairs","Arch_Roof","Arch_PanelTools","Arch_Equipment","Arch_Frame",
                 "Part_Box","Part_Builder","Draft_Facebinder","Arch_Space",
                 "Arch_AxisTools","Arch_SectionPlane","Arch_MaterialTools","Arch_Schedule"]
-        
+
         # Support v0.18 tools
+
         try:
             import ArchBuildingPart
         except:
@@ -190,6 +192,16 @@ static char * IFC_xpm[] = {
         self.appendMenu(QT_TRANSLATE_NOOP("BIM","&Manage"),manage)
         self.appendMenu(QT_TRANSLATE_NOOP("BIM","&Utils"),utils)
         self.appendMenu("&Help",["BIM_Welcome"])
+
+        # load Arch & Draft preference pages
+
+        import Draft_rc,Arch_rc
+        FreeCADGui.addPreferencePage(":/ui/preferences-arch.ui","Arch")
+        FreeCADGui.addPreferencePage(":/ui/preferences-archdefaults.ui","Arch")
+        FreeCADGui.addPreferencePage(":/ui/preferences-draft.ui","Draft")
+        FreeCADGui.addPreferencePage(":/ui/preferences-draftsnap.ui","Draft")
+        FreeCADGui.addPreferencePage(":/ui/preferences-draftvisual.ui","Draft")
+        FreeCADGui.addPreferencePage(":/ui/preferences-drafttexts.ui","Draft")
 
         Log ('Loading BIM module... done\n')
 
