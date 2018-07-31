@@ -105,10 +105,18 @@ class BIM_Copy(DraftTools.Move):
 
 
 
+class BIM_Clone(DraftTools.Draft_Clone):
+
+
+    def __init__(self):
+        DraftTools.Draft_Clone.__init__(self)
+        self.moveAfterCloning = True
+
 
 FreeCADGui.addCommand('BIM_TogglePanels',BIM_TogglePanels())
 FreeCADGui.addCommand('BIM_Trash',BIM_Trash())
 FreeCADGui.addCommand('BIM_Copy',BIM_Copy())
+FreeCADGui.addCommand('BIM_Clone',BIM_Clone())
 
 
 class BimSelectionObserver:

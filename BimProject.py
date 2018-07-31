@@ -109,6 +109,7 @@ class BIM_Project_TaskPanel:
                     outtext.Label = "Building Label"
                     outtext.ViewObject.TextColor = color
                     grp.addObject(outtext)
+            axisV = None
             if self.form.countVAxes.value() and distVAxes:
                 axisV = Arch.makeAxis(num = self.form.countVAxes.value(), size = distVAxes, name="vaxis")
                 axisV.Label = "Vertical Axes"
@@ -121,7 +122,7 @@ class BIM_Project_TaskPanel:
                     axisV.setExpression('Length', outline.Name+'.Height * 1.1')
                     axisV.setExpression('Placement.Base.y', outline.Name+'.Placement.Base.y - '+axisV.Name+'.Length * 0.05')
                     axisV.setExpression('Placement.Base.x', outline.Name+'.Placement.Base.x')
-                    grp.addObject(axisV)
+            axisH = None
             if self.form.countHAxes.value() and distHAxes:
                 axisH = Arch.makeAxis(num = self.form.countHAxes.value(), size = distHAxes, name="haxis")
                 axisH.Label = "Horizontal Axes"
@@ -136,6 +137,14 @@ class BIM_Project_TaskPanel:
                     axisH.setExpression('Length', outline.Name+'.Length * 1.1')
                     axisH.setExpression('Placement.Base.x', outline.Name+'.Placement.Base.x + '+axisH.Name+'.Length * 0.945')
                     axisH.setExpression('Placement.Base.y', outline.Name+'.Placement.Base.y')
+            if axisV and axisH:
+                axisG = Arch.makeAxisSystem([axisH,axisV])
+                axisG.Label = "Axes"
+                grp.addObject(axisG)
+            else:
+                if axisV:
+                    grp.addObject(axisV)
+                if axisH:
                     grp.addObject(axisH)
             if self.form.countLevels.value() and levelHeight:
                 h = 0
