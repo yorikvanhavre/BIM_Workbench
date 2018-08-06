@@ -32,6 +32,7 @@ def QT_TRANSLATE_NOOP(ctx,txt): return txt # dummy function for the QT translato
 import BimWelcome,BimSetup,BimProject,BimLevels,BimWindows,BimIfcElements,BimViews,BimClassification
 
 
+# additional, smaller commands that are defined directly in this file
 
 class BIM_TogglePanels:
 
@@ -119,42 +120,104 @@ FreeCADGui.addCommand('BIM_Copy',BIM_Copy())
 FreeCADGui.addCommand('BIM_Clone',BIM_Clone())
 
 
-class BimSelectionObserver:
+
+# Selection observer
+
+
+class BimDocumentObserver:
+
+    "a multipurpose document observer that stays active while in BIM workbench and can trigger things"
     
-    "a multipurpose selection observer that stays active while in BIM workbench"
+    def __init__(self):
 
-    def addSelection(self,document, object, element, position):
+        import AddonManager
+        self.check_worker = AddonManager.CheckWBWorker([["BIM","https://github.com/yorikvanhavre/BIM_Workbench",1]])
+        self.check_worker.mark.connect(self.slotUpdateAvailable)
+        self.check_worker.start()
+
+    def slotChangedObject(self,obj,prop):
 
         BimViews.update()
 
-    def clearSelection(self,document):
-        
-        BimViews.update()
+    def slotActivateDocument(self,doc):
 
+        mw = FreeCADGui.getMainWindow()
+        if mw:
+            st = mw.statusBar()
+            from PySide import QtCore,QtGui
+            statuswidget = st.findChild(QtGui.QToolBar,"BIMStatusWidget")
+            if statuswidget:
+                unitLabel = statuswidget.findChild(QtGui.QLabel,"UnitLabel")
+                if unitLabel:
+                    unit = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Units").GetInt("UserSchema",0)
+                    unitLabel.setText(["Millimeters","Meters","Imperial","Inches","Centimeters","Architectural","Millimeters"][unit])
+
+    def slotDeletedDocument(self,doc):
+
+        pass
+
+    def slotUpdateAvailable(self,txt):
+
+        "triggered if an update is available"
+    
+        mw = FreeCADGui.getMainWindow()
+        if mw:
+            st = mw.statusBar()
+            from PySide import QtCore,QtGui
+            statuswidget = st.findChild(QtGui.QToolBar,"BIMStatusWidget")
+            if statuswidget:
+                updatebutton = statuswidget.findChild(QtGui.QPushButton,"UpdateButton")
+                if updatebutton:
+                    updatebutton.show()
+
+
+# Status bar buttons
 
 
 def setStatusIcons(show=True):
 
     "shows or hides the BIM icons in the status bar"
 
-    def toggle(): FreeCADGui.runCommand("BIM_TogglePanels")
+    def toggle():   FreeCADGui.runCommand("BIM_TogglePanels")
+    def addonMgr(): FreeCADGui.runCommand("Std_AddonMgr")
 
     mw = FreeCADGui.getMainWindow()
     if mw:
         st = mw.statusBar()
         from PySide import QtCore,QtGui
-        statuswidget = st.findChild(QtGui.QPushButton,"BIMStatusWidget")
+        statuswidget = st.findChild(QtGui.QToolBar,"BIMStatusWidget")
         if show:
             if statuswidget:
                 statuswidget.show()
             else:
-                statuswidget = QtGui.QPushButton()
-                statuswidget.setIcon(QtGui.QIcon(os.path.join(os.path.dirname(__file__),"icons","BIM_TogglePanels.svg")))
-                statuswidget.setText("")
-                statuswidget.setToolTip("Toggle report panels on/off")
+                statuswidget = QtGui.QToolBar()
                 statuswidget.setObjectName("BIMStatusWidget")
-                QtCore.QObject.connect(statuswidget,QtCore.SIGNAL("pressed()"),toggle)
+                unitLabel = QtGui.QLabel()
+                unitLabel.setObjectName("UnitLabel")
+                unit = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Units").GetInt("UserSchema",0)
+                unitLabel.setText(["Millimeters","Meters","Imperial","Inches","Centimeters","Architectural","Millimeters"][unit])
+                statuswidget.addWidget(unitLabel)
                 st.addPermanentWidget(statuswidget)
+                togglebutton = QtGui.QPushButton()
+                bwidth = togglebutton.fontMetrics().boundingRect("AAAA").width()
+                togglebutton.setMaximumWidth(bwidth)
+                togglebutton.setIcon(QtGui.QIcon(os.path.join(os.path.dirname(__file__),"icons","BIM_TogglePanels.svg")))
+                togglebutton.setText("")
+                togglebutton.setToolTip("Toggle report panels on/off")
+                togglebutton.setFlat(True)
+                QtCore.QObject.connect(togglebutton,QtCore.SIGNAL("pressed()"),toggle)
+                statuswidget.addWidget(togglebutton)
+                updatebutton = QtGui.QPushButton()
+                updatebutton.setObjectName("UpdateButton")
+                updatebutton.setMaximumWidth(bwidth)
+                updatebutton.setIcon(QtGui.QIcon(":/icons/view-refresh.svg"))
+                updatebutton.setText("")
+                updatebutton.setToolTip("An update to the BIM workbench is available. Click here to open the addons manager.")
+                updatebutton.setFlat(True)
+                QtCore.QObject.connect(updatebutton,QtCore.SIGNAL("pressed()"),addonMgr)
+                updatebutton.hide()
+                statuswidget.addWidget(updatebutton)
         else:
             if statuswidget:
                 statuswidget.hide()
+

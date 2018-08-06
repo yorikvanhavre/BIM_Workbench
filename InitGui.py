@@ -62,7 +62,11 @@ static char * IFC_xpm[] = {
 
     def Initialize(self):
 
-        import DraftTools, Arch, bimcommands, PartGui
+        # All BIM commands are specified either in BimCommands.py, or
+        # in separate files (BimSetup.py, BimProject.py...) that are imported in BimCommands.
+        # So importing BimCommands is all that is needed to get all the commands.
+
+        import DraftTools, Arch, BimCommands, PartGui
 
         draft = ["Draft_Line","Draft_Wire","Draft_Circle","Draft_Arc","Draft_Ellipse",
                  "Draft_Polygon","Draft_Rectangle", "Draft_BSpline", "Draft_BezCurve",
@@ -213,14 +217,14 @@ static char * IFC_xpm[] = {
         if hasattr(FreeCADGui,"Snapper"):
             FreeCADGui.Snapper.show()
         from DraftGui import todo
-        import bimcommands
+        import BimCommands
         if FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM").GetBool("FirstTime",True):
             todo.delay(FreeCADGui.runCommand,"BIM_Welcome")
-        todo.delay(bimcommands.setStatusIcons,True)
-        if not hasattr(FreeCADGui,"BimSelectionObserver"):
-            FreeCADGui.BimSelectionObserver = bimcommands.BimSelectionObserver()
-            FreeCADGui.Selection.addObserver(FreeCADGui.BimSelectionObserver)
-            Log("Adding FreeCADGui.BimSelectionObserver\n")
+        todo.delay(BimCommands.setStatusIcons,True)
+        if not hasattr(FreeCAD,"BimDocumentObserver"):
+            FreeCAD.BimDocumentObserver = BimCommands.BimDocumentObserver()
+            FreeCAD.addDocumentObserver(FreeCAD.BimDocumentObserver)
+            Log("Adding FreeCAD.BimDocumentObserver\n")
 
         Log("BIM workbench activated\n")
 
@@ -231,17 +235,17 @@ static char * IFC_xpm[] = {
             FreeCADGui.draftToolBar.Deactivated()
         if hasattr(FreeCADGui,"Snapper"):
             FreeCADGui.Snapper.hide()
-        import bimcommands
-        bimcommands.setStatusIcons(False)
-        if hasattr(FreeCADGui,"BimSelectionObserver"):
-            FreeCADGui.Selection.removeObserver(FreeCADGui.BimSelectionObserver)
-            del FreeCADGui.BimSelectionObserver
-            Log("Removing FreeCADGui.BimSelectionObserver\n")
+        import BimCommands
+        BimCommands.setStatusIcons(False)
+        if hasattr(FreeCAD,"BimDocumentObserver"):
+            FreeCAD.removeDocumentObserver(FreeCAD.BimDocumentObserver)
+            del FreeCAD.BimDocumentObserver
+            Log("Removing FreeCAD.BimDocumentObserver\n")
 
         Log("BIM workbench deactivated\n")
 
     def ContextMenu(self, recipient):
-        import bimcommands,DraftTools
+        import BimCommands,DraftTools
         self.appendContextMenu("",["BIM_Trash","Draft_AddConstruction"])
 
     def GetClassName(self):
