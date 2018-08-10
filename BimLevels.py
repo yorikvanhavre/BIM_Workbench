@@ -79,7 +79,7 @@ class BIM_Levels_TaskPanel:
         import Draft,Arch_rc
         from PySide import QtGui
         self.form.levels.clear()
-        levels = [o for o in FreeCAD.ActiveDocument.Objects if (Draft.getType(o) == "Floor")]
+        levels = [o for o in FreeCAD.ActiveDocument.Objects if ( (Draft.getType(o) == "Floor") or ( (Draft.getType(o) == "BuildingPart") and (o.IfcRole in ["Building Storey","Undefined"])))]
         for level in levels:
             s1 = level.Label
             s2 = FreeCAD.Units.Quantity(level.Placement.Base.z,FreeCAD.Units.Length).UserString
