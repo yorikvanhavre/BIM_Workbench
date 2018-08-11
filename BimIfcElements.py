@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 #***************************************************************************
 #*                                                                         *
 #*   Copyright (c) 2018 Yorik van Havre <yorik@uncreated.net>              *
@@ -28,7 +30,7 @@ from PySide import QtCore,QtGui
 
 def QT_TRANSLATE_NOOP(ctx,txt): return txt # dummy function for the QT translator
 
-
+qprops = ["Length","Width","Height","Area","HorizontalArea","VerticalArea","Volume"]
 
 class BIM_IfcElements:
 
@@ -38,7 +40,7 @@ class BIM_IfcElements:
         return {'Pixmap'  : os.path.join(os.path.dirname(__file__),"icons","BIM_IfcElements.svg"),
                 'MenuText': QT_TRANSLATE_NOOP("BIM_IfcElements", "Manage IFC elements..."),
                 'ToolTip' : QT_TRANSLATE_NOOP("BIM_IfcElements", "Manage how the different elements of of your BIM project will be exported to IFC")}
-                
+
     def IsActive(self):
 
         if FreeCAD.ActiveDocument:
@@ -87,6 +89,13 @@ class BIM_IfcElements:
         QtCore.QObject.connect(self.form.globalMaterial, QtCore.SIGNAL("currentIndexChanged(int)"), self.getGlobalMaterial)
         QtCore.QObject.connect(self.form.buttonEdit, QtCore.SIGNAL("clicked()"), self.editProperties)
 
+        # quantities tab
+        self.qmodel = QtGui.QStandardItemModel()
+        self.form.quantities.setModel(self.qmodel)
+        self.form.quantities.setUniformRowHeights(True)
+        self.form.quantities.setItemDelegate(QtGui.QStyledItemDelegate())
+        self.quantitiesDrawn = False
+        QtCore.QObject.connect(self.qmodel, QtCore.SIGNAL("dataChanged(QModelIndex,QModelIndex)"), self.setChecked)
 
         # center the dialog over FreeCAD window
         mw = FreeCADGui.getMainWindow()
@@ -96,9 +105,9 @@ class BIM_IfcElements:
         self.form.show()
 
     def update(self,index=None):
-        
+
         import Draft
-        
+
         # store current state of tree into self.objectslist before redrawing
         for row in range(self.model.rowCount()):
             name = self.model.item(row,0).toolTip()
@@ -113,11 +122,59 @@ class BIM_IfcElements:
                         self.objectslist[name] = [self.model.item(row,0).child(childrow,1).text(),mat]
         self.model.clear()
         self.model.setHorizontalHeaderLabels(["Label","IFC type","Material"])
-        self.form.tree.header().setResizeMode(QtGui.QHeaderView.Stretch)
+        #self.form.tree.header().setResizeMode(QtGui.QHeaderView.Stretch)
         #self.form.tree.resizeColumnsToContents()
-        
+
+        # quantities tab - only fill once
+        if not self.quantitiesDrawn:
+            self.qmodel.setHorizontalHeaderLabels(["Label","Length","Width","Height","Area","Horiz Area","Vert Area","Volume"])
+
+            # sort by type
+            groups = {}
+            for name,rolemat in self.objectslist.items():
+                role = rolemat[0]
+                groups.setdefault(role,[]).append(name)
+            for names in groups.values():
+                for name in names:
+                    obj = FreeCAD.ActiveDocument.getObject(name)
+                    if obj:
+                        if (not self.form.onlyVisible.isChecked()) or obj.ViewObject.isVisible():
+                            if obj.isDerivedFrom("Part::Feature") and not (Draft.getType(obj) == "Site"):
+                                it1 = QtGui.QStandardItem(obj.Label)
+                                it1.setToolTip(name)
+                                it1.setEditable(False)
+                                if QtCore.QFileInfo(":/icons/Arch_"+obj.Proxy.Type+"_Tree.svg").exists():
+                                    icon = QtGui.QIcon(":/icons/Arch_"+obj.Proxy.Type+"_Tree.svg")
+                                else:
+                                    icon = QtGui.QIcon(":/icons/Arch_Component.svg")
+                                it1.setIcon(icon)
+                                props = []
+                                for prop in qprops:
+                                    it = QtGui.QStandardItem()
+                                    val = None
+                                    if prop == "Volume":
+                                        if obj.Shape and hasattr(obj.Shape,"Volume"):
+                                            val = FreeCAD.Units.Quantity(obj.Shape.Volume,FreeCAD.Units.Volume)
+                                            it.setText(val.getUserPreferred()[0].replace(u"^3",u"³"))
+                                            it.setCheckable(True)
+                                    else:
+                                        if hasattr(obj,prop) and (not "Hidden" in obj.getEditorMode(prop)):
+                                            val = getattr(obj,prop)
+                                            it.setText(val.getUserPreferred()[0].replace(u"^2",u"²"))
+                                            it.setCheckable(True)
+                                    if val != None:
+                                        if hasattr(obj,"IfcAttributes") and ("Export"+prop in obj.IfcAttributes) and obj.IfcAttributes["Export"+prop]:
+                                            it.setCheckState(True)
+                                        if val == 0:
+                                            it.setIcon(QtGui.QIcon(os.path.join(os.path.dirname(__file__),"icons","warning.svg")))
+                                    if prop in ["Area","HorizontalArea","VerticalArea","Volume"]:
+                                        it.setEditable(False)
+                                    props.append(it)
+                                self.qmodel.appendRow([it1]+props)
+            self.quantitiesDrawn = True
+
         if self.form.groupMode.currentIndex() == 1: # group by type
-    
+
             groups = {}
             for name,rolemat in self.objectslist.items():
                 role = rolemat[0]
@@ -226,7 +283,7 @@ class BIM_IfcElements:
                 for i in range(self.model.rowCount()):
                     if self.model.item(i,0).hasChildren():
                         self.form.tree.setFirstColumnSpanned(i, idx, True)
-                    
+
         elif self.form.groupMode.currentIndex() == 3: # group by model structure
 
             # order by hierarchy
@@ -235,7 +292,7 @@ class BIM_IfcElements:
                     if parent.Name in self.objectslist.keys():
                         return False
                 return True
-                
+
             rel = []
             deps = []
             for name in self.objectslist.keys():
@@ -256,9 +313,9 @@ class BIM_IfcElements:
                 if pa == 10: # max 10 hierarchy levels, okay? Let's keep civilised
                     rel.extend(deps)
                     break
-            
+
             #print "rel:",[o.Label for o in rel]
-            
+
             done = {}
             for obj in rel:
                 rolemat = self.objectslist[obj.Name]
@@ -335,7 +392,7 @@ class BIM_IfcElements:
                             if omat != mat:
                                 it3.setIcon(QtGui.QIcon(":/icons/edit-edit.svg"))
                         self.model.appendRow([it1,it2,it3])
-        
+
         self.model.sort(0)
 
     def setGlobalMode(self,index=None):
@@ -365,7 +422,7 @@ class BIM_IfcElements:
                 if mat:
                     if m != mat:
                         mat = None
-                        break 
+                        break
                 else:
                     mat = m
         if mode:
@@ -418,6 +475,7 @@ class BIM_IfcElements:
     def accept(self):
 
         # get current state of tree
+
         self.form.hide()
         for row in range(self.model.rowCount()):
             name = self.model.item(row,0).toolTip()
@@ -455,6 +513,38 @@ class BIM_IfcElements:
                                 FreeCAD.ActiveDocument.openTransaction("Change material")
                                 changed = True
                             obj.Material = mobj
+
+        # quantities
+
+        for row in range(self.qmodel.rowCount()):
+            name = self.qmodel.item(row,0).toolTip()
+            obj = FreeCAD.ActiveDocument.getObject(name)
+            if obj:
+                for i in range(0,6):
+                    item = self.qmodel.item(row,i+1)
+                    val = item.text()
+                    sav = bool(item.checkState())
+                    if i < 3:
+                        if hasattr(obj,qprops[i]):
+                            if getattr(obj,qprops[i]).getUserPreferred()[0] != val:
+                                setattr(obj,qprops[i],val)
+                                changed = True
+                    if sav:
+                        if hasattr(obj,"IfcAttributes"):
+                            if (not "Export"+qprops[i] in obj.IfcAttributes) or (obj.IfcAttributes["Export"+qprops[i]] != sav):
+                                d = obj.IfcAttributes
+                                d["Export"+qprops[i]] = "True"
+                                obj.IfcAttributes = d
+                                changed = True
+                    else:
+                        if hasattr(obj,"IfcAttributes"):
+                            if ("Export"+qprops[i] in obj.IfcAttributes):
+                                if obj.IfcAttributes["Export"+qprops[i]] != sav:
+                                    d = obj.IfcAttributes
+                                    d["Export"+qprops[i]] = "False"
+                                    obj.IfcAttributes = d
+                                    changed = True
+
         if changed:
             FreeCAD.ActiveDocument.commitTransaction()
             FreeCAD.ActiveDocument.recompute()
@@ -469,6 +559,17 @@ class BIM_IfcElements:
                 p = ArchComponent.ComponentTaskPanel()
                 p.obj = obj
                 p.editIfcProperties()
+
+    def setChecked(self,id1,id2):
+
+        sel = self.form.quantities.selectedIndexes()
+        state = self.qmodel.itemFromIndex(id1).checkState()
+        if len(sel) > 7:
+            for idx in sel:
+                if idx.column() == id1.column():
+                    item = self.qmodel.itemFromIndex(idx)
+                    if item.checkState() != state:
+                        item.setCheckState(state)
 
 
 class IfcElementsDelegate(QtGui.QStyledItemDelegate):
