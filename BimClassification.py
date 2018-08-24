@@ -38,7 +38,7 @@ class BIM_Classification:
     def GetResources(self):
 
         return {'Pixmap'  : os.path.join(os.path.dirname(__file__),"icons","BIM_Classification.svg"),
-                'MenuText': QT_TRANSLATE_NOOP("BIM_Classification", "Manage Material classification..."),
+                'MenuText': QT_TRANSLATE_NOOP("BIM_Classification", "Manage classification..."),
                 'ToolTip' : QT_TRANSLATE_NOOP("BIM_Classification", "Manage how the different materials of this documents use classification systems")}
 
     def IsActive(self):

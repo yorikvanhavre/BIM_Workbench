@@ -135,7 +135,8 @@ class BIM_Setup:
         FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Units").SetInt("Decimals",decimals)
         FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/TechDraw/Dimensions").SetBool("UseGlobalDecimals",True)
         grid = form.settingGrid.text()
-        grid = FreeCAD.Units.Quantity(grid).Value # Also set sketcher grid
+        FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Sketcher/General").SetString("GridSize",str(grid)) # Also set sketcher grid
+        grid = FreeCAD.Units.Quantity(grid).Value
         FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").SetFloat("gridSpacing",grid)
         wp = form.settingWP.currentIndex()
         FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").SetInt("defaultWP",wp)

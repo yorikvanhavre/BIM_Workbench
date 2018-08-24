@@ -70,14 +70,15 @@ static char * IFC_xpm[] = {
 
         draft = ["Draft_Line","Draft_Wire","Draft_Circle","Draft_Arc","Draft_Ellipse",
                  "Draft_Polygon","Draft_Rectangle", "Draft_BSpline", "Draft_BezCurve",
-                 "Draft_Point","Draft_Text", "Draft_ShapeString", "Draft_Dimension",
-                 "Draft_Label"]
+                 "Draft_Point"]
+                 
+        annotation = ["Draft_Text", "Draft_ShapeString", "Draft_Dimension",
+                 "Draft_Label","Arch_AxisTools","Arch_SectionPlane"]
 
         arch = ["Arch_Floor","Arch_Building","Arch_Site",
                 "Arch_Wall","Arch_Structure","Arch_Rebar","Arch_Window","Arch_PipeTools",
                 "Arch_Stairs","Arch_Roof","Arch_PanelTools","Arch_Equipment","Arch_Frame",
-                "Part_Box","Part_Builder","Draft_Facebinder","Arch_Space",
-                "Arch_AxisTools","Arch_SectionPlane","Arch_MaterialTools","Arch_Schedule"]
+                "BIM_Box","Part_Builder","Draft_Facebinder","Arch_Space"]
 
         # Support v0.18 tools
 
@@ -131,7 +132,7 @@ static char * IFC_xpm[] = {
                   "Draft_Draft2Sketch","Arch_CutPlane","Arch_Add","Arch_Remove"]
 
         manage = ["BIM_Setup","BIM_Project","BIM_Levels","BIM_Windows","BIM_IfcElements","BIM_Views",
-                  "BIM_Classification"]
+                  "BIM_Classification","Arch_MaterialTools","Arch_Schedule"]
 
         utils = ["BIM_TogglePanels","BIM_Trash",
                  "Draft_VisGroup","Draft_Slope","Draft_SetWorkingPlaneProxy","Draft_AddConstruction",
@@ -177,6 +178,7 @@ static char * IFC_xpm[] = {
 
         self.appendToolbar("Draft tools",draft)
         self.appendToolbar("Arch tools",arch)
+        self.appendToolbar("Annotation tools",annotation)
         self.appendToolbar("Mod tools",modify)
         self.appendToolbar("Manage tools",manage)
         if flamingo:
@@ -187,6 +189,7 @@ static char * IFC_xpm[] = {
         def QT_TRANSLATE_NOOP(scope, text): return text # dummy function for the QT translator
         self.appendMenu(QT_TRANSLATE_NOOP("BIM","&2D Drafting"),draft)
         self.appendMenu(QT_TRANSLATE_NOOP("BIM","&3D BIM"),arch)
+        self.appendMenu(QT_TRANSLATE_NOOP("BIM","&Annotation"),annotation)
         if flamingo:
             self.appendMenu(QT_TRANSLATE_NOOP("BIM","&Flamingo"),flamingo)
         if fasteners:
