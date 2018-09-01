@@ -21,7 +21,7 @@ The BIM workbench contains a large number of tools, therefore it is convenient t
 
 ### Installing
 
-Starting from FreeCAD v 0.17, just locate and install the BIM workbench under menu Tools -> Addons manager
+Starting from FreeCAD v 0.17, the BIM workbench can easily be installed from within FreeCAD using the addons manager, found under menu Tools -> Addons manager
 
 ### Documentation
 
