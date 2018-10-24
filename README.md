@@ -1,5 +1,7 @@
 # BIM workbench for FreeCAD
 
+![](https://www.freecadweb.org/wiki/images/5/5e/BIM_workbench_presentation.png)
+
 **Warning**: This is highly experimental. Although it is safe to use, it won't break anything, it is meant to be experimental, and not a production environment (yet). You are more than welcome to try this, and help us to build a better BIM workflow, but some features might change or disappear without notice over time.
 
 This is a meta workbench, it doesn't offer specific tools, but rather gathers, under one same workbench, the tools from these other workbenches:
@@ -19,4 +21,12 @@ The BIM workbench contains a large number of tools, therefore it is convenient t
 
 ### Installing
 
-Starting from FreeCAD v 0.17, just locate and install the BIM workbench under menu Tools -> Addons manager
+Starting from FreeCAD v0.17, the BIM workbench can easily be installed from within FreeCAD using the addons manager, found under menu Tools -> Addons manager
+
+### Documentation
+
+The BIM workbench documentation is hosted on the FreeCAD wiki, at https://www.freecadweb.org/wiki/BIM_Workbench
+
+### Development reports
+
+The development reports I write monthly are available at https://github.com/yorikvanhavre/BIM_Workbench/wiki
