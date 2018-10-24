@@ -24,6 +24,8 @@
 
 import os,FreeCAD,FreeCADGui
 
+from PySide import QtCore,QtGui
+
 def QT_TRANSLATE_NOOP(ctx,txt): return txt # dummy function for the QT translator
 
 
@@ -40,16 +42,25 @@ class BIM_Welcome:
     def Activated(self):
 
         # load dialog
-        form = FreeCADGui.PySideUic.loadUi(os.path.join(os.path.dirname(__file__),"dialogWelcome.ui"))
+        self.form = FreeCADGui.PySideUic.loadUi(os.path.join(os.path.dirname(__file__),"dialogWelcome.ui"))
+
+        # handle the tutorial link
+        QtCore.QObject.connect(self.form.label_4, QtCore.SIGNAL("linkActivated(QString)"), self.launchTutorial)
 
         # center the dialog over FreeCAD window
         mw = FreeCADGui.getMainWindow()
-        form.move(mw.frameGeometry().topLeft() + mw.rect().center() - form.rect().center())
+        self.form.move(mw.frameGeometry().topLeft() + mw.rect().center() - self.form.rect().center())
 
         # show dialog and run setup dialog afterwards if OK was pressed
-        result = form.exec_()
+        result = self.form.exec_()
         if result:
             FreeCADGui.runCommand("BIM_Setup")
 
+    def launchTutorial(self,link):
+        
+        if hasattr(self,"form"):
+            self.form.hide()
+            import BimTutorial
+            BimTutorial.launch()
 
 FreeCADGui.addCommand('BIM_Welcome',BIM_Welcome())

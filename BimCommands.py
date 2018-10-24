@@ -29,7 +29,7 @@ def QT_TRANSLATE_NOOP(ctx,txt): return txt # dummy function for the QT translato
 
 # import commands that are defined in their separate files
 
-import BimWelcome,BimSetup,BimProject,BimLevels,BimWindows,BimIfcElements,BimViews,BimClassification,BimBox
+import BimWelcome,BimSetup,BimProject,BimLevels,BimWindows,BimIfcElements,BimViews,BimClassification,BimBox,BimTutorial
 
 
 # additional, smaller commands that are defined directly in this file
@@ -138,6 +138,7 @@ class BimDocumentObserver:
     def slotChangedObject(self,obj,prop):
 
         BimViews.update()
+        BimTutorial.update()
 
     def slotActivateDocument(self,doc):
 
@@ -177,6 +178,8 @@ class BimDocumentObserver:
 def setStatusIcons(show=True):
 
     "shows or hides the BIM icons in the status bar"
+    
+    print("setStatusIcons",str(show))
 
     def toggle():   FreeCADGui.runCommand("BIM_TogglePanels")
     def addonMgr(): FreeCADGui.runCommand("Std_AddonMgr")
@@ -220,4 +223,10 @@ def setStatusIcons(show=True):
         else:
             if statuswidget:
                 statuswidget.hide()
+            else:
+                # when switching workbenches, the toolbar sometimes "jumps"
+                # out of the status bar to any other dock area...
+                statuswidget = mw.findChild(QtGui.QToolBar,"BIMStatusWidget")
+                if statuswidget:
+                    statuswidget.hide()
 

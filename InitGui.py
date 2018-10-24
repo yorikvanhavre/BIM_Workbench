@@ -66,9 +66,9 @@ static char * IFC_xpm[] = {
         # in separate files (BimSetup.py, BimProject.py...) that are imported in BimCommands.
         # So importing BimCommands is all that is needed to get all the commands.
 
-        import DraftTools, Arch, BimCommands, PartGui
+        import DraftTools, Arch, BimCommands, PartGui, SketcherGui
 
-        draft = ["Draft_Line","Draft_Wire","Draft_Circle","Draft_Arc","Draft_Ellipse",
+        draft = ["Sketcher_NewSketch","Draft_Line","Draft_Wire","Draft_Circle","Draft_Arc","Draft_Ellipse",
                  "Draft_Polygon","Draft_Rectangle", "Draft_BSpline", "Draft_BezCurve",
                  "Draft_Point"]
                  
@@ -238,8 +238,10 @@ static char * IFC_xpm[] = {
             FreeCADGui.draftToolBar.Deactivated()
         if hasattr(FreeCADGui,"Snapper"):
             FreeCADGui.Snapper.hide()
+        from DraftGui import todo
         import BimCommands
-        BimCommands.setStatusIcons(False)
+        print("Deactivating status icon")
+        todo.delay(BimCommands.setStatusIcons,False)
         if hasattr(FreeCAD,"BimDocumentObserver"):
             FreeCAD.removeDocumentObserver(FreeCAD.BimDocumentObserver)
             del FreeCAD.BimDocumentObserver
@@ -250,6 +252,16 @@ static char * IFC_xpm[] = {
     def ContextMenu(self, recipient):
         import BimCommands,DraftTools
         self.appendContextMenu("",["BIM_Trash","Draft_AddConstruction"])
+        if (recipient == "Tree"):
+            groups = False
+            for o in FreeCADGui.Selection.getSelection():
+                if o.isDerivedFrom("App::DocumentObjectGroup"):
+                    groups = True
+                else:
+                    groups = False
+                    break
+            if groups:
+                self.appendContextMenu("",["Draft_SelectGroup"])
 
     def GetClassName(self):
         return "Gui::PythonWorkbench"
