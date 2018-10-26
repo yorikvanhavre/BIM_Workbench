@@ -24,7 +24,11 @@ from __future__ import print_function
 
 """This is the tutorial of the BIM workbench"""
 
-import os,FreeCAD,FreeCADGui,urllib2,re
+import os,FreeCAD,FreeCADGui,re,sys
+if sys.version_info.major < 3:
+    import urllib2
+else:
+    import urllib.request as urllib2
 from PySide import QtCore,QtGui
 
 html = """<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd">

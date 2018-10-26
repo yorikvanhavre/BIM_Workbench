@@ -240,7 +240,7 @@ static char * IFC_xpm[] = {
             FreeCADGui.Snapper.hide()
         from DraftGui import todo
         import BimCommands
-        print("Deactivating status icon")
+        #print("Deactivating status icon")
         todo.delay(BimCommands.setStatusIcons,False)
         if hasattr(FreeCAD,"BimDocumentObserver"):
             FreeCAD.removeDocumentObserver(FreeCAD.BimDocumentObserver)

@@ -179,8 +179,6 @@ def setStatusIcons(show=True):
 
     "shows or hides the BIM icons in the status bar"
     
-    print("setStatusIcons",str(show))
-
     def toggle():   FreeCADGui.runCommand("BIM_TogglePanels")
     def addonMgr(): FreeCADGui.runCommand("Std_AddonMgr")
 
