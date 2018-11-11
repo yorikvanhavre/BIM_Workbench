@@ -246,7 +246,7 @@ class BIM_Project_TaskPanel:
             s += "levelsWP="+str(int(self.form.levelsWP.isChecked()))+"\n"
             s += "levelsAxis="+str(int(self.form.levelsAxis.isChecked()))+"\n"
 
-            f = open(os.path.join(presetdir,name+".txt"),"wb")
+            f = open(os.path.join(presetdir,name+".txt"),"w")
             f.write(s)
             f.close()
             self.fillPresets()
@@ -267,7 +267,7 @@ class BIM_Project_TaskPanel:
         from PySide import QtGui
         pfile = os.path.join(FreeCAD.getUserAppDataDir(),"BIM",preset+".txt")
         if os.path.exists(pfile):
-            f = open(pfile,"rb")
+            f = open(pfile,"r")
             buf = f.read()
             f.close()
             lines = buf.split("\n")
