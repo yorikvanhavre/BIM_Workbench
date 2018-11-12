@@ -39,25 +39,33 @@ class BIM_Project:
 
     def Activated(self):
 
-        FreeCADGui.Control.showDialog(BIM_Project_TaskPanel())
-
-
-
-class BIM_Project_TaskPanel:
-
-
-    def __init__(self):
-
+        # load dialog
         from PySide import QtCore,QtGui
         self.form = FreeCADGui.PySideUic.loadUi(os.path.join(os.path.dirname(__file__),"dialogProject.ui"))
-        self.form.setWindowIcon(QtGui.QIcon(os.path.join(os.path.dirname(__file__),"icons","BIM_Project.svg")))
+
+        # center the dialog over FreeCAD window
+        mw = FreeCADGui.getMainWindow()
+        self.form.move(mw.frameGeometry().topLeft() + mw.rect().center() - self.form.rect().center())
+
+        # set things up
         import Arch
         self.form.buildingUse.addItems(Arch.BuildingTypes)
+        self.form.setWindowIcon(QtGui.QIcon(os.path.join(os.path.dirname(__file__),"icons","BIM_Project.svg")))
         QtCore.QObject.connect(self.form.buttonAdd, QtCore.SIGNAL("clicked()"), self.addGroup)
         QtCore.QObject.connect(self.form.buttonDel, QtCore.SIGNAL("clicked()"), self.delGroup)
         QtCore.QObject.connect(self.form.buttonSave,QtCore.SIGNAL("clicked()"), self.savePreset)
         QtCore.QObject.connect(self.form.presets,QtCore.SIGNAL("currentIndexChanged(QString)"), self.getPreset)
+        QtCore.QObject.connect(self.form.buttonOK,QtCore.SIGNAL("clicked()"), self.accept)
+        QtCore.QObject.connect(self.form.buttonCancel,QtCore.SIGNAL("clicked()"), self.reject)
         self.fillPresets()
+        
+        # show dialog
+        self.form.show()
+
+    def reject():
+
+        self.form.hide()
+        return True
 
     def accept(self):
 
@@ -178,7 +186,7 @@ class BIM_Project_TaskPanel:
                         axisL.setExpression('Placement.Base.y', outline.Name+'.Placement.Base.y')
                         grp.addObject(axisL)
                         axisL.ViewObject.LabelOffset.Base = FreeCAD.Vector(-axisL.Length.Value + Draft.getParam("textheight",0.20)*0.43,0,Draft.getParam("textheight",0.20)*0.43)
-        FreeCADGui.Control.closeDialog()
+        self.form.hide()
         FreeCAD.ActiveDocument.recompute()
         if outline:
             FreeCADGui.Selection.clearSelection()
@@ -187,6 +195,7 @@ class BIM_Project_TaskPanel:
             FreeCADGui.Selection.clearSelection()
         if hasattr(FreeCADGui,"Snapper"):
             FreeCADGui.Snapper.show()
+        return True
 
     def addGroup(self):
 
