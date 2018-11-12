@@ -198,7 +198,7 @@ static char * IFC_xpm[] = {
         self.appendMenu(QT_TRANSLATE_NOOP("BIM","&Modify"),modify)
         self.appendMenu(QT_TRANSLATE_NOOP("BIM","&Manage"),manage)
         self.appendMenu(QT_TRANSLATE_NOOP("BIM","&Utils"),utils)
-        self.appendMenu("&Help",["BIM_Welcome"])
+        self.appendMenu("&Help",["BIM_Welcome","BIM_Tutorial"])
 
         # load Arch & Draft preference pages
 

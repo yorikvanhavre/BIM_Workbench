@@ -37,7 +37,7 @@ class BIM_Welcome:
 
         return {'Pixmap'  : ":icons/preferences-system.svg",
                 'MenuText': QT_TRANSLATE_NOOP("BIM_Welcome", "Welcome screen"),
-                'ToolTip' : QT_TRANSLATE_NOOP("BIM_Welcome", "Show the welcome screen")}
+                'ToolTip' : QT_TRANSLATE_NOOP("BIM_Welcome", "Show the BIM workbench welcome screen")}
 
     def Activated(self):
 
