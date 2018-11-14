@@ -122,7 +122,9 @@ class BIM_Setup:
             form.labelMissingWorkbenches.show()
 
         # show dialog and exit if cancelled
+        FreeCADGui.BIMSetupDialog = True
         result = form.exec_()
+        del FreeCADGui.BIMSetupDialog
         if not result:
             return
 

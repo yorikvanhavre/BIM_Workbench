@@ -148,10 +148,10 @@ class BimDocumentObserver:
             from PySide import QtCore,QtGui
             statuswidget = st.findChild(QtGui.QToolBar,"BIMStatusWidget")
             if statuswidget:
-                unitLabel = statuswidget.findChild(QtGui.QLabel,"UnitLabel")
+                unitLabel = statuswidget.findChild(QtGui.QComboBox,"UnitLabel")
                 if unitLabel:
                     unit = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Units").GetInt("UserSchema",0)
-                    unitLabel.setText(["Millimeters","Meters","Imperial","Inches","Centimeters","Architectural","Millimeters"][unit])
+                    unitLabel.setCurrentIndex(unit)
 
     def slotDeletedDocument(self,doc):
 
@@ -179,8 +179,9 @@ def setStatusIcons(show=True):
 
     "shows or hides the BIM icons in the status bar"
     
-    def toggle():   FreeCADGui.runCommand("BIM_TogglePanels")
-    def addonMgr(): FreeCADGui.runCommand("Std_AddonMgr")
+    def toggle():      FreeCADGui.runCommand("BIM_TogglePanels")
+    def addonMgr():    FreeCADGui.runCommand("Std_AddonMgr")
+    def setUnit(unit): FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Units").SetInt("UserSchema",unit)
 
     mw = FreeCADGui.getMainWindow()
     if mw:
@@ -193,10 +194,12 @@ def setStatusIcons(show=True):
             else:
                 statuswidget = QtGui.QToolBar()
                 statuswidget.setObjectName("BIMStatusWidget")
-                unitLabel = QtGui.QLabel()
+                unitLabel = QtGui.QComboBox()
                 unitLabel.setObjectName("UnitLabel")
                 unit = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Units").GetInt("UserSchema",0)
-                unitLabel.setText(["Millimeters","Meters","Imperial","Inches","Centimeters","Architectural","Millimeters"][unit])
+                unitLabel.addItems(["Millimeters","Meters","Imperial","Inches","Centimeters","Architectural","Precision"])
+                QtCore.QObject.connect(unitLabel,QtCore.SIGNAL("currentIndexChanged(int)"),setUnit)
+                unitLabel.setCurrentIndex(unit)
                 statuswidget.addWidget(unitLabel)
                 st.addPermanentWidget(statuswidget)
                 togglebutton = QtGui.QPushButton()
