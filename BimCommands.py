@@ -114,11 +114,28 @@ class BIM_Clone(DraftTools.Draft_Clone):
         self.moveAfterCloning = True
 
 
+class BIM_Help:
+
+
+    def GetResources(self):
+
+        return {'Pixmap'  : os.path.join(os.path.dirname(__file__),"icons","BIM_Help.svg"),
+                'MenuText': QT_TRANSLATE_NOOP("BIM_Help", "BIM Help"),
+                'ToolTip' : QT_TRANSLATE_NOOP("BIM_Help", "Opens the BIM help page on the FreeCAD documentation website")}
+
+    def Activated(self):
+
+        from PySide import QtCore,QtGui
+        QtGui.QDesktopServices.openUrl("https://www.freecadweb.org/wiki/BIM_Workbench")
+
+
+
+
 FreeCADGui.addCommand('BIM_TogglePanels',BIM_TogglePanels())
 FreeCADGui.addCommand('BIM_Trash',BIM_Trash())
 FreeCADGui.addCommand('BIM_Copy',BIM_Copy())
 FreeCADGui.addCommand('BIM_Clone',BIM_Clone())
-
+FreeCADGui.addCommand('BIM_Help',BIM_Help())
 
 
 # Selection observer

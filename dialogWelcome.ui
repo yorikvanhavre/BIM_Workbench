@@ -6,14 +6,27 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>426</width>
-    <height>523</height>
+    <width>420</width>
+    <height>683</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Welcome</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QLabel" name="image">
+     <property name="minimumSize">
+      <size>
+       <width>400</width>
+       <height>178</height>
+      </size>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+   </item>
    <item>
     <widget class="QLabel" name="label">
      <property name="font">
@@ -29,7 +42,7 @@
    <item>
     <widget class="QLabel" name="label_2">
      <property name="text">
-      <string>This appears to be the first time that you are using the BIM workbench. If you press OK, the next screen will propose you to set a couple of typical FreeCAD options that are suitable for BIM work. You can change these options anytime later under menu Manage -&gt; Setup, or access directly the complete FreeCAD preferences under menu Edit -&gt;Preferences.</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;This appears to be the first time that you are using the BIM workbench. If you press OK, the next screen will propose you to set a couple of typical FreeCAD options that are suitable for BIM work. You can change these options anytime later under menu &lt;span style=&quot; font-weight:600;&quot;&gt;Manage -&amp;gt; Setup&lt;/span&gt;, or access directly the complete FreeCAD preferences under menu &lt;span style=&quot; font-weight:600;&quot;&gt;Edit -&amp;gt;Preferences&lt;/span&gt;.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="wordWrap">
       <bool>true</bool>
@@ -71,7 +84,7 @@
    <item>
     <widget class="QLabel" name="label_5">
      <property name="text">
-      <string>A good way to start building a BIM model is by setting up basic characteristics of your project, under menu Manage -&gt; Project setup. You can also set the different levels of your project, under menu Manage -&gt; Levels</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;A good way to start building a BIM model is by setting up basic characteristics of your project, under menu &lt;span style=&quot; font-weight:600;&quot;&gt;Manage -&amp;gt; Project setup&lt;/span&gt;. You can also directly configure different floor plans for your project, under menu &lt;span style=&quot; font-weight:600;&quot;&gt;Manage -&amp;gt; Levels.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="wordWrap">
       <bool>true</bool>
@@ -81,7 +94,7 @@
    <item>
     <widget class="QLabel" name="label_6">
      <property name="text">
-      <string>You might also want to start from an existing floor plan or 3D model made in another application. Under menu File -&gt; Import, you will find a wide range of file formats that can be imported into FreeCAD.</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;You might also want to start from an existing floor plan or 3D model made in another application. Under menu &lt;span style=&quot; font-weight:600;&quot;&gt;File -&amp;gt; Import&lt;/span&gt;, you will find a wide range of file formats that can be imported into FreeCAD.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="wordWrap">
       <bool>true</bool>
@@ -103,7 +116,7 @@
    <item>
     <widget class="QLabel" name="label_9">
      <property name="text">
-      <string>The BIM workbench is a work-in-progress and will change quite often. Make sure you update it regularly via menu Tools -&gt; Addon Manager</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The BIM workbench is a work-in-progress and will change quite often. Make sure you update it regularly via menu &lt;span style=&quot; font-weight:600;&quot;&gt;Tools -&amp;gt; Addon Manager&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="wordWrap">
       <bool>true</bool>

@@ -83,8 +83,8 @@ class BIM_Tutorial:
 
             # fire the loading after displaying the widget
             from DraftGui import todo
-            self.load()
-            #todo.delay(self.load,None)
+            #self.load()
+            todo.delay(self.load,None)
 
     def load(self,arg=None):
 

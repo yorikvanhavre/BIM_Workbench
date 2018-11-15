@@ -35,14 +35,17 @@ class BIM_Welcome:
 
     def GetResources(self):
 
-        return {'Pixmap'  : ":icons/preferences-system.svg",
-                'MenuText': QT_TRANSLATE_NOOP("BIM_Welcome", "Welcome screen"),
+        return {'Pixmap'  : os.path.join(os.path.dirname(__file__),"icons","BIM_Welcome.svg"),
+                'MenuText': QT_TRANSLATE_NOOP("BIM_Welcome", "BIM Welcome screen"),
                 'ToolTip' : QT_TRANSLATE_NOOP("BIM_Welcome", "Show the BIM workbench welcome screen")}
 
     def Activated(self):
 
         # load dialog
         self.form = FreeCADGui.PySideUic.loadUi(os.path.join(os.path.dirname(__file__),"dialogWelcome.ui"))
+
+        # set the title image
+        self.form.image.setPixmap(QtGui.QPixmap(os.path.join(os.path.dirname(__file__),"icons","banner.png")))
 
         # handle the tutorial link
         QtCore.QObject.connect(self.form.label_4, QtCore.SIGNAL("linkActivated(QString)"), self.launchTutorial)
