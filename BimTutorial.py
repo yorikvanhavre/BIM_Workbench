@@ -37,10 +37,11 @@ html = """<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR
 <html><head><meta name="qrichtext" content="1" /><style type="text/css">
 p, li { white-space: pre-wrap; }</style></head><body>inserthere</body></html>"""
 
-pixYes = QtGui.QPixmap(":/icons/button_valid.svg").scaled(16,16)
-pixNo = QtGui.QPixmap(":/icons/button_right.svg").scaled(16,16)
-pixEmpty = QtGui.QPixmap()
-url = "https://www.freecadweb.org/wiki/BIM_ingame_tutorial"
+PIXYES = QtGui.QPixmap(":/icons/button_valid.svg").scaled(16,16)
+PIXNO = QtGui.QPixmap(":/icons/button_right.svg").scaled(16,16)
+PIXEMPTY = QtGui.QPixmap()
+URL = "https://www.freecadweb.org/wiki/BIM_ingame_tutorial"
+TESTINTERVAL = 1000 # interval between tests
 
 
 class BIM_Tutorial:
@@ -73,6 +74,7 @@ class BIM_Tutorial:
             self.form.buttonPrevious.clicked.connect(self.previous)
             self.form.buttonNext.clicked.connect(self.next)
             self.form.labelTasks.hide()
+            self.form.textEdit.setOpenExternalLinks(True)
 
             self.dock = QtGui.QDockWidget()
             self.dock.setWidget(self.form)
@@ -81,7 +83,8 @@ class BIM_Tutorial:
 
             # fire the loading after displaying the widget
             from DraftGui import todo
-            todo.delay(self.load,None)
+            self.load()
+            #todo.delay(self.load,None)
 
     def load(self,arg=None):
 
@@ -91,20 +94,52 @@ class BIM_Tutorial:
             return
 
         # load tutorial from wiki
-        u = urllib2.urlopen(url)
-        p = u.read()
+        u = urllib2.urlopen(URL)
+        html = u.read()
         if sys.version_info.major >= 3:
-            p = p.decode("utf8")
-        p = p.replace("\n"," ")
-        p = p.replace("\"/wiki/","\"https://www.freecadweb.org/wiki/")
-
+            html = html.decode("utf8")
+        html = html.replace("\n"," ")
+        html = html.replace("\"/wiki/","\"https://www.freecadweb.org/wiki/")
+        html = re.sub("<div id=\"toc\".*?</ul> </div>","",html) # remove table of contents
+        u.close()
+    
         # setup title and progress bar
-        self.steps = len(re.findall("infotext",p))-1
+        self.steps = len(re.findall("infotext",html))-1
 
         # setup description texts and goals
-        self.descriptions = [""]+re.findall("<p><br /> </p><p><br /> </p> (.*?)<p><b>Tutorial step",p)
-        self.goal1 = re.findall("goal1\">(.*?)</div",p)
-        self.goal2 = re.findall("goal2\">(.*?)</div",p)
+        self.descriptions = [""]+re.findall("<p><br /> </p><p><br /> </p> (.*?)<p><b>Tutorial step",html)
+        self.goal1 = re.findall("goal1\">(.*?)</div",html)
+        self.goal2 = re.findall("goal2\">(.*?)</div",html)
+        self.test1 = re.findall("test1\".*?>(.*?)</div",html)
+        self.test2 = re.findall("test2\".*?>(.*?)</div",html)
+        
+        # fix mediawiki encodes
+        self.test1 = [t.replace("&lt;","<").replace("&gt;",">") for t in self.test1]
+        self.test2 = [t.replace("&lt;","<").replace("&gt;",">") for t in self.test2]
+        
+        # downlaod images (QTextEdit cannot load online images)
+        self.form.textEdit.setHtml(html.replace("inserthere","Downloading images..."))
+        nd = []
+        for descr in self.descriptions:
+            imagepaths = re.findall("<img.*?src=\"(.*?)\"",descr)
+            if imagepaths:
+                storedimages = []
+                store = os.path.join(FreeCAD.getUserAppDataDir(),"BIM","Tutorial")
+                if not os.path.exists(store):
+                    os.makedirs(store)
+                for path in imagepaths:
+                    name = re.findall("[\\w.-]+\\.(?i)(?:jpg|png|gif|bmp)",path)[-1]
+                    storename = os.path.join(store,name)
+                    if not os.path.exists(storename):
+                        u = urllib2.urlopen(path)
+                        imagedata = u.read()
+                        f = open(storename,"wb")
+                        f.write(imagedata)
+                        f.close()
+                        u.close()
+                    descr = descr.replace(path,"file://"+storename.replace("\\","/"))
+            nd.append(descr)
+        self.descriptions = nd
         
         # check where we are
         self.step = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM").GetInt("CurrentTutorialStep",0)
@@ -137,37 +172,20 @@ class BIM_Tutorial:
 
         t = self.descriptions[self.step]
         
-        # downlaod images (QTextEdit cannot load online images)
-        imagepaths = re.findall("<img.*?src=\"(.*?)\"",t)
-        if imagepaths:
-            storedimages = []
-            self.form.textEdit.setHtml(html.replace("downloading images...",t))
-            store = os.path.join(FreeCAD.getUserAppDataDir(),"BIM")
-            for path in imagepaths:
-                name = re.findall("[\\w.-]+\\.(?i)(?:jpg|png|gif|bmp)",path)[-1]
-                storename = os.path.join(store,name)
-                if not os.path.exists(storename):
-                    u = urllib2.urlopen(path)
-                    p = u.read()
-                    f = open(storename,"wb")
-                    f.write(p)
-                    f.close()
-                t = t.replace(path,"file://"+storename.replace("\\","/"))
-
         #print(t)
         
         # set contents
         self.form.textEdit.setHtml(html.replace("inserthere",t))
         self.form.labelGoal1.setText(self.goal1[self.step])
         if self.goal1[self.step]:
-            self.form.labelIcon1.setPixmap(pixNo)
+            self.form.labelIcon1.setPixmap(PIXNO)
         else:
-            self.form.labelIcon1.setPixmap(pixEmpty)
+            self.form.labelIcon1.setPixmap(PIXEMPTY)
         self.form.labelGoal2.setText(self.goal2[self.step])
         if self.goal2[self.step]:
-            self.form.labelIcon2.setPixmap(pixNo)
+            self.form.labelIcon2.setPixmap(PIXNO)
         else:
-            self.form.labelIcon2.setPixmap(pixEmpty)
+            self.form.labelIcon2.setPixmap(PIXEMPTY)
         if self.goal1[self.step] or self.goal2[self.step]:
             self.form.labelTasks.show()
         else:
@@ -187,6 +205,45 @@ class BIM_Tutorial:
         else:
             self.form.buttonPrevious.setEnabled(True)
 
+        # launch test watcher
+        self.done1 = False
+        self.done2 = False
+        if self.test1[self.step] or self.test2[self.step]:
+            QtCore.QTimer.singleShot(TESTINTERVAL, self.checkGoals)
+
+    def checkGoals(self):
+
+        if not hasattr(self,"form"):
+            return
+
+        if self.goal1[self.step]:
+            if self.test1[self.step]:
+                if not self.done1:
+                    try:
+                        result = eval(self.test1[self.step])
+                    except:
+                        print ("BIM Tutorial: unable to eval: "+self.test1[self.step])
+                        result = False
+                        self.done1 = True
+                    if result:
+                        self.form.labelIcon1.setPixmap(PIXYES)
+                        self.done1 = True
+
+        if self.goal2[self.step]:
+            if self.test2[self.step]:
+                if not self.done2:
+                    try:
+                        result = eval(self.test2[self.step])
+                    except:
+                        print ("BIM Tutorial: unable to eval: "+self.test2[self.step])
+                        result = False
+                        self.done2 = True
+                    if result:
+                        self.form.labelIcon2.setPixmap(PIXYES)
+                        self.done2 = True
+
+        if (self.test1[self.step] or self.test2[self.step]) and ((not self.done1) or (not self.done2)):
+            QtCore.QTimer.singleShot(TESTINTERVAL, self.checkGoals)
 
 
 FreeCADGui.addCommand('BIM_Tutorial',BIM_Tutorial())

@@ -138,7 +138,6 @@ class BimDocumentObserver:
     def slotChangedObject(self,obj,prop):
 
         BimViews.update()
-        BimTutorial.update()
 
     def slotActivateDocument(self,doc):
 
