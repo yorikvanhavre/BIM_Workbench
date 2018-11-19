@@ -27,6 +27,8 @@ Starting from FreeCAD v0.17, the BIM workbench can easily be installed from with
 
 The BIM workbench documentation is hosted on the FreeCAD wiki, at https://www.freecadweb.org/wiki/BIM_Workbench
 
-### Development reports
+### Development
 
 The development reports I write monthly are available at https://github.com/yorikvanhavre/BIM_Workbench/wiki
+
+You can help the development of this workbench by sponsoring me on [Patreon](https://www.patreon.com/yorikvanhavre) or [LiberaPay](https://liberapay.com/yorik)
