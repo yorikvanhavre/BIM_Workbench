@@ -68,6 +68,23 @@ static char * IFC_xpm[] = {
 
         import DraftTools, Arch, BimCommands, PartGui, SketcherGui
 
+        # library tools
+
+        class EquipmentGroupCommand:
+
+            def GetCommands(self):
+                return tuple(["BIM_Library","Arch_Equipment"])
+
+            def GetResources(self):
+                return { 'MenuText': 'Equipment tools',
+                         'ToolTip': 'Equipment tools'
+                       }
+
+            def IsActive(self):
+                return not FreeCAD.ActiveDocument is None
+        
+        FreeCADGui.addCommand('BIM_EquipmentTools', EquipmentGroupCommand())
+
         draft = ["Sketcher_NewSketch","Draft_Line","Draft_Wire","Draft_Circle","Draft_Arc","Draft_Ellipse",
                  "Draft_Polygon","Draft_Rectangle", "Draft_BSpline", "Draft_BezCurve",
                  "Draft_Point"]
@@ -77,7 +94,7 @@ static char * IFC_xpm[] = {
 
         arch = ["Arch_Floor","Arch_Building","Arch_Site",
                 "Arch_Wall","Arch_Structure","Arch_Rebar","Arch_Window","Arch_PipeTools",
-                "Arch_Stairs","Arch_Roof","Arch_PanelTools","Arch_Equipment","Arch_Frame",
+                "Arch_Stairs","Arch_Roof","Arch_PanelTools","BIM_EquipmentTools","Arch_Frame",
                 "BIM_Box","Part_Builder","Draft_Facebinder","Arch_Space"]
 
         # Support v0.18 tools
