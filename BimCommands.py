@@ -130,12 +130,50 @@ class BIM_Help:
 
 
 
+class BIM_Glue:
+
+
+    def GetResources(self):
+
+        return {'Pixmap'  : os.path.join(os.path.dirname(__file__),"icons","BIM_Glue.svg"),
+                'MenuText': QT_TRANSLATE_NOOP("BIM_Glue", "Glue"),
+                'ToolTip' : QT_TRANSLATE_NOOP("BIM_Glue", "Joins selected shapes into one non-parametric shape")}
+
+    def IsActive(self):
+
+        if FreeCADGui.Selection.getSelection():
+            return True
+        else:
+            return False
+
+    def Activated(self):
+
+        sel = FreeCADGui.Selection.getSelection()
+        if sel:
+            rem = []
+            shapes = []
+            for obj in sel:
+                if obj.isDerivedFrom("Part::Feature"):
+                    if obj.Shape:
+                        shapes.append(obj.Shape)
+                        rem.append(obj.Name)
+            import Part
+            if shapes:
+                comp = Part.makeCompound(shapes)
+                FreeCAD.ActiveDocument.openTransaction("Glue")
+                Part.show(comp)
+                for name in rem:
+                    FreeCAD.ActiveDocument.removeObject(name)
+                FreeCAD.ActiveDocument.commitTransaction()
+
+
 
 FreeCADGui.addCommand('BIM_TogglePanels',BIM_TogglePanels())
 FreeCADGui.addCommand('BIM_Trash',BIM_Trash())
 FreeCADGui.addCommand('BIM_Copy',BIM_Copy())
 FreeCADGui.addCommand('BIM_Clone',BIM_Clone())
 FreeCADGui.addCommand('BIM_Help',BIM_Help())
+FreeCADGui.addCommand('BIM_Glue',BIM_Glue())
 
 
 # Selection observer
