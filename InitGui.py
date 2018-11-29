@@ -82,17 +82,17 @@ static char * IFC_xpm[] = {
 
             def IsActive(self):
                 return not FreeCAD.ActiveDocument is None
-        
+
         FreeCADGui.addCommand('BIM_EquipmentTools', EquipmentGroupCommand())
 
-        draft = ["Sketcher_NewSketch","Draft_Line","Draft_Wire","Draft_Circle","Draft_Arc","Draft_Ellipse",
+        self.draft = ["Sketcher_NewSketch","Draft_Line","Draft_Wire","Draft_Circle","Draft_Arc","Draft_Ellipse",
                  "Draft_Polygon","Draft_Rectangle", "Draft_BSpline", "Draft_BezCurve",
                  "Draft_Point"]
-                 
-        annotation = ["Draft_Text", "Draft_ShapeString", "Draft_Dimension",
+
+        self.annotation = ["Draft_Text", "Draft_ShapeString", "Draft_Dimension",
                  "Draft_Label","Arch_AxisTools","Arch_SectionPlane"]
 
-        arch = ["Arch_Floor","Arch_Building","Arch_Site",
+        self.arch = ["Arch_Floor","Arch_Building","Arch_Site",
                 "Arch_Wall","Arch_Structure","Arch_Rebar","Arch_Window","Arch_PipeTools",
                 "Arch_Stairs","Arch_Roof","Arch_PanelTools","BIM_EquipmentTools","Arch_Frame",
                 "BIM_Box","Part_Builder","Draft_Facebinder","Arch_Space"]
@@ -104,13 +104,13 @@ static char * IFC_xpm[] = {
         except:
             pass
         else:
-            arch[0] = "Arch_BuildingPart"
+            self.arch[0] = "Arch_BuildingPart"
         try:
             import ArchReference
         except:
             pass
         else:
-            arch.insert(4,"Arch_Reference")
+            self.arch.insert(4,"Arch_Reference")
 
         # load rebar tools (Reinforcement addon)
 
@@ -134,24 +134,24 @@ static char * IFC_xpm[] = {
                     return not FreeCAD.ActiveDocument is None
 
             FreeCADGui.addCommand('Arch_RebarTools', RebarGroupCommand())
-            arch[arch.index("Arch_Rebar")] = "Arch_RebarTools"
+            self.arch[self.arch.index("Arch_Rebar")] = "Arch_RebarTools"
 
-        snap = ['Draft_ToggleGrid','Draft_Snap_Lock','Draft_Snap_Midpoint','Draft_Snap_Perpendicular',
+        self.snap = ['Draft_ToggleGrid','Draft_Snap_Lock','Draft_Snap_Midpoint','Draft_Snap_Perpendicular',
                 'Draft_Snap_Grid','Draft_Snap_Intersection','Draft_Snap_Parallel',
                 'Draft_Snap_Endpoint','Draft_Snap_Angle','Draft_Snap_Center',
                 'Draft_Snap_Extension','Draft_Snap_Near','Draft_Snap_Ortho',
                 'Draft_Snap_Special','Draft_Snap_Dimensions','Draft_Snap_WorkingPlane']
 
-        modify = ["Draft_Move","BIM_Copy","Draft_Rotate","BIM_Clone","Draft_Offset", "Part_Offset2D", "Draft_Trimex",
+        self.modify = ["Draft_Move","BIM_Copy","Draft_Rotate","BIM_Clone","Draft_Offset", "Part_Offset2D", "Draft_Trimex",
                   "Draft_Scale","Draft_Stretch","Draft_Array","Draft_PathArray",
                   "Draft_Mirror","Part_Extrude","Part_Cut","Part_Fuse","Part_Common","BIM_Glue",
                   "Part_Compound","Part_SimpleCopy","Draft_Upgrade", "Draft_Downgrade", "Draft_Shape2DView",
                   "Draft_Draft2Sketch","Arch_CutPlane","Arch_Add","Arch_Remove"]
 
-        manage = ["BIM_Setup","BIM_Project","BIM_Levels","BIM_Windows","BIM_IfcElements","BIM_Views",
+        self.manage = ["BIM_Setup","BIM_Project","BIM_Levels","BIM_Windows","BIM_IfcElements","BIM_Views",
                   "BIM_Classification","Arch_MaterialTools","Arch_Schedule"]
 
-        utils = ["BIM_TogglePanels","BIM_Trash",
+        self.utils = ["BIM_TogglePanels","BIM_Trash",
                  "Draft_VisGroup","Draft_Slope","Draft_SetWorkingPlaneProxy","Draft_AddConstruction",
                  "Arch_Component","Arch_CloneComponent","Arch_SplitMesh","Arch_MeshToShape",
                  "Arch_SelectNonSolidMeshes","Arch_RemoveShape",
@@ -167,7 +167,7 @@ static char * IFC_xpm[] = {
         except:
             pass
         else:
-            utils.extend(["WebTools_Git","WebTools_BimServer","WebTools_Sketchfab"])
+            self.utils.extend(["WebTools_Git","WebTools_BimServer","WebTools_Sketchfab"])
 
         # load flamingo
 
@@ -193,28 +193,29 @@ static char * IFC_xpm[] = {
 
         # create toolbars
 
-        self.appendToolbar("Draft tools",draft)
-        self.appendToolbar("Arch tools",arch)
-        self.appendToolbar("Annotation tools",annotation)
-        self.appendToolbar("Mod tools",modify)
-        self.appendToolbar("Manage tools",manage)
-        if flamingo:
-            self.appendToolbar("Flamingo tools",flamingo)
+        self.appendToolbar("Draft tools",self.draft)
+        self.appendToolbar("Arch tools",self.arch)
+        self.appendToolbar("Annotation tools",self.annotation)
+        self.appendToolbar("Mod tools",self.modify)
+        self.appendToolbar("Manage tools",self.manage)
+        #if flamingo:
+        #    self.appendToolbar("Flamingo tools",flamingo)
 
         # create menus
 
         def QT_TRANSLATE_NOOP(scope, text): return text # dummy function for the QT translator
-        self.appendMenu(QT_TRANSLATE_NOOP("BIM","&2D Drafting"),draft)
-        self.appendMenu(QT_TRANSLATE_NOOP("BIM","&3D BIM"),arch)
-        self.appendMenu(QT_TRANSLATE_NOOP("BIM","&Annotation"),annotation)
+
+        self.appendMenu(QT_TRANSLATE_NOOP("BIM","&2D Drafting"),self.draft)
+        self.appendMenu(QT_TRANSLATE_NOOP("BIM","&3D BIM"),self.arch)
+        self.appendMenu(QT_TRANSLATE_NOOP("BIM","&Annotation"),self.annotation)
         if flamingo:
             self.appendMenu(QT_TRANSLATE_NOOP("BIM","&Flamingo"),flamingo)
         if fasteners:
             self.appendMenu(QT_TRANSLATE_NOOP("BIM","&Fasteners"),fasteners)
-        self.appendMenu(QT_TRANSLATE_NOOP("BIM","&Snapping"),snap)
-        self.appendMenu(QT_TRANSLATE_NOOP("BIM","&Modify"),modify)
-        self.appendMenu(QT_TRANSLATE_NOOP("BIM","&Manage"),manage)
-        self.appendMenu(QT_TRANSLATE_NOOP("BIM","&Utils"),utils)
+        self.appendMenu(QT_TRANSLATE_NOOP("BIM","&Snapping"),self.snap)
+        self.appendMenu(QT_TRANSLATE_NOOP("BIM","&Modify"),self.modify)
+        self.appendMenu(QT_TRANSLATE_NOOP("BIM","&Manage"),self.manage)
+        self.appendMenu(QT_TRANSLATE_NOOP("BIM","&Utils"),self.utils)
         self.appendMenu("&Help",["BIM_Welcome","BIM_Help","BIM_Tutorial"])
 
         # load Arch & Draft preference pages
@@ -236,15 +237,38 @@ static char * IFC_xpm[] = {
             FreeCADGui.draftToolBar.Activated()
         if hasattr(FreeCADGui,"Snapper"):
             FreeCADGui.Snapper.show()
+
         from DraftGui import todo
         import BimCommands
+
         if FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM").GetBool("FirstTime",True):
             todo.delay(FreeCADGui.runCommand,"BIM_Welcome")
         todo.delay(BimCommands.setStatusIcons,True)
+
         if not hasattr(FreeCAD,"BimDocumentObserver"):
             FreeCAD.BimDocumentObserver = BimCommands.BimDocumentObserver()
             FreeCAD.addDocumentObserver(FreeCAD.BimDocumentObserver)
             Log("Adding FreeCAD.BimDocumentObserver\n")
+        FreeCADGui.Control.clearTaskWatcher()
+
+        class BimWatcher:
+
+            def __init__(self,cmds,name,invert=False):
+
+                self.commands = cmds
+                self.title = name
+                self.invert = invert
+
+            def shouldShow(self):
+
+                if self.invert:
+                    return (FreeCAD.ActiveDocument != None) and (FreeCADGui.Selection.getSelection() != [])
+                else:
+                    return (FreeCAD.ActiveDocument != None) and (not FreeCADGui.Selection.getSelection())
+
+        FreeCADGui.Control.addTaskWatcher([BimWatcher(self.draft+self.annotation,"2D geometry"),
+                                           BimWatcher(self.arch,"3D/BIM geometry"),
+                                           BimWatcher(self.modify,"Modify",invert=True)])
 
         Log("BIM workbench activated\n")
 
@@ -255,18 +279,23 @@ static char * IFC_xpm[] = {
             FreeCADGui.draftToolBar.Deactivated()
         if hasattr(FreeCADGui,"Snapper"):
             FreeCADGui.Snapper.hide()
+
         from DraftGui import todo
         import BimCommands
+
         #print("Deactivating status icon")
+
         todo.delay(BimCommands.setStatusIcons,False)
         if hasattr(FreeCAD,"BimDocumentObserver"):
             FreeCAD.removeDocumentObserver(FreeCAD.BimDocumentObserver)
             del FreeCAD.BimDocumentObserver
             Log("Removing FreeCAD.BimDocumentObserver\n")
+        FreeCADGui.Control.clearTaskWatcher()
 
         Log("BIM workbench deactivated\n")
 
     def ContextMenu(self, recipient):
+
         import BimCommands,DraftTools
         self.appendContextMenu("",["BIM_Trash","Draft_AddConstruction"])
         if (recipient == "Tree"):
@@ -281,6 +310,7 @@ static char * IFC_xpm[] = {
                 self.appendContextMenu("",["Draft_SelectGroup"])
 
     def GetClassName(self):
+
         return "Gui::PythonWorkbench"
 
 

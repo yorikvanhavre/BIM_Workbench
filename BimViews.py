@@ -87,7 +87,7 @@ def update():
             import Draft
             from PySide import QtGui
             for obj in FreeCAD.ActiveDocument.Objects:
-                if Draft.getType(obj) == "WorkingPlaneProxy":
+                if Draft.getType(obj) in ["Building","BuildingPart","WorkingPlaneProxy"]:
                     it = QtGui.QListWidgetItem(vm)
                     it.setText(obj.Label)
                     it.setToolTip(obj.Name)
@@ -95,7 +95,7 @@ def update():
 
 def show(item):
     
-    "item has been dounble-clicked"
+    "item has been double-clicked"
     
     obj = FreeCAD.ActiveDocument.getObject(item.toolTip())
     if obj:
