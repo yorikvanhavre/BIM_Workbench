@@ -81,7 +81,7 @@ def update():
     "updates the view manager"
 
     vm = findWidget()
-    if vm:
+    if vm and FreeCAD.ActiveDocument:
         if vm.isVisible():
             vm.clear()
             import Draft

@@ -270,6 +270,11 @@ static char * IFC_xpm[] = {
                                            BimWatcher(self.arch,"3D/BIM geometry"),
                                            BimWatcher(self.modify,"Modify",invert=True)])
 
+        # restore views widget if needed
+        if FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM").GetBool("RestoreBimViews",True):
+            if not BimCommands.BimViews.findWidget():
+                FreeCADGui.runCommand("BIM_Views")
+
         Log("BIM workbench activated\n")
 
 
@@ -291,6 +296,9 @@ static char * IFC_xpm[] = {
             del FreeCAD.BimDocumentObserver
             Log("Removing FreeCAD.BimDocumentObserver\n")
         FreeCADGui.Control.clearTaskWatcher()
+
+        # store views widget state
+        FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM").SetBool("RestoreBimViews",bool(BimCommands.BimViews.findWidget()))
 
         Log("BIM workbench deactivated\n")
 
