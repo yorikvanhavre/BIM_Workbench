@@ -63,7 +63,7 @@ class BIM_Classification:
 
         # hide materials list if we are editing an object
         if len(FreeCADGui.Selection.getSelection()) == 1:
-            if FreeCADGui.Selection.getSelection()[0].ViewObject.isEditing():
+            if hasattr(FreeCADGui.Selection.getSelection()[0],"StandardCode"):
                 self.form.groupMaterials.hide()
                 self.form.buttonApply.hide()
                 self.form.buttonRename.hide()
