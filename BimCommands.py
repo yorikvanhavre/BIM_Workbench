@@ -167,6 +167,33 @@ class BIM_Glue:
                 FreeCAD.ActiveDocument.commitTransaction()
 
 
+class BIM_Sketch:
+
+
+    def GetResources(self):
+
+        return {'Pixmap'  : ":/icons/Sketcher_NewSketch.svg",
+                'MenuText': QT_TRANSLATE_NOOP("BIM_Sketch", "New Sketch"),
+                'ToolTip' : QT_TRANSLATE_NOOP("BIM_Sketch", "Creates a new sketch in the current working plane and enters edit mode")}
+
+    def IsActive(self):
+
+        if FreeCAD.ActiveDocument:
+            return True
+        else:
+            return False
+
+    def Activated(self):
+
+        sk = FreeCAD.ActiveDocument.addObject('Sketcher::SketchObject','Sketch')
+        sk.MapMode = "Deactivated"
+        p = FreeCAD.DraftWorkingPlane.getPlacement()
+        p.Base = FreeCAD.DraftWorkingPlane.position
+        sk.Placement = p
+        FreeCADGui.ActiveDocument.setEdit(sk.Name)
+        FreeCADGui.activateWorkbench('SketcherWorkbench')
+
+
 
 FreeCADGui.addCommand('BIM_TogglePanels',BIM_TogglePanels())
 FreeCADGui.addCommand('BIM_Trash',BIM_Trash())
@@ -174,6 +201,7 @@ FreeCADGui.addCommand('BIM_Copy',BIM_Copy())
 FreeCADGui.addCommand('BIM_Clone',BIM_Clone())
 FreeCADGui.addCommand('BIM_Help',BIM_Help())
 FreeCADGui.addCommand('BIM_Glue',BIM_Glue())
+FreeCADGui.addCommand('BIM_Sketch',BIM_Sketch())
 
 
 # Selection observer

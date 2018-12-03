@@ -85,7 +85,7 @@ static char * IFC_xpm[] = {
 
         FreeCADGui.addCommand('BIM_EquipmentTools', EquipmentGroupCommand())
 
-        self.draft = ["Sketcher_NewSketch","Draft_Line","Draft_Wire","Draft_Circle","Draft_Arc","Draft_Ellipse",
+        self.draft = ["BIM_Sketch","Draft_Line","Draft_Wire","Draft_Circle","Draft_Arc","Draft_Ellipse",
                  "Draft_Polygon","Draft_Rectangle", "Draft_BSpline", "Draft_BezCurve",
                  "Draft_Point"]
 
@@ -272,8 +272,12 @@ static char * IFC_xpm[] = {
 
         # restore views widget if needed
         if FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM").GetBool("RestoreBimViews",True):
-            if not BimCommands.BimViews.findWidget():
+            w = BimCommands.BimViews.findWidget()
+            if not w:
                 FreeCADGui.runCommand("BIM_Views")
+            else:
+                w.show()
+                
 
         Log("BIM workbench activated\n")
 
@@ -297,8 +301,12 @@ static char * IFC_xpm[] = {
             Log("Removing FreeCAD.BimDocumentObserver\n")
         FreeCADGui.Control.clearTaskWatcher()
 
-        # store views widget state
-        FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM").SetBool("RestoreBimViews",bool(BimCommands.BimViews.findWidget()))
+        # store views widget state and vertical size
+        w = BimCommands.BimViews.findWidget()
+        FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM").SetBool("RestoreBimViews",bool(w))
+        if w:
+            FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM").SetInt("BimViewsSize",w.height())
+            w.hide()
 
         Log("BIM workbench deactivated\n")
 
