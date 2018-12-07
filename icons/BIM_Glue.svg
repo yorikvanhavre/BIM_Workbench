@@ -21,6 +21,17 @@
   <defs
      id="defs2570">
     <linearGradient
+       id="linearGradient875">
+      <stop
+         id="stop871"
+         offset="0"
+         style="stop-color:#ff1900;stop-opacity:1" />
+      <stop
+         id="stop873"
+         offset="1"
+         style="stop-color:#cf8872;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient
        id="linearGradient3864">
       <stop
          id="stop3866"
@@ -139,7 +150,7 @@
        gradientTransform="matrix(-0.51094884,-0.61313857,0.25133659,-0.20944716,37.451381,61.165998)" />
     <radialGradient
        inkscape:collect="always"
-       xlink:href="#linearGradient3143"
+       xlink:href="#linearGradient875"
        id="radialGradient875"
        gradientUnits="userSpaceOnUse"
        gradientTransform="matrix(-2.0379126,0.6335653,-0.4087591,-1.430657,100.81166,29.555399)"
@@ -373,7 +384,7 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="6.6796364"
-     inkscape:cx="39.784603"
+     inkscape:cx="13.286155"
      inkscape:cy="27.441086"
      inkscape:current-layer="g3560"
      showgrid="true"
@@ -400,7 +411,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
         <dc:creator>
           <cc:Agent>
             <dc:title>[wmayer]</dc:title>
@@ -437,7 +448,7 @@
        id="g3560"
        transform="matrix(0.91273618,0,0,0.90349515,105.85374,2.800363)">
       <path
-         style="opacity:1;vector-effect:none;fill:url(#radialGradient875);fill-opacity:1;stroke:#0b1521;stroke-width:1.99799991;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;marker:none"
+         style="opacity:1;vector-effect:none;fill:url(#radialGradient875);fill-opacity:1;stroke:#210b0c;stroke-width:1.99799991;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;marker:none"
          d="M 16.908203 8.578125 L 12.248047 19.759766 L 10.826172 20.107422 L 10.826172 23.173828 L 3.8144531 40 C 3.8144531 41.678979 6.8479222 42.773823 10.826172 43.314453 L 10.826172 49.470703 L 38.826172 54.107422 L 56.826172 46.107422 L 56.826172 18.107422 L 32.976562 14.685547 L 20.705078 17.689453 L 16.908203 8.578125 z "
          transform="matrix(1.0956068,0,0,1.1068128,-115.97408,-3.0994776)"
          id="path2993" />

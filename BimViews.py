@@ -50,9 +50,8 @@ class BIM_Views:
             vm.setObjectName("Views Manager")
             vm.setSortingEnabled(True)
             vm.setIconSize(QtCore.QSize(16,16))
-            r = vm.rect()
-            r.setHeight(FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM").GetInt("BimViewsSize",160))
-            vm.setGeometry(r)
+            h = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM").GetInt("BimViewsSize",100)
+            vm.resize(vm.width(),h)
             QtCore.QObject.connect(vm, QtCore.SIGNAL("itemDoubleClicked(QListWidgetItem*)"),show)
             mw = FreeCADGui.getMainWindow()
             combo = mw.findChild(QtGui.QDockWidget,"Combo View")
@@ -102,6 +101,9 @@ def show(item):
     
     obj = FreeCAD.ActiveDocument.getObject(item.toolTip())
     if obj:
+        sel = FreeCADGui.Selection.getSelection()
         FreeCADGui.Selection.clearSelection()
         FreeCADGui.Selection.addSelection(obj)
         FreeCADGui.runCommand("Draft_SelectPlane")
+        FreeCADGui.Selection.clearSelection()
+        FreeCADGui.Selection.addSelection(sel)

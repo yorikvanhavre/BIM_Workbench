@@ -133,6 +133,8 @@ class BIM_Setup:
         unit = form.settingUnits.currentIndex()
         unit = [0,4,1,3,5][unit] # less choices in our simplified dialog
         FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Units").SetInt("UserSchema",unit)
+        if hasattr(FreeCAD.Units,"setSchema"):
+            FreeCAD.Units.setSchema(unit)
         decimals = form.settingDecimals.value()
         FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Units").SetInt("Decimals",decimals)
         FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/TechDraw/Dimensions").SetBool("UseGlobalDecimals",True)

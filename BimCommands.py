@@ -261,9 +261,19 @@ def setStatusIcons(show=True):
 
     "shows or hides the BIM icons in the status bar"
     
-    def toggle():      FreeCADGui.runCommand("BIM_TogglePanels")
-    def addonMgr():    FreeCADGui.runCommand("Std_AddonMgr")
-    def setUnit(unit): FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Units").SetInt("UserSchema",unit)
+    def toggle():      
+        FreeCADGui.runCommand("BIM_TogglePanels")
+
+    def addonMgr():    
+        FreeCADGui.runCommand("Std_AddonMgr")
+
+    def setUnit(action):
+        utext = action.text().replace("&","")
+        unit = [0,4,1,3,7,5][["Millimeters","Centimeters","Meters","Inches","Feet","Architectural"].index(utext)]
+        FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Units").SetInt("UserSchema",unit)
+        if hasattr(FreeCAD.Units,"setSchema"):
+            FreeCAD.Units.setSchema(unit)
+        action.parent().parent().parent().setText(utext)
 
     mw = FreeCADGui.getMainWindow()
     if mw:
@@ -276,12 +286,19 @@ def setStatusIcons(show=True):
             else:
                 statuswidget = QtGui.QToolBar()
                 statuswidget.setObjectName("BIMStatusWidget")
-                unitLabel = QtGui.QComboBox()
+                unitLabel = QtGui.QPushButton("Unit")
                 unitLabel.setObjectName("UnitLabel")
+                unitLabel.setFlat(True)
                 unit = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Units").GetInt("UserSchema",0)
-                unitLabel.addItems(["Millimeters","Meters","Imperial","Inches","Centimeters","Architectural","Precision"])
-                QtCore.QObject.connect(unitLabel,QtCore.SIGNAL("currentIndexChanged(int)"),setUnit)
-                unitLabel.setCurrentIndex(unit)
+                menu = QtGui.QMenu(unitLabel)
+                gUnits = QtGui.QActionGroup(menu)
+                for u in ["Millimeters","Centimeters","Meters","Inches","Feet","Architectural"]:
+                    a = QtGui.QAction(gUnits)
+                    a.setText(u)
+                    menu.addAction(a)
+                unitLabel.setMenu(menu)
+                gUnits.triggered.connect(setUnit)
+                unitLabel.setText(["Millimeters","Meters","Inches","Inches","Centimeters","Architectural","Millimeters","Feet"][unit])
                 statuswidget.addWidget(unitLabel)
                 st.addPermanentWidget(statuswidget)
                 togglebutton = QtGui.QPushButton()
