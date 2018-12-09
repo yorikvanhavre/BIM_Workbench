@@ -89,7 +89,7 @@ def update():
             import Draft
             from PySide import QtGui
             for obj in FreeCAD.ActiveDocument.Objects:
-                if Draft.getType(obj) in ["Building","BuildingPart","WorkingPlaneProxy"]:
+                if obj and (Draft.getType(obj) in ["Building","BuildingPart","WorkingPlaneProxy"]):
                     it = QtGui.QListWidgetItem(vm)
                     it.setText(obj.Label)
                     it.setToolTip(obj.Name)
@@ -106,4 +106,8 @@ def show(item):
         FreeCADGui.Selection.addSelection(obj)
         FreeCADGui.runCommand("Draft_SelectPlane")
         FreeCADGui.Selection.clearSelection()
-        FreeCADGui.Selection.addSelection(sel)
+        for s in sel:
+            FreeCADGui.Selection.addSelection(s)
+    vm = findWidget()
+    if vm:
+        vm.lastSelected = item
