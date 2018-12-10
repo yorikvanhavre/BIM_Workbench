@@ -35,6 +35,7 @@ class BIM_Material:
 
         return {'Pixmap'  : ":/icons/Arch_Material.svg",
                 'MenuText': QT_TRANSLATE_NOOP("BIM_Material", "Material"),
+                'Accel': "M, A",
                 'ToolTip' : QT_TRANSLATE_NOOP("BIM_Material", "Sets or creates a material for selected objects")}
 
     def Activated(self):

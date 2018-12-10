@@ -22,7 +22,7 @@
 
 """This module contains FreeCAD commands for the BIM workbench"""
 
-import os,FreeCAD,FreeCADGui
+import os,FreeCAD,FreeCADGui,sys
 
 def QT_TRANSLATE_NOOP(ctx,txt): return txt # dummy function for the QT translator
 
@@ -99,7 +99,10 @@ def show(item):
     
     "item has been double-clicked"
     
-    obj = FreeCAD.ActiveDocument.getObject(item.toolTip())
+    if isinstance(item,str) or ((sys.version_info.major < 3) and isinstance(item,unicode)):
+        obj = FreeCAD.ActiveDocument.getObject(item)
+    else:
+        obj = FreeCAD.ActiveDocument.getObject(item.toolTip())
     if obj:
         sel = FreeCADGui.Selection.getSelection()
         FreeCADGui.Selection.clearSelection()
@@ -110,4 +113,7 @@ def show(item):
             FreeCADGui.Selection.addSelection(s)
     vm = findWidget()
     if vm:
-        vm.lastSelected = item
+        if isinstance(item,str) or ((sys.version_info.major < 3) and isinstance(item,unicode)):
+            vm.lastSelected = item
+        else:
+            vm.lastSelected = item.toolTip()
