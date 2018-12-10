@@ -29,7 +29,7 @@ def QT_TRANSLATE_NOOP(ctx,txt): return txt # dummy function for the QT translato
 
 # import commands that are defined in their separate files
 
-import BimWelcome,BimSetup,BimProject,BimLevels,BimWindows,BimIfcElements,BimViews,BimClassification,BimBox,BimTutorial,BimLibrary
+import BimWelcome,BimSetup,BimProject,BimLevels,BimWindows,BimIfcElements,BimViews,BimClassification,BimBox,BimTutorial,BimLibrary,BimMaterial
 
 
 # additional, smaller commands that are defined directly in this file
@@ -195,128 +195,6 @@ class BIM_Sketch:
         FreeCADGui.activateWorkbench('SketcherWorkbench')
 
 
-
-class BIM_Material:
-
-
-    def GetResources(self):
-
-        return {'Pixmap'  : ":/icons/Arch_Material.svg",
-                'MenuText': QT_TRANSLATE_NOOP("BIM_Material", "Material"),
-                'ToolTip' : QT_TRANSLATE_NOOP("BIM_Material", "Sets or creates a material for selected objects")}
-
-    def Activated(self):
-
-        self.dlg = None
-        from PySide import QtCore,QtGui
-        objs = [obj for obj in FreeCADGui.Selection.getSelection() if hasattr(obj,"Material")]
-        if objs:
-            self.dlg = QtGui.QDialog()
-            p = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM")
-            w = p.GetInt("BimMaterialDialogWidth",230)
-            h = p.GetInt("BimMaterialDialogHeight",350)
-            self.dlg.resize(w,h)
-            self.dlg.setWindowTitle("Select material")
-            self.dlg.setWindowIcon(QtGui.QIcon(":/icons/Arch_Material.svg"))
-            mw = FreeCADGui.getMainWindow()
-            self.dlg.move(mw.frameGeometry().topLeft() + mw.rect().center() - self.dlg.rect().center())
-            self.dlg.objects = objs
-            lay = QtGui.QVBoxLayout(self.dlg)
-            matList = QtGui.QListWidget(self.dlg)
-            self.dlg.matList = matList
-            lay.addWidget(matList)
-            for o in FreeCAD.ActiveDocument.Objects:
-                if o.isDerivedFrom("App::MaterialObjectPython") or ((o.TypeId == "App::FeaturePython") and hasattr(o,"Materials")):
-                    i = QtGui.QListWidgetItem(self.createIcon(o),o.Label,matList)
-                    i.setToolTip(o.Name)
-                    if len(objs) == 1:
-                        if objs[0].Material == o:
-                            matList.setCurrentItem(i)
-            if matList.count():
-                buttonCreate = QtGui.QPushButton("Create new material",self.dlg)
-                buttonCreate.setIcon(QtGui.QIcon(":/icons/Arch_Material.svg"))
-                lay.addWidget(buttonCreate)
-                buttonMulti = QtGui.QPushButton("Create new multi-material",self.dlg)
-                buttonMulti.setIcon(QtGui.QIcon(":/icons/Arch_Material_Multi.svg"))
-                lay.addWidget(buttonMulti)
-                buttonBox = QtGui.QDialogButtonBox(self.dlg)
-                buttonBox.setOrientation(QtCore.Qt.Horizontal)
-                buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Ok)
-                lay.addWidget(buttonBox)
-                buttonBox.accepted.connect(self.onAccept)
-                buttonBox.rejected.connect(self.onReject)
-                buttonCreate.clicked.connect(self.onCreate)
-                buttonMulti.clicked.connect(self.onMulti)
-                matList.itemDoubleClicked.connect(self.onAccept)
-                self.dlg.show()
-            else:
-                self.dlg = None
-                FreeCADGui.runCommand("Arch_Material")
-        else:
-            FreeCADGui.runCommand("Arch_Material")
-
-    def onCreate(self):
-
-        if self.dlg:
-            self.dlg.hide()
-            FreeCADGui.runCommand("Arch_Material")
-
-    def onMulti(self):
-
-        if self.dlg:
-            self.dlg.hide()
-            FreeCADGui.runCommand("Arch_MultiMaterial")
-
-    def onAccept(self,item=None):
-
-        if self.dlg:
-            item = self.dlg.matList.currentItem()
-            if item:
-                mat = FreeCAD.ActiveDocument.getObject(item.toolTip())
-                if mat:
-                    for obj in self.dlg.objects:
-                        obj.Material = mat
-            p = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM")
-            p.SetInt("BimMaterialDialogWidth",self.dlg.width())
-            p.SetInt("BimMaterialDialogHeight",self.dlg.height())
-            from DraftGui import todo
-            todo.delay(self.dlg.hide,None)
-
-    def onReject(self):
-
-        if self.dlg:
-            self.dlg.hide()
-
-    def createIcon(self,obj):
-
-        from PySide import QtCore,QtGui
-        if hasattr(obj,"Materials"):
-            return QtGui.QIcon(":/icons/Arch_Material_Multi.svg")
-        elif hasattr(obj,"Color"):
-            c = obj.Color
-            matcolor = QtGui.QColor(int(c[0]*255),int(c[1]*255),int(c[2]*255))
-            darkcolor = QtGui.QColor(int(c[0]*125),int(c[1]*125),int(c[2]*125))
-            im = QtGui.QImage(48,48,QtGui.QImage.Format_ARGB32)
-            im.fill(QtCore.Qt.transparent)
-            pt = QtGui.QPainter(im)
-            pt.setPen(QtGui.QPen(QtCore.Qt.black, 2, QtCore.Qt.SolidLine, QtCore.Qt.FlatCap))
-            #pt.setBrush(QtGui.QBrush(matcolor, QtCore.Qt.SolidPattern))
-            gradient = QtGui.QLinearGradient(0,0,48,48)
-            gradient.setColorAt(0,matcolor)
-            gradient.setColorAt(1,darkcolor)
-            pt.setBrush(QtGui.QBrush(gradient))
-            pt.drawEllipse(6,6,36,36)
-            pt.setPen(QtGui.QPen(QtCore.Qt.white, 1, QtCore.Qt.SolidLine, QtCore.Qt.FlatCap))
-            pt.setBrush(QtGui.QBrush(QtCore.Qt.white, QtCore.Qt.SolidPattern))
-            pt.drawEllipse(12,12,12,12)
-            pt.end()
-            px = QtGui.QPixmap.fromImage(im)
-            return QtGui.QIcon(px)
-        else:
-            return QtGui.QIcon(":/icons/Arch_Material.svg")
-
-
-
 FreeCADGui.addCommand('BIM_TogglePanels',BIM_TogglePanels())
 FreeCADGui.addCommand('BIM_Trash',BIM_Trash())
 FreeCADGui.addCommand('BIM_Copy',BIM_Copy())
@@ -324,7 +202,6 @@ FreeCADGui.addCommand('BIM_Clone',BIM_Clone())
 FreeCADGui.addCommand('BIM_Help',BIM_Help())
 FreeCADGui.addCommand('BIM_Glue',BIM_Glue())
 FreeCADGui.addCommand('BIM_Sketch',BIM_Sketch())
-FreeCADGui.addCommand('BIM_Material',BIM_Material())
 
 
 # Selection observer
