@@ -79,6 +79,16 @@ class BIM_Trash:
                 trash = FreeCAD.ActiveDocument.addObject("App::DocumentObjectGroup","Trash")
             for obj in FreeCADGui.Selection.getSelection():
                 trash.addObject(obj)
+                # check for parents still there
+                for par in obj.InList:
+                    if hasattr(par,"Group"):
+                        if obj in par.Group:
+                            if hasattr(par,"removeObject"):
+                                par.removeObject(obj)
+                            else:
+                                g = par.Group
+                                g.remove(obj)
+                                par.Group = g
                 obj.ViewObject.hide()
 
     def IsActive(self):
