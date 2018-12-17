@@ -62,7 +62,7 @@ class BIM_Project:
         # show dialog
         self.form.show()
 
-    def reject():
+    def reject(self):
 
         self.form.hide()
         return True
