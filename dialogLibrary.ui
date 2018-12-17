@@ -22,6 +22,13 @@
     </widget>
    </item>
    <item>
+    <widget class="QPushButton" name="buttonInsert">
+     <property name="text">
+      <string>Insert &gt;&gt;</string>
+     </property>
+    </widget>
+   </item>
+   <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
       <widget class="QLabel" name="label_2">
@@ -33,21 +40,28 @@
      <item>
       <widget class="QLineEdit" name="searchBox"/>
      </item>
-     <item>
-      <widget class="QPushButton" name="buttonClear">
-       <property name="text">
-        <string/>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="buttonWeb">
-       <property name="text">
-        <string/>
-       </property>
-      </widget>
-     </item>
     </layout>
+   </item>
+   <item>
+    <widget class="QPushButton" name="buttonBimObject">
+     <property name="text">
+      <string>Search BimObjects.com</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QPushButton" name="buttonNBSLibrary">
+     <property name="text">
+      <string>Search NationalBimLibrary.com</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QPushButton" name="buttonBimTool">
+     <property name="text">
+      <string>Search BimTool.com</string>
+     </property>
+    </widget>
    </item>
    <item>
     <widget class="QLabel" name="label">
@@ -56,13 +70,6 @@
      </property>
      <property name="wordWrap">
       <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QPushButton" name="buttonInsert">
-     <property name="text">
-      <string>Insert &gt;&gt;</string>
      </property>
     </widget>
    </item>

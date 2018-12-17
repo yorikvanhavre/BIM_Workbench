@@ -43,9 +43,9 @@ class BIM_Library:
     def Activated(self):
 
         libok = False
-        librarypath = FreeCAD.ParamGet('User parameter:Plugins/parts_library').GetString('destination','')
-        if librarypath:
-            if os.path.exists(librarypath):
+        self.librarypath = FreeCAD.ParamGet('User parameter:Plugins/parts_library').GetString('destination','')
+        if self.librarypath:
+            if os.path.exists(self.librarypath):
                 libok = True
         else:
             # check if the library is at the standard addon location
@@ -63,50 +63,98 @@ class BIM_Library_TaskPanel:
     def __init__(self):
 
         from PySide import QtCore,QtGui
-        librarypath = FreeCAD.ParamGet('User parameter:Plugins/parts_library').GetString('destination','')
+        self.librarypath = FreeCAD.ParamGet('User parameter:Plugins/parts_library').GetString('destination','')
         self.form = FreeCADGui.PySideUic.loadUi(os.path.join(os.path.dirname(__file__),"dialogLibrary.ui"))
         self.form.setWindowIcon(QtGui.QIcon(os.path.join(os.path.dirname(__file__),"icons","BIM_Library.svg")))
+        # setting up a file model for search
+        self.filemodel = QtGui.QStandardItemModel()
+        self.filemodel.setColumnCount(1)
         # setting up a directory model that shows only fcstd, step and brep
         self.dirmodel = LibraryModel()
-        self.dirmodel.setRootPath(librarypath)
+        self.dirmodel.setRootPath(self.librarypath)
         self.dirmodel.setNameFilters(FILTERS)
         self.dirmodel.setNameFilterDisables(False)
-        self.defaultfilter = self.dirmodel.filter()
         self.form.tree.setModel(self.dirmodel)
         self.form.tree.doubleClicked[QtCore.QModelIndex].connect(self.insert)
         self.form.buttonInsert.clicked.connect(self.insert)
+        self.modelmode = 1 # 0 = File search, 1 = Dir mode
         # Don't show columns for size, file type, and last modified
         self.form.tree.setHeaderHidden(True)
         self.form.tree.hideColumn(1)
         self.form.tree.hideColumn(2)
         self.form.tree.hideColumn(3)
-        self.form.tree.setRootIndex(self.dirmodel.index(librarypath))
-        self.form.buttonClear.setFixedSize(18, 21)
-        self.form.buttonClear.setStyleSheet("QToolButton {margin-bottom:1px}")
-        self.form.buttonClear.setIcon(QtGui.QIcon(":/icons/edit-cleartext.svg"))
-        self.form.buttonClear.setToolTip("Clears the search field")
-        self.form.buttonClear.setFlat(True)
-        self.form.buttonWeb.setIcon(QtGui.QIcon(":/icons/internet-web-browser.svg"))
-        self.form.buttonWeb.setToolTip("Search on the web")
-        self.form.buttonClear.clicked.connect(self.onClearSearch)
+        self.form.tree.setRootIndex(self.dirmodel.index(self.librarypath))
         self.form.searchBox.textChanged.connect(self.onSearch)
-
-
-    def onClearSearch(self):
-
-        self.form.searchBox.setText("")
+        self.form.buttonBimObject.setIcon(QtGui.QIcon(os.path.join(os.path.dirname(__file__),"icons","bimobject.png")))
+        self.form.buttonBimObject.clicked.connect(self.onBimObject)
+        self.form.buttonNBSLibrary.setIcon(QtGui.QIcon(os.path.join(os.path.dirname(__file__),"icons","nbslibrary.png")))
+        self.form.buttonNBSLibrary.clicked.connect(self.onNBSLibrary)
+        self.form.buttonBimTool.setIcon(QtGui.QIcon(os.path.join(os.path.dirname(__file__),"icons","bimtool.png")))
+        self.form.buttonBimTool.clicked.connect(self.onBimTool)
 
     def onSearch(self,text):
 
-        from PySide import QtCore
+        from PySide import QtGui
+        import PartGui
         if text:
-            self.dirmodel.setNameFilters([f.replace("*","*"+text+"*") for f in FILTERS])
-            self.dirmodel.setFilter(QtCore.QDir.Dirs | QtCore.QDir.Files)
-            self.form.tree.expandAll()
+            self.form.tree.setModel(self.filemodel)
+            self.filemodel.clear()
+            for dp, dn,fn in os.walk(self.librarypath):
+                for f in fn:
+                    if text.lower() in f.lower():
+                        if not os.path.isdir(os.path.join(dp,f)):
+                            it = QtGui.QStandardItem(f)
+                            it.setToolTip(os.path.join(dp,f))
+                            self.filemodel.appendRow(it)
+                            if f.endswith('.fcstd'):
+                                it.setIcon(QtGui.QIcon(':icons/freecad-doc.png'))
+                            elif f.endswith('.ifc'):
+                                it.setIcon(QtGui.QIcon(os.path.join(os.path.dirname(__file__),"icons","IFC.svg")))
+                            else:
+                                it.setIcon(QtGui.QIcon(':icons/Tree_Part.svg'))
+            self.modelmode = 0
+            
         else:
-            self.form.tree.collapseAll()
+            #self.form.tree.clear()
+            self.form.tree.setModel(self.dirmodel)
+            self.dirmodel.setRootPath(self.librarypath)
             self.dirmodel.setNameFilters(FILTERS)
-            self.dirmodel.setFilter(self.defaultfilter)
+            self.dirmodel.setNameFilterDisables(False)
+            self.form.tree.setRootIndex(self.dirmodel.index(self.librarypath))
+            self.modelmode = 1
+            self.form.tree.setHeaderHidden(True)
+            self.form.tree.hideColumn(1)
+            self.form.tree.hideColumn(2)
+            self.form.tree.hideColumn(3)
+
+    def urlencode(self,text):
+
+        from PySide import QtGui
+        print(text,type(text))
+        if sys.version_info.major < 3:
+            import urllib
+            return urllib.quote_plus(text)
+        else:
+            import urllib.parse
+            return urllib.parse.quote_plus(text)
+
+    def onBimObject(self):
+        
+        term = self.form.searchBox.text()
+        if term:
+            QtGui.QDesktopServices.openUrl("https://www.bimobject.com/en/product?filetype=8&freetext="+self.urlencode(term))
+
+    def onNBSLibrary(self):
+        
+        term = self.form.searchBox.text()
+        if term:
+            QtGui.QDesktopServices.openUrl("https://www.nationalbimlibrary.com/en/search/?facet=Xo-P0w&searchTerm="+self.urlencode(term))
+
+    def onBimTool(self):
+        
+        term = self.form.searchBox.text()
+        if term:
+            QtGui.QDesktopServices.openUrl("https://www.bimtool.com/Catalog.aspx?criterio="+self.urlencode(term))
 
     def needsFullSpace(self):
 
@@ -129,7 +177,10 @@ class BIM_Library_TaskPanel:
             if not index:
                 return
             index = index[0]
-        path = self.dirmodel.filePath(index)
+        if self.modelmode == 1:
+            path = self.dirmodel.filePath(index)
+        else:
+            path = self.filemodel.itemFromIndex(index).toolTip()
         before = FreeCAD.ActiveDocument.Objects
         self.name = os.path.splitext(os.path.basename(path))[0]
         if path.lower().endswith(".stp") or path.lower().endswith(".step") or path.lower().endswith(".brp") or path.lower().endswith(".brep"):
@@ -168,7 +219,7 @@ class BIM_Library_TaskPanel:
             if hasattr(FreeCAD,"DraftWorkingPlane"):
                 FreeCAD.DraftWorkingPlane.setup()
             self.origin = self.makeOriginWidget()
-            FreeCADGui.Snapper.getPoint(movecallback=self.move,callback=self.place,extradlg=self.origin)
+            FreeCADGui.Snapper.getPoint(movecallback=self.mouseMove,callback=self.mouseClick,extradlg=self.origin)
         else:
             Part.show(self.shape)
 
@@ -187,11 +238,11 @@ class BIM_Library_TaskPanel:
         l.addWidget(c)
         return w
 
-    def move(self,point,info):
+    def mouseMove(self,point,info):
         
         self.box.move(point.add(self.getDelta()))
 
-    def place(self,point,info):
+    def mouseClick(self,point,info):
         
         if point:
             import Arch,Part
@@ -231,7 +282,6 @@ class BIM_Library_TaskPanel:
 if FreeCAD.GuiUp:
 
     from PySide import QtCore,QtGui
-
 
     class LibraryModel(QtGui.QFileSystemModel):
 
