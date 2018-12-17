@@ -48,14 +48,23 @@ class BIM_TogglePanels:
 
         from  PySide import QtGui
         mw = FreeCADGui.getMainWindow()
-        windows = [mw.findChild(QtGui.QWidget,"Python console"),mw.findChild(QtGui.QWidget,"Selection view"),mw.findChild(QtGui.QWidget,"Report view")]
+        togglebutton = None
+        st = mw.statusBar()
+        statuswidget = st.findChild(QtGui.QToolBar,"BIMStatusWidget")
+        if statuswidget:
+            if hasattr(statuswidget,"togglebutton"):
+                togglebutton = statuswidget.togglebutton
+        windows = [mw.findChild(QtGui.QWidget,"Python console"),mw.findChild(QtGui.QWidget,"Report view"),mw.findChild(QtGui.QWidget,"Selection view")]
         if windows[0].isVisible():
             for w in windows:
                 w.hide()
+            if togglebutton:
+                    togglebutton.setChecked(False)
         else:
             for w in windows:
                 w.show()
-
+            if togglebutton:
+                togglebutton.setChecked(True)
 
 
 class BIM_Trash:
@@ -271,8 +280,11 @@ def setStatusIcons(show=True):
 
     "shows or hides the BIM icons in the status bar"
 
-    def toggle():
+    def toggle(state):
         FreeCADGui.runCommand("BIM_TogglePanels")
+
+    def toggleBimViews(state):
+        FreeCADGui.runCommand("BIM_Views")
 
     def addonMgr():
         FreeCADGui.runCommand("Std_AddonMgr")
@@ -296,6 +308,8 @@ def setStatusIcons(show=True):
             else:
                 statuswidget = QtGui.QToolBar()
                 statuswidget.setObjectName("BIMStatusWidget")
+                
+                # units chooser
                 unitLabel = QtGui.QPushButton("Unit")
                 unitLabel.setObjectName("UnitLabel")
                 unitLabel.setFlat(True)
@@ -311,6 +325,8 @@ def setStatusIcons(show=True):
                 unitLabel.setText(["Millimeters","Meters","Inches","Inches","Centimeters","Architectural","Millimeters","Feet"][unit])
                 statuswidget.addWidget(unitLabel)
                 st.addPermanentWidget(statuswidget)
+                
+                # report panels toggle button
                 togglebutton = QtGui.QPushButton()
                 bwidth = togglebutton.fontMetrics().boundingRect("AAAA").width()
                 togglebutton.setMaximumWidth(bwidth)
@@ -318,8 +334,30 @@ def setStatusIcons(show=True):
                 togglebutton.setText("")
                 togglebutton.setToolTip("Toggle report panels on/off")
                 togglebutton.setFlat(True)
-                QtCore.QObject.connect(togglebutton,QtCore.SIGNAL("pressed()"),toggle)
+                togglebutton.setCheckable(True)
+                rv = mw.findChild(QtGui.QWidget,"Python console")
+                if rv and rv.isVisible():
+                    togglebutton.setChecked(True)
+                statuswidget.togglebutton = togglebutton
+                QtCore.QObject.connect(togglebutton,QtCore.SIGNAL("clicked(bool)"),toggle)
                 statuswidget.addWidget(togglebutton)
+
+                # bim views widget toggle button
+                bimviewsbutton = QtGui.QPushButton()
+                bwidth = bimviewsbutton.fontMetrics().boundingRect("AAAA").width()
+                bimviewsbutton.setMaximumWidth(bwidth)
+                bimviewsbutton.setIcon(QtGui.QIcon(os.path.join(os.path.dirname(__file__),"icons","BIM_Views.svg")))
+                bimviewsbutton.setText("")
+                bimviewsbutton.setToolTip("Toggle BIM views panel on/off")
+                bimviewsbutton.setFlat(True)
+                bimviewsbutton.setCheckable(True)
+                if BimViews.findWidget():
+                    bimviewsbutton.setChecked(True)
+                statuswidget.bimviewsbutton = bimviewsbutton
+                QtCore.QObject.connect(bimviewsbutton,QtCore.SIGNAL("clicked(bool)"),toggleBimViews)
+                statuswidget.addWidget(bimviewsbutton)
+
+                # update notifier button (starts hidden)
                 updatebutton = QtGui.QPushButton()
                 updatebutton.setObjectName("UpdateButton")
                 updatebutton.setMaximumWidth(bwidth)

@@ -148,17 +148,16 @@ static char * IFC_xpm[] = {
                   "Part_Compound","Part_SimpleCopy","Draft_Upgrade", "Draft_Downgrade", "Draft_Shape2DView",
                   "Draft_Draft2Sketch","Arch_CutPlane","Arch_Add","Arch_Remove"]
 
-        self.manage = ["BIM_Setup","BIM_Project","BIM_Levels","BIM_Windows","BIM_IfcElements","BIM_Views",
+        self.manage = ["BIM_Setup","BIM_Project","BIM_Levels","BIM_Windows","BIM_IfcElements",
                   "BIM_Classification","BIM_Material","Arch_Schedule"]
 
-        self.utils = ["BIM_TogglePanels","BIM_Trash",
+        self.utils = ["BIM_TogglePanels","BIM_Trash","BIM_Views",
                  "Draft_VisGroup","Draft_Slope","Draft_SetWorkingPlaneProxy","Draft_AddConstruction",
                  "Arch_Component","Arch_CloneComponent","Arch_SplitMesh","Arch_MeshToShape",
                  "Arch_SelectNonSolidMeshes","Arch_RemoveShape",
                  "Arch_CloseHoles","Arch_MergeWalls","Arch_Check",
                  "Arch_IfcExplorer","Arch_ToggleIfcBrepFlag","Arch_3Views",
-                 "Arch_IfcSpreadsheet","Arch_ToggleSubs","Arch_Survey",
-                 "queryModel","moveWorkPlane","offsetWorkPlane","rotateWorkPlane"]
+                 "Arch_IfcSpreadsheet","Arch_ToggleSubs","Arch_Survey"]
 
         # load webtools
 

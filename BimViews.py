@@ -39,11 +39,22 @@ class BIM_Views:
     def Activated(self):
         from PySide import QtCore,QtGui
         vm = findWidget()
+        bimviewsbutton = None
+        mw = FreeCADGui.getMainWindow()
+        st = mw.statusBar()
+        statuswidget = st.findChild(QtGui.QToolBar,"BIMStatusWidget")
+        if statuswidget:
+            if hasattr(statuswidget,"bimviewsbutton"):
+                bimviewsbutton = statuswidget.bimviewsbutton
         if vm:
             if vm.isVisible():
                 vm.hide()
+                if bimviewsbutton:
+                    bimviewsbutton.setChecked(False)
             else:
                 vm.show()
+                if bimviewsbutton:
+                    bimviewsbutton.setChecked(True)
                 update()
         else:
             vm = QtGui.QListWidget()
