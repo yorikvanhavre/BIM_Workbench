@@ -220,13 +220,19 @@ static char * IFC_xpm[] = {
 
         # load Arch & Draft preference pages
 
-        import Draft_rc,Arch_rc
-        FreeCADGui.addPreferencePage(":/ui/preferences-arch.ui","Arch")
-        FreeCADGui.addPreferencePage(":/ui/preferences-archdefaults.ui","Arch")
-        FreeCADGui.addPreferencePage(":/ui/preferences-draft.ui","Draft")
-        FreeCADGui.addPreferencePage(":/ui/preferences-draftsnap.ui","Draft")
-        FreeCADGui.addPreferencePage(":/ui/preferences-draftvisual.ui","Draft")
-        FreeCADGui.addPreferencePage(":/ui/preferences-drafttexts.ui","Draft")
+        if hasattr(FreeCADGui,"draftToolBar"):
+            if not hasattr(FreeCADGui.draftToolBar,"loadedArchPreferences"):
+                import Arch_rc
+                FreeCADGui.addPreferencePage(":/ui/preferences-arch.ui","Arch")
+                FreeCADGui.addPreferencePage(":/ui/preferences-archdefaults.ui","Arch")
+                FreeCADGui.draftToolBar.loadedArchPreferences = True
+            if not hasattr(FreeCADGui.draftToolBar,"loadedPreferences"):
+                import Draft_rc
+                FreeCADGui.addPreferencePage(":/ui/preferences-draft.ui","Draft")
+                FreeCADGui.addPreferencePage(":/ui/preferences-draftsnap.ui","Draft")
+                FreeCADGui.addPreferencePage(":/ui/preferences-draftvisual.ui","Draft")
+                FreeCADGui.addPreferencePage(":/ui/preferences-drafttexts.ui","Draft")
+                FreeCADGui.draftToolBar.loadedPreferences = True
 
         Log ('Loading BIM module... done\n')
 

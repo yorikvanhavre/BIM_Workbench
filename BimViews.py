@@ -50,8 +50,6 @@ class BIM_Views:
             vm.setObjectName("Views Manager")
             vm.setSortingEnabled(True)
             vm.setIconSize(QtCore.QSize(16,16))
-            h = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM").GetInt("BimViewsSize",100)
-            vm.resize(vm.width(),h)
             QtCore.QObject.connect(vm, QtCore.SIGNAL("itemDoubleClicked(QListWidgetItem*)"),show)
             mw = FreeCADGui.getMainWindow()
             combo = mw.findChild(QtGui.QDockWidget,"Combo View")
@@ -60,7 +58,9 @@ class BIM_Views:
                 if s:
                     s.addWidget(vm)
             update()
-
+            h = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM").GetInt("BimViewsSize",100)
+            from DraftGui import todo
+            todo.delay(vm.resize,QtCore.QSize(vm.width(),h))
 
 FreeCADGui.addCommand('BIM_Views',BIM_Views())
 
@@ -93,7 +93,8 @@ def update():
                     it = QtGui.QListWidgetItem(vm)
                     it.setText(obj.Label)
                     it.setToolTip(obj.Name)
-                    it.setIcon(QtGui.QIcon(obj.ViewObject.Proxy.getIcon()))
+                    if obj.ViewObject:
+                        it.setIcon(QtGui.QIcon(obj.ViewObject.Proxy.getIcon()))
 
 def show(item):
     

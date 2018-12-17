@@ -28,6 +28,7 @@ import os,FreeCAD,FreeCADGui,sys
 
 def QT_TRANSLATE_NOOP(ctx,txt): return txt # dummy function for the QT translator
 
+FILTERS = ["*.fcstd","*.FCStd","*.FCSTD","*.stp","*.STP","*.step","*.STEP", "*.brp", "*.BRP", "*.brep", "*.BREP", "*.ifc", "*.IFC", "*.sat", "*.SAT"]
 
 
 class BIM_Library:
@@ -68,8 +69,9 @@ class BIM_Library_TaskPanel:
         # setting up a directory model that shows only fcstd, step and brep
         self.dirmodel = LibraryModel()
         self.dirmodel.setRootPath(librarypath)
-        self.dirmodel.setNameFilters(["*.fcstd","*.FCStd","*.FCSTD","*.stp","*.STP","*.step","*.STEP", "*.brp", "*.BRP", "*.brep", "*.BREP", "*.ifc", "*.IFC"])
-        self.dirmodel.setNameFilterDisables(0)
+        self.dirmodel.setNameFilters(FILTERS)
+        self.dirmodel.setNameFilterDisables(False)
+        self.defaultfilter = self.dirmodel.filter()
         self.form.tree.setModel(self.dirmodel)
         self.form.tree.doubleClicked[QtCore.QModelIndex].connect(self.insert)
         self.form.buttonInsert.clicked.connect(self.insert)
@@ -79,6 +81,32 @@ class BIM_Library_TaskPanel:
         self.form.tree.hideColumn(2)
         self.form.tree.hideColumn(3)
         self.form.tree.setRootIndex(self.dirmodel.index(librarypath))
+        self.form.buttonClear.setFixedSize(18, 21)
+        self.form.buttonClear.setStyleSheet("QToolButton {margin-bottom:1px}")
+        self.form.buttonClear.setIcon(QtGui.QIcon(":/icons/edit-cleartext.svg"))
+        self.form.buttonClear.setToolTip("Clears the search field")
+        self.form.buttonClear.setFlat(True)
+        self.form.buttonWeb.setIcon(QtGui.QIcon(":/icons/internet-web-browser.svg"))
+        self.form.buttonWeb.setToolTip("Search on the web")
+        self.form.buttonClear.clicked.connect(self.onClearSearch)
+        self.form.searchBox.textChanged.connect(self.onSearch)
+
+
+    def onClearSearch(self):
+
+        self.form.searchBox.setText("")
+
+    def onSearch(self,text):
+
+        from PySide import QtCore
+        if text:
+            self.dirmodel.setNameFilters([f.replace("*","*"+text+"*") for f in FILTERS])
+            self.dirmodel.setFilter(QtCore.QDir.Dirs | QtCore.QDir.Files)
+            self.form.tree.expandAll()
+        else:
+            self.form.tree.collapseAll()
+            self.dirmodel.setNameFilters(FILTERS)
+            self.dirmodel.setFilter(self.defaultfilter)
 
     def needsFullSpace(self):
 
@@ -96,30 +124,53 @@ class BIM_Library_TaskPanel:
 
     def insert(self, index=None):
         
-        import Part
         if not index:
             index = self.form.tree.selectedIndexes()
             if not index:
                 return
             index = index[0]
         path = self.dirmodel.filePath(index)
+        before = FreeCAD.ActiveDocument.Objects
         self.name = os.path.splitext(os.path.basename(path))[0]
         if path.lower().endswith(".stp") or path.lower().endswith(".step") or path.lower().endswith(".brp") or path.lower().endswith(".brep"):
-            self.shape = Part.read(path)
-            if hasattr(FreeCADGui,"Snapper"):
-                import DraftTrackers
-                self.box = DraftTrackers.ghostTracker(self.shape,dotted=True,scolor=(0.0,0.0,1.0),swidth=1.0)
-                self.delta = self.shape.BoundBox.Center
-                self.box.move(self.delta)
-                self.box.on()
-                if hasattr(FreeCAD,"DraftWorkingPlane"):
-                    FreeCAD.DraftWorkingPlane.setup()
-                self.origin = self.makeOriginWidget()
-                FreeCADGui.Snapper.getPoint(movecallback=self.move,callback=self.place,extradlg=self.origin)
-            else:
-                Part.show(self.shape)
+            self.place(path)
         elif path.lower().endswith(".fcstd"):
             FreeCADGui.ActiveDocument.mergeProject(path)
+            self.reject()
+        elif path.lower().endswith(".ifc"):
+            import importIFC
+            importIFC.insert(path,FreeCAD.ActiveDocument.Name)
+            self.reject()
+        elif path.lower().endswith(".sat"):
+            try:
+                import CadExchangerIO
+            except:
+                FreeCAD.Console.PrintError("Error: Unable to import SAT files - CadExchanger addon must be installed")
+            else:
+                path = CadExchangerIO.insert(path,FreeCAD.ActiveDocument.Name,returnpath = True)
+                self.place(path)
+        FreeCADGui.Selection.clearSelection()
+        for o in FreeCAD.ActiveDocument.Objects:
+            if not o in before:
+                FreeCADGui.Selection.addSelection(o)
+        FreeCADGui.SendMsgToActiveView("ViewSelection")
+
+    def place(self,path):
+
+        import Part
+        self.shape = Part.read(path)
+        if hasattr(FreeCADGui,"Snapper"):
+            import DraftTrackers
+            self.box = DraftTrackers.ghostTracker(self.shape,dotted=True,scolor=(0.0,0.0,1.0),swidth=1.0)
+            self.delta = self.shape.BoundBox.Center
+            self.box.move(self.delta)
+            self.box.on()
+            if hasattr(FreeCAD,"DraftWorkingPlane"):
+                FreeCAD.DraftWorkingPlane.setup()
+            self.origin = self.makeOriginWidget()
+            FreeCADGui.Snapper.getPoint(movecallback=self.move,callback=self.place,extradlg=self.origin)
+        else:
+            Part.show(self.shape)
 
     def makeOriginWidget(self):
         
@@ -195,6 +246,8 @@ if FreeCAD.GuiUp:
             if index.column() == 0 and role == QtCore.Qt.DecorationRole:
                 if index.data().lower().endswith('.fcstd'):
                     return QtGui.QIcon(':icons/freecad-doc.png')
+                elif index.data().lower().endswith('.ifc'):
+                    return QtGui.QIcon(os.path.join(os.path.dirname(__file__),"icons","IFC.svg"))
                 elif index.data().lower() == "private":
                     return QtGui.QIcon.fromTheme("folder-lock")
             return super(LibraryModel, self).data(index, role)

@@ -15,12 +15,44 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QTreeView" name="tree"/>
+    <widget class="QTreeView" name="tree">
+     <property name="dragEnabled">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QLabel" name="label_2">
+       <property name="text">
+        <string>Search:</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="searchBox"/>
+     </item>
+     <item>
+      <widget class="QPushButton" name="buttonClear">
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="buttonWeb">
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
    <item>
     <widget class="QLabel" name="label">
      <property name="text">
-      <string>Note: FCStd files cannot be placed. Step and Brep files can be placed at custom location</string>
+      <string>Note: FCStd and IFC files cannot be placed. STEP and BREP files can be placed at custom location</string>
      </property>
      <property name="wordWrap">
       <bool>true</bool>
