@@ -37,7 +37,7 @@ class BIM_Library:
     def GetResources(self):
 
         return {'Pixmap'  : os.path.join(os.path.dirname(__file__),"icons","BIM_Library.svg"),
-                'MenuText': QT_TRANSLATE_NOOP("BIM_Library", "Library..."),
+                'MenuText': QT_TRANSLATE_NOOP("BIM_Library", "Objects library"),
                 'ToolTip' : QT_TRANSLATE_NOOP("BIM_Library", "Opens the objects library")}
 
     def Activated(self):

@@ -34,7 +34,8 @@ class BIM_Views:
 
         return {'Pixmap'  : os.path.join(os.path.dirname(__file__),"icons","BIM_Views.svg"),
                 'MenuText': QT_TRANSLATE_NOOP("BIM_Views", "Views manager"),
-                'ToolTip' : QT_TRANSLATE_NOOP("BIM_Views", "Shows or hides the views manager")}
+                'ToolTip' : QT_TRANSLATE_NOOP("BIM_Views", "Shows or hides the views manager"),
+                'Accel': 'Ctrl+9'}
 
     def Activated(self):
         from PySide import QtCore,QtGui
