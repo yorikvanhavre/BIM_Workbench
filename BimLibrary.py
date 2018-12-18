@@ -66,7 +66,7 @@ class BIM_Library_TaskPanel:
         self.librarypath = FreeCAD.ParamGet('User parameter:Plugins/parts_library').GetString('destination','')
         self.form = FreeCADGui.PySideUic.loadUi(os.path.join(os.path.dirname(__file__),"dialogLibrary.ui"))
         self.form.setWindowIcon(QtGui.QIcon(os.path.join(os.path.dirname(__file__),"icons","BIM_Library.svg")))
-        # setting up a file model for search
+        # setting up a flat (no directories) file model for search
         self.filemodel = QtGui.QStandardItemModel()
         self.filemodel.setColumnCount(1)
         # setting up a directory model that shows only fcstd, step and brep
@@ -187,11 +187,13 @@ class BIM_Library_TaskPanel:
             self.place(path)
         elif path.lower().endswith(".fcstd"):
             FreeCADGui.ActiveDocument.mergeProject(path)
-            self.reject()
+            from DraftGui import todo
+            todo.delay(self.reject,None)
         elif path.lower().endswith(".ifc"):
             import importIFC
             importIFC.insert(path,FreeCAD.ActiveDocument.Name)
-            self.reject()
+            from DraftGui import todo
+            todo.delay(self.reject,None)
         elif path.lower().endswith(".sat"):
             try:
                 import CadExchangerIO
