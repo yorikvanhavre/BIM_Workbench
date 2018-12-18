@@ -2,7 +2,7 @@
 
 ![](https://www.freecadweb.org/wiki/images/5/5e/BIM_workbench_presentation.png)
 
-This is a workbench for [FreeCAD](https://www.freecadweb.org) that implements a complete set of [Building Information Modeling](https://en.wikipedia.org/wiki/Building_information_modeling) (BIM) tools and allows a proper BIM workflow similar to professional BIM applications like Revit, ArchiCAD, AllPlan or BricsCAD.
+This is a [workbench](https://www.freecadweb.org/wiki/Workbench_Concept) for [FreeCAD](https://www.freecadweb.org) that implements a complete set of [Building Information Modeling](https://en.wikipedia.org/wiki/Building_information_modeling) (BIM) tools and allows a proper BIM workflow similar to professional BIM applications like Revit, ArchiCAD, AllPlan or BricsCAD.
 
 FreeCAD is an open-source generic, parametric 3D modeling application. The BIM workbench, rather than trying to be a all-in-one, independent application and mimic the above applications, integrates into all layers of FreeCAD and allows you to use all the other moldeling and analysis tools of FreeCAD for BIM purposes too. In fact, if you know FreeCAD well already, you can do BIM without the BIM workbench, and only use it at the very end to format your model for BIM.
 
