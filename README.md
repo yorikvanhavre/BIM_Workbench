@@ -2,22 +2,13 @@
 
 ![](https://www.freecadweb.org/wiki/images/5/5e/BIM_workbench_presentation.png)
 
-**Warning**: This is highly experimental. Although it is safe to use, it won't break anything, it is meant to be experimental, and not a production environment (yet). You are more than welcome to try this, and help us to build a better BIM workflow, but some features might change or disappear without notice over time.
+This is a workbench for [FreeCAD](https://www.freecadweb.org) that implements a complete set of [Building Information Modeling](https://en.wikipedia.org/wiki/Building_information_modeling) (BIM) tools and allows a proper BIM workflow similar to professional BIM applications like Revit, ArchiCAD, AllPlan or BricsCAD.
 
-This is a meta workbench, it doesn't offer specific tools, but rather gathers, under one same workbench, the tools from these other workbenches:
+FreeCAD is an open-source generic, parametric 3D modeling application. The BIM workbench, rather than trying to be a all-in-one, independent application and mimic the above applications, integrates into all layers of FreeCAD and allows you to use all the other moldeling and analysis tools of FreeCAD for BIM purposes too. In fact, if you know FreeCAD well already, you can do BIM without the BIM workbench, and only use it at the very end to format your model for BIM.
 
-* [Draft](https://www.freecadweb.org/wiki/Draft_Module): 2D drafting tools and general utilities
-* [Arch](https://www.freecadweb.org/wiki/Arch_Module): General tools for building construction elements (Walls, columns, etc)
-* [Reinforcement](https://github.com/amrit3701/FreeCAD-Reinforcement): Extra tools for reinforcement bars
-* [Flamingo](https://www.freecadweb.org/wiki/Flamingo_Workbench): Tools for building metallic structures
-* [Bolts](https://github.com/jreinhardt/BOLTS): Additional tools for metallic pieces, fasteners and profiles
-* [DXF library](https://www.freecadweb.org/wiki/Draft_DXF): DXF export libraries
-* [Frame](https://www.freecadweb.org/wiki/Arch_Frame): Misc tools to build complex frames from sketches
-* [Fasteners](https://github.com/shaise/FreeCAD_FastenersWB): Parametric screws, nuts and bolts
-* [WebTools](https://www.freecadweb.org/wiki/WebTools_Workbench): Misc utilities to connect to web services
-* A couple of useful macros...
+But one of the specific goals of this particular workbench, is to try to focus on user experience. FreeCAD is a powerful application, but has a rather steep learning curve. In the BIM workbench, we try to ease that curve somehow.
 
-The BIM workbench contains a large number of tools, therefore it is convenient to use it on a large screen, to avoid eating up a lot of precious screen space.
+**Warning**: This is experimental work. Although it is perfectly safe to use, won't break anything, it is meant to be experimental, and not a production environment (yet). You are more than welcome to try, and help us to build a better BIM workflow, but remember that some features might change or disappear without notice over time.
 
 ### Installing
 
