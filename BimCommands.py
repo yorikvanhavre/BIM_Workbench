@@ -90,7 +90,7 @@ class BIM_Trash:
                 trash.addObject(obj)
                 # check for parents still there
                 for par in obj.InList:
-                    if hasattr(par,"Group"):
+                    if (par != trash) and hasattr(par,"Group"):
                         if obj in par.Group:
                             if hasattr(par,"removeObject"):
                                 par.removeObject(obj)

@@ -182,9 +182,7 @@ class BIM_Material:
             if text.lower() in o.Label.lower():
                 i = QtGui.QListWidgetItem(self.createIcon(o),o.Label,self.dlg.matList)
                 i.setToolTip(o.Name)
-                if len(self.dlg.objects) == 1:
-                    if self.dlg.objects[0].Material == o:
-                        self.dlg.matList.setCurrentItem(i)
+                self.dlg.matList.setCurrentItem(i)
 
 
 FreeCADGui.addCommand('BIM_Material',BIM_Material())

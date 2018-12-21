@@ -191,6 +191,7 @@ class BIM_Library_TaskPanel:
             todo.delay(self.reject,None)
         elif path.lower().endswith(".ifc"):
             import importIFC
+            importIFC.ZOOMOUT = False
             importIFC.insert(path,FreeCAD.ActiveDocument.Name)
             from DraftGui import todo
             todo.delay(self.reject,None)
