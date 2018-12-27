@@ -214,6 +214,48 @@ class BIM_Sketch:
         FreeCADGui.activateWorkbench('SketcherWorkbench')
 
 
+class BIM_WPView:
+
+    def GetResources(self):
+
+        return {'Pixmap'  : os.path.join(os.path.dirname(__file__),"icons","BIM_WPView.svg"),
+                'MenuText': QT_TRANSLATE_NOOP("BIM_WPView", "Working Plane View"),
+                'ToolTip' : QT_TRANSLATE_NOOP("BIM_WPView", "Aligns the view on the current item in BIM Views window or on the current working plane"),
+                'Accel'   : '9'}
+
+    def IsActive(self):
+
+        if FreeCAD.ActiveDocument:
+            return True
+        else:
+            return False
+
+    def Activated(self):
+
+        done = False
+        try:
+            import BimViews
+        except:
+            pass
+        else:
+            v = BimViews.findWidget()
+            if v:
+                i = v.currentItem()
+                if i:
+                    # Aligning on current widget item
+                    BimViews.show(i)
+                    done = True
+                elif hasattr(v,"lastSelected"):
+                    BimViews.show(v.lastSelected)
+                    # Aligning on stored widget item
+                    done = True
+        if not done:
+            # Aligning on working plane
+            c = FreeCADGui.ActiveDocument.ActiveView.getCameraNode()
+            r = FreeCAD.DraftWorkingPlane.getRotation().Rotation.Q
+            c.orientation.setValue(r)
+
+
 FreeCADGui.addCommand('BIM_TogglePanels',BIM_TogglePanels())
 FreeCADGui.addCommand('BIM_Trash',BIM_Trash())
 FreeCADGui.addCommand('BIM_Copy',BIM_Copy())
@@ -221,56 +263,7 @@ FreeCADGui.addCommand('BIM_Clone',BIM_Clone())
 FreeCADGui.addCommand('BIM_Help',BIM_Help())
 FreeCADGui.addCommand('BIM_Glue',BIM_Glue())
 FreeCADGui.addCommand('BIM_Sketch',BIM_Sketch())
-
-
-# Selection observer
-
-
-class BimDocumentObserver:
-
-    "a multipurpose document observer that stays active while in BIM workbench and can trigger things"
-
-    def __init__(self):
-
-        import AddonManager
-        self.check_worker = AddonManager.CheckWBWorker([["BIM","https://github.com/yorikvanhavre/BIM_Workbench",1]])
-        self.check_worker.mark.connect(self.slotUpdateAvailable)
-        self.check_worker.start()
-
-    def slotChangedObject(self,obj,prop):
-
-        BimViews.update()
-
-    def slotActivateDocument(self,doc):
-
-        mw = FreeCADGui.getMainWindow()
-        if mw:
-            st = mw.statusBar()
-            from PySide import QtCore,QtGui
-            statuswidget = st.findChild(QtGui.QToolBar,"BIMStatusWidget")
-            if statuswidget:
-                unitLabel = statuswidget.findChild(QtGui.QComboBox,"UnitLabel")
-                if unitLabel:
-                    unit = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Units").GetInt("UserSchema",0)
-                    unitLabel.setCurrentIndex(unit)
-
-    def slotDeletedDocument(self,doc):
-
-        pass
-
-    def slotUpdateAvailable(self,txt):
-
-        "triggered if an update is available"
-
-        mw = FreeCADGui.getMainWindow()
-        if mw:
-            st = mw.statusBar()
-            from PySide import QtCore,QtGui
-            statuswidget = st.findChild(QtGui.QToolBar,"BIMStatusWidget")
-            if statuswidget:
-                updatebutton = statuswidget.findChild(QtGui.QPushButton,"UpdateButton")
-                if updatebutton:
-                    updatebutton.show()
+FreeCADGui.addCommand('BIM_WPView',BIM_WPView())
 
 
 # Status bar buttons
@@ -279,6 +272,8 @@ class BimDocumentObserver:
 def setStatusIcons(show=True):
 
     "shows or hides the BIM icons in the status bar"
+    
+    from PySide import QtCore,QtGui
 
     def toggle(state):
         FreeCADGui.runCommand("BIM_TogglePanels")
@@ -296,11 +291,49 @@ def setStatusIcons(show=True):
         if hasattr(FreeCAD.Units,"setSchema"):
             FreeCAD.Units.setSchema(unit)
         action.parent().parent().parent().setText(utext)
+        
+    class CheckWorker(QtCore.QThread):
+        updateAvailable = QtCore.Signal(bool)
+    
+        def __init__(self):
+            QtCore.QThread.__init__(self)
+    
+        def run(self):
+            try:
+                import git
+            except:
+                return
+            bimdir = os.path.join(FreeCAD.getUserAppDataDir(),"Mod","BIM")
+            if os.path.exists(bimdir):
+                if os.path.exists(bimdir + os.sep + '.git'):
+                    gitrepo = git.Git(bimdir)
+                    gitrepo.fetch()
+                    if "git pull" in gitrepo.status():
+                        self.updateAvailable.emit(True)
+                        return
+            self.updateAvailable.emit(False)
+
+    def checkUpdates():
+        FreeCAD.bim_update_checker = CheckWorker()
+        FreeCAD.bim_update_checker.updateAvailable.connect(showUpdateButton)
+        FreeCAD.bim_update_checker.start()
+        
+    def showUpdateButton(avail):
+        if avail:
+            mw = FreeCADGui.getMainWindow()
+            if mw:
+                st = mw.statusBar()
+                statuswidget = st.findChild(QtGui.QToolBar,"BIMStatusWidget")
+                if statuswidget:
+                    updatebutton = statuswidget.findChild(QtGui.QPushButton,"UpdateButton")
+                    if updatebutton:
+                        updatebutton.show()
+        if hasattr(FreeCAD,"bim_update_checker"):
+            del FreeCAD.bim_update_checker
 
     mw = FreeCADGui.getMainWindow()
     if mw:
         st = mw.statusBar()
-        from PySide import QtCore,QtGui
         statuswidget = st.findChild(QtGui.QToolBar,"BIMStatusWidget")
         if show:
             if statuswidget:
@@ -368,6 +401,7 @@ def setStatusIcons(show=True):
                 QtCore.QObject.connect(updatebutton,QtCore.SIGNAL("pressed()"),addonMgr)
                 updatebutton.hide()
                 statuswidget.addWidget(updatebutton)
+                QtCore.QTimer.singleShot(2500, checkUpdates) # delay a bit the check for BIM WB update...
         else:
             if statuswidget:
                 statuswidget.hide()

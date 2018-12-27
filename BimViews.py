@@ -26,6 +26,7 @@ import os,FreeCAD,FreeCADGui,sys
 
 def QT_TRANSLATE_NOOP(ctx,txt): return txt # dummy function for the QT translator
 
+UPDATEINTERVAL = 2000 # number of milliseconds between BIM Views window update
 
 class BIM_Views:
 
@@ -68,11 +69,15 @@ class BIM_Views:
             if combo:
                 s = combo.findChild(QtGui.QSplitter)
                 if s:
+                    # discount the widget size from the first one
+                    h = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM").GetInt("BimViewsSize",100)
+                    sizes = s.sizes()
+                    sizes[0] = sizes[0]-h
                     s.addWidget(vm)
+                    s.setSizes(sizes+[h])
             update()
-            h = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM").GetInt("BimViewsSize",100)
             from DraftGui import todo
-            todo.delay(vm.resize,QtCore.QSize(vm.width(),h))
+
 
 FreeCADGui.addCommand('BIM_Views',BIM_Views())
 
@@ -99,7 +104,7 @@ def update():
         if vm.isVisible():
             vm.clear()
             import Draft
-            from PySide import QtGui
+            from PySide import QtCore,QtGui
             for obj in FreeCAD.ActiveDocument.Objects:
                 if obj and (Draft.getType(obj) in ["Building","BuildingPart","WorkingPlaneProxy"]):
                     it = QtGui.QListWidgetItem(vm)
@@ -107,6 +112,7 @@ def update():
                     it.setToolTip(obj.Name)
                     if obj.ViewObject:
                         it.setIcon(QtGui.QIcon(obj.ViewObject.Proxy.getIcon()))
+            QtCore.QTimer.singleShot(UPDATEINTERVAL, update)
 
 def show(item):
     

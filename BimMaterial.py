@@ -27,6 +27,28 @@ import os,FreeCAD,FreeCADGui,DraftTools
 def QT_TRANSLATE_NOOP(ctx,txt): return txt # dummy function for the QT translator
 
 
+if FreeCAD.GuiUp:
+    
+    from PySide import QtCore,QtGui
+
+    class MatLineEdit(QtGui.QLineEdit):
+        
+        "custom QLineEdit widget that has the power to catch up/down arrow keypress"
+        
+        def __init__(self, parent=None):
+            
+            QtGui.QLineEdit.__init__(self, parent)
+            
+        def keyPressEvent(self, event):
+            
+            if event.key() == QtCore.Qt.Key_Up:
+                self.emit(QtCore.SIGNAL("up()"))
+            elif event.key() == QtCore.Qt.Key_Down:
+                self.emit(QtCore.SIGNAL("down()"))
+            else:
+                QtGui.QLineEdit.keyPressEvent(self, event)
+
+
 
 class BIM_Material:
 
@@ -71,7 +93,7 @@ class BIM_Material:
             if matList.count():
                 searchLayout = QtGui.QHBoxLayout()
                 searchLayout.setSpacing(2)
-                searchBox = QtGui.QLineEdit(self.dlg)
+                searchBox = MatLineEdit(self.dlg)
                 searchBox.setPlaceholderText("Search...")
                 searchBox.setToolTip("Searches object labels")
                 self.dlg.searchBox = searchBox
@@ -100,6 +122,10 @@ class BIM_Material:
                 buttonMulti.clicked.connect(self.onMulti)
                 buttonClear.clicked.connect(self.onClearSearch)
                 searchBox.textChanged.connect(self.onSearch)
+                #searchBox.up.connect(self.onUpArrow)
+                QtCore.QObject.connect(searchBox,QtCore.SIGNAL("up()"),self.onUpArrow)
+                #searchBox.down.connect(self.onUpArrow)
+                QtCore.QObject.connect(searchBox,QtCore.SIGNAL("down()"),self.onDownArrow)
                 matList.itemDoubleClicked.connect(self.onAccept)
                 self.dlg.show()
                 self.dlg.searchBox.setFocus()
@@ -140,6 +166,24 @@ class BIM_Material:
 
         if self.dlg:
             self.dlg.hide()
+
+    def onUpArrow(self):
+
+        if self.dlg:
+            i = self.dlg.matList.currentRow()
+            if i > 0:
+                self.dlg.matList.setCurrentRow(i-1)
+            else:
+                self.dlg.matList.setCurrentRow(self.dlg.matList.count()-1)
+
+    def onDownArrow(self):
+
+        if self.dlg:
+            i = self.dlg.matList.currentRow()
+            if i < self.dlg.matList.count()-1:
+                self.dlg.matList.setCurrentRow(i+1)
+            else:
+                self.dlg.matList.setCurrentRow(0)
 
     def createIcon(self,obj):
 

@@ -27,6 +27,7 @@ class BIMWorkbench(Workbench):
 
 
     def __init__(self):
+
         self.__class__.MenuText = "BIM"
         self.__class__.ToolTip = "BIM workbench"
         self.__class__.Icon = """
@@ -134,7 +135,7 @@ static char * IFC_xpm[] = {
         self.manage = ["BIM_Setup","BIM_Project","BIM_Levels","BIM_Windows","BIM_IfcElements",
                   "BIM_Classification","BIM_Material","Arch_Schedule"]
 
-        self.utils = ["BIM_TogglePanels","BIM_Trash","BIM_Views",
+        self.utils = ["BIM_TogglePanels","BIM_Trash","BIM_Views","BIM_WPView",
                  "Draft_VisGroup","Draft_Slope","Draft_SetWorkingPlaneProxy","Draft_AddConstruction",
                  "Arch_Component","Arch_CloneComponent","Arch_SplitMesh","Arch_MeshToShape",
                  "Arch_SelectNonSolidMeshes","Arch_RemoveShape",
@@ -233,10 +234,6 @@ static char * IFC_xpm[] = {
             todo.delay(FreeCADGui.runCommand,"BIM_Welcome")
         todo.delay(BimCommands.setStatusIcons,True)
 
-        if not hasattr(FreeCAD,"BimDocumentObserver"):
-            FreeCAD.BimDocumentObserver = BimCommands.BimDocumentObserver()
-            FreeCAD.addDocumentObserver(FreeCAD.BimDocumentObserver)
-            Log("Adding FreeCAD.BimDocumentObserver\n")
         FreeCADGui.Control.clearTaskWatcher()
 
         class BimWatcher:
@@ -259,13 +256,13 @@ static char * IFC_xpm[] = {
                                            BimWatcher(self.modify,"Modify",invert=True)])
 
         # restore views widget if needed
+
         if FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM").GetBool("RestoreBimViews",True):
             w = BimCommands.BimViews.findWidget()
             if not w:
                 FreeCADGui.runCommand("BIM_Views")
             else:
                 w.show()
-                
 
         Log("BIM workbench activated\n")
 
@@ -283,13 +280,11 @@ static char * IFC_xpm[] = {
         #print("Deactivating status icon")
 
         todo.delay(BimCommands.setStatusIcons,False)
-        if hasattr(FreeCAD,"BimDocumentObserver"):
-            FreeCAD.removeDocumentObserver(FreeCAD.BimDocumentObserver)
-            del FreeCAD.BimDocumentObserver
-            Log("Removing FreeCAD.BimDocumentObserver\n")
+
         FreeCADGui.Control.clearTaskWatcher()
 
         # store views widget state and vertical size
+
         w = BimCommands.BimViews.findWidget()
         FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM").SetBool("RestoreBimViews",bool(w))
         if w:
@@ -297,6 +292,7 @@ static char * IFC_xpm[] = {
             w.hide()
 
         Log("BIM workbench deactivated\n")
+
 
     def ContextMenu(self, recipient):
 
@@ -312,6 +308,7 @@ static char * IFC_xpm[] = {
                     break
             if groups:
                 self.appendContextMenu("",["Draft_SelectGroup"])
+
 
     def GetClassName(self):
 
