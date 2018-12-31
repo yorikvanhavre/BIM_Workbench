@@ -14,9 +14,12 @@ But one of the specific goals of this particular workbench, is to try to focus o
 
 Starting from FreeCAD v0.17, the BIM workbench can easily be installed from within FreeCAD using the addons manager, found under menu Tools -> Addons manager
 
-### Documentation
+### Learning
 
 The BIM workbench documentation is hosted on the FreeCAD wiki, at https://www.freecadweb.org/wiki/BIM_Workbench
+For general FreeCAD documentation and learning, I recommend you to to start with the [FreeCAD manual](https://www.freecadweb.org/wiki/Manual:Introduction)
+
+The BIM workbench also features a built-in tutorial (in development) located under menu Help-> BIM tutorial
 
 ### Development
 
