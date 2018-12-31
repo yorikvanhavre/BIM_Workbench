@@ -297,7 +297,6 @@ static char * IFC_xpm[] = {
     def ContextMenu(self, recipient):
 
         import BimCommands,DraftTools
-        self.appendContextMenu("",["BIM_Trash","Draft_AddConstruction"])
         if (recipient == "Tree"):
             groups = False
             for o in FreeCADGui.Selection.getSelection():
@@ -308,6 +307,9 @@ static char * IFC_xpm[] = {
                     break
             if groups:
                 self.appendContextMenu("",["Draft_SelectGroup"])
+        elif (recipient == "View"):
+            self.appendContextMenu("Snapping",self.snap)
+        self.appendContextMenu("",["BIM_Trash","Draft_AddConstruction"])
 
 
     def GetClassName(self):

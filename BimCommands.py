@@ -255,7 +255,6 @@ class BIM_WPView:
             r = FreeCAD.DraftWorkingPlane.getRotation().Rotation.Q
             c.orientation.setValue(r)
 
-
 FreeCADGui.addCommand('BIM_TogglePanels',BIM_TogglePanels())
 FreeCADGui.addCommand('BIM_Trash',BIM_Trash())
 FreeCADGui.addCommand('BIM_Copy',BIM_Copy())
