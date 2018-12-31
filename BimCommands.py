@@ -282,6 +282,14 @@ def setStatusIcons(show=True):
         FreeCADGui.runCommand("BIM_Views")
 
     def addonMgr():
+        mw = FreeCADGui.getMainWindow()
+        if mw:
+            st = mw.statusBar()
+            statuswidget = st.findChild(QtGui.QToolBar,"BIMStatusWidget")
+            if statuswidget:
+                updatebutton = statuswidget.findChild(QtGui.QPushButton,"UpdateButton")
+                if updatebutton:
+                    statuswidget.actions()[-1].setVisible(False)
         FreeCADGui.runCommand("Std_AddonMgr")
 
     def setUnit(action):
@@ -303,6 +311,7 @@ def setStatusIcons(show=True):
                 import git
             except:
                 return
+            FreeCAD.Console.PrintLog("Checking for available updates of the BIM workbench\n")
             bimdir = os.path.join(FreeCAD.getUserAppDataDir(),"Mod","BIM")
             if os.path.exists(bimdir):
                 if os.path.exists(bimdir + os.sep + '.git'):
@@ -327,7 +336,8 @@ def setStatusIcons(show=True):
                 if statuswidget:
                     updatebutton = statuswidget.findChild(QtGui.QPushButton,"UpdateButton")
                     if updatebutton:
-                        updatebutton.show()
+                        #updatebutton.show() # doesn't work for some reason
+                        statuswidget.actions()[-1].setVisible(True)
         if hasattr(FreeCAD,"bim_update_checker"):
             del FreeCAD.bim_update_checker
 
