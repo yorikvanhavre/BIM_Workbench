@@ -238,8 +238,15 @@ class BIM_Library_TaskPanel:
         c.ObjectName = "comboOrigin"
         w.comboOrigin = c
         c.addItems(["Origin","Top left","Top center","Top right","Middle left","Middle center","Middle right","Bottom left","Bottom center","Bottom right"])
+        p = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM").GetInt("LibraryDefaultInsert",0)
+        c.setCurrentIndex(p)
+        c.currentIndexChanged.connect(self.storeInsert)
         l.addWidget(c)
         return w
+
+    def storeInsert(self,index):
+
+        p = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM").SetInt("LibraryDefaultInsert",index)
 
     def mouseMove(self,point,info):
         
