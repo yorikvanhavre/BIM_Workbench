@@ -30,6 +30,8 @@ This is a rather short overview of what it can do, just to give you a taste of i
 3. Locate and install the BIM addon
 4. Restart FreeCAD, and switch to the BIM workbench
 
+Like any other FreeCAD [workbench](https://www.freecadweb.org/wiki/Workbench_Concept), you can also manually clone or download all the files from this repository in a "BIM" folder inside your FreeCAD Mod directory
+
 ### Learning
 
 On starting the BIM workbench for the first time, you will be presented a welcome screen which will guide you further
