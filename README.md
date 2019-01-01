@@ -6,7 +6,7 @@ This is a [workbench](https://www.freecadweb.org/wiki/Workbench_Concept) for [Fr
 
 FreeCAD is an open-source generic, parametric 3D modeling application. The BIM workbench, rather than trying to be a all-in-one, independent application and mimic the above applications, integrates into all layers of FreeCAD and allows you to use all the other moldeling and analysis tools of FreeCAD for BIM purposes too. In fact, if you know FreeCAD well already, you can do BIM without the BIM workbench, and only use it at the very end to format your model for BIM.
 
-But one of the specific goals of this particular workbench, is to try to focus on user experience. FreeCAD is a powerful application, but has a rather steep learning curve. In the BIM workbench, we try to ease that curve somehow.
+But one of the specific goals of this particular workbench, is to try to focus on user experience. FreeCAD is a powerful application, but has a rather steep learning curve. In the BIM workbench, we try to ease that curve as best as we can and provide a smooth user experience.
 
 **Warning**: This is experimental work. Although it is perfectly safe to use, and won't break anything, it is meant to be an place where we can try things and experiment, and not a production environment (yet). You are more than welcome to try, give us your feedback and help us to build a better BIM workflow, just remember that some features might change or disappear without notice over time.
 
