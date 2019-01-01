@@ -12,7 +12,7 @@ But one of the specific goals of this particular workbench, is to try to focus o
 
 ### Features
 
-This is a rather short overview of what it can do, just to give you a taste of it. There is much more than that, refer to the  [full documentation](https://github.com/yorikvanhavre/BIM_Workbench/wiki) to know more.
+This is a rather short overview of what it can do, just to give you a taste of it. There is much more than that, refer to the  [full documentation](https://www.freecadweb.org/wiki/BIM_Workbench) to know more.
 
 * 2D drawing tools (all the usual ones like lines, arcs, polylines, rectangles, etc...) plus pretty powerful, complex, constrainable [sketches](https://www.freecadweb.org/wiki/Sketcher_Module) with common drafting aid environment such as snapping, working planes, etc.
 * Generic 3D objects such as extrusions, unions, subtractions, intersections (all usable as BIM components)
