@@ -149,7 +149,7 @@ static char * IFC_xpm[] = {
                   "Draft_Draft2Sketch","Arch_CutPlane","Arch_Add","Arch_Remove"]
 
         self.manage = ["BIM_Setup","BIM_Project","BIM_Levels","BIM_Windows","BIM_IfcElements",
-                  "BIM_Classification","BIM_Material","Arch_Schedule"]
+                  "BIM_IfcQuantities","BIM_Classification","BIM_Material","Arch_Schedule"]
 
         self.utils = ["BIM_TogglePanels","BIM_Trash","BIM_Views","BIM_WPView",
                  "Draft_VisGroup","Draft_Slope","Draft_SetWorkingPlaneProxy","Draft_AddConstruction",

@@ -29,7 +29,8 @@ def QT_TRANSLATE_NOOP(ctx,txt): return txt # dummy function for the QT translato
 
 # import commands that are defined in their separate files
 
-import BimWelcome,BimSetup,BimProject,BimLevels,BimWindows,BimIfcElements,BimViews,BimClassification,BimBox,BimTutorial,BimLibrary,BimMaterial
+import BimWelcome,BimSetup,BimProject,BimLevels,BimWindows,BimIfcElements,BimViews
+import BimClassification,BimBox,BimTutorial,BimLibrary,BimMaterial,BimIfcQuantities
 
 
 # additional, smaller commands that are defined directly in this file
