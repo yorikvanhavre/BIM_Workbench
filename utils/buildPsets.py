@@ -24,12 +24,14 @@
    and stores them into a pset_dfinitions.xml files in the current directory. Warning, this can take
    a certain time (there are more than 400 definitions to retrieve)"""
 
+from __future__ import print_function
+
 import re,urllib2,os
 
 MAXTRIES = 3
 
 # read the pset list
-print "Getting psets list..."
+print("Getting psets list...")
 u = urllib2.urlopen("http://www.buildingsmart-tech.org/ifc/IFC4/Add2/html/annex/annex-b/alphabeticalorder_psets.htm")
 p = u.read()
 u.close()
@@ -39,18 +41,18 @@ psets = re.findall(">Pset_(.*?)</a>",p)
 psetdefs = ""
 failed = []
 for i,pset in enumerate(psets):
-    print i+1,"/",len(psets),": Retrieving Pset",pset
+    print(i+1,"/",len(psets),": Retrieving Pset",pset)
     for j in range(MAXTRIES):
         try:
             u = urllib2.urlopen("http://www.buildingsmart-tech.org/ifc/IFC4/final/html/psd/Pset_"+pset+".xml")
             p = u.read()
             u.close()
         except:
-            print "    Connection failed. trying one more time..."
+            print("    Connection failed. trying one more time...")
         else:
             break
     else:
-        print "    Unable to retrieve ",pset,". Skipping..."
+        print("    Unable to retrieve ",pset,". Skipping...")
         failed.append(pset)
     psetdefs += p
 psetdefs = psetdefs.replace('<?xml version="1.0" encoding="utf-8"?>','')
@@ -59,7 +61,6 @@ psetdefs = '<?xml version="1.0" encoding="utf-8"?>\n<Root>\n'+psetdefs+'</Root>'
 f = open("pset_definitions.xml","wb")
 f.write(psetdefs)
 f.close()
-print "All done! writing "+os.path.join(os.path.abspath(os.curdir),"pset_definitions.xml")
+print("All done! writing "+os.path.join(os.path.abspath(os.curdir),"pset_definitions.xml"))
 if failed:
-    print "The following psets failed and were not retrieved:",failed
-    
+    print("The following psets failed and were not retrieved:",failed)
