@@ -23,6 +23,7 @@
 """This module contains FreeCAD commands for the BIM workbench"""
 
 import os,FreeCAD,FreeCADGui
+from FreeCAD import Vector
 
 def QT_TRANSLATE_NOOP(ctx,txt): return txt # dummy function for the QT translator
 

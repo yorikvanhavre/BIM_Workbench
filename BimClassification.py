@@ -209,14 +209,14 @@ class BIM_Classification:
         for child in node.childNodes:
             if child.hasChildNodes():
                 ID = None
-                Name = None
+                name = None
                 children = []
                 for tag in child.childNodes:
                     if tag.hasChildNodes():
                         if tag.tagName == "ID":
                             ID = tag.childNodes[0].wholeText
                         elif tag.tagName == "Name":
-                            Name = tag.childNodes[0].wholeText
+                            name = tag.childNodes[0].wholeText
                         elif tag.tagName == "Children":
                             children = self.getChildren(tag.childNodes)
                 if ID and Name:
