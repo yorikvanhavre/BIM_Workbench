@@ -24,7 +24,7 @@ from __future__ import print_function
 
 """This module contains FreeCAD commands for the BIM workbench"""
 
-import os,FreeCAD,FreeCADGui,Arch_rc
+import os,FreeCAD,FreeCADGui,Arch_rc,Draft
 from PySide import QtCore,QtGui
 
 
@@ -53,6 +53,7 @@ class BIM_Classification:
         # init checks
         if not hasattr(self,"Classes"):
             self.Classes = {}
+        self.isEditing = None
 
         # load the form and set the tree model up
         self.form = FreeCADGui.PySideUic.loadUi(os.path.join(os.path.dirname(__file__),"dialogClassification.ui"))
@@ -61,26 +62,30 @@ class BIM_Classification:
         # set help line
         self.form.labelDownload.setText(self.form.labelDownload.text().replace("%s",os.path.join(FreeCAD.getUserAppDataDir(),"BIM","Classification")))
 
-        # hide materials list if we are editing an object
+        # hide materials list if we are editing a particular object
         if len(FreeCADGui.Selection.getSelection()) == 1:
-            if hasattr(FreeCADGui.Selection.getSelection()[0],"StandardCode"):
+            self.isEditing = FreeCADGui.Selection.getSelection()[0]
+            if hasattr(self.isEditing,"StandardCode"):
                 self.form.groupMaterials.hide()
                 self.form.buttonApply.hide()
                 self.form.buttonRename.hide()
+                self.form.setWindowTitle("Editing "+self.isEditing.Label)
 
         # fill materials list
+        self.objectslist = {}
+        self.matlist = {}
+        self.labellist = {}
         for obj in FreeCAD.ActiveDocument.Objects:
-            if obj.isDerivedFrom("App::MaterialObject"):
-                s1 = obj.Label
-                s2 = ""
-                if "StandardCode" in obj.Material:
-                    s2 = obj.Material["StandardCode"]
-                it = QtGui.QTreeWidgetItem([s1,s2])
-                it.setIcon(0,QtGui.QIcon(":/icons/Arch_Material.svg"))
-                it.setToolTip(0,obj.Name)
-                self.form.treeMaterials.addTopLevelItem(it)
-                if obj in FreeCADGui.Selection.getSelection():
-                    self.form.treeMaterials.setCurrentItem(it)
+            if "StandardCode" in obj.PropertiesList:
+                if Draft.getType(obj) in ["Material","MultiMaterial"]:
+                    self.matlist[obj.Name] = obj.StandardCode
+                else:
+                    self.objectslist[obj.Name] = obj.StandardCode
+                self.labellist[obj.Name] = obj.Label
+
+        # fill objects list
+        if not self.isEditing:
+            self.updateObjects()
 
         # fill available classifications
         p = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Arch").GetString("DefaultClassificationSystem","")
@@ -94,20 +99,198 @@ class BIM_Classification:
                         self.form.comboSystem.setCurrentIndex(self.form.comboSystem.count()-1)
 
         # connect signals
-        QtCore.QObject.connect(self.form.comboSystem, QtCore.SIGNAL("currentIndexChanged(int)"), self.update)
+        QtCore.QObject.connect(self.form.comboSystem, QtCore.SIGNAL("currentIndexChanged(int)"), self.updateClasses)
         QtCore.QObject.connect(self.form.buttonApply, QtCore.SIGNAL("clicked()"), self.apply)
         QtCore.QObject.connect(self.form.buttonRename, QtCore.SIGNAL("clicked()"), self.rename)
-        QtCore.QObject.connect(self.form.search, QtCore.SIGNAL("textEdited(QString)"), self.update)
+        QtCore.QObject.connect(self.form.search, QtCore.SIGNAL("textEdited(QString)"), self.updateClasses)
         QtCore.QObject.connect(self.form.buttonBox, QtCore.SIGNAL("accepted()"), self.accept)
+        QtCore.QObject.connect(self.form.groupMode, QtCore.SIGNAL("currentIndexChanged(int)"), self.updateObjects)
+        QtCore.QObject.connect(self.form.treeClass, QtCore.SIGNAL("itemDoubleClicked(QTreeWidgetItem*,int)"), self.apply)
 
         # center the dialog over FreeCAD window
         mw = FreeCADGui.getMainWindow()
         self.form.move(mw.frameGeometry().topLeft() + mw.rect().center() - self.form.rect().center())
 
-        self.update()
+        self.updateClasses()
         self.form.show()
 
-    def update(self,search=""):
+    def updateObjects(self,idx=None):
+
+        # store current state of tree into self.objectslist before redrawing
+
+        for row in range(self.form.treeObjects.topLevelItemCount()):
+            child = self.form.treeObjects.topLevelItem(row)
+            if child.toolTip(0):
+                if child.toolTip(0) in self.objectslist:
+                    self.objectslist[child.toolTip(0)] = child.text(1)
+                elif child.toolTip(0) in self.matlist:
+                    self.matlist[child.toolTip(0)] = child.text(1)
+                self.labellist[child.toolTip(0)] = child.text(0)
+            for childrow in range(child.childCount()):
+                grandchild = child.child(childrow)
+                if grandchild.toolTip(0):
+                    if grandchild.toolTip(0) in self.objectslist:
+                        self.objectslist[grandchild.toolTip(0)] = grandchild.text(1)
+                    elif grandchild.toolTip(0) in self.matlist:
+                        self.matlist[grandchild.toolTip(0)] = grandchild.text(1)
+                    self.labellist[grandchild.toolTip(0)] = grandchild.text(0)
+
+        self.form.treeObjects.clear()
+
+        if self.form.groupMode.currentIndex() == 1:
+            # group by type
+            self.updateByType()
+        elif self.form.groupMode.currentIndex() == 2:
+            # group by material
+            self.updateByMaterial()
+        elif self.form.groupMode.currentIndex() == 3:
+            # group by model structure
+            self.updateByTree()
+        else:
+            # group alphabetically
+            self.updateDefault()
+
+        # resize columns - no resizeSection in pyside2
+        #self.form.treeObjects.header().resizeSection(0,int(self.form.treeObjects.width()/2))
+        #self.form.treeObjects.header().resizeSection(1,int(self.form.treeObjects.width()/2))
+
+    def updateByType(self):
+
+        groups = {}
+        for name in self.objectslist.keys():
+            obj = FreeCAD.ActiveDocument.getObject(name)
+            if obj and hasattr(obj,"IfcRole"):
+                groups.setdefault(obj.IfcRole,[]).append(name)
+            else:
+                groups.setdefault("Undefined",[]).append(name)
+        groups["Materials"] = self.matlist.keys()
+        d = self.objectslist.copy()
+        d.update(self.matlist)
+
+        for group in groups.keys():
+            mit = QtGui.QTreeWidgetItem([group,""])
+            self.form.treeObjects.addTopLevelItem(mit)
+            for name in groups[group]:
+                obj = FreeCAD.ActiveDocument.getObject(name)
+                if obj:
+                    if (not self.form.onlyVisible.isChecked()) or obj.ViewObject.isVisible() or (Draft.getType(obj) in ["Material","MultiMaterial"]):
+                        it = QtGui.QTreeWidgetItem([self.labellist[name],d[name]])
+                        it.setIcon(0,QtGui.QIcon(obj.ViewObject.Proxy.getIcon()))
+                        it.setToolTip(0,name)
+                        mit.addChild(it)
+            mit.sortChildren(0,QtCore.Qt.AscendingOrder)
+        self.form.treeObjects.expandAll()
+        #self.spanTopLevels()
+
+    def updateByMaterial(self):
+
+        groups = {}
+        claimed = []
+        for name in self.matlist.keys():
+            mat = FreeCAD.ActiveDocument.getObject(name)
+            if mat:
+                children = [par.Name for par in mat.InList if par.Name in self.objectslist.keys()]
+                groups[name] = children
+                claimed.extend(children)
+        groups["Undefined"] = [o for o in self.objectslist.keys() if not o in claimed]
+
+        for group in groups.keys():
+            matobj = FreeCAD.ActiveDocument.getObject(group)
+            if matobj:
+                mit = QtGui.QTreeWidgetItem([self.labellist[group],self.matlist[group]])
+                mit.setIcon(0,QtGui.QIcon(matobj.ViewObject.Proxy.getIcon()))
+                mit.setToolTip(0,group)
+            else:
+                mit = QtGui.QTreeWidgetItem(["Undefined",""])
+            self.form.treeObjects.addTopLevelItem(mit)
+            for name in groups[group]:
+                obj = FreeCAD.ActiveDocument.getObject(name)
+                if obj:
+                    if (not self.form.onlyVisible.isChecked()) or obj.ViewObject.isVisible():
+                        it = QtGui.QTreeWidgetItem([self.labellist[name],self.objectslist[name]])
+                        it.setIcon(0,QtGui.QIcon(obj.ViewObject.Proxy.getIcon()))
+                        it.setToolTip(0,name)
+                        mit.addChild(it)
+            mit.sortChildren(0,QtCore.Qt.AscendingOrder)
+        self.form.treeObjects.expandAll()
+        #self.spanTopLevels()
+
+    def updateByTree(self):
+
+        # order by hierarchy
+        def istop(obj):
+            for parent in obj.InList:
+                if parent.Name in self.objectslist.keys():
+                    return False
+            return True
+
+        rel = []
+        deps = []
+        for name in self.objectslist.keys():
+            obj = FreeCAD.ActiveDocument.getObject(name)
+            if obj:
+                if istop(obj):
+                    rel.append(obj)
+                else:
+                    deps.append(obj)
+        pa = 1
+        while deps:
+            for obj in rel:
+                for child in obj.OutList:
+                    if child in deps:
+                        rel.append(child)
+                        deps.remove(child)
+            pa += 1
+            if pa == 10: # max 10 hierarchy levels, okay? Let's keep civilised
+                rel.extend(deps)
+                break
+
+        done = {}
+        # materials first
+        mit = QtGui.QTreeWidgetItem(["Materials",""])
+        self.form.treeObjects.addTopLevelItem(mit)
+        for name,code in self.matlist.items():
+            obj = FreeCAD.ActiveDocument.getObject(name)
+            if obj:
+                it = QtGui.QTreeWidgetItem([self.labellist[name],code])
+                it.setIcon(0,QtGui.QIcon(obj.ViewObject.Proxy.getIcon()))
+                it.setToolTip(0,name)
+                mit.addChild(it)
+        # objects next
+        for obj in rel:
+            code = self.objectslist[obj.Name]
+            if (not self.form.onlyVisible.isChecked()) or obj.ViewObject.isVisible():
+                it = QtGui.QTreeWidgetItem([self.labellist[obj.Name],code])
+                it.setIcon(0,QtGui.QIcon(obj.ViewObject.Proxy.getIcon()))
+                it.setToolTip(0,name)
+                ok = False
+                for par in obj.InList:
+                    if par.Name in done:
+                        done[par.Name].addChild(it)
+                        done[obj.Name] = it
+                        ok = True
+                        break
+                if not ok:
+                    self.form.treeObjects.addTopLevelItem(it)
+                    done[obj.Name] = it
+        self.form.treeObjects.expandAll()
+
+    def updateDefault(self):
+
+        d = self.objectslist.copy()
+        d.update(self.matlist)
+        for name,code in d.items():
+            obj = FreeCAD.ActiveDocument.getObject(name)
+            if obj:
+                if (not self.form.onlyVisible.isChecked()) or obj.ViewObject.isVisible() or (Draft.getType(obj) in ["Material","MultiMaterial"]):
+                    it = QtGui.QTreeWidgetItem([self.labellist[name],code])
+                    it.setIcon(0,QtGui.QIcon(obj.ViewObject.Proxy.getIcon()))
+                    it.setToolTip(0,name)
+                    self.form.treeObjects.addTopLevelItem(it)
+                    if obj in FreeCADGui.Selection.getSelection():
+                        self.form.treeObjects.setCurrentItem(it)
+
+    def updateClasses(self,search=""):
 
         self.form.treeClass.clear()
 
@@ -190,6 +373,7 @@ class BIM_Classification:
         return [self.listize(c) for c in d.children]
 
     def listize(self,item):
+
         return [item.ID, item.Name, [self.listize(it) for it in item.children]]
 
     def build_xmddom(self,system):
@@ -222,64 +406,62 @@ class BIM_Classification:
                 if ID and Name:
                     children.append([ID,name,children])
 
-    def apply(self):
+    def apply(self,item=None,col=None):
 
-        if self.form.treeMaterials.selectedItems() and len(self.form.treeClass.selectedItems()) == 1:
+        if self.form.treeObjects.selectedItems() and len(self.form.treeClass.selectedItems()) == 1:
             c = self.form.treeClass.selectedItems()[0].text(0)
-            for m in self.form.treeMaterials.selectedItems():
-                m.setText(1,c)
+            if self.form.checkPrefix.isChecked():
+                c = self.form.comboSystem.currentText() + " " + c
+            for m in self.form.treeObjects.selectedItems():
+                if m.toolTip(0):
+                    m.setText(1,c)
 
     def rename(self):
 
-        if self.form.treeMaterials.selectedItems() and len(self.form.treeClass.selectedItems()) == 1:
+        if self.form.treeObjects.selectedItems() and len(self.form.treeClass.selectedItems()) == 1:
             c = self.form.treeClass.selectedItems()[0].toolTip(0)
-            for m in self.form.treeMaterials.selectedItems():
-                m.setText(0,c)
+            for m in self.form.treeObjects.selectedItems():
+                if m.toolTip(0):
+                    m.setText(0,c)
 
     def accept(self):
 
-        standard = self.form.comboSystem.currentText()
-        if self.form.groupMaterials.isVisible():
-            root = self.form.treeMaterials.invisibleRootItem()
-            first = True
-            for i in range(root.childCount()):
-                item = root.child(i)
-                code = item.text(1)
-                l = item.text(0)
-                if code:
-                    obj = FreeCAD.ActiveDocument.getObject(item.toolTip(0))
-                    if obj:
-                        m = obj.Material
-                        m["StandardCode"] = standard+" "+code
-                        if m != obj.Material:
-                            if first:
-                                FreeCAD.ActiveDocument.openTransaction("Change material codes")
-                                first = False
-                            obj.Material = m
-                        if l != obj.Label:
-                            if first:
-                                FreeCAD.ActiveDocument.openTransaction("Change material codes")
-                                first = False
-                            obj.Label = l
-                        if obj.ViewObject.isEditing():
-                            if hasattr(obj.ViewObject,"Proxy") and hasattr(obj.ViewObject.Proxy,"taskd"):
-                                obj.ViewObject.Proxy.taskd.form.FieldCode.setText(standard+" "+code)
-                                obj.ViewObject.Proxy.taskd.form.FieldName.setText(l)
-            if not first:
+        if not self.isEditing:
+            changed = False
+            for row in range(self.form.treeObjects.topLevelItemCount()):
+                child = self.form.treeObjects.topLevelItem(row)
+                items = [child]
+                items.extend([child.child(childrow) for childrow in range(child.childCount())])
+                print("items:",items)
+                for item in items:
+                    code = item.text(1)
+                    label = item.text(0)
+                    print("setting ",label)
+                    if item.toolTip(0):
+                        obj = FreeCAD.ActiveDocument.getObject(item.toolTip(0))
+                        if obj:
+                            if code != obj.StandardCode:
+                                if not changed:
+                                    FreeCAD.ActiveDocument.openTransaction("Change standard codes")
+                                    changed = True
+                                obj.StandardCode = code
+                            if label != obj.Label:
+                                if not changed:
+                                    FreeCAD.ActiveDocument.openTransaction("Change standard codes")
+                                    changed = True
+                                obj.Label = label
+            if changed:
                 FreeCAD.ActiveDocument.commitTransaction()
                 FreeCAD.ActiveDocument.recompute()
         else:
-            if len(self.form.treeClass.selectedItems()) == 1:
-                code = self.form.treeClass.selectedItems()[0].text(0)
-                if len(FreeCADGui.Selection.getSelection()) == 1:
-                    obj = FreeCADGui.Selection.getSelection()[0]
-                    if obj.ViewObject.isEditing():
-                        if obj.isDerivedFrom("App::MaterialObject"):
-                            if hasattr(obj.ViewObject,"Proxy") and hasattr(obj.ViewObject.Proxy,"taskd"):
-                                obj.ViewObject.Proxy.taskd.form.FieldCode.setText(standard+" "+code)
-                                obj.ViewObject.Proxy.taskd.form.FieldName.setText(l)
-                        elif hasattr(obj,"StandardCode"):
-                            obj.StandardCode = standard+" "+code
+            code = self.form.treeClass.selectedItems()[0].text(0)
+            if "StandardCode" in self.isEditing.PropertiesList:
+                FreeCAD.ActiveDocument.openTransaction("Change standard codes")
+                if self.form.checkPrefix.isChecked():
+                    code = self.form.comboSystem.currentText() + " " + code
+                self.isEditing.StandardCode = code
+                FreeCAD.ActiveDocument.commitTransaction()
+                FreeCAD.ActiveDocument.recompute()
         self.form.hide()
         return True
 

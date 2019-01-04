@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>623</width>
-    <height>544</height>
+    <width>716</width>
+    <height>557</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -18,18 +18,79 @@
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
       <widget class="QGroupBox" name="groupMaterials">
+       <property name="minimumSize">
+        <size>
+         <width>300</width>
+         <height>0</height>
+        </size>
+       </property>
        <property name="maximumSize">
         <size>
-         <width>260</width>
+         <width>16777215</width>
          <height>16777215</height>
         </size>
        </property>
        <property name="title">
-        <string>Materials</string>
+        <string>Objects &amp;&amp; Materials</string>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_2">
         <item>
-         <widget class="QTreeWidget" name="treeMaterials">
+         <widget class="QCheckBox" name="onlyVisible">
+          <property name="text">
+           <string>Only visible objects</string>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_4">
+          <item>
+           <widget class="QLabel" name="label">
+            <property name="text">
+             <string>Sort by:</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QComboBox" name="groupMode">
+            <item>
+             <property name="text">
+              <string>Alphabetical</string>
+             </property>
+             <property name="icon">
+              <iconset theme="format-text-direction-ltr">
+               <normaloff/>
+              </iconset>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>IFC type</string>
+             </property>
+             <property name="icon">
+              <iconset theme="application-drawing">
+               <normaloff/>
+              </iconset>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Material</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Model structure</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="QTreeWidget" name="treeObjects">
           <property name="horizontalScrollBarPolicy">
            <enum>Qt::ScrollBarAlwaysOff</enum>
           </property>
@@ -39,12 +100,18 @@
           <property name="autoExpandDelay">
            <number>-1</number>
           </property>
+          <attribute name="headerCascadingSectionResizes">
+           <bool>true</bool>
+          </attribute>
+          <attribute name="headerDefaultSectionSize">
+           <number>200</number>
+          </attribute>
           <attribute name="headerStretchLastSection">
            <bool>true</bool>
           </attribute>
           <column>
            <property name="text">
-            <string>Material</string>
+            <string>Object / Material</string>
            </property>
           </column>
           <column>
@@ -131,6 +198,16 @@
            </widget>
           </item>
          </layout>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="checkPrefix">
+          <property name="text">
+           <string>Prefix with class name when applying</string>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
+          </property>
+         </widget>
         </item>
        </layout>
       </widget>
