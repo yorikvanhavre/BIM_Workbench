@@ -319,7 +319,7 @@ class BIM_IfcProperties:
                                                  QtGui.QApplication.translate("Arch", "Value", None)])
 
         self.form.treeProperties.setColumnWidth(0,300)
-        self.form.treeProperties.setColumnWidth(1,150)
+        self.form.treeProperties.setColumnWidth(1,200)
 
         # gather common properties
         allprops = []
@@ -444,6 +444,8 @@ class BIM_IfcProperties:
 
     def addProperty(self,idx=0,pset=None,prop=None,ptype=None):
 
+        if not self.form.tree.selectedIndexes():
+            return
         if not pset:
             sel = self.form.treeProperties.selectedIndexes()
             if sel:
@@ -452,7 +454,22 @@ class BIM_IfcProperties:
                     pset = item
         if pset:
             if not prop:
-                prop = QtGui.QApplication.translate("Arch", "New property", None)
+                basename = QtGui.QApplication.translate("Arch", "New property", None)
+                # check for duplicate name
+                names = []
+                for i in range(self.propmodel.rowCount()):
+                    topitem = self.propmodel.item(i,0)
+                    names.append(topitem.text())
+                    if topitem.hasChildren():
+                        for j in range(topitem.rowCount()):
+                            childitem = topitem.child(j,0)
+                            names.append(childitem.text())
+                suffix = 1
+                newname = basename
+                while newname in names:
+                    newname = basename + str(suffix).zfill(3)
+                    suffix += 1
+                prop = newname
             if not ptype:
                 if idx > 0:
                     ptype = self.plabels[idx-1]
@@ -467,13 +484,22 @@ class BIM_IfcProperties:
                 it3.setDropEnabled(False)
                 pset.appendRow([it1,it2,it3])
                 self.updateDicts()
+        else:
+            if idx != 0:
+                QtGui.QMessageBox.critical(None,'Error',"Please select or create a property set first in which the new property should be placed.", QtGui.QMessageBox.Ok) 
         if idx != 0:
             self.form.comboProperty.setCurrentIndex(0)
 
     def addPset(self,idx):
 
+        if not self.form.tree.selectedIndexes():
+            return
         if idx == 1:
-            top = QtGui.QStandardItem(QtGui.QApplication.translate("Arch", "New property set", None))
+            name = QtGui.QApplication.translate("Arch", "New property set", None)
+            res = QtGui.QInputDialog.getText(None, "New property set","Property set name:", QtGui.QLineEdit.Normal,name)
+            if res[1]:
+                name = res[0]
+            top = QtGui.QStandardItem(name)
             top.setDragEnabled(False)
             top.setToolTip("PropertySet")
             self.propmodel.appendRow([top,QtGui.QStandardItem(),QtGui.QStandardItem()])
@@ -588,7 +614,22 @@ class propertiesDelegate(QtGui.QStyledItemDelegate):
             oldtext = index.data()
             if oldtext != editor.text():
                 remove.append(oldtext)
-            model.setData(index,editor.text())
+            basename = editor.text()
+            # check for duplicate name
+            names = []
+            for i in range(model.rowCount()):
+                topitem = model.item(i,0)
+                names.append(topitem.text())
+                if topitem.hasChildren():
+                    for j in range(topitem.rowCount()):
+                        childitem = topitem.child(j,0)
+                        names.append(childitem.text())
+            suffix = 1
+            newname = basename
+            while newname in names:
+                newname = basename + str(suffix).zfill(3)
+                suffix += 1
+            model.setData(index,newname)
         elif index.column() == 1:
             if editor.currentIndex() > -1:
                 idx = editor.currentIndex()
