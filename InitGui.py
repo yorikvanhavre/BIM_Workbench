@@ -142,7 +142,8 @@ static char * IFC_xpm[] = {
                 'Draft_Snap_Extension','Draft_Snap_Near','Draft_Snap_Ortho',
                 'Draft_Snap_Special','Draft_Snap_Dimensions','Draft_Snap_WorkingPlane']
 
-        self.modify = ["Draft_Move","BIM_Copy","Draft_Rotate","BIM_Clone","Draft_Offset", "Part_Offset2D", "Draft_Trimex",
+        self.modify = ["Draft_Move","BIM_Copy","Draft_Rotate","BIM_Clone","BIM_Unclone","Draft_Offset", 
+                  "Part_Offset2D", "Draft_Trimex",
                   "Draft_Scale","Draft_Stretch","Draft_Array","Draft_PathArray",
                   "Draft_Mirror","Part_Extrude","Part_Cut","Part_Fuse","Part_Common","BIM_Glue",
                   "Part_Compound","Part_SimpleCopy","Draft_Upgrade", "Draft_Downgrade", "Draft_Shape2DView",
