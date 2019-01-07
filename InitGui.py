@@ -158,6 +158,9 @@ static char * IFC_xpm[] = {
                  "Arch_CloseHoles","Arch_MergeWalls","Arch_Check",
                  "Arch_IfcExplorer","Arch_ToggleIfcBrepFlag","Arch_3Views",
                  "Arch_IfcSpreadsheet","Arch_ToggleSubs","Arch_Survey"]
+                 
+        nudge = ["BIM_Nudge_Switch","BIM_Nudge_Up","BIM_Nudge_Down","BIM_Nudge_Left","BIM_Nudge_Right",
+                 "BIM_Nudge_RotateLeft","BIM_Nudge_RotateRight","BIM_Nudge_Extend","BIM_Nudge_Shrink"]
 
         # load webtools
 
@@ -215,6 +218,7 @@ static char * IFC_xpm[] = {
         self.appendMenu(QT_TRANSLATE_NOOP("BIM","&Modify"),self.modify)
         self.appendMenu(QT_TRANSLATE_NOOP("BIM","&Manage"),self.manage)
         self.appendMenu(QT_TRANSLATE_NOOP("BIM","&Utils"),self.utils)
+        self.appendMenu([QT_TRANSLATE_NOOP("BIM","&Utils"),"Nudge"],nudge)
         self.appendMenu("&Help",["BIM_Welcome","BIM_Help","BIM_Tutorial"])
 
         # load Arch & Draft preference pages

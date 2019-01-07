@@ -52,7 +52,7 @@ class BIM_Setup:
 
         # fill values from current settings
         unit = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Units").GetInt("UserSchema",0)
-        unit = [0,2,3,3,1,4,0][unit] # less choices in our simplified dialog
+        unit = [0,2,3,3,1,4,0,3][unit] # less choices in our simplified dialog
         form.settingUnits.setCurrentIndex(unit)
         decimals = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Units").GetInt("Decimals",2)
         form.settingDecimals.setValue(decimals)

@@ -1,3 +1,5 @@
+# -*- coding: utf8 -*-
+
 #***************************************************************************
 #*                                                                         *
 #*   Copyright (c) 2017 Yorik van Havre <yorik@uncreated.net>              *
@@ -31,7 +33,7 @@ def QT_TRANSLATE_NOOP(ctx,txt): return txt # dummy function for the QT translato
 
 import BimWelcome,BimSetup,BimProject,BimLevels,BimWindows,BimIfcElements,BimViews
 import BimClassification,BimBox,BimTutorial,BimLibrary,BimMaterial,BimIfcQuantities
-import BimIfcProperties
+import BimIfcProperties,BimNudge
 
 
 # additional, smaller commands that are defined directly in this file
@@ -341,12 +343,15 @@ def setStatusIcons(show=True):
     from PySide import QtCore,QtGui
 
     def toggle(state):
+        
         FreeCADGui.runCommand("BIM_TogglePanels")
 
     def toggleBimViews(state):
+        
         FreeCADGui.runCommand("BIM_Views")
 
     def addonMgr():
+        
         mw = FreeCADGui.getMainWindow()
         if mw:
             st = mw.statusBar()
@@ -358,6 +363,8 @@ def setStatusIcons(show=True):
         FreeCADGui.runCommand("Std_AddonMgr")
 
     def setUnit(action):
+        
+        # set the label of the unit button
         utext = action.text().replace("&","")
         unit = [0,4,1,3,7,5][["Millimeters","Centimeters","Meters","Inches","Feet","Architectural"].index(utext)]
         FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Units").SetInt("UserSchema",unit)
@@ -365,13 +372,43 @@ def setStatusIcons(show=True):
             FreeCAD.Units.setSchema(unit)
         action.parent().parent().parent().setText(utext)
         
+        # change the unit of the nudge button
+        nudge = action.parent().parent().parent().parent().nudge
+        nudgeactions = nudge.menu().actions()
+        if unit in [2,3,5,7]:
+            nudgelabels = ["Custom...","1/16\"","1/8\"","1/4\"","1\"","6\"","1\'","Auto"]
+        else:
+            nudgelabels = ["Custom...","1 mm","5 mm","1 cm","5 cm","10 cm","50 cm","Auto"]
+        for i in range(len(nudgelabels)):
+            nudgeactions[i].setText(nudgelabels[i])
+        if not "auto" in nudge.text().replace("&","").lower():
+            nudge.setText(FreeCAD.Units.Quantity(nudge.text().replace("&","")).UserString)
+
+    def setNudge(action):
+        
+        utext = action.text().replace("&","")
+        if utext == "Custom...":
+            # load dialog
+            form = FreeCADGui.PySideUic.loadUi(os.path.join(os.path.dirname(__file__),"dialogNudgeValue.ui"))
+            # center the dialog over FreeCAD window
+            mw = FreeCADGui.getMainWindow()
+            form.move(mw.frameGeometry().topLeft() + mw.rect().center() - form.rect().center())
+            result = form.exec_()
+            if not result:
+                return
+            utext = form.inputField.text()
+        action.parent().parent().parent().setText(utext)
+        
     class CheckWorker(QtCore.QThread):
+        
         updateAvailable = QtCore.Signal(bool)
     
         def __init__(self):
+            
             QtCore.QThread.__init__(self)
     
         def run(self):
+            
             try:
                 import git
             except:
@@ -392,11 +429,13 @@ def setStatusIcons(show=True):
             self.updateAvailable.emit(False)
 
     def checkUpdates():
+        
         FreeCAD.bim_update_checker = CheckWorker()
         FreeCAD.bim_update_checker.updateAvailable.connect(showUpdateButton)
         FreeCAD.bim_update_checker.start()
         
     def showUpdateButton(avail):
+        
         if avail:
             mw = FreeCADGui.getMainWindow()
             if mw:
@@ -410,6 +449,8 @@ def setStatusIcons(show=True):
         if hasattr(FreeCAD,"bim_update_checker"):
             del FreeCAD.bim_update_checker
 
+    # main code
+
     mw = FreeCADGui.getMainWindow()
     if mw:
         st = mw.statusBar()
@@ -421,6 +462,22 @@ def setStatusIcons(show=True):
                 statuswidget = QtGui.QToolBar()
                 statuswidget.setObjectName("BIMStatusWidget")
                 
+                # nudge button
+                nudge = QtGui.QPushButton("Auto")
+                nudge.setIcon(QtGui.QIcon(os.path.join(os.path.dirname(__file__),"icons","BIM_Nudge.svg")))
+                nudge.setFlat(True)
+                nudge.setToolTip("The value of the nudge movement (rotation is always 45°).\n\nCTRL+arrows to move\nCTRL+, to rotate left\nCTRL+. to rotate right\nCTRL+PgUp to extend extrusion\nCTRL+PgDown to shrink extrusion\nCTRL+/ to switch between auto and manual mode")
+                statuswidget.addWidget(nudge)
+                statuswidget.nudge = nudge
+                menu = QtGui.QMenu(nudge)
+                gnudge = QtGui.QActionGroup(menu)
+                for u in ["Custom...","1 mm","5 mm","1 cm","5 cm","10 cm","50 cm","Auto"]:
+                    a = QtGui.QAction(gnudge)
+                    a.setText(u)
+                    menu.addAction(a)
+                nudge.setMenu(menu)
+                gnudge.triggered.connect(setNudge)
+
                 # units chooser
                 unitLabel = QtGui.QPushButton("Unit")
                 unitLabel.setObjectName("UnitLabel")
@@ -435,6 +492,7 @@ def setStatusIcons(show=True):
                 unitLabel.setMenu(menu)
                 gUnits.triggered.connect(setUnit)
                 unitLabel.setText(["Millimeters","Meters","Inches","Inches","Centimeters","Architectural","Millimeters","Feet"][unit])
+                unitLabel.setToolTip("The preferred unit you are currently working with. You can still use any other unit anywhere in FreeCAD")
                 statuswidget.addWidget(unitLabel)
                 st.addPermanentWidget(statuswidget)
                 
