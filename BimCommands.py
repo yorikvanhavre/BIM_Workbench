@@ -494,6 +494,7 @@ def setStatusIcons(show=True):
                 unitLabel.setText(["Millimeters","Meters","Inches","Inches","Centimeters","Architectural","Millimeters","Feet"][unit])
                 unitLabel.setToolTip("The preferred unit you are currently working with. You can still use any other unit anywhere in FreeCAD")
                 statuswidget.addWidget(unitLabel)
+                statuswidget.unitLabel = unitLabel
                 st.addPermanentWidget(statuswidget)
                 
                 # report panels toggle button
