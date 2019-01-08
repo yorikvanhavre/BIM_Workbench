@@ -53,10 +53,12 @@ class BIM_Views:
                 vm.hide()
                 if bimviewsbutton:
                     bimviewsbutton.setChecked(False)
+                    FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM").SetBool("RestoreBimViews",False)
             else:
                 vm.show()
                 if bimviewsbutton:
                     bimviewsbutton.setChecked(True)
+                    FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM").SetBool("RestoreBimViews",True)
                 update()
         else:
             vm = QtGui.QListWidget()
@@ -75,6 +77,9 @@ class BIM_Views:
                     sizes[0] = sizes[0]-h
                     s.addWidget(vm)
                     s.setSizes(sizes+[h])
+            if bimviewsbutton:
+                bimviewsbutton.setChecked(True)
+            FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM").SetBool("RestoreBimViews",True)
             update()
             from DraftGui import todo
 

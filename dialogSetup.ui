@@ -219,6 +219,11 @@
        </item>
        <item>
         <property name="text">
+         <string>feet</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
          <string>architectural</string>
         </property>
        </item>

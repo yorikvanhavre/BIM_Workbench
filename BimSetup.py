@@ -52,7 +52,7 @@ class BIM_Setup:
 
         # fill values from current settings
         unit = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Units").GetInt("UserSchema",0)
-        unit = [0,2,3,3,1,4,0,3][unit] # less choices in our simplified dialog
+        unit = [0,2,3,3,1,5,0,4][unit] # less choices in our simplified dialog
         form.settingUnits.setCurrentIndex(unit)
         decimals = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Units").GetInt("Decimals",2)
         form.settingDecimals.setValue(decimals)
@@ -118,6 +118,18 @@ class BIM_Setup:
             import FastenerBase
         except:
             m.append("Fasteners")
+        libok = False
+        librarypath = FreeCAD.ParamGet('User parameter:Plugins/parts_library').GetString('destination','')
+        if librarypath and os.path.exists(librarypath):
+            libok = True
+        else:
+            # check if the library is at the standard addon location
+            librarypath = os.path.join(FreeCAD.getUserAppDataDir(),"Mod","parts_library")
+            if os.path.exists(librarypath):
+                FreeCAD.ParamGet('User parameter:Plugins/parts_library').SetString('destination',librarypath)
+                libok = True
+        if not libok:
+            m.append("Parts Library")
         if m:
             form.labelMissingWorkbenches.setText("Tip: Some additional workbenches are not installed, that extend BIM functionality: <b>"+",".join(m)+"</b>. You can install them from menu Tools -> Addon manager.")
             form.labelMissingWorkbenches.show()
@@ -132,7 +144,7 @@ class BIM_Setup:
         # set preference values
         FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM").SetBool("FirstTime",False)
         unit = form.settingUnits.currentIndex()
-        unit = [0,4,1,3,5][unit] # less choices in our simplified dialog
+        unit = [0,4,1,3,7,5][unit] # less choices in our simplified dialog
         FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Units").SetInt("UserSchema",unit)
         if hasattr(FreeCAD.Units,"setSchema"):
             FreeCAD.Units.setSchema(unit)
@@ -214,7 +226,7 @@ class BIM_Setup:
             st = mw.statusBar()
             statuswidget = st.findChild(QtGui.QToolBar,"BIMStatusWidget")
             if statuswidget:
-                statuswidget.unitLabel.setText(["Millimeters","Centimeters","Meters","Inches","Feet","Architectural"].index(form.settingUnits.currentIndex()))
+                statuswidget.unitLabel.setText(["Millimeters","Centimeters","Meters","Inches","Feet","Architectural"][form.settingUnits.currentIndex()])
                 # change the unit of the nudge button
                 nudgeactions = statuswidget.nudge.menu().actions()
                 if unit in [2,3,5,7]:
