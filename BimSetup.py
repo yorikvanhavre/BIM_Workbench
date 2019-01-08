@@ -98,7 +98,7 @@ class BIM_Setup:
         form.colorButtonHelpers.setProperty("color",getPrefColor(colHelp))
         colConst = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").GetUnsigned("constructioncolor",746455039)
         form.colorButtonConstruction.setProperty("color",getPrefColor(colConst))
-        
+
         # check missing addons
         form.labelMissingWorkbenches.hide()
         m = []
@@ -214,7 +214,7 @@ class BIM_Setup:
             st = mw.statusBar()
             statuswidget = st.findChild(QtGui.QToolBar,"BIMStatusWidget")
             if statuswidget:
-                statuswidget.unitLabel.setText(["Millimeters","Centimeters","Meters","Inches","Feet","Architectural"].index(form.settingUnits.currentIndex())]                
+                statuswidget.unitLabel.setText(["Millimeters","Centimeters","Meters","Inches","Feet","Architectural"].index(form.settingUnits.currentIndex()))
                 # change the unit of the nudge button
                 nudgeactions = statuswidget.nudge.menu().actions()
                 if unit in [2,3,5,7]:
