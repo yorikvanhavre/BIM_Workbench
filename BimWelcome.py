@@ -58,6 +58,9 @@ class BIM_Welcome:
         result = self.form.exec_()
         if result:
             FreeCADGui.runCommand("BIM_Setup")
+            
+        # remove first time flag
+        FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM").SetBool("FirstTime",False)
 
     def launchTutorial(self,link):
         

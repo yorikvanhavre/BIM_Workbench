@@ -6,12 +6,12 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>315</width>
-    <height>1142</height>
+    <width>318</width>
+    <height>1087</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string>IFC Preflight</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
@@ -25,7 +25,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QPushButton" name="pushButton_7">
+    <widget class="QPushButton" name="testAll">
      <property name="text">
       <string>Run all tests</string>
      </property>
@@ -38,14 +38,14 @@
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_2">
       <item>
-       <widget class="QRadioButton" name="radioButton">
+       <widget class="QRadioButton" name="getSelection">
         <property name="text">
          <string>Selection</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QRadioButton" name="radioButton_3">
+       <widget class="QRadioButton" name="getVisible">
         <property name="text">
          <string>All visible objects</string>
         </property>
@@ -55,7 +55,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QRadioButton" name="radioButton_2">
+       <widget class="QRadioButton" name="getAll">
         <property name="text">
          <string>Whole document</string>
         </property>
@@ -84,7 +84,7 @@
        </widget>
       </item>
       <item row="0" column="1">
-       <widget class="QPushButton" name="pushButton_13">
+       <widget class="QPushButton" name="testIFC4">
         <property name="text">
          <string>Test</string>
         </property>
@@ -100,7 +100,7 @@
      </property>
      <layout class="QGridLayout" name="gridLayout">
       <item row="2" column="1">
-       <widget class="QPushButton" name="pushButton_2">
+       <widget class="QPushButton" name="testStoreys">
         <property name="text">
          <string>Test</string>
         </property>
@@ -133,7 +133,7 @@
        </widget>
       </item>
       <item row="1" column="1">
-       <widget class="QPushButton" name="pushButton">
+       <widget class="QPushButton" name="testBuildings">
         <property name="text">
          <string>Test</string>
         </property>
@@ -153,7 +153,7 @@
        </widget>
       </item>
       <item row="0" column="1">
-       <widget class="QPushButton" name="pushButton_8">
+       <widget class="QPushButton" name="testSites">
         <property name="text">
          <string>Test</string>
         </property>
@@ -169,7 +169,7 @@
      </property>
      <layout class="QGridLayout" name="gridLayout_2">
       <item row="1" column="1">
-       <widget class="QPushButton" name="pushButton_5">
+       <widget class="QPushButton" name="testSolid">
         <property name="text">
          <string>Test</string>
         </property>
@@ -199,7 +199,7 @@
        </widget>
       </item>
       <item row="0" column="1">
-       <widget class="QPushButton" name="pushButton_6">
+       <widget class="QPushButton" name="testUndefined">
         <property name="text">
          <string>Test</string>
         </property>
@@ -227,22 +227,15 @@
         </property>
        </widget>
       </item>
-      <item row="5" column="1">
-       <widget class="QPushButton" name="pushButton_14">
-        <property name="text">
-         <string>Test</string>
-        </property>
-       </widget>
-      </item>
       <item row="0" column="1">
-       <widget class="QPushButton" name="pushButton_3">
+       <widget class="QPushButton" name="testQuantities">
         <property name="text">
          <string>Test</string>
         </property>
        </widget>
       </item>
       <item row="1" column="1">
-       <widget class="QPushButton" name="pushButton_4">
+       <widget class="QPushButton" name="testCommonPsets">
         <property name="text">
          <string>Test</string>
         </property>
@@ -288,7 +281,7 @@
        </widget>
       </item>
       <item row="3" column="1">
-       <widget class="QPushButton" name="pushButton_9">
+       <widget class="QPushButton" name="testMaterials">
         <property name="text">
          <string>Test</string>
         </property>
@@ -308,7 +301,14 @@
        </widget>
       </item>
       <item row="2" column="1">
-       <widget class="QPushButton" name="pushButton_12">
+       <widget class="QPushButton" name="testPsets">
+        <property name="text">
+         <string>Test</string>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="1">
+       <widget class="QPushButton" name="testStandards">
         <property name="text">
          <string>Test</string>
         </property>
@@ -324,7 +324,7 @@
      </property>
      <layout class="QGridLayout" name="gridLayout_4">
       <item row="0" column="1">
-       <widget class="QPushButton" name="pushButton_10">
+       <widget class="QPushButton" name="testExtrusions">
         <property name="text">
          <string>Test</string>
         </property>
@@ -346,10 +346,10 @@
       <item row="1" column="0">
        <widget class="QLabel" name="label_11">
         <property name="toolTip">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Walls in FreeCAD can be constructed in a wide number of ways. But some simpler BIM applications might have difficulties with walls that are not of the most simple type, that is, a single, straight piece of wall (which correspond to the IfcWallStandardCase type).&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;This test will find any wall which is not such a standard case.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Walls, columns and beams in FreeCAD can be constructed in a wide number of ways. But some simpler BIM applications might have difficulties with walls that are not of the most simple type, that is, a single, straight piece of wall (which correspond to the IfcWallStandardCase type) or beams and columns that are not based on a straight extrusion of a flat profile (BeamStandardCase, ColumnStandardCase)&lt;/p&gt;&lt;p&gt;This test will find any wall which is not such a standard case.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Note&lt;/span&gt;: At the moment, BIM objects that meet the requirements to be of a standard case, are still exported as IfcWall, IfcBeam, IfcColumn.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
         </property>
         <property name="text">
-         <string>Are all walls based on a single line (standard case)?</string>
+         <string>Are all walls, beams and columns based on a single line (standard case)?</string>
         </property>
         <property name="wordWrap">
          <bool>true</bool>
@@ -357,7 +357,7 @@
        </widget>
       </item>
       <item row="1" column="1">
-       <widget class="QPushButton" name="pushButton_11">
+       <widget class="QPushButton" name="testStandardCases">
         <property name="text">
          <string>Test</string>
         </property>

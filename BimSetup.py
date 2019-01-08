@@ -208,6 +208,24 @@ class BIM_Setup:
             FreeCADGui.draftToolBar.widthButton.setValue(linewidth)
             FreeCADGui.draftToolBar.fontsizeButton.setValue(tsize)
 
+        # set the status bar widgets
+        mw = FreeCADGui.getMainWindow()
+        if mw:
+            st = mw.statusBar()
+            statuswidget = st.findChild(QtGui.QToolBar,"BIMStatusWidget")
+            if statuswidget:
+                statuswidget.unitLabel.setText(["Millimeters","Centimeters","Meters","Inches","Feet","Architectural"].index(form.settingUnits.currentIndex())]                
+                # change the unit of the nudge button
+                nudgeactions = statuswidget.nudge.menu().actions()
+                if unit in [2,3,5,7]:
+                    nudgelabels = ["Custom...","1/16\"","1/8\"","1/4\"","1\"","6\"","1\'","Auto"]
+                else:
+                    nudgelabels = ["Custom...","1 mm","5 mm","1 cm","5 cm","10 cm","50 cm","Auto"]
+                for i in range(len(nudgelabels)):
+                    nudgeactions[i].setText(nudgelabels[i])
+                if not "auto" in statuswidget.nudge.text().replace("&","").lower():
+                    statuswidget.nudge.setText(FreeCAD.Units.Quantity(statuswidget.nudge.text().replace("&","")).UserString)
+
 def getPrefColor(color):
     r = ((color>>24)&0xFF)/255.0
     g = ((color>>16)&0xFF)/255.0
