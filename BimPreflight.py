@@ -22,13 +22,14 @@
 
 """This module contains FreeCAD commands for the BIM workbench"""
 
-import os,FreeCAD,FreeCADGui,Draft
+import os,FreeCAD,FreeCADGui,Draft,Arch
 from PySide import QtCore,QtGui
 
 def QT_TRANSLATE_NOOP(ctx,txt): return txt # dummy function for the QT translator
 
 tests = ["testAll",
          "testIFC4",
+         "testHierarchy",
          "testSites",
          "testBuildings",
          "testStoreys",
@@ -147,12 +148,22 @@ class BIM_Preflight_TaskPanel:
         
         "selects target objects"
         
+        objs = []
         if self.form.getAll.isChecked():
-            return FreeCAD.ActiveDocument.Objects
+            objs = FreeCAD.ActiveDocument.Objects
         elif self.form.getVisible.isChecked():
-            return [o for o in FreeCAD.ActiveDocument.Objects if o.ViewObject.Visibility == True]
+            objs = [o for o in FreeCAD.ActiveDocument.Objects if o.ViewObject.Visibility == True]
         else:
-            return FreeCADGui.Selection.getSelection()
+            objs = FreeCADGui.Selection.getSelection()
+        # clean objects list of unwanted types
+        objs = Draft.getGroupContents(objs,walls=True,addgroups=True)
+        objs = [obj for obj in objs if not obj.isDerivedFrom("Part::Part2DObject")]
+        objs = [obj for obj in objs if not obj.isDerivedFrom("App::Annotation")]
+        objs = [obj for obj in objs if (hasattr(obj,"Shape") and obj.Shape and not (obj.Shape.Edges and (not obj.Shape.Faces)))]
+        objs = Arch.pruneIncluded(objs)
+        objs = [obj for obj in objs if not obj.isDerivedFrom("App::DocumentObjectGroup")]
+        objs = [obj for obj in objs if Draft.getType(obj) not in ["DraftText","Material","MaterialContainer","WorkingPlaneProxy"]]
+        return objs
 
     def testAll(self):
         
@@ -196,6 +207,47 @@ class BIM_Preflight_TaskPanel:
                     msg += "applications out there still have incomplete or inexistant IFC4 support, so in some cases "
                     msg += "IFC2x3 might still work better."
                     self.failed(test)
+            self.results[test] = msg
+
+    def testHierarchy(self):
+        
+        "tests for project hierarchy support"
+        
+        test = "testHierarchy"
+        if getattr(self.form,test).text() == "Failed":
+            self.show(test)
+        else:
+            self.reset(test)
+            self.results[test] = None
+            self.culprits[test] = []
+            msg = None
+            sites = False
+            buildings = False
+            storeys = False
+            for obj in self.getObjects():
+                if (Draft.getType(obj) == "Site") or (hasattr(obj,"IfcRole") and (obj.IfcRole == "Site")):
+                    sites = True
+                elif (Draft.getType(obj) == "Building") or (hasattr(obj,"IfcRole") and (obj.IfcRole == "Building")):
+                    buildings = True
+                elif (hasattr(obj,"IfcRole") and (obj.IfcRole == "Building Storey")):
+                    storeys = True
+            if (not sites) or (not buildings)  or (not storeys):
+                msg = "The IFC standard requires at least one site, one building and one level or building storey per project. "
+                msg += "The following types were not found in the project: "
+                if not sites:
+                    msg += "Site, "
+                if not buildings:
+                    msg += "Building, "
+                if not storeys:
+                    msg += "Building Storeys, "
+                msg += "\n\nNote that, as this is a mandatory requirement, FreeCAD will automatically add a default site, "
+                msg += "a default building and/or a default building storey if any of these is missing. So even if this "
+                msg += "test didn't pass, your exported IFC file will meet the requirements. However, it is always better "
+                msg += "to create these objects yourself, as you get more control over naming and properties."
+            if msg:
+                self.failed(test)
+            else:
+                self.passed(test)
             self.results[test] = msg
 
     def testSites(self):
@@ -295,6 +347,51 @@ class BIM_Preflight_TaskPanel:
                             msg += "You can resolve the situation by creating a Building Storey object, if none is present "
                             msg += "in your model, and drag and drop the BIM objects into it in the tree view:\n\n"
                         msg += obj.Label +"\n"
+            if msg:
+                self.failed(test)
+            else:
+                self.passed(test)
+            self.results[test] = msg
+
+
+    def testUndefined(self):
+        
+        "tests for undefined BIM objects"
+        
+        test = "testUndefined"
+        if getattr(self.form,test).text() == "Failed":
+            self.show(test)
+        else:
+            self.reset(test)
+            self.results[test] = None
+            self.culprits[test] = []
+            undefined = []
+            notbim = []
+            msg = None
+
+            for obj in self.getObjects():
+                if hasattr(obj,"IfcRole"):
+                    if (obj.IfcRole == "Undefined"):
+                        self.culprits[test].append(obj)
+                        undefined.append(obj)
+                else:
+                    self.culprits[test].append(obj)
+                    notbim.append(obj)
+            if undefined or notbim:
+                msg = "Some of the objects have no IFC type defined. They will therefore be exported as the generic "
+                msg += "IfcBuildingElementProxy type. This is not a problem, and might even be what you want. In some "
+                msg += "cases, this type is even recommended as it might prevent host applications to perform unwanted "
+                msg += "transformations on the object. However, since IFC is all about semantics, it is often interesting "
+                msg += "to give a defined type to all your objects.\n\n"
+                if undefined:
+                    msg += "The following BIM objects have the \"Undefined\" type:\n\n"
+                    for o in undefined:
+                        msg += o.Label + "\n"
+                if notbim:
+                    msg += "The following objects are not BIM objects:\n\n"
+                    for o in notbim:
+                        msg += o.Label + "\n"
+                        msg += "You can turn these objects into BIM objects by using the Utils -> Make Component tool."
             if msg:
                 self.failed(test)
             else:
