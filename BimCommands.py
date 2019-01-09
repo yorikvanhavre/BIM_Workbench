@@ -197,8 +197,9 @@ class BIM_Sketch:
     def GetResources(self):
 
         return {'Pixmap'  : ":/icons/Sketcher_NewSketch.svg",
-                'MenuText': QT_TRANSLATE_NOOP("BIM_Sketch", "New Sketch"),
-                'ToolTip' : QT_TRANSLATE_NOOP("BIM_Sketch", "Creates a new sketch in the current working plane and enters edit mode")}
+                'MenuText': QT_TRANSLATE_NOOP("BIM_Sketch", "Sketch"),
+                'ToolTip' : QT_TRANSLATE_NOOP("BIM_Sketch", "Creates a new sketch in the current working plane and enters edit mode"),
+                'Accel'   : 'S,K'}
 
     def IsActive(self):
 
@@ -268,7 +269,8 @@ class BIM_Arc_3Points:
 
         return {'Pixmap'  : os.path.join(os.path.dirname(__file__),"icons","BIM_Arc_3Points.svg"),
                 'MenuText': QT_TRANSLATE_NOOP("BIM_Arc_3Points", "Arc 3 points"),
-                'ToolTip' : QT_TRANSLATE_NOOP("BIM_Arc_3Points", "Creates an arc by giving 3 points through which the arc should pass")}
+                'ToolTip' : QT_TRANSLATE_NOOP("BIM_Arc_3Points", "Creates an arc by giving 3 points through which the arc should pass"),
+                'Accel'   : 'A,T'}
 
     def IsActive(self):
 

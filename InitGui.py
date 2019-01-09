@@ -68,24 +68,8 @@ static char * IFC_xpm[] = {
         # So importing BimCommands is all that is needed to get all the commands.
 
         import DraftTools, Arch, BimCommands, PartGui, SketcherGui
-        
-        # create popup group for Arc tools
-        class ArcGroupCommand:
 
-            def GetCommands(self):
-                return ("Draft_Arc","BIM_Arc_3Points")
-
-            def GetResources(self):
-                return { 'MenuText': 'Arc tools',
-                         'ToolTip': 'Arc tools'
-                       }
-
-            def IsActive(self):
-                return not FreeCAD.ActiveDocument is None
-        
-        FreeCADGui.addCommand('BIM_ArcGroup', ArcGroupCommand())
-
-        self.draft = ["BIM_Sketch","Draft_Line","Draft_Wire","Draft_Circle","BIM_ArcGroup","Draft_Ellipse",
+        self.draft = ["BIM_Sketch","Draft_Line","Draft_Wire","Draft_Circle","Draft_Arc","BIM_Arc_3Points","Draft_Ellipse",
                  "Draft_Polygon","Draft_Rectangle", "Draft_BSpline", "Draft_BezCurve",
                  "Draft_Point"]
 
@@ -104,7 +88,7 @@ static char * IFC_xpm[] = {
         except:
             pass
         else:
-            self.arch[0] = "Arch_BuildingPart"
+            self.arch.insert(0,"Arch_BuildingPart")
         try:
             import ArchReference
         except:
