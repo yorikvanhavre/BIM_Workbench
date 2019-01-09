@@ -320,8 +320,64 @@ class BIM_Arc_3Points:
                 self.tracker.setRadius(e.Curve.Radius)
                 self.tracker.setStartPoint(self.points[0])
                 self.tracker.setEndPoint(point)
-            
+
+
+class BIM_Convert:
+
+
+    def GetResources(self):
+
+        import Arch_rc
+        return {'Pixmap'  : ":/icons/Arch_Component.svg",
+                'MenuText': QT_TRANSLATE_NOOP("BIM_Convert", "Convert to BIM type..."),
+                'ToolTip' : QT_TRANSLATE_NOOP("BIM_Convert", "Converts any object to a BIM component")}
+
+    def IsActive(self):
+
+        if FreeCAD.ActiveDocument:
+            return True
+        else:
+            return False
+
+    def Activated(self):
         
+        sel = FreeCADGui.Selection.getSelection()
+        if sel:
+            FreeCADGui.Control.showDialog(BIM_Convert_TaskPanel(sel))
+
+
+class BIM_Convert_TaskPanel:
+
+
+    def __init__(self,objs):
+
+        from PySide import QtGui
+        self.types = ["Wall","Structure","Rebar","Window","Stairs","Roof","Panel","Frame","Space","Component"]
+        self.objs = objs
+        self.form = QtGui.QListWidget()
+        import Arch_rc
+        for t in self.types:
+            ti = t+"_Tree"
+            if t == "Component":
+                ti = t
+            i = QtGui.QListWidgetItem(QtGui.QIcon(":/icons/Arch_"+ti+".svg"),t)
+            self.form.addItem(i)
+        self.form.itemDoubleClicked.connect(self.accept)
+
+    def accept(self,idx=None):
+        
+        i = self.form.currentItem()
+        if i:
+            import Arch
+            FreeCAD.ActiveDocument.openTransaction("Convert to BIM")
+            for o in self.objs:
+                getattr(Arch,"make"+i.text())(o)
+            FreeCAD.ActiveDocument.commitTransaction()
+            FreeCAD.ActiveDocument.recompute()
+        if idx:
+            from DraftGui import todo
+            todo.delay(FreeCADGui.Control.closeDialog,None)
+        return True
 
 
 FreeCADGui.addCommand('BIM_TogglePanels',BIM_TogglePanels())
@@ -333,6 +389,8 @@ FreeCADGui.addCommand('BIM_Glue',BIM_Glue())
 FreeCADGui.addCommand('BIM_Sketch',BIM_Sketch())
 FreeCADGui.addCommand('BIM_WPView',BIM_WPView())
 FreeCADGui.addCommand('BIM_Arc_3Points',BIM_Arc_3Points())
+FreeCADGui.addCommand('BIM_Convert',BIM_Convert())
+
 
 
 # Status bar buttons

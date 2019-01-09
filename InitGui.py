@@ -131,7 +131,7 @@ static char * IFC_xpm[] = {
                   "Draft_Scale","Draft_Stretch","Draft_Array","Draft_PathArray",
                   "Draft_Mirror","Part_Extrude","Part_Cut","Part_Fuse","Part_Common","BIM_Glue",
                   "Part_Compound","Part_SimpleCopy","Draft_Upgrade", "Draft_Downgrade", "Draft_Shape2DView",
-                  "Draft_Draft2Sketch","Arch_CutPlane","Arch_Add","Arch_Remove"]
+                  "Draft_Draft2Sketch","Arch_CutPlane","Arch_Add","Arch_Remove","BIM_Convert"]
 
         self.manage = ["BIM_Setup","BIM_Project","BIM_Levels","BIM_Windows","BIM_IfcElements",
                   "BIM_IfcQuantities","BIM_IfcProperties","BIM_Classification",
@@ -139,7 +139,7 @@ static char * IFC_xpm[] = {
 
         self.utils = ["BIM_TogglePanels","BIM_Trash","BIM_Views","BIM_WPView",
                  "Draft_VisGroup","Draft_Slope","Draft_SetWorkingPlaneProxy","Draft_AddConstruction",
-                 "Arch_Component","Arch_CloneComponent","Arch_SplitMesh","Arch_MeshToShape",
+                 "Arch_SplitMesh","Arch_MeshToShape",
                  "Arch_SelectNonSolidMeshes","Arch_RemoveShape",
                  "Arch_CloseHoles","Arch_MergeWalls","Arch_Check",
                  "Arch_IfcExplorer","Arch_ToggleIfcBrepFlag","Arch_3Views",
@@ -306,7 +306,7 @@ static char * IFC_xpm[] = {
         if (recipient == "Tree"):
             groups = False
             for o in FreeCADGui.Selection.getSelection():
-                if o.isDerivedFrom("App::DocumentObjectGroup"):
+                if o.isDerivedFrom("App::DocumentObjectGroup") or o.hasExtension("App::GroupExtension"):
                     groups = True
                 else:
                     groups = False
@@ -315,7 +315,8 @@ static char * IFC_xpm[] = {
                 self.appendContextMenu("",["Draft_SelectGroup"])
         elif (recipient == "View"):
             self.appendContextMenu("Snapping",self.snap)
-        self.appendContextMenu("",["BIM_Trash","Draft_AddConstruction"])
+        if FreeCADGui.Selection.getSelection():
+            self.appendContextMenu("",["BIM_Trash","Draft_AddConstruction","BIM_Convert"])
 
 
     def GetClassName(self):
