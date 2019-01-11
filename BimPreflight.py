@@ -22,7 +22,7 @@
 
 """This module contains FreeCAD commands for the BIM workbench"""
 
-import os,FreeCAD,FreeCADGui,Draft,Arch
+import os,FreeCAD,FreeCADGui,Draft,Arch,Part
 from PySide import QtCore,QtGui
 
 def QT_TRANSLATE_NOOP(ctx,txt): return txt # dummy function for the QT translator
@@ -42,6 +42,7 @@ tests = ["testAll",
          "testStandards",
          "testExtrusions",
          "testStandardCases",
+         "testTinyLines",
         ]
 
 class BIM_Preflight:
@@ -392,6 +393,50 @@ class BIM_Preflight_TaskPanel:
                     for o in notbim:
                         msg += o.Label + "\n"
                         msg += "You can turn these objects into BIM objects by using the Utils -> Make Component tool."
+            if msg:
+                self.failed(test)
+            else:
+                self.passed(test)
+            self.results[test] = msg
+
+
+    def testTinyLines(self):
+        
+        "tests for objects with tiny lines (< 0.8mm)"
+        
+        test = "testTinyLines"
+        if getattr(self.form,test).text() == "Failed":
+            self.show(test)
+        else:
+            self.reset(test)
+            self.results[test] = None
+            self.culprits[test] = []
+            msg = None
+            minl = 0.8 # min 0.8 millimeters
+            edges = []
+            objs = []
+
+            for obj in self.getObjects():
+                if obj.isDerivedFrom("Part::Feature"):
+                        if obj.Shape:
+                        for e in obj.Shape.Edges:
+                            if e.Length <= minl:
+                                edges.append(e)
+                                if not obj in objs:
+                                    objs.append(obj)
+            if edges:
+                result = FreeCAD.ActiveDocument.addObject("Part::Feature","TinyLinesResult")
+                result.Shape = Part.makeCompound(edges)
+                result.ViewObject.LineWidth = 5
+                self.culprits[test] = [result]
+                msg = "Some of the objects have lines smaller than 1/32 inch or 0.8mm, which is the smallest "
+                msg += "line size that Revit accepts. These objects will be discarded when imported into Revit:\n\n"
+                for obj in objs:
+                    msg += obj.Label +"\n"
+                msg += "\nAn additional object, called \"TinyLinesResult\" has been added to this model, and "
+                msg += "selected. It contains all the tiny lines found, so you can inspect them and fix the "
+                msg += "needed objects. Be sure to delete the TinyLinesResult object when you are done!\n\n"
+                msg += "Tip: The results are best viewed in Wireframe mode (menu Views -> Draw Style -> Wireframe)"
             if msg:
                 self.failed(test)
             else:

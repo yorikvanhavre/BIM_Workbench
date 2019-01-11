@@ -116,7 +116,8 @@ def update():
                     it.setText(obj.Label)
                     it.setToolTip(obj.Name)
                     if obj.ViewObject:
-                        it.setIcon(QtGui.QIcon(obj.ViewObject.Proxy.getIcon()))
+                        if hasattr(obj.ViewObject,"Proxy") and hasattr(obj.ViewObject.Proxy,"getIcon"):
+                            it.setIcon(QtGui.QIcon(obj.ViewObject.Proxy.getIcon()))
             QtCore.QTimer.singleShot(UPDATEINTERVAL, update)
 
 def show(item):

@@ -135,7 +135,7 @@ class BIM_Setup:
             form.labelMissingWorkbenches.show()
 
         # show dialog and exit if cancelled
-        FreeCADGui.BIMSetupDialog = True
+        FreeCADGui.BIMSetupDialog = True # this is there to be easily detected by the BIM tutorial
         result = form.exec_()
         del FreeCADGui.BIMSetupDialog
         if not result:
@@ -200,6 +200,8 @@ class BIM_Setup:
         FreeCAD.ParamGet("User parameter:BaseApp/Preferences/View").SetUnsigned("ConstructionColor",form.colorButtonConstruction.property("color").rgb()<<8)
         # set the orbit mode to turntable
         FreeCAD.ParamGet("User parameter:BaseApp/Preferences/View").SetInt("OrbitStyle",0)
+        # turn thumbnails on
+        FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Document").SetBool("SaveThumbnail",True)
 
         # set the working plane
         if hasattr(FreeCAD,"DraftWorkingPlane") and hasattr(FreeCADGui,"draftToolBar"):
