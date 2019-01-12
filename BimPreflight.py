@@ -22,7 +22,7 @@
 
 """This module contains FreeCAD commands for the BIM workbench"""
 
-import os,FreeCAD,FreeCADGui,Draft,Arch,Part
+import os,FreeCAD,FreeCADGui,Draft,Arch,Part,csv
 from PySide import QtCore,QtGui
 
 def QT_TRANSLATE_NOOP(ctx,txt): return txt # dummy function for the QT translator
@@ -183,6 +183,7 @@ class BIM_Preflight_TaskPanel:
         from DraftGui import todo
         for test in tests:
             if test != "testAll":
+                QtGui.QApplication.processEvents()
                 self.reset(test)
                 if hasattr(self,test):
                     todo.delay(getattr(self,test),None)
@@ -449,10 +450,94 @@ class BIM_Preflight_TaskPanel:
                 msg += "Although IFC doesn't require objects to be solid, non-solid objects "
                 msg += "are usually caused by problematic modelling, and will often cause problems in other "
                 msg += "BIM applications.\n\n"
-                if undefined:
-                    msg += "The following BIM objects have an invalid or non-solid geometry:\n\n"
-                    for o in undefined:
-                        msg += o.Label + "\n"
+                msg += "The following BIM objects have an invalid or non-solid geometry:\n\n"
+                for o in self.culprits[test]:
+                    msg += o.Label + "\n"
+            if msg:
+                self.failed(test)
+            else:
+                self.passed(test)
+            self.results[test] = msg
+            QtGui.QApplication.restoreOverrideCursor()
+
+
+    def testQuantities(self):
+
+        "tests for explicit quantities export"
+
+        test = "testQuantities"
+        if getattr(self.form,test).text() == "Failed":
+            self.show(test)
+        else:
+            QtGui.QApplication.setOverrideCursor(QtCore.Qt.WaitCursor)
+            self.reset(test)
+            self.results[test] = None
+            self.culprits[test] = []
+            msg = None
+
+            for obj in self.getObjects():
+                if hasattr(obj,"IfcAttributes"):
+                    for prop in ["Length","Width","Height"]:
+                        if prop in obj.PropertiesList:
+                            if (not "Export"+prop in obj.IfcAttributes) or (obj.IfcAttributes["Export"+prop] == "False"):
+                                self.culprits[test].append(obj)
+                                break
+            if self.culprits[test]:
+                msg = "Some of the objects have Length, Width or Height properties, "
+                msg += "but these properties won't be explicitely exported to IFC. "
+                msg += "This is not necessarily an issue, unless you specifically want these "
+                msg += "quantities to be exported:\n\n"
+                for o in self.culprits[test]:
+                    msg += o.Label + "\n"
+                msg += "To enable exporting of these quantities, use the IFC quantities manager tool "
+                msg += "located under menu Manage -> Manage IFC Quantities..."
+            if msg:
+                self.failed(test)
+            else:
+                self.passed(test)
+            self.results[test] = msg
+            QtGui.QApplication.restoreOverrideCursor()
+
+
+    def testCommonPsets(self):
+
+        "tests for common property sets"
+
+        test = "testCommonPsets"
+        if getattr(self.form,test).text() == "Failed":
+            self.show(test)
+        else:
+            QtGui.QApplication.setOverrideCursor(QtCore.Qt.WaitCursor)
+            self.reset(test)
+            self.results[test] = None
+            self.culprits[test] = []
+            msg = None
+            psets = []
+            psetspath = os.path.join(FreeCAD.getResourceDir(),"Mod","Arch","Presets","pset_definitions.csv")
+            if os.path.exists(psetspath):
+                with open(psetspath, "r") as csvfile:
+                    reader = csv.reader(csvfile, delimiter=';')
+                    for row in reader:
+                        if "Common" in row[0]:
+                            psets.append(row[0][5:-6])
+            psets = [''.join(map(lambda x: x if x.islower() else " "+x, p)) for p in psets]
+
+            for obj in self.getObjects():
+                if hasattr(obj,"IfcRole") and hasattr(obj,"IfcProperties") and isinstance(obj.IfcProperties,dict):
+                    for role in psets:
+                        if obj.IfcRole == role:
+                            if not "Pset_"+role.replace(" ","")+"Common" in ','.join(obj.IfcProperties.values()):
+                                self.culprits[test].append(obj)
+
+            if self.culprits[test]:
+                msg = "Some of the objects will be exported as a defined IFC type, for example a wall, "
+                msg += "but they don't have the associated default Common Property Set defined. "
+                msg += "This is not necessarily an issue, unless you specifically want your "
+                msg += "objects to have common property sets:\n\n"
+                for o in self.culprits[test]:
+                    msg += o.Label + "\n"
+                msg += "To add common property sets to these objects, use the IFC properties manager tool "
+                msg += "located under menu Manage -> Manage IFC Properties..."
             if msg:
                 self.failed(test)
             else:

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>313</width>
-    <height>1211</height>
+    <height>1276</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,7 +17,7 @@
    <item>
     <widget class="QLabel" name="label_7">
      <property name="text">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The following test will check your model or the selected object(s) and their children for conformity to some IFC standards.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Important&lt;/span&gt;: None of the failed tests below will prevent exporting IFC files, nor do these tests guarantee that your IFC files meets some specific quality or standard requirement. They are there to help you assess what is and what is not in your exported file. It's for you to choose which item is of importance to you or not. Hovering the mouse over each description will give you more information to decide.&lt;/p&gt;&lt;p&gt;After a test is run, clicking the corresponding button will give you more information to help you to fix problems.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The following test will check your model or the selected object(s) and their children for conformity to some IFC standards.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Important&lt;/span&gt;: None of the failed tests below will prevent exporting IFC files, nor do these tests guarantee that your IFC files meets some specific quality or standard requirement. They are there to help you assess what is and what is not in your exported file. It's for you to choose which item is of importance to you or not. Hovering the mouse over each description will give you more information to decide.&lt;/p&gt;&lt;p&gt;After a test is run, clicking the corresponding button will give you more information to help you to fix problems.&lt;/p&gt;&lt;p&gt;The &lt;a href=&quot;http://www.buildingsmart-tech.org/specifications&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;official IFC website&lt;/span&gt;&lt;/a&gt; contains a lot of useful information about IFC standards.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="wordWrap">
       <bool>true</bool>
