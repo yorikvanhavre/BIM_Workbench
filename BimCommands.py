@@ -38,6 +38,7 @@ import BimIfcProperties,BimNudge,BimUnclone,BimPreflight
 
 # additional, smaller commands that are defined directly in this file
 
+
 class BIM_TogglePanels:
 
 
@@ -71,6 +72,7 @@ class BIM_TogglePanels:
                 togglebutton.setChecked(True)
 
 
+
 class BIM_Trash:
 
 
@@ -85,10 +87,7 @@ class BIM_Trash:
 
         if FreeCADGui.Selection.getSelection():
             trash = FreeCAD.ActiveDocument.getObject("Trash")
-            if trash:
-                if not trash.isDerivedFrom("App::DocumentObjectGroup"):
-                    trash = None
-            if not trash:
+            if not trash or not trash.isDerivedFrom("App::DocumentObjectGroup"):
                 trash = FreeCAD.ActiveDocument.addObject("App::DocumentObjectGroup","Trash")
             for obj in FreeCADGui.Selection.getSelection():
                 trash.addObject(obj)
@@ -110,6 +109,41 @@ class BIM_Trash:
             return True
         else:
             return False
+
+
+
+class BIM_EmptyTrash:
+
+
+    def GetResources(self):
+
+        return {'Pixmap'  : os.path.join(os.path.dirname(__file__),"icons","BIM_Trash.svg"),
+                'MenuText': QT_TRANSLATE_NOOP("BIM_TogglePanels", "Clean Trash"),
+                'ToolTip' : QT_TRANSLATE_NOOP("BIM_TogglePanels", "Deletes from the trash bin all objects that are not used by any other")}
+
+    def Activated(self):
+
+        trash = FreeCAD.ActiveDocument.getObject("Trash")
+        if trash and trash.isDerivedFrom("App::DocumentObjectGroup"):
+            deletelist = []
+            for obj in trash.Group:
+                if (len(obj.InList) == 1) and (obj.InList[0] == trash):
+                    deletelist.append(obj.Name)
+                    deletelist.extend(self.getDeletableChildren(obj))
+            if deletelist:
+                FreeCAD.ActiveDocument.openTransaction("Empty Trash")
+                for name in deletelist:
+                    FreeCAD.ActiveDocument.removeObject(name)
+                FreeCAD.ActiveDocument.commitTransaction()
+
+    def getDeletableChildren(self,obj):
+        
+        deletelist = []
+        for child in obj.OutList:
+            if (len(child.InList) == 1) and (child.InList[0] == obj):
+                deletelist.append(child.Name)
+                deletelist.extend(self.getDeletableChildren(child))
+        return deletelist
 
 
 
@@ -135,6 +169,7 @@ class BIM_Clone(DraftTools.Draft_Clone):
     def __init__(self):
         DraftTools.Draft_Clone.__init__(self)
         self.moveAfterCloning = True
+
 
 
 class BIM_Help:
@@ -219,7 +254,9 @@ class BIM_Sketch:
         FreeCADGui.activateWorkbench('SketcherWorkbench')
 
 
+
 class BIM_WPView:
+
 
     def GetResources(self):
 
@@ -322,6 +359,7 @@ class BIM_Arc_3Points:
                 self.tracker.setEndPoint(point)
 
 
+
 class BIM_Convert:
 
 
@@ -344,6 +382,7 @@ class BIM_Convert:
         sel = FreeCADGui.Selection.getSelection()
         if sel:
             FreeCADGui.Control.showDialog(BIM_Convert_TaskPanel(sel))
+
 
 
 class BIM_Convert_TaskPanel:
@@ -380,8 +419,10 @@ class BIM_Convert_TaskPanel:
         return True
 
 
+
 FreeCADGui.addCommand('BIM_TogglePanels',BIM_TogglePanels())
 FreeCADGui.addCommand('BIM_Trash',BIM_Trash())
+FreeCADGui.addCommand('BIM_EmptyTrash',BIM_EmptyTrash())
 FreeCADGui.addCommand('BIM_Copy',BIM_Copy())
 FreeCADGui.addCommand('BIM_Clone',BIM_Clone())
 FreeCADGui.addCommand('BIM_Help',BIM_Help())

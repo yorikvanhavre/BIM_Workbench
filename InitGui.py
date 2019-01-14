@@ -313,10 +313,14 @@ static char * IFC_xpm[] = {
                     break
             if groups:
                 self.appendContextMenu("",["Draft_SelectGroup"])
+            if (len(FreeCADGui.Selection.getSelection()) == 1) and (FreeCADGui.Selection.getSelection()[0].Name == "Trash"):
+                self.appendContextMenu("",["BIM_EmptyTrash"])
         elif (recipient == "View"):
             self.appendContextMenu("Snapping",self.snap)
         if FreeCADGui.Selection.getSelection():
-            self.appendContextMenu("",["BIM_Trash","Draft_AddConstruction","BIM_Convert"])
+            if (FreeCADGui.Selection.getSelection()[0].Name != "Trash"):
+                self.appendContextMenu("",["BIM_Trash"])
+            self.appendContextMenu("",["Draft_AddConstruction","BIM_Convert"])
 
 
     def GetClassName(self):
