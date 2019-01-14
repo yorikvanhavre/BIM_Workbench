@@ -55,6 +55,8 @@ class BIM_Library:
                 libok = True
         if libok:
             FreeCADGui.Control.showDialog(BIM_Library_TaskPanel())
+        else:
+            FreeCAD.Console.PrintError("The Parts Library could not be found.\n")
 
 
 class BIM_Library_TaskPanel:
