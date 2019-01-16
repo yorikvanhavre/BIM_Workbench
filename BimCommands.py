@@ -419,6 +419,39 @@ class BIM_Convert_TaskPanel:
         return True
 
 
+class BIM_Ungroup:
+
+
+    def GetResources(self):
+
+        import Draft_rc
+        return {'Pixmap'  : ":/icons/Draft_AddToGroup.svg",
+                'MenuText': QT_TRANSLATE_NOOP("BIM_Convert", "Remove from group"),
+                'ToolTip' : QT_TRANSLATE_NOOP("BIM_Convert", "Removes this object from its parent group")}
+
+    def Activated(self):
+        
+        sel = FreeCADGui.Selection.getSelection()
+        first = True
+        if sel:
+            for obj in sel:
+                for parent in obj.InList:
+                    if parent.isDerivedFrom("App::DocumentObjectGroup") or parent.hasExtension("App::GroupExtension"):
+                        if obj in parent.Group:
+                            if first:
+                                FreeCAD.ActiveDocument.openTransaction("Ungroup")
+                                first = False
+                            if hasattr(parent,"removeObject"):
+                                parent.removeObject(obj)
+                            else:
+                                g = parent.Group
+                                g.remove(obj)
+                                parent.Group = g
+        if not first:
+            FreeCAD.ActiveDocument.commitTransaction()
+            FreeCAD.ActiveDocument.recompute()
+
+
 
 FreeCADGui.addCommand('BIM_TogglePanels',BIM_TogglePanels())
 FreeCADGui.addCommand('BIM_Trash',BIM_Trash())
@@ -431,6 +464,7 @@ FreeCADGui.addCommand('BIM_Sketch',BIM_Sketch())
 FreeCADGui.addCommand('BIM_WPView',BIM_WPView())
 FreeCADGui.addCommand('BIM_Arc_3Points',BIM_Arc_3Points())
 FreeCADGui.addCommand('BIM_Convert',BIM_Convert())
+FreeCADGui.addCommand('BIM_Ungroup',BIM_Ungroup())
 
 
 

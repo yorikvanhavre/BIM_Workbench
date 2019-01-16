@@ -305,14 +305,25 @@ static char * IFC_xpm[] = {
         import BimCommands,DraftTools
         if (recipient == "Tree"):
             groups = False
+            ungroupable = False
             for o in FreeCADGui.Selection.getSelection():
                 if o.isDerivedFrom("App::DocumentObjectGroup") or o.hasExtension("App::GroupExtension"):
                     groups = True
                 else:
                     groups = False
                     break
+            for o in FreeCADGui.Selection.getSelection():
+                for parent in o.InList:
+                    if parent.isDerivedFrom("App::DocumentObjectGroup") or parent.hasExtension("App::GroupExtension"):
+                        if o in parent.Group:
+                            ungroupable = True
+                        else:
+                            ungroupable = False
+                            break
             if groups:
                 self.appendContextMenu("",["Draft_SelectGroup"])
+            if ungroupable:
+                self.appendContextMenu("",["BIM_Ungroup"])
             if (len(FreeCADGui.Selection.getSelection()) == 1) and (FreeCADGui.Selection.getSelection()[0].Name == "Trash"):
                 self.appendContextMenu("",["BIM_EmptyTrash"])
         elif (recipient == "View"):
