@@ -44,7 +44,7 @@ for i,pset in enumerate(psets):
     print(i+1,"/",len(psets),": Retrieving Pset",pset)
     for j in range(MAXTRIES):
         try:
-            u = urllib2.urlopen("http://www.buildingsmart-tech.org/ifc/IFC4/final/html/psd/Pset_"+pset+".xml")
+            u = urllib2.urlopen("http://www.buildingsmart-tech.org/ifc/IFC4/Add2/html/psd/Pset_"+pset+".xml")
             p = u.read()
             u.close()
         except:
