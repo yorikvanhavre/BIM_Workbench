@@ -477,7 +477,7 @@ class BIM_Preflight_TaskPanel:
             msg = None
 
             for obj in self.getObjects():
-                if hasattr(obj,"IfcAttributes"):
+                if hasattr(obj,"IfcAttributes") and (Draft.getType(obj) != "BuildingPart"):
                     for prop in ["Length","Width","Height"]:
                         if prop in obj.PropertiesList:
                             if (not "Export"+prop in obj.IfcAttributes) or (obj.IfcAttributes["Export"+prop] == "False"):
@@ -523,17 +523,16 @@ class BIM_Preflight_TaskPanel:
                         if "Common" in row[0]:
                             psets.append(row[0][5:-6])
             psets = [''.join(map(lambda x: x if x.islower() else " "+x, p)) for p in psets]
+            psets = [pset.strip() for pset in psets]
+            #print(psets)
 
             for obj in self.getObjects():
                 ok = True
                 if hasattr(obj,"IfcRole") and hasattr(obj,"IfcProperties") and isinstance(obj.IfcProperties,dict):
-                    if obj.IfcRole != "Undefined":
+                    if obj.IfcRole in psets:
                         ok = False
-                        for role in psets:
-                            if obj.IfcRole == role:
-                                if "Pset_"+role.replace(" ","")+"Common" in ','.join(obj.IfcProperties.values()):
-                                    ok = True
-                                    break
+                        if "Pset_"+obj.IfcRole.replace(" ","")+"Common" in ','.join(obj.IfcProperties.values()):
+                            ok = True
                 if not ok:
                     self.culprits[test].append(obj)
 
@@ -542,7 +541,7 @@ class BIM_Preflight_TaskPanel:
                 msg += "The objects below have a defined IFC type but do not have the associated common property set:\n\n"
                 for o in self.culprits[test]:
                     msg += o.Label + "\n"
-                msg += "To add common property sets to these objects, use the IFC properties manager tool "
+                msg += "\nTo add common property sets to these objects, use the IFC properties manager tool "
                 msg += "located under menu Manage -> Manage IFC Properties..."
             if msg:
                 self.failed(test)
@@ -668,6 +667,81 @@ class BIM_Preflight_TaskPanel:
             if self.culprits[test]:
                 msg = self.getToolTip(test)
                 msg += "The following BIM objects have no defined standard code:\n\n"
+                for o in self.culprits[test]:
+                    msg += o.Label + "\n"
+            if msg:
+                self.failed(test)
+            else:
+                self.passed(test)
+            self.results[test] = msg
+            QtGui.QApplication.restoreOverrideCursor()
+
+
+    def testExtrusions(self):
+
+        "tests is all objects are extrusions"
+
+        test = "testExtrusions"
+        if getattr(self.form,test).text() == "Failed":
+            self.show(test)
+        else:
+            QtGui.QApplication.setOverrideCursor(QtCore.Qt.WaitCursor)
+            self.reset(test)
+            self.results[test] = None
+            self.culprits[test] = []
+            msg = None
+            for obj in self.getObjects():
+                if hasattr(obj,"Proxy"):
+                    if hasattr(obj,"IfcAttributes") and ("FlagForceBrep" in obj.IfcAttributes.keys()) and (obj.IfcAttributes["FlagForceBrep"] == "True"):
+                        self.culprits[test].append(obj)
+                    elif hasattr(obj.Proxy,"getExtrusionData") and not obj.Proxy.getExtrusionData(obj):
+                        self.culprits[test].append(obj)
+                    elif Draft.getType(obj) == "BuildingPart":
+                        pass
+                elif obj.isDerivedFrom("Part::Extrusion"):
+                    pass
+                elif obj.isDerivedFrom("App::DocumentObjectGroup"):
+                    pass
+                elif obj.isDerivedFrom("App::MaterialObject"):
+                    pass
+                else:
+                    self.culprits[test].append(obj)
+            if self.culprits[test]:
+                msg = self.getToolTip(test)
+                msg += "The following BIM objects are not extrusions:\n\n"
+                for o in self.culprits[test]:
+                    msg += o.Label + "\n"
+            if msg:
+                self.failed(test)
+            else:
+                self.passed(test)
+            self.results[test] = msg
+            QtGui.QApplication.restoreOverrideCursor()
+
+
+    def testStandardCases(self):
+
+        "tests for structs and wall standard cases"
+
+        test = "testStandardCases"
+        if getattr(self.form,test).text() == "Failed":
+            self.show(test)
+        else:
+            QtGui.QApplication.setOverrideCursor(QtCore.Qt.WaitCursor)
+            self.reset(test)
+            self.results[test] = None
+            self.culprits[test] = []
+            msg = None
+            for obj in self.getObjects():
+                if Draft.getType(obj) == "Wall":
+                    if obj.Base and (len(obj.Base.Shape.Edges) != 1):
+                        self.culprits[test].append(obj)
+                elif Draft.getType(obj) == "Structure":
+                    if obj.Base and ( (len(obj.Base.Shape.Wires) != 1) or (not obj.Base.Shape.Wires[0].isClosed()) ):
+                        self.culprits[test].append(obj)
+            if self.culprits[test]:
+                msg = self.getToolTip(test)
+                msg += "The following BIM objects are not standard cases:\n\n"
                 for o in self.culprits[test]:
                     msg += o.Label + "\n"
             if msg:

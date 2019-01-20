@@ -26,6 +26,9 @@
    </item>
    <item>
     <widget class="QPushButton" name="testAll">
+     <property name="toolTip">
+      <string>Warning, this can take some time!</string>
+     </property>
      <property name="text">
       <string>Run all tests</string>
      </property>
