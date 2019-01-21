@@ -245,6 +245,10 @@ class BIM_Sketch:
 
     def Activated(self):
 
+        if hasattr(FreeCAD,"DraftWorkingPlane"):
+            FreeCAD.DraftWorkingPlane.setup()
+        if hasattr(FreeCADGui,"Snapper"):
+            FreeCADGui.Snapper.setGrid()
         sk = FreeCAD.ActiveDocument.addObject('Sketcher::SketchObject','Sketch')
         sk.MapMode = "Deactivated"
         p = FreeCAD.DraftWorkingPlane.getPlacement()
