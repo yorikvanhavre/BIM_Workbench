@@ -131,11 +131,11 @@ static char * IFC_xpm[] = {
                   "Draft_Scale","Draft_Stretch","Draft_Array","Draft_PathArray",
                   "Draft_Mirror","Part_Extrude","Part_Cut","Part_Fuse","Part_Common","BIM_Glue",
                   "Part_Compound","Part_SimpleCopy","Draft_Upgrade", "Draft_Downgrade", "Draft_Shape2DView",
-                  "Draft_Draft2Sketch","Arch_CutPlane","Arch_Add","Arch_Remove","BIM_Convert"]
+                  "Draft_Draft2Sketch","Arch_CutPlane","Arch_Add","Arch_Remove","BIM_Reextrude","BIM_Convert"]
 
         self.manage = ["BIM_Setup","BIM_Project","BIM_Levels","BIM_Windows","BIM_IfcElements",
                   "BIM_IfcQuantities","BIM_IfcProperties","BIM_Classification",
-                  "BIM_Material","Arch_Schedule"]
+                  "BIM_Material","Arch_Schedule","BIM_Preflight"]
 
         self.utils = ["BIM_TogglePanels","BIM_Trash","BIM_Views","BIM_WPView",
                  "Draft_VisGroup","Draft_Slope","Draft_SetWorkingPlaneProxy","Draft_AddConstruction",
@@ -143,7 +143,7 @@ static char * IFC_xpm[] = {
                  "Arch_SelectNonSolidMeshes","Arch_RemoveShape",
                  "Arch_CloseHoles","Arch_MergeWalls","Arch_Check",
                  "Arch_IfcExplorer","Arch_ToggleIfcBrepFlag","Arch_3Views",
-                 "Arch_IfcSpreadsheet","Arch_ToggleSubs","Arch_Survey","BIM_Preflight"]
+                 "Arch_IfcSpreadsheet","Arch_ToggleSubs","Arch_Survey"]
                  
         nudge = ["BIM_Nudge_Switch","BIM_Nudge_Up","BIM_Nudge_Down","BIM_Nudge_Left","BIM_Nudge_Right",
                  "BIM_Nudge_RotateLeft","BIM_Nudge_RotateRight","BIM_Nudge_Extend","BIM_Nudge_Shrink"]
