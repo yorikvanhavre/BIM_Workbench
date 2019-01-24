@@ -233,7 +233,7 @@ class BIM_Sketch:
 
         return {'Pixmap'  : ":/icons/Sketcher_NewSketch.svg",
                 'MenuText': QT_TRANSLATE_NOOP("BIM_Sketch", "Sketch"),
-                'ToolTip' : QT_TRANSLATE_NOOP("BIM_Sketch", "Creates a new sketch in the current working plane and enters edit mode"),
+                'ToolTip' : QT_TRANSLATE_NOOP("BIM_Sketch", "Creates a new sketch in the current working plane"),
                 'Accel'   : 'S,K'}
 
     def IsActive(self):
@@ -395,15 +395,18 @@ class BIM_Convert_TaskPanel:
     def __init__(self,objs):
 
         from PySide import QtGui
-        self.types = ["Wall","Structure","Rebar","Window","Stairs","Roof","Panel","Frame","Space","Component"]
+        self.types = ["Wall","Structure","Rebar","Window","Stairs","Roof","Panel","Frame","Space","Equipment","Component"]
         self.objs = objs
         self.form = QtGui.QListWidget()
         import Arch_rc
         for t in self.types:
             ti = t+"_Tree"
+            tx = t
             if t == "Component":
                 ti = t
-            i = QtGui.QListWidgetItem(QtGui.QIcon(":/icons/Arch_"+ti+".svg"),t)
+                tx = "Generic component"
+            i = QtGui.QListWidgetItem(QtGui.QIcon(":/icons/Arch_"+ti+".svg"),tx)
+            i.setToolTip(t)
             self.form.addItem(i)
         self.form.itemDoubleClicked.connect(self.accept)
 
@@ -414,7 +417,7 @@ class BIM_Convert_TaskPanel:
             import Arch
             FreeCAD.ActiveDocument.openTransaction("Convert to BIM")
             for o in self.objs:
-                getattr(Arch,"make"+i.text())(o)
+                getattr(Arch,"make"+i.toolTip())(o)
             FreeCAD.ActiveDocument.commitTransaction()
             FreeCAD.ActiveDocument.recompute()
         if idx:

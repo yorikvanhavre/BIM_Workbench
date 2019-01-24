@@ -39,7 +39,7 @@ class BIM_Box:
 
         return {'Pixmap'  : os.path.join(os.path.dirname(__file__),"icons","BIM_Box.svg"),
                 'MenuText': QT_TRANSLATE_NOOP("BIM_Box", "Box"),
-                'ToolTip' : QT_TRANSLATE_NOOP("BIM_Box", "Creates a box graphically in the current document")}
+                'ToolTip' : QT_TRANSLATE_NOOP("BIM_Box", "Graphically creates a generic box in the current document")}
 
     def IsActive(self):
 

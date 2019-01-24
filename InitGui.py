@@ -69,17 +69,21 @@ static char * IFC_xpm[] = {
 
         import DraftTools, Arch, BimCommands, PartGui, SketcherGui
 
-        self.draft = ["BIM_Sketch","Draft_Line","Draft_Wire","Draft_Circle","Draft_Arc","BIM_Arc_3Points","Draft_Ellipse",
-                 "Draft_Polygon","Draft_Rectangle", "Draft_BSpline", "Draft_BezCurve",
-                 "Draft_Point"]
+        self.draftingtools = ["BIM_Sketch","Draft_Line","Draft_Wire","Draft_Circle","Draft_Arc","BIM_Arc_3Points","Draft_Ellipse",
+                              "Draft_Polygon","Draft_Rectangle", "Draft_BSpline", "Draft_BezCurve",
+                              "Draft_Point"]
 
-        self.annotation = ["Draft_Text", "Draft_ShapeString", "Draft_Dimension",
-                 "Draft_Label","Arch_AxisTools","Arch_SectionPlane"]
+        self.annotationtools = ["Draft_Text", "Draft_ShapeString", "Draft_Dimension",
+                                "Draft_Label","Arch_Axis","Arch_AxisSystem","Arch_Grid","Arch_SectionPlane","Draft_Shape2DView"]
+        
+        self.modelingtools = ["BIM_Box","Part_Builder","Draft_Facebinder","BIM_Clone","Draft_Array","Draft_PathArray",
+                              "Draft_Mirror","Part_Extrude","Part_Cut","Part_Fuse","Part_Common","Part_Compound",
+                              "Part_SimpleCopy"]
 
-        self.arch = ["Arch_Floor","Arch_Building","Arch_Site",
-                "Arch_Wall","Arch_Structure","Arch_Rebar","Arch_Window","Arch_PipeTools",
-                "Arch_Stairs","Arch_Roof","Arch_PanelTools","BIM_Library","Arch_Frame",
-                "BIM_Box","Part_Builder","Draft_Facebinder","Arch_Space"]
+        self.bimtools = ["Arch_Floor","Arch_Building","Arch_Site",
+                         "Arch_Wall","Arch_Structure","Arch_Rebar","Arch_Window","Arch_Pipe","Arch_PipeConnector",
+                         "Arch_Stairs","Arch_Roof","Arch_Panel","BIM_Library","Arch_Frame",
+                         "Arch_Space","BIM_Convert"]
 
         # Support v0.18 tools
 
@@ -88,13 +92,13 @@ static char * IFC_xpm[] = {
         except:
             pass
         else:
-            self.arch.insert(0,"Arch_BuildingPart")
+            self.bimtools.insert(0,"Arch_BuildingPart")
         try:
             import ArchReference
         except:
             pass
         else:
-            self.arch.insert(4,"Arch_Reference")
+            self.modelingtools.insert(3,"Arch_Reference")
 
         # load rebar tools (Reinforcement addon)
 
@@ -118,32 +122,30 @@ static char * IFC_xpm[] = {
                     return not FreeCAD.ActiveDocument is None
 
             FreeCADGui.addCommand('Arch_RebarTools', RebarGroupCommand())
-            self.arch[self.arch.index("Arch_Rebar")] = "Arch_RebarTools"
+            self.bimtools[self.bimtools.index("Arch_Rebar")] = "Arch_RebarTools"
 
         self.snap = ['Draft_ToggleGrid','Draft_Snap_Lock','Draft_Snap_Midpoint','Draft_Snap_Perpendicular',
-                'Draft_Snap_Grid','Draft_Snap_Intersection','Draft_Snap_Parallel',
-                'Draft_Snap_Endpoint','Draft_Snap_Angle','Draft_Snap_Center',
-                'Draft_Snap_Extension','Draft_Snap_Near','Draft_Snap_Ortho',
-                'Draft_Snap_Special','Draft_Snap_Dimensions','Draft_Snap_WorkingPlane']
+                     'Draft_Snap_Grid','Draft_Snap_Intersection','Draft_Snap_Parallel',
+                     'Draft_Snap_Endpoint','Draft_Snap_Angle','Draft_Snap_Center',
+                     'Draft_Snap_Extension','Draft_Snap_Near','Draft_Snap_Ortho',
+                     'Draft_Snap_Special','Draft_Snap_Dimensions','Draft_Snap_WorkingPlane']
 
-        self.modify = ["Draft_Move","BIM_Copy","Draft_Rotate","BIM_Clone","BIM_Unclone","Draft_Offset", 
-                  "Part_Offset2D", "Draft_Trimex",
-                  "Draft_Scale","Draft_Stretch","Draft_Array","Draft_PathArray",
-                  "Draft_Mirror","Part_Extrude","Part_Cut","Part_Fuse","Part_Common","BIM_Glue",
-                  "Part_Compound","Part_SimpleCopy","Draft_Upgrade", "Draft_Downgrade", "Draft_Shape2DView",
-                  "Draft_Draft2Sketch","Arch_CutPlane","Arch_Add","Arch_Remove","BIM_Reextrude","BIM_Convert"]
+        self.modify = ["Draft_Move","BIM_Copy","Draft_Rotate","BIM_Unclone","Draft_Offset", 
+                       "Part_Offset2D", "Draft_Trimex","Draft_Scale","Draft_Stretch",
+                       "BIM_Glue","Draft_Upgrade", "Draft_Downgrade", 
+                       "Draft_Draft2Sketch","Arch_CutPlane","Arch_Add","Arch_Remove","BIM_Reextrude"]
 
         self.manage = ["BIM_Setup","BIM_Project","BIM_Levels","BIM_Windows","BIM_IfcElements",
-                  "BIM_IfcQuantities","BIM_IfcProperties","BIM_Classification",
-                  "BIM_Material","Arch_Schedule","BIM_Preflight"]
+                       "BIM_IfcQuantities","BIM_IfcProperties","BIM_Classification",
+                       "BIM_Material","Arch_Schedule","BIM_Preflight"]
 
-        self.utils = ["BIM_TogglePanels","BIM_Trash","BIM_Views","BIM_WPView",
-                 "Draft_VisGroup","Draft_Slope","Draft_SetWorkingPlaneProxy","Draft_AddConstruction",
-                 "Arch_SplitMesh","Arch_MeshToShape",
-                 "Arch_SelectNonSolidMeshes","Arch_RemoveShape",
-                 "Arch_CloseHoles","Arch_MergeWalls","Arch_Check",
-                 "Arch_IfcExplorer","Arch_ToggleIfcBrepFlag","Arch_3Views",
-                 "Arch_IfcSpreadsheet","Arch_ToggleSubs","Arch_Survey"]
+        self.utils = ["BIM_TogglePanels","BIM_Trash","BIM_WPView",
+                      "Draft_VisGroup","Draft_Slope","Draft_SetWorkingPlaneProxy","Draft_AddConstruction",
+                      "Arch_SplitMesh","Arch_MeshToShape",
+                      "Arch_SelectNonSolidMeshes","Arch_RemoveShape",
+                      "Arch_CloseHoles","Arch_MergeWalls","Arch_Check",
+                      "Arch_IfcExplorer","Arch_ToggleIfcBrepFlag",
+                      "Arch_ToggleSubs","Arch_Survey"]
                  
         nudge = ["BIM_Nudge_Switch","BIM_Nudge_Up","BIM_Nudge_Down","BIM_Nudge_Left","BIM_Nudge_Right",
                  "BIM_Nudge_RotateLeft","BIM_Nudge_RotateRight","BIM_Nudge_Extend","BIM_Nudge_Shrink"]
@@ -181,10 +183,11 @@ static char * IFC_xpm[] = {
 
         # create toolbars
 
-        self.appendToolbar("Draft tools",self.draft)
-        self.appendToolbar("Arch tools",self.arch)
-        self.appendToolbar("Annotation tools",self.annotation)
-        self.appendToolbar("Mod tools",self.modify)
+        self.appendToolbar("Drafting tools",self.draftingtools)
+        self.appendToolbar("3D modeling tools",self.modelingtools)
+        self.appendToolbar("BIM tools",self.bimtools)
+        self.appendToolbar("Annotation tools",self.annotationtools)
+        self.appendToolbar("Modification tools",self.modify)
         self.appendToolbar("Manage tools",self.manage)
         #if flamingo:
         #    self.appendToolbar("Flamingo tools",flamingo)
@@ -193,16 +196,17 @@ static char * IFC_xpm[] = {
 
         def QT_TRANSLATE_NOOP(scope, text): return text # dummy function for the QT translator
 
-        self.appendMenu(QT_TRANSLATE_NOOP("BIM","&2D Drafting"),self.draft)
-        self.appendMenu(QT_TRANSLATE_NOOP("BIM","&3D BIM"),self.arch)
-        self.appendMenu(QT_TRANSLATE_NOOP("BIM","&Annotation"),self.annotation)
+        self.appendMenu(QT_TRANSLATE_NOOP("BIM","&2D Drafting"),self.draftingtools)
+        self.appendMenu(QT_TRANSLATE_NOOP("BIM","&3D Modeling"),self.modelingtools)
+        self.appendMenu(QT_TRANSLATE_NOOP("BIM","&BIM"),self.bimtools)
+        self.appendMenu(QT_TRANSLATE_NOOP("BIM","&Annotation"),self.annotationtools)
+        self.appendMenu(QT_TRANSLATE_NOOP("BIM","&Snapping"),self.snap)
+        self.appendMenu(QT_TRANSLATE_NOOP("BIM","&Modify"),self.modify)
+        self.appendMenu(QT_TRANSLATE_NOOP("BIM","&Manage"),self.manage)
         if flamingo:
             self.appendMenu(QT_TRANSLATE_NOOP("BIM","&Flamingo"),flamingo)
         if fasteners:
             self.appendMenu(QT_TRANSLATE_NOOP("BIM","&Fasteners"),fasteners)
-        self.appendMenu(QT_TRANSLATE_NOOP("BIM","&Snapping"),self.snap)
-        self.appendMenu(QT_TRANSLATE_NOOP("BIM","&Modify"),self.modify)
-        self.appendMenu(QT_TRANSLATE_NOOP("BIM","&Manage"),self.manage)
         self.appendMenu(QT_TRANSLATE_NOOP("BIM","&Utils"),self.utils)
         self.appendMenu([QT_TRANSLATE_NOOP("BIM","&Utils"),"Nudge"],nudge)
         self.appendMenu("&Help",["BIM_Welcome","BIM_Help","BIM_Tutorial"])
@@ -257,8 +261,8 @@ static char * IFC_xpm[] = {
                 else:
                     return (FreeCAD.ActiveDocument != None) and (not FreeCADGui.Selection.getSelection())
 
-        FreeCADGui.Control.addTaskWatcher([BimWatcher(self.draft+self.annotation,"2D geometry"),
-                                           BimWatcher(self.arch,"3D/BIM geometry"),
+        FreeCADGui.Control.addTaskWatcher([BimWatcher(self.draftingtools+self.annotationtools,"2D geometry"),
+                                           BimWatcher(self.modelingtools+self.bimtools,"3D/BIM geometry"),
                                            BimWatcher(self.modify,"Modify",invert=True)])
 
         # restore views widget if needed
