@@ -765,7 +765,7 @@ class BIM_Preflight_TaskPanel:
             self.results[test] = None
             self.culprits[test] = []
             msg = None
-            minl = 0.8 # min 0.8 millimeters
+            minl = 0.79376 # min 1/32"
             edges = []
             objs = []
             for obj in self.getObjects():
@@ -782,7 +782,7 @@ class BIM_Preflight_TaskPanel:
                 result.ViewObject.LineWidth = 5
                 self.culprits[test] = [result]
                 msg = self.getToolTip(test)
-                msg += "The objects below have lines smaller than 1/32 inch or 0.8mm, which is the smallest "
+                msg += "The objects below have lines smaller than 1/32 inch or 0.79 mm, which is the smallest "
                 msg += "line size that Revit accepts. These objects will be discarded when imported into Revit:\n\n"
                 for obj in objs:
                     msg += obj.Label +"\n"
