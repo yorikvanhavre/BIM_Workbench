@@ -229,6 +229,9 @@ static char * IFC_xpm[] = {
 
         Log ('Loading BIM module... done\n')
 
+    def setupMultipleObjectSelection(self):
+        import BimSelect
+        FreeCADGui.addDocumentObserver(BimSelect.Setup())
 
     def Activated(self):
 
@@ -273,6 +276,8 @@ static char * IFC_xpm[] = {
                 FreeCADGui.runCommand("BIM_Views")
             else:
                 w.show()
+
+        self.setupMultipleObjectSelection()
 
         Log("BIM workbench activated\n")
 
