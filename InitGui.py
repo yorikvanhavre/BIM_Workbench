@@ -230,8 +230,11 @@ static char * IFC_xpm[] = {
         Log ('Loading BIM module... done\n')
 
     def setupMultipleObjectSelection(self):
+
         import BimSelect
-        FreeCADGui.addDocumentObserver(BimSelect.Setup())
+        if hasattr(FreeCADGui,"addDocumentObserver") and not hasattr(self,"BimSelectObserver"):
+            self.BimSelectObserver = BimSelect.Setup()
+            FreeCADGui.addDocumentObserver(self.BimSelectObserver)
 
     def Activated(self):
 
@@ -283,6 +286,10 @@ static char * IFC_xpm[] = {
 
 
     def Deactivated(self):
+
+        if hasattr(self,"BimSelectObserver"):
+            FreeCADGui.removeDocumentObserver(self.BimSelectObserver)
+            del self.BimSelectObserver
 
         if hasattr(FreeCADGui,"draftToolBar"):
             FreeCADGui.draftToolBar.Deactivated()
