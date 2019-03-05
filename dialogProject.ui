@@ -44,7 +44,7 @@
         <x>0</x>
         <y>0</y>
         <width>417</width>
-        <height>1169</height>
+        <height>1196</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -75,6 +75,19 @@
            </widget>
           </item>
          </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="addHumanFigure">
+         <property name="toolTip">
+          <string>If this is checked, a human figure will be added, which helps greatly to give a sense of scale when viewing the model</string>
+         </property>
+         <property name="text">
+          <string>Add a human figure</string>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
+         </property>
         </widget>
        </item>
        <item>

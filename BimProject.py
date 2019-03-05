@@ -27,7 +27,6 @@ import os,FreeCAD,FreeCADGui
 def QT_TRANSLATE_NOOP(ctx,txt): return txt # dummy function for the QT translator
 
 
-
 class BIM_Project:
 
 
@@ -76,7 +75,7 @@ class BIM_Project:
             FreeCAD.ActiveDocument = doc
         if not FreeCAD.ActiveDocument:
             FreeCAD.Console.PrintError("No active document, aborting.\n")
-        import Draft,Arch
+        import Draft,Arch,Part
         site = None
         outline = None
         if self.form.groupSite.isChecked():
@@ -90,6 +89,14 @@ class BIM_Project:
             elif hasattr(site,"Declination"):
                 site.Declination = self.form.siteDeviation.value()
             site.Elevation = FreeCAD.Units.Quantity(self.form.siteElevation.text()).Value
+        human = None
+        if self.form.addHumanFigure.isChecked():
+            humanshape = Part.Shape()
+            humanpath = os.path.join(os.path.dirname(__file__),"geometry","human figure.brep")
+            humanshape.importBrep(humanpath)
+            human = FreeCAD.ActiveDocument.addObject("Part::Feature","Human")
+            human.Shape = humanshape
+            human.Placement.move(FreeCAD.Vector(500,500,0))
         if self.form.groupBuilding.isChecked():
             building = Arch.makeBuilding()
             if site:
@@ -117,6 +124,8 @@ class BIM_Project:
                     outtext.Label = "Building Label"
                     outtext.ViewObject.TextColor = color
                     grp.addObject(outtext)
+                if human:
+                    grp.addObject(human)
             axisV = None
             if self.form.countVAxes.value() and distVAxes:
                 axisV = Arch.makeAxis(num = self.form.countVAxes.value(), size = distVAxes, name="vaxis")
@@ -254,6 +263,8 @@ class BIM_Project:
 
             s += "levelsWP="+str(int(self.form.levelsWP.isChecked()))+"\n"
             s += "levelsAxis="+str(int(self.form.levelsAxis.isChecked()))+"\n"
+            
+            s += "addHumanFigure="+str(int(self.form.addHumanFigure.isChecked()))+"\n"
 
             f = open(os.path.join(presetdir,name+".txt"),"w")
             f.write(s)
@@ -338,6 +349,8 @@ class BIM_Project:
                             self.form.levelsWP.setChecked(bool(int(s[1])))
                         elif s[0] == "levelsAxis":
                             self.form.levelsAxis.setChecked(bool(int(s[1])))
+                        elif s[0] == "addHumanFigure":
+                            self.form.addHumanFigure.setChecked(bool(int(s[1])))
 
 
 FreeCADGui.addCommand('BIM_Project',BIM_Project())
