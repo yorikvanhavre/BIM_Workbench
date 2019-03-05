@@ -645,7 +645,7 @@ def setStatusIcons(show=True):
                 togglebutton.setMaximumWidth(bwidth)
                 togglebutton.setIcon(QtGui.QIcon(os.path.join(os.path.dirname(__file__),"icons","BIM_TogglePanels.svg")))
                 togglebutton.setText("")
-                togglebutton.setToolTip("Toggle report panels on/off")
+                togglebutton.setToolTip("Toggle report panels on/off (Ctrl+0)")
                 togglebutton.setFlat(True)
                 togglebutton.setCheckable(True)
                 rv = mw.findChild(QtGui.QWidget,"Python console")
@@ -661,7 +661,7 @@ def setStatusIcons(show=True):
                 bimviewsbutton.setMaximumWidth(bwidth)
                 bimviewsbutton.setIcon(QtGui.QIcon(os.path.join(os.path.dirname(__file__),"icons","BIM_Views.svg")))
                 bimviewsbutton.setText("")
-                bimviewsbutton.setToolTip("Toggle BIM views panel on/off")
+                bimviewsbutton.setToolTip("Toggle BIM views panel on/off (Ctrl+9)")
                 bimviewsbutton.setFlat(True)
                 bimviewsbutton.setCheckable(True)
                 if BimViews.findWidget():
