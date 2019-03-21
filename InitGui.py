@@ -75,7 +75,7 @@ static char * IFC_xpm[] = {
 
         self.annotationtools = ["Draft_Text", "Draft_ShapeString", "Draft_Dimension",
                                 "Draft_Label","Arch_Axis","Arch_AxisSystem","Arch_Grid","Arch_SectionPlane","Draft_Shape2DView"]
-        
+
         self.modelingtools = ["BIM_Box","Part_Builder","Draft_Facebinder","BIM_Clone","Draft_Array","Draft_PathArray",
                               "Draft_Mirror","Part_Extrude","Part_Cut","Part_Fuse","Part_Common","Part_Compound",
                               "Part_SimpleCopy"]
@@ -130,9 +130,9 @@ static char * IFC_xpm[] = {
                      'Draft_Snap_Extension','Draft_Snap_Near','Draft_Snap_Ortho',
                      'Draft_Snap_Special','Draft_Snap_Dimensions','Draft_Snap_WorkingPlane']
 
-        self.modify = ["Draft_Move","BIM_Copy","Draft_Rotate","BIM_Unclone","Draft_Offset", 
+        self.modify = ["Draft_Move","BIM_Copy","Draft_Rotate","BIM_Unclone","Draft_Offset",
                        "Part_Offset2D", "Draft_Trimex","Draft_Scale","Draft_Stretch",
-                       "BIM_Glue","Draft_Upgrade", "Draft_Downgrade", 
+                       "BIM_Glue","Draft_Upgrade", "Draft_Downgrade",
                        "Draft_Draft2Sketch","Arch_CutPlane","Arch_Add","Arch_Remove","BIM_Reextrude"]
 
         self.manage = ["BIM_Setup","BIM_Project","BIM_Levels","BIM_Windows","BIM_IfcElements",
@@ -146,9 +146,24 @@ static char * IFC_xpm[] = {
                       "Arch_CloseHoles","Arch_MergeWalls","Arch_Check",
                       "Arch_IfcExplorer","Arch_ToggleIfcBrepFlag",
                       "Arch_ToggleSubs","Arch_Survey","BIM_Diff"]
-                 
+
         nudge = ["BIM_Nudge_Switch","BIM_Nudge_Up","BIM_Nudge_Down","BIM_Nudge_Left","BIM_Nudge_Right",
                  "BIM_Nudge_RotateLeft","BIM_Nudge_RotateRight","BIM_Nudge_Extend","BIM_Nudge_Shrink"]
+
+        # try to load bimbots
+
+        try:
+            import bimbots
+        except:
+            pass
+        else:
+            class BIMBots:
+                def GetResources(self):
+                    return bimbots.get_plugin_info()
+                def Activated(self):
+                    bimbots.launch_ui()
+            FreeCADGui.addCommand('BIMBots', BIMBots())
+            self.utils.append("BIMBots")
 
         # load webtools
 
