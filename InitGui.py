@@ -145,7 +145,7 @@ static char * IFC_xpm[] = {
                       "Arch_SelectNonSolidMeshes","Arch_RemoveShape",
                       "Arch_CloseHoles","Arch_MergeWalls","Arch_Check",
                       "Arch_IfcExplorer","Arch_ToggleIfcBrepFlag",
-                      "Arch_ToggleSubs","Arch_Survey"]
+                      "Arch_ToggleSubs","Arch_Survey","BIM_Diff"]
                  
         nudge = ["BIM_Nudge_Switch","BIM_Nudge_Up","BIM_Nudge_Down","BIM_Nudge_Left","BIM_Nudge_Right",
                  "BIM_Nudge_RotateLeft","BIM_Nudge_RotateRight","BIM_Nudge_Extend","BIM_Nudge_Shrink"]
