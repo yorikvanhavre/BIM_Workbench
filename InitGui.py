@@ -69,7 +69,7 @@ static char * IFC_xpm[] = {
 
         import DraftTools, Arch, BimCommands, PartGui, SketcherGui
 
-        self.draftingtools = ["BIM_Sketch","Draft_Line","Draft_Wire","Draft_Circle","Draft_Arc","BIM_Arc_3Points","Draft_Ellipse",
+        self.draftingtools = ["BIM_Sketch","Draft_Line","Draft_Wire","Draft_Circle","Draft_Arc","Draft_Arc_3Points","Draft_Ellipse",
                               "Draft_Polygon","Draft_Rectangle", "Draft_BSpline", "Draft_BezCurve",
                               "Draft_Point"]
 

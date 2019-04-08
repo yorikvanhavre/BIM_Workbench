@@ -137,7 +137,7 @@ class BIM_EmptyTrash:
                 FreeCAD.ActiveDocument.commitTransaction()
 
     def getDeletableChildren(self,obj):
-        
+
         deletelist = []
         for child in obj.OutList:
             if (len(child.InList) == 1) and (child.InList[0] == obj):
@@ -303,64 +303,7 @@ class BIM_WPView:
 
 
 
-class BIM_Arc_3Points:
 
-
-    def GetResources(self):
-
-        return {'Pixmap'  : os.path.join(os.path.dirname(__file__),"icons","BIM_Arc_3Points.svg"),
-                'MenuText': QT_TRANSLATE_NOOP("BIM_Arc_3Points", "Arc 3 points"),
-                'ToolTip' : QT_TRANSLATE_NOOP("BIM_Arc_3Points", "Creates an arc by giving 3 points through which the arc should pass"),
-                'Accel'   : 'A,T'}
-
-    def IsActive(self):
-
-        if FreeCAD.ActiveDocument:
-            return True
-        else:
-            return False
-
-    def Activated(self):
-
-        import DraftTrackers
-        self.points = []
-        self.normal = None
-        self.tracker = DraftTrackers.arcTracker()
-        self.tracker.autoinvert = False
-        if hasattr(FreeCAD,"DraftWorkingPlane"):
-            FreeCAD.DraftWorkingPlane.setup()
-        FreeCADGui.Snapper.getPoint(callback=self.getPoint,movecallback=self.drawArc)
-
-    def getPoint(self,point,info):
-        if not point: # cancelled
-            self.tracker.off()
-            return
-        if not(point in self.points): # avoid same point twice
-            self.points.append(point)
-        if len(self.points) < 3:
-            if len(self.points) == 2:
-                self.tracker.on()
-            FreeCADGui.Snapper.getPoint(last=self.points[-1],callback=self.getPoint,movecallback=self.drawArc)
-        else:
-            import Part
-            e = Part.Arc(self.points[0],self.points[1],self.points[2]).toShape()
-            o = FreeCAD.ActiveDocument.addObject("Part::Feature","Arc")
-            o.Shape = e
-            self.tracker.off()
-            FreeCAD.ActiveDocument.recompute()
-
-    def drawArc(self,point,info):
-        
-        if len(self.points) == 2:
-            import Part
-            if point.sub(self.points[1]).Length > 0.001:
-                e = Part.Arc(self.points[0],self.points[1],point).toShape()
-                self.tracker.normal = e.Curve.Axis.negative() # for some reason the axis always points "backwards"
-                self.tracker.basevector = self.tracker.getDeviation()
-                self.tracker.setCenter(e.Curve.Center)
-                self.tracker.setRadius(e.Curve.Radius)
-                self.tracker.setStartPoint(self.points[0])
-                self.tracker.setEndPoint(point)
 
 
 
@@ -382,7 +325,7 @@ class BIM_Convert:
             return False
 
     def Activated(self):
-        
+
         sel = FreeCADGui.Selection.getSelection()
         if sel:
             FreeCADGui.Control.showDialog(BIM_Convert_TaskPanel(sel))
@@ -411,7 +354,7 @@ class BIM_Convert_TaskPanel:
         self.form.itemDoubleClicked.connect(self.accept)
 
     def accept(self,idx=None):
-        
+
         i = self.form.currentItem()
         if i:
             import Arch
@@ -437,7 +380,7 @@ class BIM_Ungroup:
                 'ToolTip' : QT_TRANSLATE_NOOP("BIM_Convert", "Removes this object from its parent group")}
 
     def Activated(self):
-        
+
         sel = FreeCADGui.Selection.getSelection()
         first = True
         if sel:
@@ -469,7 +412,6 @@ FreeCADGui.addCommand('BIM_Help',BIM_Help())
 FreeCADGui.addCommand('BIM_Glue',BIM_Glue())
 FreeCADGui.addCommand('BIM_Sketch',BIM_Sketch())
 FreeCADGui.addCommand('BIM_WPView',BIM_WPView())
-FreeCADGui.addCommand('BIM_Arc_3Points',BIM_Arc_3Points())
 FreeCADGui.addCommand('BIM_Convert',BIM_Convert())
 FreeCADGui.addCommand('BIM_Ungroup',BIM_Ungroup())
 
@@ -481,19 +423,19 @@ FreeCADGui.addCommand('BIM_Ungroup',BIM_Ungroup())
 def setStatusIcons(show=True):
 
     "shows or hides the BIM icons in the status bar"
-    
+
     from PySide import QtCore,QtGui
 
     def toggle(state):
-        
+
         FreeCADGui.runCommand("BIM_TogglePanels")
 
     def toggleBimViews(state):
-        
+
         FreeCADGui.runCommand("BIM_Views")
 
     def addonMgr():
-        
+
         mw = FreeCADGui.getMainWindow()
         if mw:
             st = mw.statusBar()
@@ -505,7 +447,7 @@ def setStatusIcons(show=True):
         FreeCADGui.runCommand("Std_AddonMgr")
 
     def setUnit(action):
-        
+
         # set the label of the unit button
         utext = action.text().replace("&","")
         unit = [0,4,1,3,7,5][["Millimeters","Centimeters","Meters","Inches","Feet","Architectural"].index(utext)]
@@ -513,7 +455,7 @@ def setStatusIcons(show=True):
         if hasattr(FreeCAD.Units,"setSchema"):
             FreeCAD.Units.setSchema(unit)
         action.parent().parent().parent().setText(utext)
-        
+
         # change the unit of the nudge button
         nudge = action.parent().parent().parent().parent().nudge
         nudgeactions = nudge.menu().actions()
@@ -527,7 +469,7 @@ def setStatusIcons(show=True):
             nudge.setText(FreeCAD.Units.Quantity(nudge.text().replace("&","")).UserString)
 
     def setNudge(action):
-        
+
         utext = action.text().replace("&","")
         if utext == "Custom...":
             # load dialog
@@ -540,17 +482,17 @@ def setStatusIcons(show=True):
                 return
             utext = form.inputField.text()
         action.parent().parent().parent().setText(utext)
-        
+
     class CheckWorker(QtCore.QThread):
-        
+
         updateAvailable = QtCore.Signal(bool)
-    
+
         def __init__(self):
-            
+
             QtCore.QThread.__init__(self)
-    
+
         def run(self):
-            
+
             try:
                 import git
             except:
@@ -571,13 +513,13 @@ def setStatusIcons(show=True):
             self.updateAvailable.emit(False)
 
     def checkUpdates():
-        
+
         FreeCAD.bim_update_checker = CheckWorker()
         FreeCAD.bim_update_checker.updateAvailable.connect(showUpdateButton)
         FreeCAD.bim_update_checker.start()
-        
+
     def showUpdateButton(avail):
-        
+
         if avail:
             mw = FreeCADGui.getMainWindow()
             if mw:
@@ -591,6 +533,26 @@ def setStatusIcons(show=True):
         if hasattr(FreeCAD,"bim_update_checker"):
             del FreeCAD.bim_update_checker
 
+    def toggleContextMenu(point):
+
+        FreeCADGui.BimToggleMenu = QtGui.QMenu()
+        for t in ["Report view","Python console","Selection view","Combo View"]:
+            a = QtGui.QAction(t)
+            #a.setCheckable(True)
+            #a.setChecked(FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM").GetBool("toggle"+t.replace(" ",""),True))
+            FreeCADGui.BimToggleMenu.addAction(a)
+        pos = FreeCADGui.getMainWindow().cursor().pos()
+        FreeCADGui.BimToggleMenu.triggered.connect(toggleSaveSettings)
+        #QtCore.QObject.connect(FreeCADGui.BimToggleMenu,QtCore.SIGNAL("triggered(QAction *)"),toggleSaveSettings)
+        FreeCADGui.BimToggleMenu.popup(pos)
+
+    def toggleSaveSettings(action):
+
+        t = action.text()
+        FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM").SetBool("toggle"+t.replace(" ",""),action.isChecked())
+        if hasattr(FreeCADGui,"BimToggleMenu"):
+            del FreeCADGui.BimToggleMenu
+
     # main code
 
     mw = FreeCADGui.getMainWindow()
@@ -603,7 +565,7 @@ def setStatusIcons(show=True):
             else:
                 statuswidget = QtGui.QToolBar()
                 statuswidget.setObjectName("BIMStatusWidget")
-                
+
                 # nudge button
                 nudge = QtGui.QPushButton("Auto")
                 nudge.setIcon(QtGui.QIcon(os.path.join(os.path.dirname(__file__),"icons","BIM_Nudge.svg")))
@@ -638,7 +600,7 @@ def setStatusIcons(show=True):
                 statuswidget.addWidget(unitLabel)
                 statuswidget.unitLabel = unitLabel
                 st.addPermanentWidget(statuswidget)
-                
+
                 # report panels toggle button
                 togglebutton = QtGui.QPushButton()
                 bwidth = togglebutton.fontMetrics().boundingRect("AAAA").width()
@@ -648,6 +610,8 @@ def setStatusIcons(show=True):
                 togglebutton.setToolTip("Toggle report panels on/off (Ctrl+0)")
                 togglebutton.setFlat(True)
                 togglebutton.setCheckable(True)
+                togglebutton.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+                togglebutton.customContextMenuRequested.connect(toggleContextMenu)
                 rv = mw.findChild(QtGui.QWidget,"Python console")
                 if rv and rv.isVisible():
                     togglebutton.setChecked(True)
