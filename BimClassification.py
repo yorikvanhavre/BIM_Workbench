@@ -159,7 +159,9 @@ class BIM_Classification:
         groups = {}
         for name in self.objectslist.keys():
             obj = FreeCAD.ActiveDocument.getObject(name)
-            if obj and hasattr(obj,"IfcRole"):
+            if obj and hasattr(obj,"IfcType"):
+                groups.setdefault(obj.IfcType,[]).append(name)
+            elif obj and hasattr(obj,"IfcRole"):
                 groups.setdefault(obj.IfcRole,[]).append(name)
             else:
                 groups.setdefault("Undefined",[]).append(name)

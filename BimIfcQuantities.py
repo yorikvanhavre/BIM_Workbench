@@ -57,10 +57,16 @@ class BIM_IfcQuantities:
         # build objects list
         self.objectslist = {}
         for obj in FreeCAD.ActiveDocument.Objects:
-            if hasattr(obj,"IfcRole"):
+            if hasattr(obj,"IfcType"):
+                self.objectslist[obj.Name] = obj.IfcType
+            elif hasattr(obj,"IfcRole"):
                 self.objectslist[obj.Name] = obj.IfcRole
-        import ArchComponent
-        self.ifcroles = ArchComponent.IfcRoles
+        try:
+            import ArchIFC
+            self.ifcroles = ArchIFC.IfcTypes
+        except:
+            import ArchComponent
+            self.ifcroles = ArchComponent.IfcRoles
 
         # load the form and set the tree model up
         self.form = FreeCADGui.PySideUic.loadUi(os.path.join(os.path.dirname(__file__),"dialogIfcQuantities.ui"))

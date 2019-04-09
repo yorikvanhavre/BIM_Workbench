@@ -57,8 +57,11 @@ class BIM_IfcProperties:
         self.objectslist = {}
         searchterms = [""]
         for obj in FreeCAD.ActiveDocument.Objects:
-            if hasattr(obj,"IfcRole") and hasattr(obj,"IfcProperties") and isinstance(obj.IfcProperties,dict):
-                self.objectslist[obj.Name] = [obj.IfcRole,obj.IfcProperties]
+            if hasattr(obj,"IfcProperties") and isinstance(obj.IfcProperties,dict):
+                if hasattr(obj,"IfcType"):
+                    self.objectslist[obj.Name] = [obj.IfcType,obj.IfcProperties]
+                if hasattr(obj,"IfcRole"):
+                    self.objectslist[obj.Name] = [obj.IfcRole,obj.IfcProperties]
                 for key,val in obj.IfcProperties.items():
                     if not key in searchterms:
                         searchterms.append(key)
@@ -66,8 +69,12 @@ class BIM_IfcProperties:
                     if len(val) == 3:
                         if not val[0] in searchterms:
                             searchterms.append(val[0])
-        import ArchComponent
-        self.ifcroles = ArchComponent.IfcRoles
+        try:
+            import ArchIFC
+            self.ifcroles = ArchIFC.IfcTypes
+        except:
+            import ArchComponent
+            self.ifcroles = ArchComponent.IfcRoles
 
         # load the form and set the tree model up
         self.form = FreeCADGui.PySideUic.loadUi(os.path.join(os.path.dirname(__file__),"dialogIfcProperties.ui"))
@@ -79,7 +86,12 @@ class BIM_IfcProperties:
         self.form.searchField.addItems(searchterms)
 
         # set the properties editor
-        self.ptypes = ArchComponent.SimplePropertyTypes + ArchComponent.MeasurePropertyTypes
+        try:
+            import ArchIFCSchema
+            self.ptypes = ArchIFCSchema.IfcTypes.keys()
+        except:
+            import ArchComponent
+            self.ptypes = ArchComponent.SimplePropertyTypes + ArchComponent.MeasurePropertyTypes
         self.plabels = [''.join(map(lambda x: x if x.islower() else " "+x, t[3:]))[1:] for t in self.ptypes]
         self.psetdefs = {}
         psetspath = os.path.join(FreeCAD.getResourceDir(),"Mod","Arch","Presets","pset_definitions.csv")
@@ -169,7 +181,11 @@ class BIM_IfcProperties:
                     it1.setIcon(icon)
                     it1.setToolTip(obj.Name)
                     it2 = QtGui.QStandardItem(group)
-                    if group != obj.IfcRole:
+                    if hasattr(obj,"IfcType"):
+                        r = obj.IfcType
+                    else:
+                        r = obj.IfcRole
+                    if group != r:
                         it2.setIcon(QtGui.QIcon(":/icons/edit-edit.svg"))
                     it3 = self.getSearchResults(obj)
                     if it3:
@@ -220,7 +236,11 @@ class BIM_IfcProperties:
                 it1.setIcon(icon)
                 it1.setToolTip(obj.Name)
                 it2 = QtGui.QStandardItem(role)
-                if role != obj.IfcRole:
+                if hasattr(obj,"IfcType"):
+                    r = obj.IfcType
+                else:
+                    r = obj.IfcRole
+                if role != r:
                     it2.setIcon(QtGui.QIcon(":/icons/edit-edit.svg"))
                 it3 = self.getSearchResults(obj)
                 ok = False
@@ -252,7 +272,11 @@ class BIM_IfcProperties:
                     it1.setIcon(icon)
                     it1.setToolTip(obj.Name)
                     it2 = QtGui.QStandardItem(role)
-                    if role != obj.IfcRole:
+                    if hasattr(obj,"IfcType"):
+                        r = obj.IfcType
+                    else:
+                        r = obj.IfcRole
+                    if role != r:
                         it2.setIcon(QtGui.QIcon(":/icons/edit-edit.svg"))
                     it3 = self.getSearchResults(obj)
                     if it3:

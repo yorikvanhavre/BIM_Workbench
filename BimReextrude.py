@@ -107,7 +107,9 @@ class BIM_Reextrude:
                 newobj.Material = obj.Material
                 
             # set role and class
-            if hasattr(obj,"IfcRole"):
+            if hasattr(obj,"IfcType"):
+                newobj.IfcType = obj.IfcType
+            elif hasattr(obj,"IfcRole"):
                 newobj.IfcRole = obj.IfcRole
             if hasattr(obj,"StandardCode"):
                 newobj.StandardCode = obj.StandardCode

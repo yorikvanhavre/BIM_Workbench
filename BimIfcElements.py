@@ -55,13 +55,20 @@ class BIM_IfcElements:
         # build objects list
         self.objectslist = {}
         for obj in FreeCAD.ActiveDocument.Objects:
-            if hasattr(obj,"IfcRole"):
+            if hasattr(obj,"IfcType"):
+                import ArchIFC
+                self.ifctypes = ArchIFC.IfcTypes
+                mat = ""
+                if hasattr(obj,"Material") and obj.Material:
+                    mat = obj.Material.Name
+                self.objectslist[obj.Name] = [obj.IfcType,mat]
+            elif hasattr(obj,"IfcRole"):
+                import ArchComponent
+                self.ifctypes = ArchComponent.IfcRoles
                 mat = ""
                 if hasattr(obj,"Material") and obj.Material:
                     mat = obj.Material.Name
                 self.objectslist[obj.Name] = [obj.IfcRole,mat]
-        import ArchComponent
-        self.ifcroles = ArchComponent.IfcRoles
 
         # load the form and set the tree model up
         self.form = FreeCADGui.PySideUic.loadUi(os.path.join(os.path.dirname(__file__),"dialogIfcElements.ui"))
@@ -70,7 +77,7 @@ class BIM_IfcElements:
         self.form.tree.setModel(self.model)
         self.form.tree.setUniformRowHeights(True)
         self.form.tree.setItemDelegate(IfcElementsDelegate(dialog=self))
-        self.form.globalMode.addItems([" "]+self.ifcroles)
+        self.form.globalMode.addItems([" "]+self.ifctypes)
         self.form.groupMode.setItemIcon(2,QtGui.QIcon(":/icons/Arch_Material.svg"))
         self.form.groupMode.setItemIcon(3,QtGui.QIcon(":/icons/Document.svg"))
         self.form.globalMaterial.addItem(" ")
@@ -322,7 +329,11 @@ class BIM_IfcElements:
                     it1.setIcon(icon)
                     it1.setToolTip(obj.Name)
                     it2 = QtGui.QStandardItem(role)
-                    if role != obj.IfcRole:
+                    if hasattr(obj,"IfcType"):
+                        r = obj.IfcType
+                    else:
+                        r = obj.IfcRole
+                    if role != r:
                         it2.setIcon(QtGui.QIcon(":/icons/edit-edit.svg"))
                     matlabel = ""
                     if mat:
@@ -362,7 +373,7 @@ class BIM_IfcElements:
                     
         for index in sel:
             if index.column() == 1:
-                if index.data() in self.ifcroles:
+                if index.data() in self.ifctypes:
                     if mode:
                         if index.data() != mode:
                             mode = None
@@ -380,7 +391,7 @@ class BIM_IfcElements:
                 else:
                     mat = m
         if mode:
-            self.form.globalMode.setCurrentIndex(self.ifcroles.index(mode)+1)
+            self.form.globalMode.setCurrentIndex(self.ifctypes.index(mode)+1)
         else:
             self.form.globalMode.setCurrentIndex(0)
         if mat:
@@ -392,7 +403,7 @@ class BIM_IfcElements:
 
         changed = False
         if index >= 1:
-            role = self.ifcroles[index-1]
+            role = self.ifctypes[index-1]
             sel = self.form.tree.selectedIndexes()
             for index in sel:
                 if index.column() == 1:
@@ -482,11 +493,16 @@ class BIM_IfcElements:
             mat = rolemat[1]
             obj = FreeCAD.ActiveDocument.getObject(name)
             if obj:
-                if obj.IfcRole != role:
+                if hasattr(obj,"IfcRole") and (obj.IfcRole != role):
                     if not changed:
                         FreeCAD.ActiveDocument.openTransaction("Change IFC role")
                         changed = True
                     obj.IfcRole = role
+                elif hasattr(obj,"IfcType") and (obj.IfcType != role):
+                    if not changed:
+                        FreeCAD.ActiveDocument.openTransaction("Change IFC type")
+                        changed = True
+                    obj.IfcType = role
                 if mat and hasattr(obj,"Material"):
                     mobj = FreeCAD.ActiveDocument.getObject(mat)
                     if mobj:
@@ -511,8 +527,12 @@ class IfcElementsDelegate(QtGui.QStyledItemDelegate):
 
     def __init__(self, parent=None, dialog=None, *args):
 
-        import ArchComponent,Arch_rc
-        self.roles = ArchComponent.IfcRoles
+        try:
+            import ArchIFC
+            self.roles = ArchIFC.IfcTypes
+        except:
+            import ArchComponent,Arch_rc
+            self.roles = ArchComponent.IfcRoles
         self.mats = []
         self.matlabels = []
         for o in FreeCAD.ActiveDocument.Objects:

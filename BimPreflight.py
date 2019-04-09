@@ -250,11 +250,11 @@ class BIM_Preflight_TaskPanel:
             buildings = False
             storeys = False
             for obj in self.getObjects():
-                if (Draft.getType(obj) == "Site") or (hasattr(obj,"IfcRole") and (obj.IfcRole == "Site")):
+                if (Draft.getType(obj) == "Site") or (hasattr(obj,"IfcRole") and (obj.IfcRole == "Site")) or (hasattr(obj,"IfcType") and (obj.IfcType == "Site")):
                     sites = True
-                elif (Draft.getType(obj) == "Building") or (hasattr(obj,"IfcRole") and (obj.IfcRole == "Building")):
+                elif (Draft.getType(obj) == "Building") or (hasattr(obj,"IfcRole") and (obj.IfcRole == "Building")) or (hasattr(obj,"IfcType") and (obj.IfcType == "Building")):
                     buildings = True
-                elif (hasattr(obj,"IfcRole") and (obj.IfcRole == "Building Storey")):
+                elif (hasattr(obj,"IfcRole") and (obj.IfcRole == "Building Storey")) or (hasattr(obj,"IfcType") and (obj.IfcType == "Building Storey")):
                     storeys = True
             if (not sites) or (not buildings)  or (not storeys):
                 msg = self.getToolTip(test)
@@ -287,10 +287,10 @@ class BIM_Preflight_TaskPanel:
             self.culprits[test] = []
             msg = None
             for obj in self.getObjects():
-                if (Draft.getType(obj) == "Building") or (hasattr(obj,"IfcRole") and (obj.IfcRole == "Building")):
+                if (Draft.getType(obj) == "Building") or (hasattr(obj,"IfcRole") and (obj.IfcRole == "Building")) or (hasattr(obj,"IfcType") and (obj.IfcType == "Building")):
                     ok = False
                     for parent in obj.InList:
-                        if (Draft.getType(parent) == "Site") or (hasattr(parent,"IfcRole") and (parent.IfcRole == "Site")):
+                        if (Draft.getType(parent) == "Site") or (hasattr(parent,"IfcRole") and (parent.IfcRole == "Site")) or (hasattr(parent,"IfcType") and (parent.IfcType == "Site")):
                             if hasattr(parent,"Group") and parent.Group:
                                 if obj in parent.Group:
                                     ok = True
@@ -325,10 +325,10 @@ class BIM_Preflight_TaskPanel:
             self.culprits[test] = []
             msg = None
             for obj in self.getObjects():
-                if hasattr(obj,"IfcRole") and (obj.IfcRole == "Building Storey"):
+                if (hasattr(obj,"IfcRole") and (obj.IfcRole == "Building Storey")) or (hasattr(obj,"IfcType") and (obj.IfcType == "Building Storey")):
                     ok = False
                     for parent in obj.InList:
-                        if hasattr(parent,"IfcRole") and (parent.IfcRole == "Building"):
+                        if (hasattr(parent,"IfcRole") and (parent.IfcRole == "Building")) or (hasattr(parent,"IfcType") and (parent.IfcType == "Building")):
                             if hasattr(parent,"Group") and parent.Group:
                                 if obj in parent.Group:
                                     ok = True
@@ -364,11 +364,11 @@ class BIM_Preflight_TaskPanel:
             self.culprits[test] = []
             msg = None
             for obj in self.getObjects():
-                if hasattr(obj,"IfcRole") and (not obj.IfcRole in ["Building","Building Storey","Site"]):
+                if (hasattr(obj,"IfcRole") and (not obj.IfcRole in ["Building","Building Storey","Site"])) or (hasattr(obj,"IfcType") and (not obj.IfcType in ["Building","Building Storey","Site"])):
                     ok = False
                     for parent in obj.InListRecursive:
                         # just check if any of the ancestors is a Building Storey for now. Don't check any further...
-                        if hasattr(parent,"IfcRole") and (parent.IfcRole == "Building Storey"):
+                        if (hasattr(parent,"IfcRole") and (parent.IfcRole == "Building Storey")) or (hasattr(parent,"IfcType") and (parent.IfcType == "Building Storey")):
                             ok = True
                             break
                     if not ok:
@@ -405,7 +405,11 @@ class BIM_Preflight_TaskPanel:
             msg = None
 
             for obj in self.getObjects():
-                if hasattr(obj,"IfcRole"):
+                if hasattr(obj,"IfcType"):
+                    if (obj.IfcType == "Undefined"):
+                        self.culprits[test].append(obj)
+                        undefined.append(obj)
+                elif hasattr(obj,"IfcRole"):
                     if (obj.IfcRole == "Undefined"):
                         self.culprits[test].append(obj)
                         undefined.append(obj)
@@ -528,10 +532,15 @@ class BIM_Preflight_TaskPanel:
 
             for obj in self.getObjects():
                 ok = True
-                if hasattr(obj,"IfcRole") and hasattr(obj,"IfcProperties") and isinstance(obj.IfcProperties,dict):
-                    if obj.IfcRole in psets:
+                if hasattr(obj,"IfcProperties") and isinstance(obj.IfcProperties,dict):
+                    r = None
+                    if hasattr(obj,"IfcType"):
+                        r = obj.IfcType
+                    if hasattr(obj,"IfcRole"):
+                        r = obj.IfcRole
+                    if r and (r in psets):
                         ok = False
-                        if "Pset_"+obj.IfcRole.replace(" ","")+"Common" in ','.join(obj.IfcProperties.values()):
+                        if "Pset_"+r.replace(" ","")+"Common" in ','.join(obj.IfcProperties.values()):
                             ok = True
                 if not ok:
                     self.culprits[test].append(obj)
@@ -575,8 +584,13 @@ class BIM_Preflight_TaskPanel:
  
             for obj in self.getObjects():
                 ok = True
-                if hasattr(obj,"IfcRole") and hasattr(obj,"IfcProperties") and isinstance(obj.IfcProperties,dict):
-                    if obj.IfcRole != "Undefined":
+                if hasattr(obj,"IfcProperties") and isinstance(obj.IfcProperties,dict):
+                    r = None
+                    if hasattr(obj,"IfcType"):
+                        r = obj.IfcType
+                    elif hasattr(obj,"IfcRole"):
+                        r = obj.IfcRole
+                    if r and (r != "Undefined"):
                         found = None
                         for pset in psets.keys():
                             for val in obj.IfcProperties.values():
