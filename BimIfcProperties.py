@@ -88,7 +88,7 @@ class BIM_IfcProperties:
         # set the properties editor
         try:
             import ArchIFCSchema
-            self.ptypes = ArchIFCSchema.IfcTypes.keys()
+            self.ptypes = list(ArchIFCSchema.IfcTypes.keys())
         except:
             import ArchComponent
             self.ptypes = ArchComponent.SimplePropertyTypes + ArchComponent.MeasurePropertyTypes

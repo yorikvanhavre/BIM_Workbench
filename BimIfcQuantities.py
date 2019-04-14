@@ -80,6 +80,8 @@ class BIM_IfcQuantities:
         self.quantitiesDrawn = False
         QtCore.QObject.connect(self.qmodel, QtCore.SIGNAL("dataChanged(QModelIndex,QModelIndex)"), self.setChecked)
         QtCore.QObject.connect(self.form.buttonBox, QtCore.SIGNAL("accepted()"), self.accept)
+        QtCore.QObject.connect(self.form.quantities, QtCore.SIGNAL("clicked(QModelIndex)"), self.onClickTree)
+        QtCore.QObject.connect(self.form.onlyVisible, QtCore.SIGNAL("stateChanged(int)"), self.update)
 
         # center the dialog over FreeCAD window
         mw = FreeCADGui.getMainWindow()
@@ -220,6 +222,18 @@ class BIM_IfcQuantities:
                         if item.checkState():
                             state = QtCore.Qt.Unchecked
                     item.setCheckState(state)
+
+    def onClickTree(self,index=None):
+
+        FreeCADGui.Selection.clearSelection()
+        sel = self.form.quantities.selectedIndexes()
+        mode = None
+        mat = None
+        for index in sel:
+            if index.column() == 0:
+                obj = FreeCAD.ActiveDocument.getObject(self.qmodel.itemFromIndex(index).toolTip())
+                if obj:
+                    FreeCADGui.Selection.addSelection(obj)
 
 
 FreeCADGui.addCommand('BIM_IfcQuantities',BIM_IfcQuantities())
