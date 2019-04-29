@@ -69,7 +69,7 @@ static char * IFC_xpm[] = {
 
         import DraftTools, Arch, BimCommands, PartGui, SketcherGui
 
-        self.draftingtools = ["BIM_Sketch","Draft_Line","Draft_Wire","Draft_Circle","Draft_Arc","Draft_Arc_3Points","Draft_Ellipse",
+        self.draftingtools = ["BIM_Sketch","Draft_Line","Draft_Wire","Draft_Circle","Draft_Arc","Draft_Ellipse",
                               "Draft_Polygon","Draft_Rectangle", "Draft_BSpline", "Draft_BezCurve",
                               "Draft_Point"]
 
@@ -99,6 +99,8 @@ static char * IFC_xpm[] = {
             pass
         else:
             self.modelingtools.insert(3,"Arch_Reference")
+        if "Draft_Arc_3Points" in Gui.listCommands():
+            self.draftingtools.insert(5,"Draft_Arc_3Points")
 
         # load rebar tools (Reinforcement addon)
 
