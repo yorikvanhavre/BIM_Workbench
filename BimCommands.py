@@ -24,7 +24,7 @@
 
 """This module contains FreeCAD commands for the BIM workbench"""
 
-import os,FreeCAD,FreeCADGui,DraftTools
+import os,FreeCAD,FreeCADGui,DraftTools,ArchStructure
 
 def QT_TRANSLATE_NOOP(ctx,txt): return txt # dummy function for the QT translator
 
@@ -303,10 +303,6 @@ class BIM_WPView:
 
 
 
-
-
-
-
 class BIM_Convert:
 
 
@@ -403,6 +399,36 @@ class BIM_Ungroup:
 
 
 
+class BIM_Column(ArchStructure._CommandStructure):
+
+    def __init__(self):
+        ArchStructure._CommandStructure.__init__(self)
+        self.beammode = False
+
+    def GetResources(self):
+
+        return {'Pixmap'  : os.path.join(os.path.dirname(__file__),"icons","BIM_Column.svg"),
+                'MenuText': QT_TRANSLATE_NOOP("BIM_Column", "Column"),
+                'ToolTip' : QT_TRANSLATE_NOOP("BIM_Column", "Creates a column at a specified location"),
+                'Accel': 'C,O'}
+
+
+
+class BIM_Beam(ArchStructure._CommandStructure):
+
+    def __init__(self):
+        ArchStructure._CommandStructure.__init__(self)
+        self.beammode = True
+
+    def GetResources(self):
+
+        return {'Pixmap'  : os.path.join(os.path.dirname(__file__),"icons","BIM_Beam.svg"),
+                'MenuText': QT_TRANSLATE_NOOP("BIM_Beam", "Beam"),
+                'ToolTip' : QT_TRANSLATE_NOOP("BIM_Beam", "Creates a beam between two points"),
+                'Accel': 'B,M'}
+
+
+
 FreeCADGui.addCommand('BIM_TogglePanels',BIM_TogglePanels())
 FreeCADGui.addCommand('BIM_Trash',BIM_Trash())
 FreeCADGui.addCommand('BIM_EmptyTrash',BIM_EmptyTrash())
@@ -414,6 +440,8 @@ FreeCADGui.addCommand('BIM_Sketch',BIM_Sketch())
 FreeCADGui.addCommand('BIM_WPView',BIM_WPView())
 FreeCADGui.addCommand('BIM_Convert',BIM_Convert())
 FreeCADGui.addCommand('BIM_Ungroup',BIM_Ungroup())
+FreeCADGui.addCommand('BIM_Column',BIM_Column())
+FreeCADGui.addCommand('BIM_Beam',BIM_Beam())
 
 
 
