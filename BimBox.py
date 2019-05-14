@@ -26,7 +26,7 @@ from __future__ import print_function
 
 import os,FreeCAD,FreeCADGui,Draft,DraftTrackers,DraftVecUtils
 from PySide import QtCore,QtGui
-
+from DraftTools import translate
 
 def QT_TRANSLATE_NOOP(ctx,txt): return txt # dummy function for the QT translator
 
@@ -169,10 +169,10 @@ class BIM_Box:
 
         wid = QtGui.QWidget()
         ui = FreeCADGui.UiLoader()
-        wid.setWindowTitle("Box dimensions")
+        wid.setWindowTitle(translate("BIM","Box dimensions"))
         grid = QtGui.QGridLayout(wid)
 
-        label1 = QtGui.QLabel("Length")
+        label1 = QtGui.QLabel(translate("BIM","Length"))
         self.Length = ui.createWidget("Gui::InputField")
         self.Length.setText(str(self.LengthValue)+"mm")
         grid.addWidget(label1,0,0,1,1)
@@ -180,7 +180,7 @@ class BIM_Box:
         if self.LengthValue:
             self.Length.setEnabled(False)
 
-        label2 = QtGui.QLabel("Width")
+        label2 = QtGui.QLabel(translate("BIM","Width"))
         self.Width = ui.createWidget("Gui::InputField")
         self.Width.setText(str(self.WidthValue)+"mm")
         grid.addWidget(label2,1,0,1,1)
@@ -188,7 +188,7 @@ class BIM_Box:
         if self.WidthValue or (not self.LengthValue):
             self.Width.setEnabled(False)
 
-        label3 = QtGui.QLabel("Height")
+        label3 = QtGui.QLabel(translate("BIM","Height"))
         self.Height = ui.createWidget("Gui::InputField")
         self.Height.setText(str(self.HeightValue)+"mm")
         grid.addWidget(label3,2,0,1,1)

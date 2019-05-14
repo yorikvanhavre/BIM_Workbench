@@ -26,6 +26,7 @@
 
 import os,FreeCAD,FreeCADGui,DraftTools,DraftVecUtils
 from  PySide import QtCore,QtGui
+from DraftTools import translate
 
 def QT_TRANSLATE_NOOP(ctx,txt): return txt # dummy function for the QT translator
 

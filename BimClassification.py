@@ -26,7 +26,7 @@ from __future__ import print_function
 
 import os,FreeCAD,FreeCADGui,Arch_rc,Draft
 from PySide import QtCore,QtGui
-
+from DraftTools import translate
 
 def QT_TRANSLATE_NOOP(ctx,txt): return txt # dummy function for the QT translator
 
@@ -69,7 +69,7 @@ class BIM_Classification:
                 self.form.groupMaterials.hide()
                 self.form.buttonApply.hide()
                 self.form.buttonRename.hide()
-                self.form.setWindowTitle("Editing "+self.isEditing.Label)
+                self.form.setWindowTitle(translate("BIM","Editing")+" "+self.isEditing.Label)
 
         # fill materials list
         self.objectslist = {}

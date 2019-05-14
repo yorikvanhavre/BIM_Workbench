@@ -25,6 +25,7 @@ from __future__ import print_function
 """The BIM library tool"""
 
 import os,FreeCAD,FreeCADGui,sys
+from DraftTools import translate
 
 def QT_TRANSLATE_NOOP(ctx,txt): return txt # dummy function for the QT translator
 
@@ -56,7 +57,7 @@ class BIM_Library:
         if libok:
             FreeCADGui.Control.showDialog(BIM_Library_TaskPanel())
         else:
-            FreeCAD.Console.PrintError("The Parts Library could not be found.\n")
+            FreeCAD.Console.PrintError(translate("BIM","The Parts Library could not be found.")+"\n")
 
 
 class BIM_Library_TaskPanel:
@@ -201,7 +202,7 @@ class BIM_Library_TaskPanel:
             try:
                 import CadExchangerIO
             except:
-                FreeCAD.Console.PrintError("Error: Unable to import SAT files - CadExchanger addon must be installed")
+                FreeCAD.Console.PrintError(translate("BIM","Error: Unable to import SAT files - CadExchanger addon must be installed"))
             else:
                 path = CadExchangerIO.insert(path,FreeCAD.ActiveDocument.Name,returnpath = True)
                 self.place(path)
@@ -232,14 +233,17 @@ class BIM_Library_TaskPanel:
         
         from PySide import QtGui
         w = QtGui.QWidget()
-        w.setWindowTitle("Insertion point")
+        w.setWindowTitle(translate("BIM","Insertion point"))
         w.setWindowIcon(QtGui.QIcon(os.path.join(os.path.dirname(__file__),"icons","BIM_Library.svg")))
         l = QtGui.QVBoxLayout()
         w.setLayout(l)
         c = QtGui.QComboBox()
         c.ObjectName = "comboOrigin"
         w.comboOrigin = c
-        c.addItems(["Origin","Top left","Top center","Top right","Middle left","Middle center","Middle right","Bottom left","Bottom center","Bottom right"])
+        c.addItems([translate("BIM","Origin"),translate("BIM","Top left"),translate("BIM","Top center"),
+                    translate("BIM","Top right"),translate("BIM","Middle left"),translate("BIM","Middle center"),
+                    translate("BIM","Middle right"),translate("BIM","Bottom left"),translate("BIM","Bottom center"),
+                    translate("BIM","Bottom right")])
         p = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM").GetInt("LibraryDefaultInsert",0)
         c.setCurrentIndex(p)
         c.currentIndexChanged.connect(self.storeInsert)

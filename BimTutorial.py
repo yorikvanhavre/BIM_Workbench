@@ -30,6 +30,7 @@ if sys.version_info.major < 3:
 else:
     import urllib.request as urllib2
 from PySide import QtCore,QtGui
+from DraftTools import translate
 
 def QT_TRANSLATE_NOOP(ctx,txt): return txt # dummy function for the QT translator
 
@@ -119,7 +120,7 @@ class BIM_Tutorial:
         self.test2 = [t.replace("&lt;","<").replace("&gt;",">") for t in self.test2]
         
         # downlaod images (QTextEdit cannot load online images)
-        self.form.textEdit.setHtml(html.replace("inserthere","Downloading images..."))
+        self.form.textEdit.setHtml(html.replace("inserthere",translate("BIM","Downloading images...")))
         nd = []
         for descr in self.descriptions:
             imagepaths = re.findall("<img.*?src=\"(.*?)\"",descr)
@@ -191,7 +192,7 @@ class BIM_Tutorial:
             self.form.labelTasks.show()
         else:
             self.form.labelTasks.hide()
-        self.dock.setWindowTitle("BIM Tutorial - step "+str(self.step)+" / "+str(self.steps))
+        self.dock.setWindowTitle(translate("BIM","BIM Tutorial - step")+" "+str(self.step)+" / "+str(self.steps))
         self.form.progressBar.setValue(int((float(self.step)/self.steps)*100))
         
         # save the current step

@@ -25,6 +25,7 @@
 """This module contains FreeCAD commands for the BIM workbench"""
 
 import FreeCAD,FreeCADGui,Arch,Draft,Part,os
+from DraftTools import translate
 
 def QT_TRANSLATE_NOOP(ctx,txt): return txt # dummy function for the QT translator
 
@@ -109,10 +110,10 @@ class BIM_Unclone:
                 FreeCAD.ActiveDocument.recompute()
 
             elif Draft.getType(obj) == "Clone":
-                FreeCAD.Console.PrintError("Draft Clones are not supported yet!\n")
+                FreeCAD.Console.PrintError(translate("BIM","Draft Clones are not supported yet!")+"\n")
             else:
-                FreeCAD.Console.PrintError("The selected object is not a clone\n")
+                FreeCAD.Console.PrintError(translate("BIM","The selected object is not a clone")+"\n")
         else:
-            FreeCAD.Console.PrintError("Please select exactly one object\n")
+            FreeCAD.Console.PrintError(translate("BIM","Please select exactly one object")+"\n")
 
 FreeCADGui.addCommand('BIM_Unclone',BIM_Unclone())

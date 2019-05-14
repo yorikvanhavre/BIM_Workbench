@@ -26,7 +26,7 @@
 
 import sys,os,FreeCAD,FreeCADGui,Arch_rc,Draft,csv
 from PySide import QtCore,QtGui
-
+from DraftTools import translate
 
 def QT_TRANSLATE_NOOP(ctx,txt): return txt # dummy function for the QT translator
 
@@ -109,9 +109,9 @@ class BIM_IfcProperties:
         self.form.treeProperties.setItemDelegate(propertiesDelegate(container=self,ptypes=self.ptypes,plabels=self.plabels))
 
         # set combos
-        self.form.comboProperty.addItems([QtGui.QApplication.translate("Arch", "Add property...", None)]+self.plabels)
-        self.form.comboPset.addItems([QtGui.QApplication.translate("Arch", "Add property set...", None),
-                                           QtGui.QApplication.translate("Arch", "New...", None)]+self.psetkeys)
+        self.form.comboProperty.addItems([translate("BIM", "Add property...")]+self.plabels)
+        self.form.comboPset.addItems([translate("BIM", "Add property set..."),
+                                      translate("BIM", "New...")]+self.psetkeys)
 
 
         QtCore.QObject.connect(self.form.tree.selectionModel(), QtCore.SIGNAL("selectionChanged(QItemSelection,QItemSelection)"), self.updateProperties)
@@ -141,7 +141,7 @@ class BIM_IfcProperties:
         import Draft
 
         self.model.clear()
-        self.model.setHorizontalHeaderLabels(["Label","IFC type","Search results"])
+        self.model.setHorizontalHeaderLabels([translate("BIM","Label"),translate("BIM","IFC type"),translate("BIM","Search results")])
         #self.form.tree.header().setResizeMode(QtGui.QHeaderView.Stretch)
         #self.form.tree.resizeColumnsToContents()
         if self.form.groupMode.currentIndex() == 1:
@@ -510,7 +510,7 @@ class BIM_IfcProperties:
                 self.updateDicts()
         else:
             if idx != 0:
-                QtGui.QMessageBox.critical(None,'Error',"Please select or create a property set first in which the new property should be placed.", QtGui.QMessageBox.Ok) 
+                QtGui.QMessageBox.critical(None,'Error',translate("BIM","Please select or create a property set first in which the new property should be placed."), QtGui.QMessageBox.Ok) 
         if idx != 0:
             self.form.comboProperty.setCurrentIndex(0)
 
@@ -520,7 +520,8 @@ class BIM_IfcProperties:
             return
         if idx == 1:
             name = QtGui.QApplication.translate("Arch", "New property set", None)
-            res = QtGui.QInputDialog.getText(None, "New property set","Property set name:", QtGui.QLineEdit.Normal,name)
+            res = QtGui.QInputDialog.getText(None, translate("BIM","New property set"),translate("BIM","Property set name:"), QtGui.QLineEdit.Normal,name)
+            res = QtGui.QInputDialog.getText(None, translate("BIM","New property set"),translate("BIM","Property set name:"), QtGui.QLineEdit.Normal,name)
             if res[1]:
                 name = res[0]
             top = QtGui.QStandardItem(name)

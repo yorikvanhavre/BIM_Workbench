@@ -24,6 +24,7 @@
 
 import FreeCAD,FreeCADGui,Draft
 from PySide import QtCore,QtGui
+from DraftTools import translate
 
 def QT_TRANSLATE_NOOP(ctx,txt): return txt # dummy function for the QT translator
 
@@ -64,7 +65,7 @@ class BIM_Nudge:
                     else:
                         dist = scale[5]
                     u = FreeCAD.Units.Quantity(dist,FreeCAD.Units.Length).UserString
-                    statuswidget.nudge.setText("Auto")
+                    statuswidget.nudge.setText(translate("BIM","Auto"))
                 else:
                     try:
                         dist = FreeCAD.Units.Quantity(nudgeValue)
@@ -132,7 +133,7 @@ class BIM_Nudge_Switch(BIM_Nudge):
                     if "auto" in nudgeValue.lower():
                         statuswidget.nudge.setText(u)
                     else:
-                        statuswidget.nudge.setText("Auto")
+                        statuswidget.nudge.setText(translate("BIM","Auto"))
 
 
 class BIM_Nudge_Up(BIM_Nudge):

@@ -23,6 +23,7 @@
 """This module contains FreeCAD commands for the BIM workbench"""
 
 import os,FreeCAD,FreeCADGui,DraftTools
+from DraftTools import translate
 
 def QT_TRANSLATE_NOOP(ctx,txt): return txt # dummy function for the QT translator
 
@@ -69,7 +70,7 @@ class BIM_Material:
         w = p.GetInt("BimMaterialDialogWidth",230)
         h = p.GetInt("BimMaterialDialogHeight",350)
         self.dlg.resize(w,h)
-        self.dlg.setWindowTitle("Select material")
+        self.dlg.setWindowTitle(translate("BIM","Select material"))
         self.dlg.setWindowIcon(QtGui.QIcon(":/icons/Arch_Material.svg"))
         mw = FreeCADGui.getMainWindow()
         self.dlg.move(mw.frameGeometry().topLeft() + mw.rect().center() - self.dlg.rect().center())
@@ -89,8 +90,8 @@ class BIM_Material:
             searchLayout = QtGui.QHBoxLayout()
             searchLayout.setSpacing(2)
             searchBox = MatLineEdit(self.dlg)
-            searchBox.setPlaceholderText("Search...")
-            searchBox.setToolTip("Searches object labels")
+            searchBox.setPlaceholderText(translate("BIM","Search..."))
+            searchBox.setToolTip(translate("BIM","Searches object labels"))
             self.dlg.searchBox = searchBox
             searchLayout.addWidget(searchBox)
             searchBox.textChanged.connect(self.onSearch)
@@ -104,7 +105,7 @@ class BIM_Material:
             buttonClear.setFixedSize(18, 21)
             buttonClear.setStyleSheet("QToolButton {margin-bottom:1px}")
             buttonClear.setIcon(QtGui.QIcon(":/icons/edit-cleartext.svg"))
-            buttonClear.setToolTip("Clears the search field")
+            buttonClear.setToolTip(translate("BIM","Clears the search field"))
             buttonClear.setAutoRaise(True)
             searchLayout.addWidget(buttonClear)
             buttonClear.clicked.connect(self.onClearSearch)
@@ -112,13 +113,13 @@ class BIM_Material:
 
             # create
             createLayout = QtGui.QHBoxLayout()
-            buttonCreate = QtGui.QPushButton("Create new material",self.dlg)
+            buttonCreate = QtGui.QPushButton(translate("BIM","Create new material"),self.dlg)
             buttonCreate.setIcon(QtGui.QIcon(":/icons/Arch_Material.svg"))
             createLayout.addWidget(buttonCreate)
             buttonCreate.clicked.connect(self.onCreate)
 
             # create multi
-            buttonMulti = QtGui.QPushButton("Create new multi-material",self.dlg)
+            buttonMulti = QtGui.QPushButton(translate("BIM","Create new multi-material"),self.dlg)
             buttonMulti.setIcon(QtGui.QIcon(":/icons/Arch_Material_Multi.svg"))
             createLayout.addWidget(buttonMulti)
             buttonMulti.clicked.connect(self.onMulti)
@@ -126,13 +127,13 @@ class BIM_Material:
 
             # merge dupes
             opsLayout = QtGui.QHBoxLayout()
-            buttonMergeDupes = QtGui.QPushButton("Merge duplicates",self.dlg)
+            buttonMergeDupes = QtGui.QPushButton(translate("BIM","Merge duplicates"),self.dlg)
             buttonMergeDupes.setIcon(QtGui.QIcon(":/icons/view-refresh.svg"))
             opsLayout.addWidget(buttonMergeDupes)
             buttonMergeDupes.clicked.connect(self.onMergeDupes)
 
             # delete unused
-            buttonDeleteUnused = QtGui.QPushButton("Delete unused",self.dlg)
+            buttonDeleteUnused = QtGui.QPushButton(translate("BIM","Delete unused"),self.dlg)
             buttonDeleteUnused.setIcon(QtGui.QIcon(":/icons/delete.svg"))
             opsLayout.addWidget(buttonDeleteUnused)
             buttonDeleteUnused.clicked.connect(self.onDeleteUnused)
@@ -148,13 +149,13 @@ class BIM_Material:
 
             # set context menu
             self.contextMenu = QtGui.QMenu()
-            context1 = self.contextMenu.addAction("Rename")
+            context1 = self.contextMenu.addAction(translate("BIM","Rename"))
             QtCore.QObject.connect(context1, QtCore.SIGNAL("triggered()"), self.onStartRename)
-            context2 = self.contextMenu.addAction("Duplicate")
+            context2 = self.contextMenu.addAction(translate("BIM","Duplicate"))
             QtCore.QObject.connect(context2, QtCore.SIGNAL("triggered()"), self.onDuplicate)
-            context3 = self.contextMenu.addAction("Merge to...")
+            context3 = self.contextMenu.addAction(translate("BIM","Merge to..."))
             QtCore.QObject.connect(context3, QtCore.SIGNAL("triggered()"), self.onMergeTo)
-            context4 = self.contextMenu.addAction("Delete")
+            context4 = self.contextMenu.addAction(translate("BIM","Delete"))
             QtCore.QObject.connect(context4, QtCore.SIGNAL("triggered()"), self.onDelete)
 
             # other signal/slots to connect
@@ -200,19 +201,19 @@ class BIM_Material:
                         todelete.append(mat)
             for tod in todelete:
                 if not tod.InList:
-                    FreeCAD.Console.PrintMessage("Merging duplicate material "+tod.Label+"\n")
+                    FreeCAD.Console.PrintMessage(translate("BIM","Merging duplicate material")+" "+tod.Label+"\n")
                     if first:
                         FreeCAD.ActiveDocument.openTransaction("Merge materials")
                         first = False
                     FreeCAD.ActiveDocument.removeObject(tod.Name)
                 elif (len(tod.InList) == 1) and (tod.InList[0].isDerivedFrom("App::DocumentObjectGroup")):
-                    FreeCAD.Console.PrintMessage("Merging duplicate material "+tod.Label+"\n")
+                    FreeCAD.Console.PrintMessage(translate("BIM","Merging duplicate material")+" "+tod.Label+"\n")
                     if first:
                         FreeCAD.ActiveDocument.openTransaction("Merge materials")
                         first = False
                     FreeCAD.ActiveDocument.removeObject(tod.Name)
                 else:
-                    FreeCAD.Console.PrintMessage("Unable to delete material "+tod.Label+": InList not empty\n")
+                    FreeCAD.Console.PrintMessage(translate("BIM","Unable to delete material")+" "+tod.Label+": "+translate("BIM","InList not empty")+"\n")
             if not first:
                 FreeCAD.ActiveDocument.commitTransaction()
                 FreeCAD.ActiveDocument.recompute()
@@ -234,7 +235,7 @@ class BIM_Material:
                             if first:
                                 FreeCAD.ActiveDocument.openTransaction("Delete materials")
                                 first = False
-                            FreeCAD.Console.PrintMessage("Deleting unused material "+label+"\n")
+                            FreeCAD.Console.PrintMessage(translate("BIM","Deleting unused material")+" "+label+"\n")
                             FreeCAD.ActiveDocument.removeObject(name)
         if not first:
             FreeCAD.ActiveDocument.commitTransaction()
@@ -284,7 +285,7 @@ class BIM_Material:
                 # center the dialog over FreeCAD window
                 mw = FreeCADGui.getMainWindow()
                 form.move(mw.frameGeometry().topLeft() + mw.rect().center() - form.rect().center())
-                form.setWindowTitle("Select material to merge to")
+                form.setWindowTitle(translate("BIM","Select material to merge to"))
                 form.setWindowIcon(QtGui.QIcon(":/icons/Arch_Material.svg"))
                 for i in range(self.dlg.matList.count()):
                     oit = self.dlg.matList.item(i)
@@ -318,7 +319,7 @@ class BIM_Material:
                 if obj:
                     parents = [parent for parent in obj.InList if not parent.isDerivedFrom("App::DocumentObjectGroup")]
                     if parents:
-                        QtGui.QMessageBox.information(None,"","This material is used by: "+",".join([p.Label for p in parents]))
+                        QtGui.QMessageBox.information(None,"",translate("BIM","This material is used by:")+" "+",".join([p.Label for p in parents]))
                     else:
                         self.dlg.matList.takeItem(self.dlg.matList.currentRow())
                         name = obj.Name

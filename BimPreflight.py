@@ -24,6 +24,7 @@
 
 import os,FreeCAD,FreeCADGui,Draft,Arch,Part,csv,re
 from PySide import QtCore,QtGui
+from DraftTools import translate
 
 def QT_TRANSLATE_NOOP(ctx,txt): return txt # dummy function for the QT translator
 
@@ -72,7 +73,7 @@ class BIM_Preflight_TaskPanel:
         self.form.setWindowIcon(QtGui.QIcon(os.path.join(os.path.dirname(__file__),"icons","BIM_Preflight.svg")))
         for test in tests:
             getattr(self.form,test).setIcon(QtGui.QIcon(":/icons/button_right.svg"))
-            getattr(self.form,test).setToolTip("Press to perform the test")
+            getattr(self.form,test).setToolTip(translate("BIM","Press to perform the test"))
             if hasattr(self,test):
                 getattr(self.form,test).clicked.connect(getattr(self,test))
             self.results[test] = None
@@ -96,8 +97,8 @@ class BIM_Preflight_TaskPanel:
         "sets the button as passed"
 
         getattr(self.form,test).setIcon(QtGui.QIcon(":/icons/button_valid.svg"))
-        getattr(self.form,test).setText("Passed")
-        getattr(self.form,test).setToolTip("This test has succeeded.")
+        getattr(self.form,test).setText(translate("BIM","Passed"))
+        getattr(self.form,test).setToolTip(translate("BIM","This test has succeeded."))
 
 
     def failed(self,test):
@@ -106,7 +107,7 @@ class BIM_Preflight_TaskPanel:
 
         getattr(self.form,test).setIcon(QtGui.QIcon(":/icons/process-stop.svg"))
         getattr(self.form,test).setText("Failed")
-        getattr(self.form,test).setToolTip("This test has failed. Press the button to know more")
+        getattr(self.form,test).setToolTip(translate("BIM","This test has failed. Press the button to know more"))
 
 
     def reset(self,test):
@@ -114,8 +115,8 @@ class BIM_Preflight_TaskPanel:
         "reset the button"
 
         getattr(self.form,test).setIcon(QtGui.QIcon(":/icons/button_right.svg"))
-        getattr(self.form,test).setText("Test")
-        getattr(self.form,test).setToolTip("Press to perform the test")
+        getattr(self.form,test).setText(translate("BIM","Test"))
+        getattr(self.form,test).setToolTip(translate("BIM","Press to perform the test"))
 
 
     def show(self,test):
@@ -218,16 +219,14 @@ class BIM_Preflight_TaskPanel:
             try:
                 import ifcopenshell
             except:
-                msg = "ifcopenshell is not installed on your system or not available to FreeCAD. "
-                msg += "This library is responsible for IFC support in FreeCAD, and therefore IFC support is currently disabled. "
-                msg += "Check https://www.freecadweb.org/wiki/Extra_python_modules#IfcOpenShell to obtain more information. "
+                msg = translate("BIM","ifcopenshell is not installed on your system or not available to FreeCAD. This library is responsible for IFC support in FreeCAD, and therefore IFC support is currently disabled. Check https://www.freecadweb.org/wiki/Extra_python_modules#IfcOpenShell to obtain more information.")+" "
                 self.failed(test)
             else:
                 if ifcopenshell.schema_identifier.startswith("IFC4"):
                     self.passed(test)
                 else:
                     msg = self.getToolTip(test)
-                    msg += "The version of ifcopenshell installed on your system will produce files with this schema version:\n\n"
+                    msg += translate("BIM","The version of ifcopenshell installed on your system will produce files with this schema version:")+"\n\n"
                     msg += ifcopenshell.schema_identifier + "\n\n"
                     self.failed(test)
             self.results[test] = msg
@@ -258,7 +257,7 @@ class BIM_Preflight_TaskPanel:
                     storeys = True
             if (not sites) or (not buildings)  or (not storeys):
                 msg = self.getToolTip(test)
-                msg += "The following types were not found in the project:\n"
+                msg += translate("BIM","The following types were not found in the project:")+"\n"
                 if not sites:
                     msg += "\nSite"
                 if not buildings:
@@ -299,9 +298,7 @@ class BIM_Preflight_TaskPanel:
                         self.culprits[test].append(obj)
                         if not msg:
                             msg = self.getToolTip(test)
-                            msg += "The following Building objects have been found to not be included in any Site. "
-                            msg += "You can resolve the situation by creating a Site object, if none is present "
-                            msg += "in your model, and drag and drop the Building objects into it in the tree view:\n\n"
+                            msg += translate("BIM","The following Building objects have been found to not be included in any Site. You can resolve the situation by creating a Site object, if none is present in your model, and drag and drop the Building objects into it in the tree view:")+"\n\n"
                         msg += obj.Label +"\n"
             if msg:
                 self.failed(test)
@@ -337,10 +334,7 @@ class BIM_Preflight_TaskPanel:
                         self.culprits[test].append(obj)
                         if not msg:
                             msg = self.getToolTip(test)
-                            msg += "The following Building Storey (BuildingParts with their IFC role set as \"Building Storey\")"
-                            msg += "objects have been found to not be included in any Building. "
-                            msg += "You can resolve the situation by creating a Building object, if none is present "
-                            msg += "in your model, and drag and drop the Building Storey objects into it in the tree view:\n\n"
+                            msg += translate("BIM","The following Building Storey (BuildingParts with their IFC role set as \"Building Storey\") objects have been found to not be included in any Building. You can resolve the situation by creating a Building object, if none is present in your model, and drag and drop the Building Storey objects into it in the tree view:")+"\n\n"
                         msg += obj.Label +"\n"
             if msg:
                 self.failed(test)
@@ -375,10 +369,7 @@ class BIM_Preflight_TaskPanel:
                         self.culprits[test].append(obj)
                         if not msg:
                             msg = self.getToolTip(test)
-                            msg += "The following BIM objects have been found to not be included in any Building Storey "
-                            msg += "(BuildingParts with their IFC role set as \"Building Storey\"). "
-                            msg += "You can resolve the situation by creating a Building Storey object, if none is present "
-                            msg += "in your model, and drag and drop these objects into it in the tree view:\n\n"
+                            msg += translate("BIM","The following BIM objects have been found to not be included in any Building Storey (BuildingParts with their IFC role set as \"Building Storey\"). You can resolve the situation by creating a Building Storey object, if none is present in your model, and drag and drop these objects into it in the tree view:")+"\n\n"
                         msg += obj.Label +"\n"
             if msg:
                 self.failed(test)
@@ -419,14 +410,14 @@ class BIM_Preflight_TaskPanel:
             if undefined or notbim:
                 msg = self.getToolTip(test)
                 if undefined:
-                    msg += "The following BIM objects have the \"Undefined\" type:\n\n"
+                    msg += translate("BIM","The following BIM objects have the \"Undefined\" type:")+"\n\n"
                     for o in undefined:
                         msg += o.Label + "\n"
                 if notbim:
-                    msg += "The following objects are not BIM objects:\n\n"
+                    msg += translate("BIM","The following objects are not BIM objects:")+"\n\n"
                     for o in notbim:
                         msg += o.Label + "\n"
-                        msg += "You can turn these objects into BIM objects by using the Utils -> Make Component tool."
+                        msg += translate("BIM","You can turn these objects into BIM objects by using the Utils -> Make Component tool.")
             if msg:
                 self.failed(test)
             else:
@@ -455,7 +446,7 @@ class BIM_Preflight_TaskPanel:
                         self.culprits[test].append(obj)
             if self.culprits[test]:
                 msg = self.getToolTip(test)
-                msg += "The following BIM objects have an invalid or non-solid geometry:\n\n"
+                msg += translate("BIM","The following BIM objects have an invalid or non-solid geometry:")+"\n\n"
                 for o in self.culprits[test]:
                     msg += o.Label + "\n"
             if msg:
@@ -489,14 +480,10 @@ class BIM_Preflight_TaskPanel:
                                 break
             if self.culprits[test]:
                 msg = self.getToolTip(test)
-                msg += "The objects below have Length, Width or Height properties, "
-                msg += "but these properties won't be explicitely exported to IFC. "
-                msg += "This is not necessarily an issue, unless you specifically want these "
-                msg += "quantities to be exported:\n\n"
+                msg += translate("BIM","The objects below have Length, Width or Height properties, but these properties won't be explicitely exported to IFC. This is not necessarily an issue, unless you specifically want these quantities to be exported:")+"\n\n"
                 for o in self.culprits[test]:
                     msg += o.Label + "\n"
-                msg += "\nTo enable exporting of these quantities, use the IFC quantities manager tool "
-                msg += "located under menu Manage -> Manage IFC Quantities..."
+                msg += "\n"+translate("BIM","To enable exporting of these quantities, use the IFC quantities manager tool located under menu Manage -> Manage IFC Quantities...")
             if msg:
                 self.failed(test)
             else:
@@ -547,11 +534,10 @@ class BIM_Preflight_TaskPanel:
 
             if self.culprits[test]:
                 msg = self.getToolTip(test)
-                msg += "The objects below have a defined IFC type but do not have the associated common property set:\n\n"
+                msg += translate("BIM","The objects below have a defined IFC type but do not have the associated common property set:")+"\n\n"
                 for o in self.culprits[test]:
                     msg += o.Label + "\n"
-                msg += "\nTo add common property sets to these objects, use the IFC properties manager tool "
-                msg += "located under menu Manage -> Manage IFC Properties..."
+                msg += "\n"+translate("BIM","To add common property sets to these objects, use the IFC properties manager tool located under menu Manage -> Manage IFC Properties...")
             if msg:
                 self.failed(test)
             else:
@@ -612,12 +598,11 @@ class BIM_Preflight_TaskPanel:
 
             if self.culprits[test]:
                 msg = self.getToolTip(test)
-                msg += "The objects below have a common property set but that property set doesn't contain all the needed properties:\n\n"
+                msg += translate("BIM","The objects below have a common property set but that property set doesn't contain all the needed properties:")+"\n\n"
                 for o in self.culprits[test]:
                     msg += o.Label + "\n"
-                msg += "\nVerify which properties a certain property set must contain on http://www.buildingsmart-tech.org/ifc/IFC4/Add2/html/annex/annex-b/alphabeticalorder_psets.htm\n\n"
-                msg += "To fix the property sets of these objects, use the IFC properties manager tool "
-                msg += "located under menu Manage -> Manage IFC Properties..."
+                msg += "\n"+translate("BIM","Verify which properties a certain property set must contain on http://www.buildingsmart-tech.org/ifc/IFC4/Add2/html/annex/annex-b/alphabeticalorder_psets.htm")+"\n\n"
+                msg += translate("BIM","To fix the property sets of these objects, use the IFC properties manager tool located under menu Manage -> Manage IFC Properties...")
             if msg:
                 self.failed(test)
             else:
@@ -645,7 +630,7 @@ class BIM_Preflight_TaskPanel:
                         self.culprits[test].append(obj)
             if self.culprits[test]:
                 msg = self.getToolTip(test)
-                msg += "The following BIM objects have no material attributed:\n\n"
+                msg += translate("BIM","The following BIM objects have no material attributed:")+"\n\n"
                 for o in self.culprits[test]:
                     msg += o.Label + "\n"
             if msg:
@@ -680,7 +665,7 @@ class BIM_Preflight_TaskPanel:
                                 self.culprits[test].append(obj.Material)
             if self.culprits[test]:
                 msg = self.getToolTip(test)
-                msg += "The following BIM objects have no defined standard code:\n\n"
+                msg += translate("BIM","The following BIM objects have no defined standard code:")+"\n\n"
                 for o in self.culprits[test]:
                     msg += o.Label + "\n"
             if msg:
@@ -722,7 +707,7 @@ class BIM_Preflight_TaskPanel:
                     self.culprits[test].append(obj)
             if self.culprits[test]:
                 msg = self.getToolTip(test)
-                msg += "The following BIM objects are not extrusions:\n\n"
+                msg += translate("BIM","The following BIM objects are not extrusions:")+"\n\n"
                 for o in self.culprits[test]:
                     msg += o.Label + "\n"
             if msg:
@@ -755,7 +740,7 @@ class BIM_Preflight_TaskPanel:
                         self.culprits[test].append(obj)
             if self.culprits[test]:
                 msg = self.getToolTip(test)
-                msg += "The following BIM objects are not standard cases:\n\n"
+                msg += translate("BIM","The following BIM objects are not standard cases:")+"\n\n"
                 for o in self.culprits[test]:
                     msg += o.Label + "\n"
             if msg:
@@ -796,14 +781,11 @@ class BIM_Preflight_TaskPanel:
                 result.ViewObject.LineWidth = 5
                 self.culprits[test] = [result]
                 msg = self.getToolTip(test)
-                msg += "The objects below have lines smaller than 1/32 inch or 0.79 mm, which is the smallest "
-                msg += "line size that Revit accepts. These objects will be discarded when imported into Revit:\n\n"
+                msg += translate("BIM","The objects below have lines smaller than 1/32 inch or 0.79 mm, which is the smallest line size that Revit accepts. These objects will be discarded when imported into Revit:")+"\n\n"
                 for obj in objs:
                     msg += obj.Label +"\n"
-                msg += "\nAn additional object, called \"TinyLinesResult\" has been added to this model, and "
-                msg += "selected. It contains all the tiny lines found, so you can inspect them and fix the "
-                msg += "needed objects. Be sure to delete the TinyLinesResult object when you are done!\n\n"
-                msg += "Tip: The results are best viewed in Wireframe mode (menu Views -> Draw Style -> Wireframe)"
+                msg += "\n"+translate("BIM","An additional object, called \"TinyLinesResult\" has been added to this model, and selected. It contains all the tiny lines found, so you can inspect them and fix the needed objects. Be sure to delete the TinyLinesResult object when you are done!")+"\n\n"
+                msg += translate("BIM","Tip: The results are best viewed in Wireframe mode (menu Views -> Draw Style -> Wireframe)")
             if msg:
                 self.failed(test)
             else:

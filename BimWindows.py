@@ -23,6 +23,7 @@
 """This module contains FreeCAD commands for the BIM workbench"""
 
 import os,FreeCAD,FreeCADGui
+from DraftTools import translate
 
 def QT_TRANSLATE_NOOP(ctx,txt): return txt # dummy function for the QT translator
 
@@ -219,7 +220,7 @@ class BIM_Windows_TaskPanel:
         mw = FreeCADGui.getMainWindow()
         form.move(mw.frameGeometry().topLeft() + mw.rect().center() - form.rect().center())
         materials = [o for o in FreeCAD.ActiveDocument.Objects if Draft.getType(o) == "Material"]
-        it = QtGui.QListWidgetItem("None")
+        it = QtGui.QListWidgetItem(translate("BIM","None"))
         it.setIcon(QtGui.QIcon(":/icons/button_invalid.svg"))
         it.setToolTip("__None__")
         form.list.addItem(it)

@@ -91,12 +91,10 @@ static char * IFC_xpm[] = {
 
         # Support post-v0.18 tools
 
-        try:
-            import ArchReference
-        except:
-            pass
-        else:
+        if "Arch_Reference" in Gui.listCommands():
             self.bimtools.insert(18,"Arch_Reference")
+        if "Arch_Fence" in Gui.listCommands():
+            self.bimtools.insert(-6,"Arch_Fence")
         if "Draft_Arc_3Points" in Gui.listCommands():
             self.draftingtools.insert(5,"Draft_Arc_3Points")
         if 'Draft_CubicBezCurve' in Gui.listCommands():

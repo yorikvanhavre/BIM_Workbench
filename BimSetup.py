@@ -24,6 +24,7 @@
 
 import os,FreeCAD,FreeCADGui
 from FreeCAD import Vector
+from DraftTools import translate
 
 def QT_TRANSLATE_NOOP(ctx,txt): return txt # dummy function for the QT translator
 
@@ -88,7 +89,7 @@ class BIM_Setup:
         if not libok:
             m.append("Parts Library")
         if m:
-            self.form.labelMissingWorkbenches.setText("Tip: Some additional workbenches are not installed, that extend BIM functionality: <b>"+",".join(m)+"</b>. You can install them from menu Tools -> Addon manager.")
+            self.form.labelMissingWorkbenches.setText(translate("BIM","Tip: Some additional workbenches are not installed, that extend BIM functionality:")+" <b>"+",".join(m)+"</b>. "+translate("BIM","You can install them from menu Tools -> Addon manager."))
             self.form.labelMissingWorkbenches.show()
 
         # show dialog and exit if cancelled
@@ -190,13 +191,13 @@ class BIM_Setup:
             st = mw.statusBar()
             statuswidget = st.findChild(QtGui.QToolBar,"BIMStatusWidget")
             if statuswidget:
-                statuswidget.unitLabel.setText(["Millimeters","Centimeters","Meters","Inches","Feet","Architectural"][self.form.settingUnits.currentIndex()])
+                statuswidget.unitLabel.setText(statuswidget.unitsList[self.form.settingUnits.currentIndex()])
                 # change the unit of the nudge button
                 nudgeactions = statuswidget.nudge.menu().actions()
                 if unit in [2,3,5,7]:
-                    nudgelabels = ["Custom...","1/16\"","1/8\"","1/4\"","1\"","6\"","1\'","Auto"]
+                    nudgelabels = statuswidget.nudgeLabelsI
                 else:
-                    nudgelabels = ["Custom...","1 mm","5 mm","1 cm","5 cm","10 cm","50 cm","Auto"]
+                    nudgelabels = statuswidget.nudgeLabelsM
                 for i in range(len(nudgelabels)):
                     nudgeactions[i].setText(nudgelabels[i])
                 if not "auto" in statuswidget.nudge.text().replace("&","").lower():

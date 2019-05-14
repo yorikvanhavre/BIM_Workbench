@@ -26,12 +26,19 @@
 
 import os,FreeCAD,FreeCADGui,Arch_rc,Draft
 from PySide import QtCore,QtGui
-
+from DraftTools import translate
 
 def QT_TRANSLATE_NOOP(ctx,txt): return txt # dummy function for the QT translator
 
 qprops = ["Length","Width","Height","Area","HorizontalArea","VerticalArea","Volume"] # quantities columns
-
+trqprops = [translate("BIM","Length"),
+            translate("BIM","Width"),
+            translate("BIM","Height"),
+            translate("BIM","Area"),
+            translate("BIM","Horizontal Area"),
+            translate("BIM","Vertical Area"),
+            translate("BIM","Volume"),
+            ]
 
 class BIM_IfcQuantities:
 
@@ -104,7 +111,7 @@ class BIM_IfcQuantities:
 
         if not self.quantitiesDrawn:
 
-            self.qmodel.setHorizontalHeaderLabels(["Label"] + [self.decamelize(s) for s in qprops])
+            self.qmodel.setHorizontalHeaderLabels(translate("BIM",["Label"]) + trqprops)
             quantheaders = self.form.quantities.header() #QHeaderView instance
             if hasattr(quantheaders,"setClickable"): # qt4
                 quantheaders.setClickable(True)

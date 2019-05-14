@@ -23,6 +23,7 @@
 """This module contains FreeCAD commands for the BIM workbench"""
 
 import os,FreeCAD,FreeCADGui
+from DraftTools import translate
 
 def QT_TRANSLATE_NOOP(ctx,txt): return txt # dummy function for the QT translator
 
@@ -74,7 +75,7 @@ class BIM_Project:
                 doc.Label = self.form.projectName.text()
             FreeCAD.ActiveDocument = doc
         if not FreeCAD.ActiveDocument:
-            FreeCAD.Console.PrintError("No active document, aborting.\n")
+            FreeCAD.Console.PrintError(translate("BIM","No active document, aborting.")+"\n")
         import Draft,Arch,Part
         site = None
         outline = None
@@ -111,17 +112,17 @@ class BIM_Project:
             color = self.form.lineColor.property("color").getRgbF()[:3]
             if buildingWidth and buildingLength:
                 outline = Draft.makeRectangle(buildingLength,buildingWidth,face=False)
-                outline.Label = "Building Outline"
+                outline.Label = translate("BIM","Building Outline")
                 outline.ViewObject.DrawStyle = "Dashed"
                 outline.ViewObject.LineColor = color
                 outline.ViewObject.LineWidth = self.form.lineWidth.value()*2
                 grp = FreeCAD.ActiveDocument.addObject("App::DocumentObjectGroup")
-                grp.Label = "Layout"
+                grp.Label = translate("BIM","Building Layout")
                 building.addObject(grp)
                 grp.addObject(outline)
                 if self.form.buildingName.text():
                     outtext = Draft.makeText([self.form.buildingName.text()],point=FreeCAD.Vector(Draft.getParam("textheight",0.20)*0.3,-Draft.getParam("textheight",0.20)*1.43,0))
-                    outtext.Label = "Building Label"
+                    outtext.Label = translate("BIM","Building Label")
                     outtext.ViewObject.TextColor = color
                     grp.addObject(outtext)
                 if human:
@@ -129,7 +130,7 @@ class BIM_Project:
             axisV = None
             if self.form.countVAxes.value() and distVAxes:
                 axisV = Arch.makeAxis(num = self.form.countVAxes.value(), size = distVAxes, name="vaxis")
-                axisV.Label = "Vertical Axes"
+                axisV.Label = translate("BIM","Vertical Axes")
                 axisV.ViewObject.BubblePosition = "Both"
                 axisV.ViewObject.LineWidth = self.form.lineWidth.value()
                 axisV.ViewObject.FontSize = Draft.getParam("textheight",0.20)
@@ -142,7 +143,7 @@ class BIM_Project:
             axisH = None
             if self.form.countHAxes.value() and distHAxes:
                 axisH = Arch.makeAxis(num = self.form.countHAxes.value(), size = distHAxes, name="haxis")
-                axisH.Label = "Horizontal Axes"
+                axisH.Label = translate("BIM","Horizontal Axes")
                 axisH.ViewObject.BubblePosition = "Both"
                 axisH.ViewObject.NumberingStyle = "A,B,C"
                 axisH.ViewObject.LineWidth = self.form.lineWidth.value()
@@ -156,7 +157,7 @@ class BIM_Project:
                     axisH.setExpression('Placement.Base.y', outline.Name+'.Placement.Base.y')
             if axisV and axisH:
                 axisG = Arch.makeAxisSystem([axisH,axisV])
-                axisG.Label = "Axes"
+                axisG.Label = translate("BIM","Axes")
                 grp.addObject(axisG)
             else:
                 if axisV:
@@ -168,7 +169,7 @@ class BIM_Project:
                 alabels = []
                 for i in range(self.form.countLevels.value()):
                     lev = Arch.makeFloor()
-                    lev.Label = "Level "+str(i)
+                    lev.Label = translate("BIM","Level")+" "+str(i)
                     alabels.append(lev.Label)
                     lev.Height = levelHeight
                     lev.Placement.move(FreeCAD.Vector(0,0,h))
@@ -180,7 +181,7 @@ class BIM_Project:
                         lev.addObject(prx)
                 if self.form.levelsAxis.isChecked():
                     axisL = Arch.makeAxis(num = self.form.countLevels.value(), size = levelHeight, name="laxis")
-                    axisL.Label = "Level Axes"
+                    axisL.Label = translate("BIM","Level Axes")
                     axisL.ViewObject.BubblePosition = "None"
                     axisL.ViewObject.LineWidth = self.form.lineWidth.value()
                     axisL.ViewObject.FontSize = Draft.getParam("textheight",0.20)
@@ -209,7 +210,7 @@ class BIM_Project:
     def addGroup(self):
 
         from PySide import QtCore,QtGui
-        it = QtGui.QListWidgetItem("New Group")
+        it = QtGui.QListWidgetItem(translate("BIM","New Group"))
         it.setFlags(it.flags() | QtCore.Qt.ItemIsEditable)
         self.form.groupsList.addItem(it)
 
@@ -223,7 +224,7 @@ class BIM_Project:
 
         from PySide import QtCore,QtGui
         import Arch
-        res = QtGui.QInputDialog.getText(None, "Save preset","Preset name:", QtGui.QLineEdit.Normal,"DefaultProject")
+        res = QtGui.QInputDialog.getText(None, translate("BIM","Save preset"),translate("BIM","Preset name:"), QtGui.QLineEdit.Normal,"DefaultProject")
         if res[1]:
             name = res[0]
             presetdir = os.path.join(FreeCAD.getUserAppDataDir(),"BIM")
@@ -274,7 +275,7 @@ class BIM_Project:
     def fillPresets(self):
 
         self.form.presets.clear()
-        self.form.presets.addItem("User preset...")
+        self.form.presets.addItem(translate("BIM","User preset..."))
         presetdir = os.path.join(FreeCAD.getUserAppDataDir(),"BIM")
         if os.path.isdir(presetdir):
             for f in os.listdir(presetdir):

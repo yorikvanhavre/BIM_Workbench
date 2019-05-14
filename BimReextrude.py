@@ -25,6 +25,7 @@
 """This module contains FreeCAD commands for the BIM workbench"""
 
 import FreeCAD,FreeCADGui,Arch,Draft,Part,os
+from DraftTools import translate
 
 def QT_TRANSLATE_NOOP(ctx,txt): return txt # dummy function for the QT translator
 
@@ -139,7 +140,7 @@ class BIM_Reextrude:
             FreeCAD.ActiveDocument.recompute()
 
         else:
-            FreeCAD.Console.PrintError("Error: Please select exactly one base face\n")
+            FreeCAD.Console.PrintError(translate("BIM","Error: Please select exactly one base face")+"\n")
 
 
 FreeCADGui.addCommand('BIM_Reextrude',BIM_Reextrude())

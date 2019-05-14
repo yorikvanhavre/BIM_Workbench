@@ -26,7 +26,7 @@
 
 import os,FreeCAD,FreeCADGui,Arch_rc,Draft
 from PySide import QtCore,QtGui
-
+from DraftTools import translate
 
 def QT_TRANSLATE_NOOP(ctx,txt): return txt # dummy function for the QT translator
 
@@ -81,8 +81,8 @@ class BIM_IfcElements:
         self.form.groupMode.setItemIcon(2,QtGui.QIcon(":/icons/Arch_Material.svg"))
         self.form.groupMode.setItemIcon(3,QtGui.QIcon(":/icons/Document.svg"))
         self.form.globalMaterial.addItem(" ")
-        self.form.globalMaterial.addItem("Create new material")
-        self.form.globalMaterial.addItem("Create new multi-material")
+        self.form.globalMaterial.addItem(translate("BIM","Create new material"))
+        self.form.globalMaterial.addItem(translate("BIM","Create new multi-material"))
         self.materials = []
         for o in FreeCAD.ActiveDocument.Objects:
             if o.isDerivedFrom("App::MaterialObject") or (Draft.getType(o) == "MultiMaterial"):
@@ -121,7 +121,7 @@ class BIM_IfcElements:
                     if name:
                         self.objectslist[name] = [self.model.item(row,0).child(childrow,1).text(),mat]
         self.model.clear()
-        self.model.setHorizontalHeaderLabels(["Label","IFC type","Material"])
+        self.model.setHorizontalHeaderLabels([translate("BIM","Label"),translate("BIM","IFC type"),translate("BIM","Material")])
         #self.form.tree.header().setResizeMode(QtGui.QHeaderView.Stretch)
         #self.form.tree.resizeColumnsToContents()
 
@@ -450,8 +450,8 @@ class BIM_IfcElements:
                 self.materials = mats
                 self.form.globalMaterial.clear()
                 self.form.globalMaterial.addItem(" ")
-                self.form.globalMaterial.addItem("Create new material")
-                self.form.globalMaterial.addItem("Create new multi-material")
+                self.form.globalMaterial.addItem(translate("BIM","Create new material"))
+                self.form.globalMaterial.addItem(translate("BIM","Create new multi-material"))
                 for m in self.materials:
                     o = FreeCAD.ActiveDocument.getObject(m)
                     if o:

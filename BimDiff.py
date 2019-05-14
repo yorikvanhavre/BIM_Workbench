@@ -24,6 +24,7 @@
 
 import FreeCAD,FreeCADGui,Part,Draft,Arch,os
 from PySide import QtCore,QtGui
+from DraftTools import translate
 
 def QT_TRANSLATE_NOOP(ctx,txt): return txt # dummy function for the QT translator
 
@@ -59,7 +60,7 @@ class BIM_Diff:
         
         if len(documents) == 2:
         
-            reply = QtGui.QMessageBox.question(None, "", "The document currently viewed must be your main one. The other contains newer objects that you wish to merge into this one. Make sure only the objects you wish to compare are visible in both. Proceed?", QtGui.QMessageBox.Yes | QtGui.QMessageBox.No, QtGui.QMessageBox.No)
+            reply = QtGui.QMessageBox.question(None, "", translate("BIM","The document currently viewed must be your main one. The other contains newer objects that you wish to merge into this one. Make sure only the objects you wish to compare are visible in both. Proceed?"), QtGui.QMessageBox.Yes | QtGui.QMessageBox.No, QtGui.QMessageBox.No)
             if reply == QtGui.QMessageBox.Yes:
         
                 activedoc = FreeCAD.ActiveDocument
@@ -240,7 +241,7 @@ class BIM_Diff:
                     obj.ViewObject.Transparency = 90
             
                 if matchanged:
-                    reply = QtGui.QMessageBox.question(None, "", str(len(matchanged))+" objects still have the same shape but have a different material. Do you wish to update them in the main document?", QtGui.QMessageBox.Yes | QtGui.QMessageBox.No, QtGui.QMessageBox.No)
+                    reply = QtGui.QMessageBox.question(None, "", str(len(matchanged))+" "+translate("BIM","objects still have the same shape but have a different material. Do you wish to update them in the main document?"), QtGui.QMessageBox.Yes | QtGui.QMessageBox.No, QtGui.QMessageBox.No)
                     if reply == QtGui.QMessageBox.Yes:
                         for obj in matchanged:
                             mat = obj.Material
@@ -267,7 +268,7 @@ class BIM_Diff:
                                     matnames[newmat.Label] = newmat
                 
                 if newids:
-                    reply = QtGui.QMessageBox.question(None, "", str(len(newids))+" objects have no IFC ID in the main document, but an identical object with an ID exists in the new document. Transfer these IDs to the original objects?", QtGui.QMessageBox.Yes | QtGui.QMessageBox.No, QtGui.QMessageBox.No)
+                    reply = QtGui.QMessageBox.question(None, "", str(len(newids))+" "+translate("BIM","objects have no IFC ID in the main document, but an identical object with an ID exists in the new document. Transfer these IDs to the original objects?"), QtGui.QMessageBox.Yes | QtGui.QMessageBox.No, QtGui.QMessageBox.No)
                     if reply == QtGui.QMessageBox.Yes:
                         for name,id in newids.items():
                             obj = activedoc.getObject(name)
@@ -278,7 +279,7 @@ class BIM_Diff:
                                 obj.IfcAttributes = a
         
                 if renamed:
-                    reply = QtGui.QMessageBox.question(None, "", str(len(renamed))+" objects had their name changed. Rename them?", QtGui.QMessageBox.Yes | QtGui.QMessageBox.No, QtGui.QMessageBox.No)
+                    reply = QtGui.QMessageBox.question(None, "", str(len(renamed))+" "+translate("BIM","objects had their name changed. Rename them?"), QtGui.QMessageBox.Yes | QtGui.QMessageBox.No, QtGui.QMessageBox.No)
                     if reply == QtGui.QMessageBox.Yes:
                         for name,label in renamed.items():
                             obj = activedoc.getObject(name)
@@ -287,7 +288,7 @@ class BIM_Diff:
                                 obj.Label = label
         
                 if propertieschanged:
-                    reply = QtGui.QMessageBox.question(None, "", str(len(propertieschanged))+" objects had their properties changed. Update?", QtGui.QMessageBox.Yes | QtGui.QMessageBox.No, QtGui.QMessageBox.No)
+                    reply = QtGui.QMessageBox.question(None, "", str(len(propertieschanged))+" "+translate("BIM","objects had their properties changed. Update?"), QtGui.QMessageBox.Yes | QtGui.QMessageBox.No, QtGui.QMessageBox.No)
                     if reply == QtGui.QMessageBox.Yes:
                         for id,prop in propertieschanged.items():
                             obj = activedocids[id]
@@ -295,7 +296,7 @@ class BIM_Diff:
                             obj.IfcProperties = prop
         
                 if moved:
-                    reply = QtGui.QMessageBox.question(None, "", str(len(moved))+" objects have their location changed. Move them to their new position?", QtGui.QMessageBox.Yes | QtGui.QMessageBox.No, QtGui.QMessageBox.No)
+                    reply = QtGui.QMessageBox.question(None, "", str(len(moved))+" "+translate("BIM","objects have their location changed. Move them to their new position?"), QtGui.QMessageBox.Yes | QtGui.QMessageBox.No, QtGui.QMessageBox.No)
                     if reply == QtGui.QMessageBox.Yes:
                         for obj in moved:
                             mainobj = activedocids[obj.IfcAttributes["IfcUID"]]
@@ -303,7 +304,7 @@ class BIM_Diff:
                             delta = otherobj.Shape.BoundBox.Center.sub(mainobj.Shape.BoundBox.Center)
                             print("Moving object ",mainobj.Label)
                             Draft.move(mainobj,delta)
-                    reply = QtGui.QMessageBox.question(None, "", "Do you wish to colorize the objects that have moved in yellow in the other file (to serve as a diff)?", QtGui.QMessageBox.Yes | QtGui.QMessageBox.No, QtGui.QMessageBox.No)
+                    reply = QtGui.QMessageBox.question(None, "", translate("BIM","Do you wish to colorize the objects that have moved in yellow in the other file (to serve as a diff)?"), QtGui.QMessageBox.Yes | QtGui.QMessageBox.No, QtGui.QMessageBox.No)
                     if reply == QtGui.QMessageBox.Yes:
                         for obj in moved:
                             otherobj = otherdocids[obj.IfcAttributes["IfcUID"]]
@@ -312,7 +313,7 @@ class BIM_Diff:
                             otherobj.ViewObject.Transparency = 60
         
                 if modified:
-                    reply = QtGui.QMessageBox.question(None, "", "Do you wish to colorize the objects that have been modified in orange in the other file (to serve as a diff)?", QtGui.QMessageBox.Yes | QtGui.QMessageBox.No, QtGui.QMessageBox.No)
+                    reply = QtGui.QMessageBox.question(None, "", translate("BIM","Do you wish to colorize the objects that have been modified in orange in the other file (to serve as a diff)?"), QtGui.QMessageBox.Yes | QtGui.QMessageBox.No, QtGui.QMessageBox.No)
                     if reply == QtGui.QMessageBox.Yes:
                         for obj in modified:
                             otherobj = otherdocids[obj.IfcAttributes["IfcUID"]]
@@ -321,13 +322,13 @@ class BIM_Diff:
                             otherobj.ViewObject.Transparency = 60
         
                 if subtractions:
-                    reply = QtGui.QMessageBox.question(None, "", str(len(subtractions))+" objects don't exist anymore in the new document. Move them to a 'To Delete' group?", QtGui.QMessageBox.Yes | QtGui.QMessageBox.No, QtGui.QMessageBox.No)
+                    reply = QtGui.QMessageBox.question(None, "", str(len(subtractions))+" "+translate("BIM","objects don't exist anymore in the new document. Move them to a 'To Delete' group?"), QtGui.QMessageBox.Yes | QtGui.QMessageBox.No, QtGui.QMessageBox.No)
                     if reply == QtGui.QMessageBox.Yes:
                         group = activedoc.addObject("App::DocumentObjectGroup","ToDelete")
                         group.Label = "To Delete"
                         for obj in subtractions:
                             group.addObject(obj)
-                    reply = QtGui.QMessageBox.question(None, "", "Do you wish to colorize the objects that have been removed in red in the other file (to serve as a diff)?", QtGui.QMessageBox.Yes | QtGui.QMessageBox.No, QtGui.QMessageBox.No)
+                    reply = QtGui.QMessageBox.question(None, "", translate("BIM","Do you wish to colorize the objects that have been removed in red in the other file (to serve as a diff)?"), QtGui.QMessageBox.Yes | QtGui.QMessageBox.No, QtGui.QMessageBox.No)
                     if reply == QtGui.QMessageBox.Yes:
                         for obj in subtractions:
                             otherobj = otherdoc.addObject("Part::Feature","Deleted")
@@ -337,7 +338,7 @@ class BIM_Diff:
                             otherobj.ViewObject.Transparency = 60
         
                 if additions:
-                    reply = QtGui.QMessageBox.question(None, "", "Do you wish to colorize the objects that have been added in green in the other file (to serve as a diff)?", QtGui.QMessageBox.Yes | QtGui.QMessageBox.No, QtGui.QMessageBox.No)
+                    reply = QtGui.QMessageBox.question(None, "", translate("BIM","Do you wish to colorize the objects that have been added in green in the other file (to serve as a diff)?"), QtGui.QMessageBox.Yes | QtGui.QMessageBox.No, QtGui.QMessageBox.No)
                     if reply == QtGui.QMessageBox.Yes:
                         for obj in additions:
                             otherobj = otherdocids[obj.IfcAttributes["IfcUID"]]
@@ -346,7 +347,7 @@ class BIM_Diff:
                             otherobj.ViewObject.Transparency = 60
         
         else:
-            reply = QtGui.QMessageBox.information(None,"","You need two documents open to run this tool. One which is your main document, and one that contains new objects that you wish to compare against the existing one. Make sure only the objects you wish to compare in both documents are visible.")
+            reply = QtGui.QMessageBox.information(None,"",translate("BIM","You need two documents open to run this tool. One which is your main document, and one that contains new objects that you wish to compare against the existing one. Make sure only the objects you wish to compare in both documents are visible."))
         
 
 FreeCADGui.addCommand('BIM_Diff',BIM_Diff())
