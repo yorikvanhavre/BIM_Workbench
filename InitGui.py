@@ -77,7 +77,7 @@ static char * IFC_xpm[] = {
                                 "Draft_Label","Arch_Axis","Arch_AxisSystem","Arch_Grid","Arch_SectionPlane"]
 
         self.bimtools = ["Arch_Floor","Arch_Building","Arch_Site","Arch_Space","Separator",
-                         "Arch_Wall","BIM_Column","BIM_Beam","Arch_Rebar","Arch_Window","Arch_Pipe",
+                         "Arch_Wall","BIM_Column","BIM_Beam","BIM_Slab","Arch_Rebar","Arch_Window","Arch_Pipe",
                          "Arch_PipeConnector","Arch_Stairs","Arch_Roof","Arch_Panel","Arch_Frame",
                          "Separator","BIM_Box","Part_Builder","Draft_Facebinder","BIM_Library"]
 

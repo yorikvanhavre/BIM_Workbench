@@ -429,6 +429,65 @@ class BIM_Beam(ArchStructure._CommandStructure):
                 'Accel': 'B,M'}
 
 
+class BIM_Slab:
+
+    def __init__(self):
+        self.callback = None
+        self.view = None
+
+    def GetResources(self):
+
+        return {'Pixmap'  : os.path.join(os.path.dirname(__file__),"icons","BIM_Slab.svg"),
+                'MenuText': QT_TRANSLATE_NOOP("BIM_Slab", "Slab"),
+                'ToolTip' : QT_TRANSLATE_NOOP("BIM_Slab", "Creates a slab from a planar shape"),
+                'Accel': 'S,B'}
+
+    def Activated(self):
+
+        self.removeCallback()
+        sel = FreeCADGui.Selection.getSelection()
+        if sel:
+            self.proceed()
+        else:
+            if hasattr(FreeCADGui,"draftToolBar"):
+                FreeCADGui.draftToolBar.selectUi()
+            FreeCAD.Console.PrintMessage(translate("BIM", "Select a planar object")+"\n")
+            FreeCAD.activeDraftCommand = self
+            self.view = FreeCADGui.ActiveDocument.ActiveView
+            self.callback = self.view.addEventCallback("SoEvent", DraftTools.selectObject)
+
+    def proceed(self):
+        
+        self.removeCallback()
+        sel = FreeCADGui.Selection.getSelection()
+        if len(sel) == 1:
+            FreeCADGui.addModule("Arch")
+            FreeCAD.ActiveDocument.openTransaction("Create Slab")
+            FreeCADGui.doCommand('s = Arch.makeStructure(FreeCAD.ActiveDocument.'+sel[0].Name+',height=200)')
+            FreeCADGui.doCommand('s.Label = "'+translate("BIM","Slab")+'"')
+            if hasattr(FreeCAD.ActiveDocument.Objects[-1],"IfcType"):
+                FreeCADGui.doCommand('s.IfcType = "Slab"')
+            elif hasattr(FreeCAD.ActiveDocument.Objects[-1],"IfcRole"):
+                FreeCADGui.doCommand('s.IfcRole = "Slab"')
+            FreeCAD.ActiveDocument.commitTransaction()
+            FreeCAD.ActiveDocument.recompute()
+        self.finish()
+
+    def removeCallback(self):
+
+        if self.callback:
+            try:
+                self.view.removeEventCallback("SoEvent",self.callback)
+            except RuntimeError:
+                pass
+            self.callback = None
+
+    def finish(self):
+        
+        self.removeCallback()
+        if hasattr(FreeCADGui,"draftToolBar"):
+            FreeCADGui.draftToolBar.offUi()
+
 
 FreeCADGui.addCommand('BIM_TogglePanels',BIM_TogglePanels())
 FreeCADGui.addCommand('BIM_Trash',BIM_Trash())
@@ -443,6 +502,7 @@ FreeCADGui.addCommand('BIM_Convert',BIM_Convert())
 FreeCADGui.addCommand('BIM_Ungroup',BIM_Ungroup())
 FreeCADGui.addCommand('BIM_Column',BIM_Column())
 FreeCADGui.addCommand('BIM_Beam',BIM_Beam())
+FreeCADGui.addCommand('BIM_Slab',BIM_Slab())
 
 
 
