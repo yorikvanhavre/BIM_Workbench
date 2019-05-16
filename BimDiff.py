@@ -75,17 +75,17 @@ class BIM_Diff:
             
                 activedocids = {} # main document, the original freecad one
                 for obj in activedoc.Objects:
-                    if hasattr(obj,"IfcAttributes") and obj.ViewObject.Visibility:
-                        if "IfcUID" in obj.IfcAttributes:
-                            activedocids[obj.IfcAttributes["IfcUID"]] = obj
+                    if hasattr(obj,"IfcData") and obj.ViewObject.Visibility:
+                        if "IfcUID" in obj.IfcData:
+                            activedocids[obj.IfcData["IfcUID"]] = obj
                         elif obj.isDerivedFrom("Part::Feature"): # discard BuildingParts
                             objswithoutid.append(obj)
             
                 otherdocids = {} # other doc to be merged to the main one
                 for obj in otherdoc.Objects:
-                    if hasattr(obj,"IfcAttributes") and obj.ViewObject.Visibility:
-                        if "IfcUID" in obj.IfcAttributes:
-                            otherdocids[obj.IfcAttributes["IfcUID"]] = obj
+                    if hasattr(obj,"IfcData") and obj.ViewObject.Visibility:
+                        if "IfcUID" in obj.IfcData:
+                            otherdocids[obj.IfcData["IfcUID"]] = obj
             
                 toselect = [] # objects to select when finished
                 additions = [] # objects added
@@ -189,8 +189,8 @@ class BIM_Diff:
             
                 if toselect:
                     FreeCAD.setActiveDocument(otherdoc.Name)
-                    FreeCAD.ActiveDocument=Gui.getDocument(otherdoc.Name)
-                    FreeCADGui.ActiveDocument=Gui.getDocument(otherdoc.Name)
+                    FreeCAD.ActiveDocument=FreeCADGui.getDocument(otherdoc.Name)
+                    FreeCADGui.ActiveDocument=FreeCADGui.getDocument(otherdoc.Name)
                     FreeCADGui.Selection.clearSelection()
                     for obj in toselect:
                         FreeCADGui.Selection.addSelection(obj)
@@ -246,7 +246,7 @@ class BIM_Diff:
                         for obj in matchanged:
                             mat = obj.Material
                             if mat:
-                                mainobj = activedocids[obj.IfcAttributes["IfcUID"]]
+                                mainobj = activedocids[obj.IfcData["IfcUID"]]
                                 if mainobj.Material:
                                     mainmatlabel = mainobj.Material.Label
                                 else:
@@ -274,9 +274,9 @@ class BIM_Diff:
                             obj = activedoc.getObject(name)
                             if obj:
                                 print("Transferring new id to object",obj.Label)
-                                a = obj.IfcAttributes
+                                a = obj.IfcData
                                 a["IfcUID"] = id
-                                obj.IfcAttributes = a
+                                obj.IfcData = a
         
                 if renamed:
                     reply = QtGui.QMessageBox.question(None, "", str(len(renamed))+" "+translate("BIM","objects had their name changed. Rename them?"), QtGui.QMessageBox.Yes | QtGui.QMessageBox.No, QtGui.QMessageBox.No)
@@ -299,27 +299,33 @@ class BIM_Diff:
                     reply = QtGui.QMessageBox.question(None, "", str(len(moved))+" "+translate("BIM","objects have their location changed. Move them to their new position?"), QtGui.QMessageBox.Yes | QtGui.QMessageBox.No, QtGui.QMessageBox.No)
                     if reply == QtGui.QMessageBox.Yes:
                         for obj in moved:
-                            mainobj = activedocids[obj.IfcAttributes["IfcUID"]]
-                            otherobj = otherdocids[obj.IfcAttributes["IfcUID"]]
+                            mainobj = activedocids[obj.IfcData["IfcUID"]]
+                            otherobj = otherdocids[obj.IfcData["IfcUID"]]
                             delta = otherobj.Shape.BoundBox.Center.sub(mainobj.Shape.BoundBox.Center)
                             print("Moving object ",mainobj.Label)
                             Draft.move(mainobj,delta)
                     reply = QtGui.QMessageBox.question(None, "", translate("BIM","Do you wish to colorize the objects that have moved in yellow in the other file (to serve as a diff)?"), QtGui.QMessageBox.Yes | QtGui.QMessageBox.No, QtGui.QMessageBox.No)
                     if reply == QtGui.QMessageBox.Yes:
                         for obj in moved:
-                            otherobj = otherdocids[obj.IfcAttributes["IfcUID"]]
-                            otherobj.ViewObject.LineColor = (1.0,1.0,0.0)
-                            otherobj.ViewObject.ShapeColor = (1.0,1.0,0.0)
-                            otherobj.ViewObject.Transparency = 60
+                            otherobj = otherdocids[obj.IfcData["IfcUID"]]
+                            try:
+                                otherobj.ViewObject.LineColor = (1.0,1.0,0.0)
+                                otherobj.ViewObject.ShapeColor = (1.0,1.0,0.0)
+                                otherobj.ViewObject.Transparency = 60
+                            except:
+                                print(otherobj.Label,"cannot be colorized")
         
                 if modified:
                     reply = QtGui.QMessageBox.question(None, "", translate("BIM","Do you wish to colorize the objects that have been modified in orange in the other file (to serve as a diff)?"), QtGui.QMessageBox.Yes | QtGui.QMessageBox.No, QtGui.QMessageBox.No)
                     if reply == QtGui.QMessageBox.Yes:
                         for obj in modified:
-                            otherobj = otherdocids[obj.IfcAttributes["IfcUID"]]
-                            otherobj.ViewObject.LineColor = (1.0,0.5,0.0)
-                            otherobj.ViewObject.ShapeColor = (1.0,0.5,0.0)
-                            otherobj.ViewObject.Transparency = 60
+                            otherobj = otherdocids[obj.IfcData["IfcUID"]]
+                            try:
+                                otherobj.ViewObject.LineColor = (1.0,0.5,0.0)
+                                otherobj.ViewObject.ShapeColor = (1.0,0.5,0.0)
+                                otherobj.ViewObject.Transparency = 60
+                            except:
+                                print(otherobj.Label,"cannot be colorized")
         
                 if subtractions:
                     reply = QtGui.QMessageBox.question(None, "", str(len(subtractions))+" "+translate("BIM","objects don't exist anymore in the new document. Move them to a 'To Delete' group?"), QtGui.QMessageBox.Yes | QtGui.QMessageBox.No, QtGui.QMessageBox.No)
@@ -341,11 +347,14 @@ class BIM_Diff:
                     reply = QtGui.QMessageBox.question(None, "", translate("BIM","Do you wish to colorize the objects that have been added in green in the other file (to serve as a diff)?"), QtGui.QMessageBox.Yes | QtGui.QMessageBox.No, QtGui.QMessageBox.No)
                     if reply == QtGui.QMessageBox.Yes:
                         for obj in additions:
-                            otherobj = otherdocids[obj.IfcAttributes["IfcUID"]]
-                            otherobj.ViewObject.LineColor = (0.0,1.0,0.0)
-                            otherobj.ViewObject.ShapeColor = (0.0,1.0,0.0)
-                            otherobj.ViewObject.Transparency = 60
-        
+                            otherobj = otherdocids[obj.IfcData["IfcUID"]]
+                            try:
+                                otherobj.ViewObject.LineColor = (0.0,1.0,0.0)
+                                otherobj.ViewObject.ShapeColor = (0.0,1.0,0.0)
+                                otherobj.ViewObject.Transparency = 60
+                            except:
+                                print(otherobj.Label,"cannot be colorized")
+
         else:
             reply = QtGui.QMessageBox.information(None,"",translate("BIM","You need two documents open to run this tool. One which is your main document, and one that contains new objects that you wish to compare against the existing one. Make sure only the objects you wish to compare in both documents are visible."))
         
