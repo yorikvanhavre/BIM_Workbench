@@ -24,7 +24,7 @@
 
 """This module contains FreeCAD commands for the BIM workbench"""
 
-import os,FreeCAD,FreeCADGui,DraftTools,ArchStructure
+import os,FreeCAD,FreeCADGui,DraftTools,ArchStructure,ArchWindow
 
 def QT_TRANSLATE_NOOP(ctx,txt): return txt # dummy function for the QT translator
 from DraftTools import translate
@@ -489,6 +489,20 @@ class BIM_Slab:
             FreeCADGui.draftToolBar.offUi()
 
 
+class BIM_Door(ArchWindow._CommandWindow):
+
+    def __init__(self):
+        ArchWindow._CommandWindow.__init__(self)
+        self.doormode = True
+
+    def GetResources(self):
+
+        return {'Pixmap'  : os.path.join(os.path.dirname(__file__),"icons","BIM_Door.svg"),
+                'MenuText': QT_TRANSLATE_NOOP("BIM_Door", "Door"),
+                'ToolTip' : QT_TRANSLATE_NOOP("BIM_Door", "Places a door at a given location"),
+                'Accel': 'D,O'}
+
+
 FreeCADGui.addCommand('BIM_TogglePanels',BIM_TogglePanels())
 FreeCADGui.addCommand('BIM_Trash',BIM_Trash())
 FreeCADGui.addCommand('BIM_EmptyTrash',BIM_EmptyTrash())
@@ -503,7 +517,7 @@ FreeCADGui.addCommand('BIM_Ungroup',BIM_Ungroup())
 FreeCADGui.addCommand('BIM_Column',BIM_Column())
 FreeCADGui.addCommand('BIM_Beam',BIM_Beam())
 FreeCADGui.addCommand('BIM_Slab',BIM_Slab())
-
+FreeCADGui.addCommand('BIM_Door',BIM_Door())
 
 
 # Status bar buttons
