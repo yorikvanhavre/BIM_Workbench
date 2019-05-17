@@ -119,7 +119,7 @@ class BIM_Tutorial:
         self.test1 = [t.replace("&lt;","<").replace("&gt;",">") for t in self.test1]
         self.test2 = [t.replace("&lt;","<").replace("&gt;",">") for t in self.test2]
         
-        # downlaod images (QTextEdit cannot load online images)
+        # download images (QTextEdit cannot load online images)
         self.form.textEdit.setHtml(html.replace("inserthere",translate("BIM","Downloading images...")))
         nd = []
         for descr in self.descriptions:

@@ -141,7 +141,7 @@ class BIM_Windows_TaskPanel:
     def editWindow(self,item,column):
 
         if len(self.form.windows.selectedItems()) == 1:
-            # dont change the contents if we have more than one floor selected
+            # don't change the contents if we have more than one floor selected
             window = FreeCAD.ActiveDocument.getObject(item.toolTip(0))
             if window:
                 self.form.windowLabel.setText(window.Label)
