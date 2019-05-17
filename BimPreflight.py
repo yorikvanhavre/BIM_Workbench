@@ -480,7 +480,7 @@ class BIM_Preflight_TaskPanel:
                                 break
             if self.culprits[test]:
                 msg = self.getToolTip(test)
-                msg += translate("BIM","The objects below have Length, Width or Height properties, but these properties won't be explicitely exported to IFC. This is not necessarily an issue, unless you specifically want these quantities to be exported:")+"\n\n"
+                msg += translate("BIM","The objects below have Length, Width or Height properties, but these properties won't be explicitly exported to IFC. This is not necessarily an issue, unless you specifically want these quantities to be exported:")+"\n\n"
                 for o in self.culprits[test]:
                     msg += o.Label + "\n"
                 msg += "\n"+translate("BIM","To enable exporting of these quantities, use the IFC quantities manager tool located under menu Manage -> Manage IFC Quantities...")

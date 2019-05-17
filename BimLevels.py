@@ -107,7 +107,7 @@ class BIM_Levels_TaskPanel:
     def editLevel(self,item,column):
 
         if len(self.form.levels.selectedItems()) == 1:
-            # dont change the contents if we have more than one floor selected
+            # don't change the contents if we have more than one floor selected
             level = FreeCAD.ActiveDocument.getObject(item.toolTip(0))
             if level:
                 self.form.levelName.setText(level.Label)

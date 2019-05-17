@@ -74,7 +74,7 @@
          <item row="10" column="0">
           <widget class="QLabel" name="label_5">
            <property name="text">
-            <string>Defaut font</string>
+            <string>Default font</string>
            </property>
           </widget>
          </item>
@@ -390,7 +390,7 @@
            <item>
             <widget class="Gui::ColorButton" name="colorButtonFaces">
              <property name="toolTip">
-              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The default color of faces in the 3D view. Location in preferences: &lt;span style=&quot; font-weight:600;&quot;&gt;Disply &amp;gt; Part Color &amp;gt; Default shape color&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The default color of faces in the 3D view. Location in preferences: &lt;span style=&quot; font-weight:600;&quot;&gt;Display &amp;gt; Part Color &amp;gt; Default shape color&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
             </widget>
            </item>
