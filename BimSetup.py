@@ -76,6 +76,10 @@ class BIM_Setup:
             import FastenerBase
         except:
             m.append("Fasteners")
+        try:
+            import report
+        except:
+            m.append("Reporting")
         libok = False
         librarypath = FreeCAD.ParamGet('User parameter:Plugins/parts_library').GetString('destination','')
         if librarypath and os.path.exists(librarypath):

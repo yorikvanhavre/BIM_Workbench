@@ -140,8 +140,8 @@ static char * IFC_xpm[] = {
                       "Arch_SplitMesh","Arch_MeshToShape",
                       "Arch_SelectNonSolidMeshes","Arch_RemoveShape",
                       "Arch_CloseHoles","Arch_MergeWalls","Arch_Check",
-                      "Arch_IfcExplorer","Arch_ToggleIfcBrepFlag",
-                      "Arch_ToggleSubs","Arch_Survey","BIM_Diff"]
+                      "Arch_ToggleIfcBrepFlag",
+                      "Arch_ToggleSubs","Arch_Survey","BIM_Diff","BIM_IfcExplorer"]
 
         nudge = ["BIM_Nudge_Switch","BIM_Nudge_Up","BIM_Nudge_Down","BIM_Nudge_Left","BIM_Nudge_Right",
                  "BIM_Nudge_RotateLeft","BIM_Nudge_RotateRight","BIM_Nudge_Extend","BIM_Nudge_Shrink"]
@@ -160,6 +160,16 @@ static char * IFC_xpm[] = {
                     bimbots.launch_ui()
             FreeCADGui.addCommand('BIMBots', BIMBots())
             self.utils.append("BIMBots")
+
+        # load Reporting
+        
+        try:
+            import report
+        except:
+            pass
+        else:
+            if "Report_Create" in Gui.listCommands():
+                self.manage[self.manage.index("Arch_Schedule")] = "Report_Create"
 
         # load webtools
 
