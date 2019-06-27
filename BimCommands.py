@@ -520,9 +520,15 @@ FreeCADGui.addCommand('BIM_Slab',BIM_Slab())
 FreeCADGui.addCommand('BIM_Door',BIM_Door())
 
 
+# Language path for InitGui.py
+
+
+def getLanguagePath():
+    
+    return os.path.join(os.path.dirname(__file__),"translations")
+
+
 # Status bar buttons
-
-
 
 
 def setStatusIcons(show=True):

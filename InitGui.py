@@ -248,6 +248,10 @@ static char * IFC_xpm[] = {
                 FreeCADGui.addPreferencePage(":/ui/preferences-draftvisual.ui","Draft")
                 FreeCADGui.addPreferencePage(":/ui/preferences-drafttexts.ui","Draft")
                 FreeCADGui.draftToolBar.loadedPreferences = True
+        
+        # add translations path
+        
+        FreeCADGui.addLanguagePath(BimCommands.getLanguagePath())
 
         Log ('Loading BIM module... done\n')
 
