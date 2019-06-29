@@ -76,6 +76,12 @@ class BIM_Layers:
         self.dialog.buttonCancel.setIcon(QtGui.QIcon(":/icons/edit_Cancel.svg"))
         self.dialog.buttonOK.setIcon(QtGui.QIcon(":/icons/edit_OK.svg"))
 
+        # restore window geometry from stored state
+        pref = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM")
+        w = pref.GetInt("LayersManagerWidth",640)
+        h = pref.GetInt("LayersManagerHeight",320)
+        self.dialog.resize(w,h)
+
         # center the dialog over FreeCAD window
         mw = FreeCADGui.getMainWindow()
         self.dialog.move(mw.frameGeometry().topLeft() + mw.rect().center() - self.dialog.rect().center())
@@ -204,6 +210,11 @@ class BIM_Layers:
     def reject(self):
         
         "when Cancel button is pressed or dialog is closed"
+
+        # save dialog size
+        pref = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM")
+        pref.SetInt("LayersManagerWidth",self.dialog.width())
+        pref.SetInt("LayersManagerHeight",self.dialog.height())
 
         return True
 
