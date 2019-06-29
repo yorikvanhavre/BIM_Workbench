@@ -6,30 +6,30 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>547</width>
-    <height>324</height>
+    <width>640</width>
+    <height>320</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Layer manager</string>
+   <string>Layers manager</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QTreeView" name="treeView"/>
+    <widget class="QTreeView" name="tree"/>
    </item>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
-      <widget class="QPushButton" name="buttonAdd">
+      <widget class="QPushButton" name="buttonNew">
        <property name="text">
-        <string>Add</string>
+        <string>New</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="buttonRemove">
+      <widget class="QPushButton" name="buttonDelete">
        <property name="text">
-        <string>Remove</string>
+        <string>Delete</string>
        </property>
       </widget>
      </item>
@@ -44,6 +44,33 @@
       <widget class="QPushButton" name="buttonToggle">
        <property name="text">
         <string>Toggle on/off</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="buttonCancel">
+       <property name="text">
+        <string>Cancel</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="buttonOK">
+       <property name="text">
+        <string>OK</string>
        </property>
       </widget>
      </item>

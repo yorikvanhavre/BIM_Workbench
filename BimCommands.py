@@ -31,9 +31,27 @@ from DraftTools import translate
 
 # import commands that are defined in their separate files
 
-import BimWelcome,BimSetup,BimProject,BimLevels,BimWindows,BimIfcElements,BimViews
-import BimClassification,BimBox,BimTutorial,BimLibrary,BimMaterial,BimIfcQuantities
-import BimIfcProperties,BimNudge,BimUnclone,BimPreflight,BimReextrude,BimDiff,BimIfcExplorer
+import BimWelcome
+import BimSetup
+import BimProject
+import BimLevels
+import BimWindows
+import BimIfcElements
+import BimViews
+import BimClassification
+import BimBox
+import BimTutorial
+import BimLibrary
+import BimMaterial
+import BimIfcQuantities
+import BimIfcProperties
+import BimNudge
+import BimUnclone
+import BimPreflight
+import BimReextrude
+import BimDiff
+import BimIfcExplorer
+import BimLayers
 
 
 # additional, smaller commands that are defined directly in this file
