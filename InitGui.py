@@ -131,7 +131,7 @@ static char * IFC_xpm[] = {
                      'Draft_Snap_Extension','Draft_Snap_Near','Draft_Snap_Ortho',
                      'Draft_Snap_Special','Draft_Snap_Dimensions','Draft_Snap_WorkingPlane']
 
-        self.manage = ["BIM_Setup","BIM_Project","BIM_Levels","BIM_Windows","BIM_IfcElements",
+        self.manage = ["BIM_Setup","BIM_Project","BIM_Views","BIM_Windows","BIM_IfcElements",
                        "BIM_IfcQuantities","BIM_IfcProperties","BIM_Classification","BIM_Layers",
                        "BIM_Material","Arch_Schedule","BIM_Preflight"]
 

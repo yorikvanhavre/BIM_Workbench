@@ -34,7 +34,6 @@ from DraftTools import translate
 import BimWelcome
 import BimSetup
 import BimProject
-import BimLevels
 import BimWindows
 import BimIfcElements
 import BimViews
@@ -305,7 +304,7 @@ class BIM_WPView:
         else:
             v = BimViews.findWidget()
             if v:
-                i = v.currentItem()
+                i = v.tree.currentItem()
                 if i:
                     # Aligning on current widget item
                     BimViews.show(i)
@@ -315,7 +314,7 @@ class BIM_WPView:
                     # Aligning on stored widget item
                     done = True
         if not done:
-            # Aligning on working plane
+            # Aligning on current working plane
             c = FreeCADGui.ActiveDocument.ActiveView.getCameraNode()
             r = FreeCAD.DraftWorkingPlane.getRotation().Rotation.Q
             c.orientation.setValue(r)
@@ -661,6 +660,7 @@ def setStatusIcons(show=True):
     def showUpdateButton(avail):
 
         if avail:
+            FreeCAD.Console.PrintLog("A BIM update is avaialble\n")
             mw = FreeCADGui.getMainWindow()
             if mw:
                 st = mw.statusBar()
@@ -670,6 +670,8 @@ def setStatusIcons(show=True):
                     if updatebutton:
                         #updatebutton.show() # doesn't work for some reason
                         statuswidget.actions()[-1].setVisible(True)
+        else:
+            FreeCAD.Console.PrintLog("No BIM update avaialble\n")
         if hasattr(FreeCAD,"bim_update_checker"):
             del FreeCAD.bim_update_checker
 
