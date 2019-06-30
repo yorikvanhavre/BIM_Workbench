@@ -119,17 +119,17 @@ class BIM_IfcExplorer:
         vlayout.addWidget(self.properties)
 
         # draw the toolbar buttons
-        openAction = QtGui.QAction(translate("BIM","Open"))
-        openAction.setToolTip(translate("BIM","Open another IFC file..."))
-        openAction.triggered.connect(self.open)
-        openAction.setIcon(QtGui.QIcon(":/icons/document-open.svg"))
-        toolbar.addAction(openAction)
+        self.openAction = QtGui.QAction(translate("BIM","Open"))
+        self.openAction.setToolTip(translate("BIM","Open another IFC file..."))
+        self.openAction.triggered.connect(self.open)
+        self.openAction.setIcon(QtGui.QIcon(":/icons/document-open.svg"))
+        toolbar.addAction(self.openAction)
 
-        backAction = QtGui.QAction(translate("BIM","Back"))
-        backAction.setToolTip(translate("BIM","Go back to last item selected"))
-        backAction.triggered.connect(self.back)
-        backAction.setIcon(QtGui.QIcon(":/icons/edit-undo.svg"))
-        toolbar.addAction(backAction)
+        self.backAction = QtGui.QAction(translate("BIM","Back"))
+        self.backAction.setToolTip(translate("BIM","Go back to last item selected"))
+        self.backAction.triggered.connect(self.back)
+        self.backAction.setIcon(QtGui.QIcon(":/icons/edit-undo.svg"))
+        toolbar.addAction(self.backAction)
 
         self.shapeAction = QtGui.QAction(translate("BIM","Insert"))
         self.shapeAction.setToolTip(translate("BIM","Inserts the selected object and its children in the active document"))
@@ -138,28 +138,29 @@ class BIM_IfcExplorer:
         self.shapeAction.setEnabled(False)
         toolbar.addAction(self.shapeAction)
 
-        meshAction = QtGui.QAction(translate("BIM","Mesh"))
-        meshAction.setToolTip(translate("BIM","Turn mesh display on/off"))
-        meshAction.triggered.connect(self.toggleMesh)
-        meshAction.setCheckable(True)
-        meshAction.setChecked(False)
-        meshAction.setIcon(QtGui.QIcon(":/icons/DrawStyleShaded.svg"))
-        toolbar.addAction(meshAction)
+        self.meshAction = QtGui.QAction(translate("BIM","Mesh"))
+        self.meshAction.setToolTip(translate("BIM","Turn mesh display on/off"))
+        self.meshAction.triggered.connect(self.toggleMesh)
+        self.meshAction.setCheckable(True)
+        self.meshAction.setChecked(False)
+        self.meshAction.setIcon(QtGui.QIcon(":/icons/DrawStyleShaded.svg"))
+        toolbar.addAction(self.meshAction)
         if not FreeCAD.ActiveDocument:
-            meshAction.setEnabled(False)
+            self.meshAction.setEnabled(False)
 
         # connect signals/slots
         self.tree.currentItemChanged.connect(self.onSelectTree)
         self.attributes.itemDoubleClicked.connect(self.onDoubleClickTree)
         self.properties.itemDoubleClicked.connect(self.onDoubleClickTree)
+        self.dialog.rejected.connect(self.close)
 
         # center the dialog over FreeCAD window
         mw = FreeCADGui.getMainWindow()
         self.dialog.move(mw.frameGeometry().topLeft() + mw.rect().center() - self.dialog.rect().center())
 
-        # show the dialog in non-modal mode (blocks the rest of the UI)
+        # open a file and show the dialog
         self.open()
-        self.dialog.exec_()
+        self.dialog.show()
 
 
     def open(self):
@@ -191,6 +192,7 @@ class BIM_IfcExplorer:
         self.mesh = None
         self.products = []
         self.omeshes = {}
+        self.currentmesh = None
 
         # read file and order contents
         self.ifc = ifcopenshell.open(self.filename)
@@ -199,7 +201,17 @@ class BIM_IfcExplorer:
         # populate tree contents
         for eid,children in root.items():
             self.addEntity(eid,children,self.tree)
-        self.tree.expandAll()
+        #self.tree.expandAll()
+
+
+    def close(self):
+        
+        "close the dialog"
+        
+        if self.mesh:
+            FreeCAD.ActiveDocument.removeObject(self.mesh.Name)
+        if self.currentmesh:
+            FreeCAD.ActiveDocument.removeObject(self.currentmesh.Name)
 
 
     def back(self):
@@ -222,7 +234,11 @@ class BIM_IfcExplorer:
                 eid = item.data(0,QtCore.Qt.UserRole)
                 if eid:
                     import importIFC
+                    importIFC.ZOOMOUT = False
                     importIFC.insert(self.filename,doc.Name,only=[eid])
+                    if self.currentmesh:
+                        self.currentmesh.ViewObject.hide()
+
 
     def toggleMesh(self,checked=False):
         
@@ -233,6 +249,13 @@ class BIM_IfcExplorer:
                 if self.mesh:
                     self.mesh.ViewObject.show()
                 else:
+                    import importIFC
+                    s = importIFC.getScaling(self.ifc)
+                    s *= 1000 # ifcopenshell outputs its meshes in metres
+                    trf = None
+                    if s != 1:
+                        trf = FreeCAD.Matrix()
+                        trf.scale(s,s,s)
                     basemesh = Mesh.Mesh()
                     import ifcopenshell
                     from ifcopenshell import geom
@@ -247,6 +270,8 @@ class BIM_IfcExplorer:
                             verts = [FreeCAD.Vector(v[i:i+3]) for i in range(0,len(v),3)]
                             faces = [tuple(f[i:i+3]) for i in range(0,len(f),3)]
                             omesh = Mesh.Mesh((verts,faces))
+                            if trf:
+                                omesh.transform(trf)
                             self.omeshes[product.id()] = omesh
                             basemesh.addMesh(omesh)
                         except:
@@ -261,6 +286,8 @@ class BIM_IfcExplorer:
             else:
                 if self.mesh:
                     self.mesh.ViewObject.hide()
+                if self.currentmesh:
+                    self.currentmesh.ViewObject.hide()
 
 
     def getEntitiesTree(self):
@@ -286,7 +313,7 @@ class BIM_IfcExplorer:
         #entities = sorted(entities, key=lambda eid: eid.id())
 
 
-    def getChildren(self,obj):
+    def getChildren(self,obj,keys=False):
 
         "returns a recursive dict of the childen of this obj"
 
@@ -312,6 +339,13 @@ class BIM_IfcExplorer:
         if obj.is_a("IfcShapeRepresentation"):
             for it in obj.Items:
                 children[it.id()] = self.getChildren(it)
+        if keys:
+            def getkeys(d): 
+                ck = list(d.keys())
+                for v in d.values():
+                    ck.extend(getkeys(v))
+                return ck
+            return getkeys(children)
         return children
 
 
@@ -326,6 +360,8 @@ class BIM_IfcExplorer:
             item.setText(0,"#"+self.tostr(eid)+" : "+self.tostr(entity.is_a()))
             if entity.is_a("IfcProduct"):
                 item.setFont(0,bold)
+                if isinstance(parent,QtGui.QTreeWidgetItem):
+                    parent.setExpanded(True)
             if entity.is_a() in ["IfcWall","IfcWallStandardCase"]:
                 item.setIcon(0,QtGui.QIcon(":icons/Arch_Wall_Tree.svg"))
             elif entity.is_a() in ["IfcBuildingElementProxy"]:
@@ -486,6 +522,28 @@ class BIM_IfcExplorer:
             self.shapeAction.setEnabled(True)
         else:
             self.shapeAction.setEnabled(False)
+        if eid in self.omeshes:
+            omesh = self.omeshes[eid]
+        else:
+            omesh = None
+        children = self.getChildren(entity,keys=True)
+        for k in children:
+            if k in self.omeshes:
+                kmesh = self.omeshes[k]
+                if omesh:
+                    omesh.addMesh(kmesh)
+                else:
+                    omesh = kmesh
+        if omesh:
+            if not self.currentmesh:
+                self.currentmesh = FreeCAD.ActiveDocument.addObject("Mesh::Feature","IFCObjectMesh")
+                self.currentmesh.ViewObject.ShapeColor = (0.4,0.4,1.0)
+            self.currentmesh.Mesh = omesh
+            self.currentmesh.ViewObject.show()
+            FreeCAD.ActiveDocument.recompute()
+        else:
+            if self.currentmesh:
+                self.currentmesh.ViewObject.hide()
 
 
     def onDoubleClickTree(self,item,column):
