@@ -207,18 +207,10 @@ static char * IFC_xpm[] = {
         nudge = ["BIM_Nudge_Switch","BIM_Nudge_Up","BIM_Nudge_Down","BIM_Nudge_Left","BIM_Nudge_Right",
                  "BIM_Nudge_RotateLeft","BIM_Nudge_RotateRight","BIM_Nudge_Extend","BIM_Nudge_Shrink"]
 
-        # create group for layer tools
+        # post-0.18 tools
 
         if "Draft_Layer" in Gui.listCommands():
-            class BIM_LayerTools:
-                def GetCommands(self):
-                    return tuple(["BIM_Layers","Draft_Layer"])
-                def GetResources(self):
-                    return { 'MenuText': 'Layer tools','ToolTip': 'Layer tools'}
-                def IsActive(self):
-                    return not FreeCAD.ActiveDocument is None
-            FreeCADGui.addCommand('BIM_LayerTools', BIM_LayerTools())
-            self.manage.insert(8,"BIM_LayerTools")
+            self.manage.insert(8,"BIM_Layers")
 
         # try to load bimbots
 
