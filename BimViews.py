@@ -131,8 +131,12 @@ class BIM_Views:
                 vm.tree.clear()
                 import Draft
                 for obj in FreeCAD.ActiveDocument.Objects:
-                    if obj and (Draft.getType(obj) in ["Building","BuildingPart","WorkingPlaneProxy"]):
-                        it = QtGui.QTreeWidgetItem([obj.Label,FreeCAD.Units.Quantity(obj.Placement.Base.z,FreeCAD.Units.Length).UserString])
+                    t = Draft.getType(obj)
+                    if obj and (t in ["Building","BuildingPart","WorkingPlaneProxy"]):
+                        u = ""
+                        if t in ["Building","BuildingPart"]:
+                            u = FreeCAD.Units.Quantity(obj.Placement.Base.z,FreeCAD.Units.Length).UserString
+                        it = QtGui.QTreeWidgetItem([obj.Label,u])
                         it.setToolTip(0,obj.Name)
                         if obj.ViewObject:
                             if hasattr(obj.ViewObject,"Proxy") and hasattr(obj.ViewObject.Proxy,"getIcon"):

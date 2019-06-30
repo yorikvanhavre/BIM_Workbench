@@ -237,9 +237,10 @@ class BIM_Layers:
         self.dialog.tree.setColumnWidth(1,128) # name column
         
         # populate
-        for obj in FreeCAD.ActiveDocument.Objects:
-            if Draft.getType(obj) == "Layer":
-                self.addItem(obj)
+        objs = [obj for obj in FreeCAD.ActiveDocument.Objects if Draft.getType(obj) == "Layer"]
+        objs.sort(key=lambda o:o.Label)
+        for obj in objs:
+            self.addItem(obj)
 
     def addItem(self,obj=None):
         
