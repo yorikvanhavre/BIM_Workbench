@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>640</width>
+    <width>667</width>
     <height>320</height>
    </rect>
   </property>
@@ -48,6 +48,13 @@
       <widget class="QPushButton" name="buttonToggle">
        <property name="text">
         <string>Toggle on/off</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="buttonIsolate">
+       <property name="text">
+        <string>Isolate</string>
        </property>
       </widget>
      </item>

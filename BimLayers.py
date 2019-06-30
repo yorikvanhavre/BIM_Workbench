@@ -31,14 +31,14 @@ import Draft_rc
 from PySide import QtCore,QtGui
 
 
-def QT_TRANSLATE_NOOP(ctx,txt): 
-    
+def QT_TRANSLATE_NOOP(ctx,txt):
+
     "dummy function for the QT translator"
-    
+
     return txt
 
 def getColorIcon(color):
-    
+
     "returns a QtGui.QIcon from a color 3-float tuple"
 
     c = QtGui.QColor(int(color[0]*255),int(color[1]*255),int(color[2]*255))
@@ -60,19 +60,20 @@ class BIM_Layers:
                 'ToolTip' : QT_TRANSLATE_NOOP("BIM_Layers", "Set/modify the different layers of your BIM project")}
 
     def Activated(self):
-        
+
         # store changes to be committed
         self.deleteList = []
 
         # create the dialog
         self.dialog = FreeCADGui.PySideUic.loadUi(os.path.join(os.path.dirname(__file__),"dialogLayers.ui"))
-        
+
         # set nice icons
         self.dialog.setWindowIcon(QtGui.QIcon(":/icons/Draft_VisGroup.svg"))
         self.dialog.buttonNew.setIcon(QtGui.QIcon(":/icons/document-new.svg"))
         self.dialog.buttonDelete.setIcon(QtGui.QIcon(":/icons/delete.svg"))
         self.dialog.buttonSelectAll.setIcon(QtGui.QIcon(":/icons/edit-select-all.svg"))
         self.dialog.buttonToggle.setIcon(QtGui.QIcon(":/icons/dagViewVisible.svg"))
+        self.dialog.buttonIsolate.setIcon(QtGui.QIcon(":/icons/view-refresh.svg"))
         self.dialog.buttonCancel.setIcon(QtGui.QIcon(":/icons/edit_Cancel.svg"))
         self.dialog.buttonOK.setIcon(QtGui.QIcon(":/icons/edit_OK.svg"))
 
@@ -92,9 +93,10 @@ class BIM_Layers:
         self.dialog.buttonSelectAll.clicked.connect(self.dialog.tree.selectAll)
         self.dialog.buttonToggle.clicked.connect(self.onToggle)
         self.dialog.buttonCancel.clicked.connect(self.dialog.reject)
+        self.dialog.buttonIsolate.clicked.connect(self.onIsolate)
         self.dialog.buttonOK.clicked.connect(self.accept)
         self.dialog.rejected.connect(self.reject)
-        
+
         # set the model up
         self.model = QtGui.QStandardItemModel()
         self.dialog.tree.setModel(self.model)
@@ -103,7 +105,7 @@ class BIM_Layers:
         self.dialog.tree.setItemsExpandable(False)
         self.dialog.tree.setRootIsDecorated(False) # removes spacing in first column
         self.dialog.tree.setSelectionMode(QtGui.QTreeView.ExtendedSelection) # allow to select many
-        
+
         # fill the tree view
         self.update()
 
@@ -111,11 +113,11 @@ class BIM_Layers:
         result = self.dialog.exec_()
 
     def accept(self):
-        
+
         "when OK button is pressed"
-        
+
         changed = False
-        
+
         # delete layers
         for name in self.deleteList:
             if not changed:
@@ -125,7 +127,7 @@ class BIM_Layers:
 
         # apply changes
         for row in range(self.model.rowCount()):
-            
+
             # get or create layer
             name = self.model.item(row,1).toolTip()
             obj = None
@@ -136,7 +138,7 @@ class BIM_Layers:
                     FreeCAD.ActiveDocument.openTransaction("Layers change")
                     changed = True
                 obj = Draft.makeLayer()
-            
+
             # visibility
             checked = True if self.model.item(row,0).checkState() == QtCore.Qt.Checked else False
             if checked != obj.ViewObject.Visibility:
@@ -144,7 +146,7 @@ class BIM_Layers:
                     FreeCAD.ActiveDocument.openTransaction("Layers change")
                     changed = True
                 obj.ViewObject.Visibility = checked
-            
+
             # label
             label = self.model.item(row,1).text()
             if label:
@@ -203,12 +205,12 @@ class BIM_Layers:
         if changed:
             FreeCAD.ActiveDocument.commitTransaction()
             FreeCAD.ActiveDocument.recompute()
-        
+
         # exit
         self.dialog.reject()
 
     def reject(self):
-        
+
         "when Cancel button is pressed or dialog is closed"
 
         # save dialog size
@@ -219,11 +221,11 @@ class BIM_Layers:
         return True
 
     def update(self):
-        
+
         "rebuild the model from document contents"
-        
+
         self.model.clear()
-        
+
         # set header
         self.model.setHorizontalHeaderLabels([translate("BIM","On"),
                                               translate("BIM","Name"),
@@ -235,7 +237,7 @@ class BIM_Layers:
         self.dialog.tree.header().setDefaultSectionSize(72)
         self.dialog.tree.setColumnWidth(0,32) # on/off column
         self.dialog.tree.setColumnWidth(1,128) # name column
-        
+
         # populate
         objs = [obj for obj in FreeCAD.ActiveDocument.Objects if Draft.getType(obj) == "Layer"]
         objs.sort(key=lambda o:o.Label)
@@ -243,7 +245,7 @@ class BIM_Layers:
             self.addItem(obj)
 
     def addItem(self,obj=None):
-        
+
         "adds a row to the model"
 
         # create row with default values
@@ -260,7 +262,7 @@ class BIM_Layers:
         shapeColorItem.setData(self.getPref("DefaultShapeColor",3435973887),QtCore.Qt.UserRole)
         transparencyItem = QtGui.QStandardItem()
         transparencyItem.setData(0,QtCore.Qt.DisplayRole)
-        
+
         # populate with object data
         if obj:
             onItem.setCheckState(QtCore.Qt.Checked if obj.ViewObject.Visibility else QtCore.Qt.Unchecked)
@@ -273,7 +275,7 @@ class BIM_Layers:
             transparencyItem.setData(obj.ViewObject.Transparency,QtCore.Qt.DisplayRole)
         lineColorItem.setIcon(getColorIcon(lineColorItem.data(QtCore.Qt.UserRole)))
         shapeColorItem.setIcon(getColorIcon(shapeColorItem.data(QtCore.Qt.UserRole)))
-        
+
         # append row
         self.model.appendRow([onItem,
                               nameItem,
@@ -284,7 +286,7 @@ class BIM_Layers:
                               transparencyItem])
 
     def getPref(self,value,default,valuetype="Unsigned"):
-        
+
         "retrieves a view pref value"
 
         p = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/View")
@@ -298,42 +300,54 @@ class BIM_Layers:
             return p.GetInt(value,default)
 
     def onDelete(self):
-        
+
         "delete selected rows"
-        
+
         rows = []
         for index in self.dialog.tree.selectedIndexes():
             if not index.row() in rows:
                 rows.append(index.row())
-                
+
             # append layer name to the delete list
             if index.column() == 1:
                 name = self.model.itemFromIndex(index).toolTip()
                 if name:
                     if not name in self.deleteList:
                         self.deleteList.append(name)
-                        
+
         # delete rows starting from the lowest, to not alter row indexes while deleting
         rows.sort()
         rows.reverse()
         for row in rows:
             self.model.takeRow(row)
-        
+
     def onToggle(self):
-        
+
         "toggle selected layers on/off"
-        
+
         state = None
         for index in self.dialog.tree.selectedIndexes():
             if index.column() == 0:
                 # get state from first selected row
                 if state == None:
                     if self.model.itemFromIndex(index).checkState() == QtCore.Qt.Checked:
-                        self.state = QtCore.Qt.Unchecked
+                        state = QtCore.Qt.Unchecked
                     else:
-                        self.state = QtCore.Qt.Checked
-                self.model.itemFromIndex(index).setCheckState(self.state)
-                    
+                        state = QtCore.Qt.Checked
+                self.model.itemFromIndex(index).setCheckState(state)
+
+    def onIsolate(self):
+
+        "isolates the selected layers (turns all the others off"
+
+        onrows = []
+        for index in self.dialog.tree.selectedIndexes():
+            if not index.row() in onrows:
+                onrows.append(index.row())
+        for row in range(self.model.rowCount()):
+            if not row in onrows:
+                self.model.item(row,0).setCheckState(QtCore.Qt.Unchecked)
+
 
 
 class BIM_Layers_Delegate(QtGui.QStyledItemDelegate):
@@ -343,7 +357,7 @@ class BIM_Layers_Delegate(QtGui.QStyledItemDelegate):
     def __init__(self, parent=None, *args):
 
         QtGui.QStyledItemDelegate.__init__(self, parent, *args)
-        # setEditorData() is triggered several times. 
+        # setEditorData() is triggered several times.
         # But we want to show the color dialog only the first time
         self.first = True
 
