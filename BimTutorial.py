@@ -246,6 +246,3 @@ class BIM_Tutorial:
 
         if (self.test1[self.step] or self.test2[self.step]) and ((not self.done1) or (not self.done2)):
             QtCore.QTimer.singleShot(TESTINTERVAL, self.checkGoals)
-
-
-FreeCADGui.addCommand('BIM_Tutorial',BIM_Tutorial())

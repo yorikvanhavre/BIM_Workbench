@@ -288,4 +288,4 @@ class BIM_Box:
             FreeCAD.ActiveDocument.recompute()
             
 
-FreeCADGui.addCommand('BIM_Box',BIM_Box())
+

@@ -357,6 +357,3 @@ class BIM_Diff:
 
         else:
             reply = QtGui.QMessageBox.information(None,"",translate("BIM","You need two documents open to run this tool. One which is your main document, and one that contains new objects that you wish to compare against the existing one. Make sure only the objects you wish to compare in both documents are visible."))
-        
-
-FreeCADGui.addCommand('BIM_Diff',BIM_Diff())

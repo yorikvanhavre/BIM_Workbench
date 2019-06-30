@@ -272,16 +272,3 @@ class BIM_Nudge_RotateRight(BIM_Nudge):
                 FreeCADGui.addModule("Draft")
                 FreeCADGui.doCommand("Draft.rotate("+self.toStr(sel)+",-45,FreeCAD."+str(center)+",FreeCAD."+str(FreeCAD.DraftWorkingPlane.axis)+")")
                 FreeCADGui.doCommand("FreeCAD.ActiveDocument.recompute()")
-
-
-# create popup group for Nudge tools
-
-FreeCADGui.addCommand('BIM_Nudge_Switch',BIM_Nudge_Switch())
-FreeCADGui.addCommand('BIM_Nudge_Up',BIM_Nudge_Up())
-FreeCADGui.addCommand('BIM_Nudge_Down',BIM_Nudge_Down())
-FreeCADGui.addCommand('BIM_Nudge_Left',BIM_Nudge_Left())
-FreeCADGui.addCommand('BIM_Nudge_Right',BIM_Nudge_Right())
-FreeCADGui.addCommand('BIM_Nudge_Extend',BIM_Nudge_Extend())
-FreeCADGui.addCommand('BIM_Nudge_Shrink',BIM_Nudge_Shrink())
-FreeCADGui.addCommand('BIM_Nudge_RotateLeft',BIM_Nudge_RotateLeft())
-FreeCADGui.addCommand('BIM_Nudge_RotateRight',BIM_Nudge_RotateRight())

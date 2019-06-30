@@ -250,4 +250,4 @@ class BIM_Windows_TaskPanel:
 
 
 
-FreeCADGui.addCommand('BIM_Windows',BIM_Windows())
+

@@ -812,8 +812,3 @@ class BIM_Preflight_TaskPanel:
                 msg = self.getToolTip(test)
                 self.failed(test)
             self.results[test] = msg
-
-
-
-FreeCADGui.addCommand('BIM_Preflight',BIM_Preflight())
-

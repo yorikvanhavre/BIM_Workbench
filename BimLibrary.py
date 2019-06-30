@@ -317,6 +317,3 @@ if FreeCAD.GuiUp:
                 elif index.data().lower() == "private":
                     return QtGui.QIcon.fromTheme("folder-lock")
             return super(LibraryModel, self).data(index, role)
-
-
-FreeCADGui.addCommand('BIM_Library',BIM_Library())

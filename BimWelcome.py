@@ -67,5 +67,3 @@ class BIM_Welcome:
         if hasattr(self,"form"):
             self.form.hide()
             FreeCADGui.runCommand("BIM_Tutorial")
-
-FreeCADGui.addCommand('BIM_Welcome',BIM_Welcome())

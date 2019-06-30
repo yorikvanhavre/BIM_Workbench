@@ -67,7 +67,75 @@ static char * IFC_xpm[] = {
         # in separate files (BimSetup.py, BimProject.py...) that are imported in BimCommands.
         # So importing BimCommands is all that is needed to get all the commands.
 
-        import DraftTools, Arch, BimCommands, PartGui, SketcherGui
+        import DraftTools
+        import Arch
+        import PartGui
+        import SketcherGui
+        
+        import BimCommands
+        import BimWelcome
+        import BimSetup
+        import BimProject
+        import BimWindows
+        import BimIfcElements
+        import BimViews
+        import BimClassification
+        import BimBox
+        import BimTutorial
+        import BimLibrary
+        import BimMaterial
+        import BimIfcQuantities
+        import BimIfcProperties
+        import BimNudge
+        import BimUnclone
+        import BimPreflight
+        import BimReextrude
+        import BimDiff
+        import BimIfcExplorer
+        import BimLayers
+        
+        FreeCADGui.addCommand('BIM_TogglePanels',BimCommands.BIM_TogglePanels())
+        FreeCADGui.addCommand('BIM_Trash',BimCommands.BIM_Trash())
+        FreeCADGui.addCommand('BIM_EmptyTrash',BimCommands.BIM_EmptyTrash())
+        FreeCADGui.addCommand('BIM_Copy',BimCommands.BIM_Copy())
+        FreeCADGui.addCommand('BIM_Clone',BimCommands.BIM_Clone())
+        FreeCADGui.addCommand('BIM_Help',BimCommands.BIM_Help())
+        FreeCADGui.addCommand('BIM_Glue',BimCommands.BIM_Glue())
+        FreeCADGui.addCommand('BIM_Sketch',BimCommands.BIM_Sketch())
+        FreeCADGui.addCommand('BIM_WPView',BimCommands.BIM_WPView())
+        FreeCADGui.addCommand('BIM_Convert',BimCommands.BIM_Convert())
+        FreeCADGui.addCommand('BIM_Ungroup',BimCommands.BIM_Ungroup())
+        FreeCADGui.addCommand('BIM_Column',BimCommands.BIM_Column())
+        FreeCADGui.addCommand('BIM_Beam',BimCommands.BIM_Beam())
+        FreeCADGui.addCommand('BIM_Slab',BimCommands.BIM_Slab())
+        FreeCADGui.addCommand('BIM_Door',BimCommands.BIM_Door())
+        FreeCADGui.addCommand('BIM_Welcome',BimWelcome.BIM_Welcome())
+        FreeCADGui.addCommand('BIM_Setup',BimSetup.BIM_Setup())
+        FreeCADGui.addCommand('BIM_Project',BimProject.BIM_Project())
+        FreeCADGui.addCommand('BIM_Windows',BimWindows.BIM_Windows())
+        FreeCADGui.addCommand('BIM_IfcElements',BimIfcElements.BIM_IfcElements())
+        FreeCADGui.addCommand('BIM_Views',BimViews.BIM_Views())
+        FreeCADGui.addCommand('BIM_Classification',BimClassification.BIM_Classification())
+        FreeCADGui.addCommand('BIM_Box',BimBox.BIM_Box())
+        FreeCADGui.addCommand('BIM_Tutorial',BimTutorial.BIM_Tutorial())
+        FreeCADGui.addCommand('BIM_Library',BimLibrary.BIM_Library())
+        FreeCADGui.addCommand('BIM_Material',BimMaterial.BIM_Material())
+        FreeCADGui.addCommand('BIM_IfcQuantities',BimIfcQuantities.BIM_IfcQuantities())
+        FreeCADGui.addCommand('BIM_IfcProperties',BimIfcProperties.BIM_IfcProperties())
+        FreeCADGui.addCommand('BIM_Nudge_Switch',BimNudge.BIM_Nudge_Switch())
+        FreeCADGui.addCommand('BIM_Nudge_Up',BimNudge.BIM_Nudge_Up())
+        FreeCADGui.addCommand('BIM_Nudge_Down',BimNudge.BIM_Nudge_Down())
+        FreeCADGui.addCommand('BIM_Nudge_Left',BimNudge.BIM_Nudge_Left())
+        FreeCADGui.addCommand('BIM_Nudge_Right',BimNudge.BIM_Nudge_Right())
+        FreeCADGui.addCommand('BIM_Nudge_Extend',BimNudge.BIM_Nudge_Extend())
+        FreeCADGui.addCommand('BIM_Nudge_Shrink',BimNudge.BIM_Nudge_Shrink())
+        FreeCADGui.addCommand('BIM_Nudge_RotateLeft',BimNudge.BIM_Nudge_RotateLeft())
+        FreeCADGui.addCommand('BIM_Nudge_RotateRight',BimNudge.BIM_Nudge_RotateRight())
+        FreeCADGui.addCommand('BIM_Unclone',BimUnclone.BIM_Unclone())
+        FreeCADGui.addCommand('BIM_Preflight',BimPreflight.BIM_Preflight())
+        FreeCADGui.addCommand('BIM_Diff',BimDiff.BIM_Diff())
+        FreeCADGui.addCommand('BIM_IfcExplorer',BimIfcExplorer.BIM_IfcExplorer())
+        FreeCADGui.addCommand('BIM_Layers',BimLayers.BIM_Layers())
 
         self.draftingtools = ["BIM_Sketch","Draft_Line","Draft_Wire","Draft_Circle","Draft_Arc","Draft_Ellipse",
                               "Draft_Polygon","Draft_Rectangle", "Draft_BSpline", "Draft_BezCurve",
@@ -102,7 +170,6 @@ static char * IFC_xpm[] = {
             
 
         # load rebar tools (Reinforcement addon)
-
         try:
             import RebarTools
         except:
@@ -110,18 +177,12 @@ static char * IFC_xpm[] = {
         else:
             # create popup group for Rebar tools
             class RebarGroupCommand:
-
                 def GetCommands(self):
                     return tuple(["Arch_Rebar"]+RebarTools.RebarCommands)
-
                 def GetResources(self):
-                    return { 'MenuText': 'Reinforcement tools',
-                             'ToolTip': 'Reinforcement tools',
-                           }
-
+                    return { 'MenuText': 'Reinforcement tools','ToolTip': 'Reinforcement tools'}
                 def IsActive(self):
                     return not FreeCAD.ActiveDocument is None
-
             FreeCADGui.addCommand('Arch_RebarTools', RebarGroupCommand())
             self.bimtools[self.bimtools.index("Arch_Rebar")] = "Arch_RebarTools"
 
@@ -132,7 +193,7 @@ static char * IFC_xpm[] = {
                      'Draft_Snap_Special','Draft_Snap_Dimensions','Draft_Snap_WorkingPlane']
 
         self.manage = ["BIM_Setup","BIM_Project","BIM_Views","BIM_Windows","BIM_IfcElements",
-                       "BIM_IfcQuantities","BIM_IfcProperties","BIM_Classification","BIM_Layers",
+                       "BIM_IfcQuantities","BIM_IfcProperties","BIM_Classification",
                        "BIM_Material","Arch_Schedule","BIM_Preflight"]
 
         self.utils = ["BIM_TogglePanels","BIM_Trash","BIM_WPView",
@@ -146,8 +207,18 @@ static char * IFC_xpm[] = {
         nudge = ["BIM_Nudge_Switch","BIM_Nudge_Up","BIM_Nudge_Down","BIM_Nudge_Left","BIM_Nudge_Right",
                  "BIM_Nudge_RotateLeft","BIM_Nudge_RotateRight","BIM_Nudge_Extend","BIM_Nudge_Shrink"]
 
+        # create group for layer tools
+
         if "Draft_Layer" in Gui.listCommands():
-            self.manage.append("Draft_Layer")
+            class BIM_LayerTools:
+                def GetCommands(self):
+                    return tuple(["BIM_Layers","Draft_Layer"])
+                def GetResources(self):
+                    return { 'MenuText': 'Layer tools','ToolTip': 'Layer tools'}
+                def IsActive(self):
+                    return not FreeCAD.ActiveDocument is None
+            FreeCADGui.addCommand('BIM_LayerTools', BIM_LayerTools())
+            self.manage.insert(8,"BIM_LayerTools")
 
         # try to load bimbots
 
@@ -300,7 +371,8 @@ static char * IFC_xpm[] = {
         # restore views widget if needed
 
         if FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM").GetBool("RestoreBimViews",True):
-            w = BimCommands.BimViews.findWidget()
+            import BimViews
+            w = BimViews.findWidget()
             if not w:
                 FreeCADGui.runCommand("BIM_Views")
             else:
@@ -324,6 +396,7 @@ static char * IFC_xpm[] = {
 
         from DraftGui import todo
         import BimCommands
+        import BimViews
 
         #print("Deactivating status icon")
 
@@ -333,7 +406,7 @@ static char * IFC_xpm[] = {
 
         # store views widget state and vertical size
 
-        w = BimCommands.BimViews.findWidget()
+        w = BimViews.findWidget()
         FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM").SetBool("RestoreBimViews",bool(w))
         if w:
             FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM").SetInt("BimViewsSize",w.height())

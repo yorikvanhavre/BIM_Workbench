@@ -670,7 +670,3 @@ class propertiesDelegate(QtGui.QStyledItemDelegate):
             else:
                 model.setData(index,editor.text())
         self.container.updateDicts(remove)
-
-
-
-FreeCADGui.addCommand('BIM_IfcProperties',BIM_IfcProperties())

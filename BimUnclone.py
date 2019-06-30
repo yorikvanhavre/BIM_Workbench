@@ -115,5 +115,3 @@ class BIM_Unclone:
                 FreeCAD.Console.PrintError(translate("BIM","The selected object is not a clone")+"\n")
         else:
             FreeCAD.Console.PrintError(translate("BIM","Please select exactly one object")+"\n")
-
-FreeCADGui.addCommand('BIM_Unclone',BIM_Unclone())

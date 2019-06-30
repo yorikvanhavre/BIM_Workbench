@@ -241,10 +241,6 @@ class BIM_Views:
 
 
 
-FreeCADGui.addCommand('BIM_Views',BIM_Views())
-
-
-
 # These functions need to be localized outside the command class, as they are used outside this module
 
 

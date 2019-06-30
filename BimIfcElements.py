@@ -604,4 +604,4 @@ class IfcElementsDelegate(QtGui.QStyledItemDelegate):
         self.dialog.update()
 
 
-FreeCADGui.addCommand('BIM_IfcElements',BIM_IfcElements())
+

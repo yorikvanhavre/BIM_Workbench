@@ -429,9 +429,3 @@ class BIM_Layers_Delegate(QtGui.QStyledItemDelegate):
             model.itemFromIndex(index).setIcon(getColorIcon(eval(editor.text())))
         elif index.column() == 6: # Transparency
             model.setData(index,editor.value())
-
-
-
-
-FreeCADGui.addCommand('BIM_Layers',BIM_Layers())
-

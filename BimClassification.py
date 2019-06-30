@@ -476,6 +476,3 @@ class Item:
         self.ID = None
         self.Name = None
         self.children = []
-
-
-FreeCADGui.addCommand('BIM_Classification',BIM_Classification())

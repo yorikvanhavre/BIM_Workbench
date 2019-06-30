@@ -500,6 +500,3 @@ class BIM_IfcExplorer:
                 if target:
                     self.tree.scrollToItem(target[0])
                     self.tree.setCurrentItem(target[0])
-
-
-FreeCADGui.addCommand('BIM_IfcExplorer',BIM_IfcExplorer())

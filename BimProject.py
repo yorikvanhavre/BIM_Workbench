@@ -353,5 +353,3 @@ class BIM_Project:
                         elif s[0] == "addHumanFigure":
                             self.form.addHumanFigure.setChecked(bool(int(s[1])))
 
-
-FreeCADGui.addCommand('BIM_Project',BIM_Project())

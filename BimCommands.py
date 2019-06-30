@@ -29,32 +29,6 @@ import os,FreeCAD,FreeCADGui,DraftTools,ArchStructure,ArchWindow
 def QT_TRANSLATE_NOOP(ctx,txt): return txt # dummy function for the QT translator
 from DraftTools import translate
 
-# import commands that are defined in their separate files
-
-import BimWelcome
-import BimSetup
-import BimProject
-import BimWindows
-import BimIfcElements
-import BimViews
-import BimClassification
-import BimBox
-import BimTutorial
-import BimLibrary
-import BimMaterial
-import BimIfcQuantities
-import BimIfcProperties
-import BimNudge
-import BimUnclone
-import BimPreflight
-import BimReextrude
-import BimDiff
-import BimIfcExplorer
-import BimLayers
-
-
-# additional, smaller commands that are defined directly in this file
-
 
 class BIM_TogglePanels:
 
@@ -520,23 +494,6 @@ class BIM_Door(ArchWindow._CommandWindow):
                 'Accel': 'D,O'}
 
 
-FreeCADGui.addCommand('BIM_TogglePanels',BIM_TogglePanels())
-FreeCADGui.addCommand('BIM_Trash',BIM_Trash())
-FreeCADGui.addCommand('BIM_EmptyTrash',BIM_EmptyTrash())
-FreeCADGui.addCommand('BIM_Copy',BIM_Copy())
-FreeCADGui.addCommand('BIM_Clone',BIM_Clone())
-FreeCADGui.addCommand('BIM_Help',BIM_Help())
-FreeCADGui.addCommand('BIM_Glue',BIM_Glue())
-FreeCADGui.addCommand('BIM_Sketch',BIM_Sketch())
-FreeCADGui.addCommand('BIM_WPView',BIM_WPView())
-FreeCADGui.addCommand('BIM_Convert',BIM_Convert())
-FreeCADGui.addCommand('BIM_Ungroup',BIM_Ungroup())
-FreeCADGui.addCommand('BIM_Column',BIM_Column())
-FreeCADGui.addCommand('BIM_Beam',BIM_Beam())
-FreeCADGui.addCommand('BIM_Slab',BIM_Slab())
-FreeCADGui.addCommand('BIM_Door',BIM_Door())
-
-
 # Language path for InitGui.py
 
 
@@ -765,6 +722,7 @@ def setStatusIcons(show=True):
                 statuswidget.addWidget(togglebutton)
 
                 # bim views widget toggle button
+                import BimViews
                 bimviewsbutton = QtGui.QPushButton()
                 bwidth = bimviewsbutton.fontMetrics().boundingRect("AAAA").width()
                 bimviewsbutton.setMaximumWidth(bwidth)

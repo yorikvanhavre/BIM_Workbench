@@ -241,6 +241,3 @@ class BIM_IfcQuantities:
                 obj = FreeCAD.ActiveDocument.getObject(self.qmodel.itemFromIndex(index).toolTip())
                 if obj:
                     FreeCADGui.Selection.addSelection(obj)
-
-
-FreeCADGui.addCommand('BIM_IfcQuantities',BIM_IfcQuantities())

@@ -366,6 +366,3 @@ def getPrefColor(color):
     from PySide import QtGui
     return QtGui.QColor.fromRgbF(r,g,b)
 
-
-
-FreeCADGui.addCommand('BIM_Setup',BIM_Setup())

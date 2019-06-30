@@ -449,6 +449,3 @@ class BIM_Material:
         else:
             return QtGui.QIcon(":/icons/Arch_Material.svg")
 
-
-
-FreeCADGui.addCommand('BIM_Material',BIM_Material())
