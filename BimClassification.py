@@ -59,6 +59,14 @@ class BIM_Classification:
         self.form = FreeCADGui.PySideUic.loadUi(os.path.join(os.path.dirname(__file__),"dialogClassification.ui"))
         self.form.setWindowIcon(QtGui.QIcon(os.path.join(os.path.dirname(__file__),"icons","BIM_Classification.svg")))
 
+        # add modified search box from bimmaterial
+        import BimMaterial
+        searchBox = BimMaterial.MatLineEdit(self.form)
+        searchBox.setPlaceholderText(translate("BIM","Search..."))
+        searchBox.setToolTip(translate("BIM","Searches classes"))
+        self.form.search = searchBox
+        self.form.horizontalLayout_2.addWidget(searchBox)
+
         # set help line
         self.form.labelDownload.setText(self.form.labelDownload.text().replace("%s",os.path.join(FreeCAD.getUserAppDataDir(),"BIM","Classification")))
 
@@ -106,6 +114,8 @@ class BIM_Classification:
         QtCore.QObject.connect(self.form.buttonBox, QtCore.SIGNAL("accepted()"), self.accept)
         QtCore.QObject.connect(self.form.groupMode, QtCore.SIGNAL("currentIndexChanged(int)"), self.updateObjects)
         QtCore.QObject.connect(self.form.treeClass, QtCore.SIGNAL("itemDoubleClicked(QTreeWidgetItem*,int)"), self.apply)
+        QtCore.QObject.connect(self.form.search,QtCore.SIGNAL("up()"),self.onUpArrow)
+        QtCore.QObject.connect(self.form.search,QtCore.SIGNAL("down()"),self.onDownArrow)
 
         # center the dialog over FreeCAD window
         mw = FreeCADGui.getMainWindow()
@@ -113,6 +123,8 @@ class BIM_Classification:
 
         self.updateClasses()
         self.form.show()
+
+        self.form.search.setFocus()
 
     def updateObjects(self,idx=None):
 
@@ -317,7 +329,9 @@ class BIM_Classification:
 
         for c in self.Classes[system]:
             it = None
-            if not c[1]: c[1] = ""
+            first = True
+            if not c[1]:
+                c[1] = ""
             if search:
                 if (search in c[0].lower()) or (search in c[1].lower()):
                     it = QtGui.QTreeWidgetItem([c[0]+" "+c[1]])
@@ -329,6 +343,10 @@ class BIM_Classification:
                 self.form.treeClass.addTopLevelItem(it)
             if c[2]:
                 self.addChildren(c[2],it,search)
+            if it and first:
+                # select first entry
+                self.form.treeClass.setCurrentItem(it)
+                first = False
 
     def addChildren(self,children,parent,search=""):
 
@@ -462,10 +480,27 @@ class BIM_Classification:
                 if self.form.checkPrefix.isChecked():
                     code = self.form.comboSystem.currentText() + " " + code
                 self.isEditing.StandardCode = code
+                if hasattr(self.isEditing.ViewObject,"Proxy") and hasattr(self.isEditing.ViewObject.Proxy,"setTaskValue"):
+                    self.isEditing.ViewObject.Proxy.setTaskValue("FieldCode",code)
                 FreeCAD.ActiveDocument.commitTransaction()
                 FreeCAD.ActiveDocument.recompute()
         self.form.hide()
         return True
+
+    def onUpArrow(self):
+
+        if self.form:
+            i = self.form.treeClass.currentItem()
+            if self.form.treeClass.itemAbove(i):
+                self.form.treeClass.setCurrentItem(self.form.treeClass.itemAbove(i))
+
+    def onDownArrow(self):
+
+        if self.form:
+            i = self.form.treeClass.currentItem()
+            if self.form.treeClass.itemBelow(i):
+                self.form.treeClass.setCurrentItem(self.form.treeClass.itemBelow(i))
+
 
 class Item:
 

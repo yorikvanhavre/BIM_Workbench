@@ -137,6 +137,14 @@ static char * IFC_xpm[] = {
         FreeCADGui.addCommand('BIM_IfcExplorer',BimIfcExplorer.BIM_IfcExplorer())
         FreeCADGui.addCommand('BIM_Layers',BimLayers.BIM_Layers())
 
+        # Draft commands not added by importing Draft
+        try:
+            import DraftEdit
+        except:
+            pass
+        else:
+            FreeCADGui.addCommand('Draft_Edit',DraftEdit.Edit())
+
         self.draftingtools = ["BIM_Sketch","Draft_Line","Draft_Wire","Draft_Circle","Draft_Arc","Draft_Ellipse",
                               "Draft_Polygon","Draft_Rectangle", "Draft_BSpline", "Draft_BezCurve",
                               "Draft_Point"]
