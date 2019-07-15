@@ -22,13 +22,13 @@
 
 
 # main workbench class
-
+BIMWB_VERSION = 'V0.2.1'
 class BIMWorkbench(Workbench):
 
 
     def __init__(self):
-
-        self.__class__.MenuText = "BIM"
+        global BIMWB_VERSION
+        self.__class__.MenuText = 'BIM '+BIMWB_VERSION
         self.__class__.ToolTip = "BIM workbench"
         self.__class__.Icon = """
 /* XPM */
