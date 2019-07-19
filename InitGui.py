@@ -71,7 +71,7 @@ static char * IFC_xpm[] = {
         import Arch
         import PartGui
         import SketcherGui
-        
+
         import BimCommands
         import BimWelcome
         import BimSetup
@@ -93,7 +93,7 @@ static char * IFC_xpm[] = {
         import BimDiff
         import BimIfcExplorer
         import BimLayers
-        
+
         FreeCADGui.addCommand('BIM_TogglePanels',BimCommands.BIM_TogglePanels())
         FreeCADGui.addCommand('BIM_Trash',BimCommands.BIM_Trash())
         FreeCADGui.addCommand('BIM_EmptyTrash',BimCommands.BIM_EmptyTrash())
@@ -109,6 +109,7 @@ static char * IFC_xpm[] = {
         FreeCADGui.addCommand('BIM_Beam',BimCommands.BIM_Beam())
         FreeCADGui.addCommand('BIM_Slab',BimCommands.BIM_Slab())
         FreeCADGui.addCommand('BIM_Door',BimCommands.BIM_Door())
+        FreeCADGui.addCommand('BIM_ResetCloneColors',BimCommands.BIM_ResetCloneColors())
         FreeCADGui.addCommand('BIM_Welcome',BimWelcome.BIM_Welcome())
         FreeCADGui.addCommand('BIM_Setup',BimSetup.BIM_Setup())
         FreeCADGui.addCommand('BIM_Project',BimProject.BIM_Project())
@@ -168,14 +169,14 @@ static char * IFC_xpm[] = {
         # Support post-v0.18 tools
 
         if "Arch_Reference" in Gui.listCommands():
-            self.bimtools.insert(18,"Arch_Reference")
+            self.bimtools.insert(-4,"Arch_Reference")
         if "Arch_Fence" in Gui.listCommands():
             self.bimtools.insert(-6,"Arch_Fence")
         if "Draft_Arc_3Points" in Gui.listCommands():
             self.draftingtools.insert(5,"Draft_Arc_3Points")
         if 'Draft_CubicBezCurve' in Gui.listCommands():
             self.draftingtools.insert(len(self.draftingtools)-2,'Draft_CubicBezCurve')
-            
+
 
         # load rebar tools (Reinforcement addon)
         try:
@@ -236,7 +237,7 @@ static char * IFC_xpm[] = {
             self.utils.append("BIMBots")
 
         # load Reporting
-        
+
         try:
             import report
         except:
@@ -319,9 +320,9 @@ static char * IFC_xpm[] = {
                 FreeCADGui.addPreferencePage(":/ui/preferences-draftvisual.ui","Draft")
                 FreeCADGui.addPreferencePage(":/ui/preferences-drafttexts.ui","Draft")
                 FreeCADGui.draftToolBar.loadedPreferences = True
-        
+
         # add translations path
-        
+
         FreeCADGui.addLanguagePath(BimCommands.getLanguagePath())
 
         Log ('Loading BIM module... done\n')
@@ -446,7 +447,17 @@ static char * IFC_xpm[] = {
         if FreeCADGui.Selection.getSelection():
             if (FreeCADGui.Selection.getSelection()[0].Name != "Trash"):
                 self.appendContextMenu("",["BIM_Trash"])
-            self.appendContextMenu("",["Draft_AddConstruction","BIM_Convert"])
+            self.appendContextMenu("",["Draft_AddConstruction"])
+            allclones = False
+            for obj in FreeCADGui.Selection.getSelection():
+                if hasattr(obj,"CloneOf") and obj.CloneOf:
+                    allclones = True
+                else:
+                    allclones = False
+                    break
+            if allclones:
+                self.appendContextMenu("",["BIM_ResetCloneColors"])
+
 
 
     def GetClassName(self):

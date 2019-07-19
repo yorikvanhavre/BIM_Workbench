@@ -32,17 +32,16 @@ from DraftTools import translate
 
 class BIM_TogglePanels:
 
-
     def GetResources(self):
 
         return {'Pixmap'  : os.path.join(os.path.dirname(__file__),"icons","BIM_TogglePanels.svg"),
-                'MenuText': QT_TRANSLATE_NOOP("BIM_TogglePanels", "Toggle panels"),
-                'ToolTip' : QT_TRANSLATE_NOOP("BIM_TogglePanels", "Toggle report panels on/off"),
+                'MenuText': QT_TRANSLATE_NOOP("BIM_TogglePanels", "Toggle bottom panels"),
+                'ToolTip' : QT_TRANSLATE_NOOP("BIM_TogglePanels", "Toggle bottom dock panels on/off"),
                 'Accel': 'Ctrl+0'}
 
     def Activated(self):
 
-        from  PySide import QtGui
+        from  PySide import QtCore,QtGui
         mw = FreeCADGui.getMainWindow()
         togglebutton = None
         st = mw.statusBar()
@@ -50,14 +49,20 @@ class BIM_TogglePanels:
         if statuswidget:
             if hasattr(statuswidget,"togglebutton"):
                 togglebutton = statuswidget.togglebutton
-        windows = [mw.findChild(QtGui.QWidget,"Python console"),mw.findChild(QtGui.QWidget,"Report view"),mw.findChild(QtGui.QWidget,"Selection view")]
-        if windows[0].isVisible():
-            for w in windows:
+        dockwidgets = mw.findChildren(QtGui.QDockWidget)
+        bottomwidgets = [w for w in dockwidgets if ((mw.dockWidgetArea(w) == QtCore.Qt.BottomDockWidgetArea) and w.isVisible())]
+        if bottomwidgets:
+            hidden = ""
+            for w in bottomwidgets:
                 w.hide()
+                hidden += w.objectName() + ";;"
+                FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM").SetString("HiddenWidgets",hidden)
             if togglebutton:
                     togglebutton.setChecked(False)
         else:
-            for w in windows:
+            widgets = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM").GetString("HiddenWidgets","Python console;;Report view;;Selection view;;")
+            widgets = [mw.findChild(QtGui.QWidget,w) for w in widgets.split(";;") if w]
+            for w in widgets:
                 w.show()
             if togglebutton:
                 togglebutton.setChecked(True)
@@ -448,7 +453,7 @@ class BIM_Slab:
             self.callback = self.view.addEventCallback("SoEvent", DraftTools.selectObject)
 
     def proceed(self):
-        
+
         self.removeCallback()
         sel = FreeCADGui.Selection.getSelection()
         if len(sel) == 1:
@@ -474,7 +479,7 @@ class BIM_Slab:
             self.callback = None
 
     def finish(self):
-        
+
         self.removeCallback()
         if hasattr(FreeCADGui,"draftToolBar"):
             FreeCADGui.draftToolBar.offUi()
@@ -494,11 +499,30 @@ class BIM_Door(ArchWindow._CommandWindow):
                 'Accel': 'D,O'}
 
 
+class BIM_ResetCloneColors:
+
+
+    def GetResources(self):
+
+        return {'Pixmap'  : os.path.join(os.path.dirname(__file__),"icons","BIM_ResetCloneColors.svg"),
+                'MenuText': QT_TRANSLATE_NOOP("BIM_ResetCloneColors", "Reset colors"),
+                'ToolTip' : QT_TRANSLATE_NOOP("BIM_ResetCloneColors", "Resets the colors of this object from its cloned original"),
+                'Accel': 'D,O'}
+
+    def Activated(self):
+
+        for obj in FreeCADGui.Selection.getSelection():
+            if hasattr(obj,"CloneOf") and obj.CloneOf:
+                obj.ViewObject.DiffuseColor = obj.CloneOf.ViewObject.DiffuseColor
+
+
+
+
 # Language path for InitGui.py
 
 
 def getLanguagePath():
-    
+
     return os.path.join(os.path.dirname(__file__),"translations")
 
 
@@ -510,7 +534,7 @@ def setStatusIcons(show=True):
     "shows or hides the BIM icons in the status bar"
 
     from PySide import QtCore,QtGui
-    
+
     unitsList = [translate("BIM","Millimeters"),
                  translate("BIM","Centimeters"),
                  translate("BIM","Meters"),

@@ -170,6 +170,8 @@ class BIM_Library_TaskPanel:
 
     def reject(self):
 
+        if hasattr(self,"box") and self.box:
+            self.box.off()
         FreeCADGui.Control.closeDialog()
         FreeCAD.ActiveDocument.recompute()
 
