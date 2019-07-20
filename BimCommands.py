@@ -641,7 +641,7 @@ def setStatusIcons(show=True):
     def showUpdateButton(avail):
 
         if avail:
-            FreeCAD.Console.PrintLog("A BIM update is avaialble\n")
+            FreeCAD.Console.PrintLog("A BIM update is available\n")
             mw = FreeCADGui.getMainWindow()
             if mw:
                 st = mw.statusBar()
@@ -652,7 +652,7 @@ def setStatusIcons(show=True):
                         #updatebutton.show() # doesn't work for some reason
                         statuswidget.actions()[-1].setVisible(True)
         else:
-            FreeCAD.Console.PrintLog("No BIM update avaialble\n")
+            FreeCAD.Console.PrintLog("No BIM update available\n")
         if hasattr(FreeCAD,"bim_update_checker"):
             del FreeCAD.bim_update_checker
 

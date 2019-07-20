@@ -315,7 +315,7 @@ class BIM_IfcExplorer:
 
     def getChildren(self,obj,keys=False):
 
-        "returns a recursive dict of the childen of this obj"
+        "returns a recursive dict of the children of this obj"
 
         children = {}
         if obj.is_a("IfcProduct"):
