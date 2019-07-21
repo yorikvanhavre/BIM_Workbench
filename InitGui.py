@@ -344,7 +344,7 @@ static char * IFC_xpm[] = {
         from DraftGui import todo
         import BimCommands
 
-        if FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM").GetBool("FirstTime",True):
+        if FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM").GetBool("FirstTime",True) and (not hasattr(FreeCAD,"TestEnvironment")):
             todo.delay(FreeCADGui.runCommand,"BIM_Welcome")
         todo.delay(BimCommands.setStatusIcons,True)
 
