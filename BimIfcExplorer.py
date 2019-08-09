@@ -119,26 +119,26 @@ class BIM_IfcExplorer:
         vlayout.addWidget(self.properties)
 
         # draw the toolbar buttons
-        self.openAction = QtGui.QAction(translate("BIM","Open"))
+        self.openAction = QtGui.QAction(translate("BIM","Open"), None)
         self.openAction.setToolTip(translate("BIM","Open another IFC file..."))
         self.openAction.triggered.connect(self.open)
         self.openAction.setIcon(QtGui.QIcon(":/icons/document-open.svg"))
         toolbar.addAction(self.openAction)
 
-        self.backAction = QtGui.QAction(translate("BIM","Back"))
+        self.backAction = QtGui.QAction(translate("BIM","Back"), None)
         self.backAction.setToolTip(translate("BIM","Go back to last item selected"))
         self.backAction.triggered.connect(self.back)
         self.backAction.setIcon(QtGui.QIcon(":/icons/edit-undo.svg"))
         toolbar.addAction(self.backAction)
 
-        self.shapeAction = QtGui.QAction(translate("BIM","Insert"))
+        self.shapeAction = QtGui.QAction(translate("BIM","Insert"), None)
         self.shapeAction.setToolTip(translate("BIM","Inserts the selected object and its children in the active document"))
         self.shapeAction.triggered.connect(self.insert)
         self.shapeAction.setIcon(QtGui.QIcon(":icons/Tree_Part.svg"))
         self.shapeAction.setEnabled(False)
         toolbar.addAction(self.shapeAction)
 
-        self.meshAction = QtGui.QAction(translate("BIM","Mesh"))
+        self.meshAction = QtGui.QAction(translate("BIM","Mesh"), None)
         self.meshAction.setToolTip(translate("BIM","Turn mesh display on/off"))
         self.meshAction.triggered.connect(self.toggleMesh)
         self.meshAction.setCheckable(True)
