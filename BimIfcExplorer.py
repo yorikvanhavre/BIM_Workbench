@@ -145,8 +145,6 @@ class BIM_IfcExplorer:
         self.meshAction.setChecked(False)
         self.meshAction.setIcon(QtGui.QIcon(":/icons/DrawStyleShaded.svg"))
         toolbar.addAction(self.meshAction)
-        if not FreeCAD.ActiveDocument:
-            self.meshAction.setEnabled(False)
 
         # connect signals/slots
         self.tree.currentItemChanged.connect(self.onSelectTree)
@@ -243,7 +241,9 @@ class BIM_IfcExplorer:
     def toggleMesh(self,checked=False):
         
         "turns mesh display on/off"
-        
+
+        if not FreeCAD.ActiveDocument:
+            FreeCAD.newDocument()
         if FreeCAD.ActiveDocument:
             if checked:
                 if self.mesh:
