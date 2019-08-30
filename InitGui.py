@@ -110,6 +110,7 @@ static char * IFC_xpm[] = {
         FreeCADGui.addCommand('BIM_Slab',BimCommands.BIM_Slab())
         FreeCADGui.addCommand('BIM_Door',BimCommands.BIM_Door())
         FreeCADGui.addCommand('BIM_ResetCloneColors',BimCommands.BIM_ResetCloneColors())
+        FreeCADGui.addCommand('BIM_Rewire',BimCommands.BIM_Rewire())
         FreeCADGui.addCommand('BIM_Welcome',BimWelcome.BIM_Welcome())
         FreeCADGui.addCommand('BIM_Setup',BimSetup.BIM_Setup())
         FreeCADGui.addCommand('BIM_Project',BimProject.BIM_Project())
@@ -152,7 +153,7 @@ static char * IFC_xpm[] = {
 
         self.modify = ["Draft_Move","BIM_Copy","Draft_Rotate","BIM_Clone","BIM_Unclone","Draft_Offset",
                        "Part_Offset2D", "Draft_Trimex","Draft_Join","Draft_Split","Draft_Scale","Draft_Stretch",
-                       "BIM_Glue","Draft_Upgrade", "Draft_Downgrade",
+                       "BIM_Rewire","BIM_Glue","Draft_Upgrade", "Draft_Downgrade",
                        "Draft_Draft2Sketch","Arch_CutPlane","Arch_Add","Arch_Remove","BIM_Reextrude",
                        "Draft_Array","Draft_PathArray","Draft_PointArray",
                        "Draft_Mirror","Part_Extrude","Part_Cut","Part_Fuse","Part_Common","Part_Compound",

@@ -24,7 +24,7 @@
 
 """This module contains FreeCAD commands for the BIM workbench"""
 
-import os,FreeCAD,FreeCADGui,DraftTools,ArchStructure,ArchWindow
+import os,FreeCAD,FreeCADGui,Draft,DraftTools,ArchStructure,ArchWindow
 
 def QT_TRANSLATE_NOOP(ctx,txt): return txt # dummy function for the QT translator
 from DraftTools import translate
@@ -515,6 +515,47 @@ class BIM_ResetCloneColors:
             if hasattr(obj,"CloneOf") and obj.CloneOf:
                 obj.ViewObject.DiffuseColor = obj.CloneOf.ViewObject.DiffuseColor
 
+
+
+class BIM_Rewire:
+
+
+    def GetResources(self):
+
+        return {'Pixmap'  : os.path.join(os.path.dirname(__file__),"icons","BIM_Rewire.svg"),
+                'MenuText': QT_TRANSLATE_NOOP("BIM_Rewire", "Rewire"),
+                'ToolTip' : QT_TRANSLATE_NOOP("BIM_Rewire", "Recreates wires from selected objects"),
+                'Accel': 'R,W'}
+
+    def Activated(self):
+
+        import Part
+        import DraftGeomUtils
+        
+        objs = FreeCADGui.Selection.getSelection()
+        names = []
+        edges = []
+        for obj in objs:
+            if hasattr(obj,"Shape") and hasattr(obj.Shape,"Edges") and obj.Shape.Edges:
+                edges.extend(obj.Shape.Edges)
+                names.append(obj.Name)
+        wires = DraftGeomUtils.findWires(edges)
+        FreeCAD.ActiveDocument.openTransaction("Rewire")
+        selectlist = []
+        for wire in wires:
+            if DraftGeomUtils.hasCurves(wire):
+                nobj = FreeCAD.ActiveDocument.addObject("Part::Feature","Wire")
+                nobj.shape = wire
+                selectlist.append(nobj)
+            else:
+                selectlist.append(Draft.makeWire([v.Point for v in wire.OrderedVertexes]))
+        for name in names:
+            FreeCAD.ActiveDocument.removeObject(name)
+        FreeCAD.ActiveDocument.commitTransaction()
+        FreeCADGui.Selection.clearSelection()
+        for obj in selectlist:
+            FreeCADGui.Selection.addSelection(obj)
+        FreeCAD.ActiveDocument.recompute()
 
 
 
