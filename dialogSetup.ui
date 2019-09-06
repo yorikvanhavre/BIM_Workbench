@@ -9,7 +9,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>569</width>
+    <width>537</width>
     <height>674</height>
    </rect>
   </property>
@@ -43,9 +43,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-139</y>
-        <width>536</width>
-        <height>625</height>
+        <y>-187</y>
+        <width>504</width>
+        <height>657</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -178,6 +178,19 @@
           <widget class="QLabel" name="label_22">
            <property name="text">
             <string>Geometry color</string>
+           </property>
+          </widget>
+         </item>
+         <item row="13" column="1">
+          <widget class="Gui::InputField" name="settingArrowsize">
+           <property name="toolTip">
+            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Default dimension arrow size. Location in preferences: &lt;span style=&quot; font-weight:600;&quot;&gt;TechDraw &amp;gt; TechDraw 2 &amp;gt; Arrow size, Draft &amp;gt; Texts and dimensions &amp;gt; Arrow size&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           </property>
+           <property name="text">
+            <string>0 </string>
+           </property>
+           <property name="unit" stdset="0">
+            <string notr="true"/>
            </property>
           </widget>
          </item>
@@ -424,19 +437,6 @@
            </property>
           </widget>
          </item>
-         <item row="13" column="1">
-          <widget class="Gui::InputField" name="settingArrowsize">
-           <property name="toolTip">
-            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Default dimension arrow size. Location in preferences: &lt;span style=&quot; font-weight:600;&quot;&gt;TechDraw &amp;gt; TechDraw 2 &amp;gt; Arrow size, Draft &amp;gt; Texts and dimensions &amp;gt; Arrow size&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-           </property>
-           <property name="text">
-            <string>0 </string>
-           </property>
-           <property name="unit" stdset="0">
-            <string notr="true"/>
-           </property>
-          </widget>
-         </item>
          <item row="9" column="1">
           <widget class="Gui::InputField" name="settingText">
            <property name="toolTip">
@@ -520,7 +520,7 @@
            </property>
            <item>
             <property name="text">
-             <string>Choose...</string>
+             <string>Choose your preferred working unit...</string>
             </property>
            </item>
            <item>
@@ -535,7 +535,7 @@
            </item>
            <item>
             <property name="text">
-             <string>US (imperial)</string>
+             <string>US / Imperial</string>
             </property>
            </item>
           </widget>
@@ -560,6 +560,26 @@
              <string>Start workbench, switch to BIM afterwards</string>
             </property>
            </item>
+          </widget>
+         </item>
+         <item row="19" column="0">
+          <widget class="QLabel" name="label_28">
+           <property name="text">
+            <string>Default camera altitude</string>
+           </property>
+          </widget>
+         </item>
+         <item row="19" column="1">
+          <widget class="QSpinBox" name="settingCameraHeight">
+           <property name="toolTip">
+            <string>This is the altitude of the camera when you create a blank file. Good values are between 5 (view a few centimeters wide) and 5000 (view a few meters wide)</string>
+           </property>
+           <property name="maximum">
+            <number>99999</number>
+           </property>
+           <property name="value">
+            <number>5</number>
+           </property>
           </widget>
          </item>
         </layout>
