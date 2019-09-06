@@ -59,6 +59,8 @@ class BIM_Setup:
 
         # check missing addons
         self.form.labelMissingWorkbenches.hide()
+        self.form.labelIfcOpenShell.hide()
+        self.form.labelSnapTip.hide()
         m = []
         try:
             import RebarTools
@@ -86,6 +88,12 @@ class BIM_Setup:
             import report
         except:
             m.append("Reporting")
+        try:
+            import ifcopenshell
+        except:
+            ifcok = False
+        else:
+            ifcok = True
         libok = False
         librarypath = FreeCAD.ParamGet('User parameter:Plugins/parts_library').GetString('destination','')
         if librarypath and os.path.exists(librarypath):
@@ -99,8 +107,13 @@ class BIM_Setup:
         if not libok:
             m.append("Parts Library")
         if m:
-            self.form.labelMissingWorkbenches.setText(translate("BIM","Some additional workbenches are not installed, that extend BIM functionality:")+" <b>"+",".join(m)+"</b>. "+translate("BIM","You can install them from menu Tools -> Addon manager."))
+            t = translate("BIM","Some additional workbenches are not installed, that extend BIM functionality:")+" <b>"+",".join(m)+"</b>. "+translate("BIM","You can install them from menu Tools -> Addon manager.")
+            self.form.labelMissingWorkbenches.setText(t)
             self.form.labelMissingWorkbenches.show()
+        #if not ifcok:
+        self.form.labelIfcOpenShell.show()
+        if FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").GetString("snapModes","111111111101111") == "111111111101111":
+            self.form.labelSnapTip.show()
 
         # show dialog and exit if cancelled
         FreeCADGui.BIMSetupDialog = True # this is there to be easily detected by the BIM tutorial
