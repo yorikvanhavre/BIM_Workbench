@@ -212,6 +212,10 @@ class BIM_Setup:
             FreeCADGui.draftToolBar.widthButton.setValue(linewidth)
             FreeCADGui.draftToolBar.fontsizeButton.setValue(tsize)
 
+        # set the grid
+        if hasattr(FreeCADGui,"Snapper"):
+            FreeCADGui.Snapper.setGrid()
+
         # set the status bar widgets
         mw = FreeCADGui.getMainWindow()
         if mw:
