@@ -110,8 +110,8 @@ class BIM_Setup:
             t = translate("BIM","Some additional workbenches are not installed, that extend BIM functionality:")+" <b>"+",".join(m)+"</b>. "+translate("BIM","You can install them from menu Tools -> Addon manager.")
             self.form.labelMissingWorkbenches.setText(t)
             self.form.labelMissingWorkbenches.show()
-        #if not ifcok:
-        self.form.labelIfcOpenShell.show()
+        if not ifcok:
+            self.form.labelIfcOpenShell.show()
         if FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").GetString("snapModes","111111111101111") == "111111111101111":
             self.form.labelSnapTip.show()
 
