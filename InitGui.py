@@ -94,6 +94,8 @@ static char * IFC_xpm[] = {
         import BimIfcExplorer
         import BimLayers
 
+        # create BIM commands
+
         FreeCADGui.addCommand('BIM_TogglePanels',BimCommands.BIM_TogglePanels())
         FreeCADGui.addCommand('BIM_Trash',BimCommands.BIM_Trash())
         FreeCADGui.addCommand('BIM_EmptyTrash',BimCommands.BIM_EmptyTrash())
@@ -159,35 +161,6 @@ static char * IFC_xpm[] = {
                        "Draft_Mirror","Part_Extrude","Part_Cut","Part_Fuse","Part_Common","Part_Compound",
                        "Part_SimpleCopy","Draft_Shape2DView"]
 
-        # Support post-v0.18 tools
-
-        if "Arch_Reference" in Gui.listCommands():
-            self.bimtools.insert(-4,"Arch_Reference")
-        if "Arch_Fence" in Gui.listCommands():
-            self.bimtools.insert(-6,"Arch_Fence")
-        if "Draft_Arc_3Points" in Gui.listCommands():
-            self.draftingtools.insert(5,"Draft_Arc_3Points")
-        if 'Draft_CubicBezCurve' in Gui.listCommands():
-            self.draftingtools.insert(len(self.draftingtools)-2,'Draft_CubicBezCurve')
-
-
-        # load rebar tools (Reinforcement addon)
-        try:
-            import RebarTools
-        except:
-            pass
-        else:
-            # create popup group for Rebar tools
-            class RebarGroupCommand:
-                def GetCommands(self):
-                    return tuple(["Arch_Rebar"]+RebarTools.RebarCommands)
-                def GetResources(self):
-                    return { 'MenuText': 'Reinforcement tools','ToolTip': 'Reinforcement tools'}
-                def IsActive(self):
-                    return not FreeCAD.ActiveDocument is None
-            FreeCADGui.addCommand('Arch_RebarTools', RebarGroupCommand())
-            self.bimtools[self.bimtools.index("Arch_Rebar")] = "Arch_RebarTools"
-
         self.snap = ['Draft_ToggleGrid','Draft_Snap_Lock','Draft_Snap_Midpoint','Draft_Snap_Perpendicular',
                      'Draft_Snap_Grid','Draft_Snap_Intersection','Draft_Snap_Parallel',
                      'Draft_Snap_Endpoint','Draft_Snap_Angle','Draft_Snap_Center',
@@ -213,6 +186,34 @@ static char * IFC_xpm[] = {
 
         if "Draft_Layer" in Gui.listCommands():
             self.manage.insert(8,"BIM_Layers")
+        if "Arch_Project" in Gui.listCommands():
+            self.bimtools.insert(0,"Arch_Project")
+        if "Arch_Reference" in Gui.listCommands():
+            self.bimtools.insert(-4,"Arch_Reference")
+        if "Arch_Fence" in Gui.listCommands():
+            self.bimtools.insert(-6,"Arch_Fence")
+        if "Draft_Arc_3Points" in Gui.listCommands():
+            self.draftingtools.insert(5,"Draft_Arc_3Points")
+        if 'Draft_CubicBezCurve' in Gui.listCommands():
+            self.draftingtools.insert(len(self.draftingtools)-2,'Draft_CubicBezCurve')
+
+        # load rebar tools (Reinforcement addon)
+
+        try:
+            import RebarTools
+        except:
+            pass
+        else:
+            # create popup group for Rebar tools
+            class RebarGroupCommand:
+                def GetCommands(self):
+                    return tuple(["Arch_Rebar"]+RebarTools.RebarCommands)
+                def GetResources(self):
+                    return { 'MenuText': 'Reinforcement tools','ToolTip': 'Reinforcement tools'}
+                def IsActive(self):
+                    return not FreeCAD.ActiveDocument is None
+            FreeCADGui.addCommand('Arch_RebarTools', RebarGroupCommand())
+            self.bimtools[self.bimtools.index("Arch_Rebar")] = "Arch_RebarTools"
 
         # try to load bimbots
 
