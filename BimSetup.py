@@ -289,7 +289,7 @@ class BIM_Setup:
             tsize = "0.2m"
             linewidth = 1
             dimstyle = 0
-            asize = "0.04cm"
+            asize = "0.04m"
             bkp = 2
             bimdefault = 2
             newdoc = False
