@@ -148,7 +148,7 @@ static char * IFC_xpm[] = {
         self.annotationtools = ["Draft_Text", "Draft_ShapeString", "Draft_Dimension",
                                 "Draft_Label","Arch_Axis","Arch_AxisSystem","Arch_Grid","Arch_SectionPlane"]
 
-        self.bimtools = ["Arch_Floor","Arch_Building","Arch_Site","Arch_Space","Separator",
+        self.bimtools = ["Arch_Site","Arch_Building","Arch_Floor","Arch_Space","Separator",
                          "Arch_Wall","BIM_Column","BIM_Beam","BIM_Slab","Arch_Rebar","BIM_Door","Arch_Window","Arch_Pipe",
                          "Arch_PipeConnector","Arch_Stairs","Arch_Roof","Arch_Panel","Arch_Frame",
                          "Separator","BIM_Box","Part_Builder","Draft_Facebinder","BIM_Library"]

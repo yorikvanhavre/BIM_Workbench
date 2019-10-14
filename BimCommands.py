@@ -399,7 +399,8 @@ class BIM_Ungroup:
 class BIM_Column(ArchStructure._CommandStructure):
 
     def __init__(self):
-        ArchStructure._CommandStructure.__init__(self)
+        if hasattr(ArchStructure._CommandStructure,"__init__"):
+            ArchStructure._CommandStructure.__init__(self)
         self.beammode = False
 
     def GetResources(self):
@@ -414,7 +415,8 @@ class BIM_Column(ArchStructure._CommandStructure):
 class BIM_Beam(ArchStructure._CommandStructure):
 
     def __init__(self):
-        ArchStructure._CommandStructure.__init__(self)
+        if hasattr(ArchStructure._CommandStructure,"__init__"):
+            ArchStructure._CommandStructure.__init__(self)
         self.beammode = True
 
     def GetResources(self):
@@ -488,7 +490,8 @@ class BIM_Slab:
 class BIM_Door(ArchWindow._CommandWindow):
 
     def __init__(self):
-        ArchWindow._CommandWindow.__init__(self)
+        if hasattr(ArchWindow._CommandWindow,"__init__"):
+            ArchWindow._CommandWindow.__init__(self)
         self.doormode = True
 
     def GetResources(self):
