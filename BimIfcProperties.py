@@ -63,9 +63,14 @@ class BIM_IfcProperties:
                 if hasattr(obj,"IfcRole"):
                     self.objectslist[obj.Name] = [obj.IfcRole,obj.IfcProperties]
                 for key,val in obj.IfcProperties.items():
+                    val = val.split(";;")
+                    if ";;" in key:
+                        # 0.19 format
+                        key = key.split(";;")
+                        val = [key[1]]+val
+                        key = key[0]
                     if not key in searchterms:
                         searchterms.append(key)
-                    val = val.split(";;")
                     if len(val) == 3:
                         if not val[0] in searchterms:
                             searchterms.append(val[0])
@@ -317,10 +322,16 @@ class BIM_IfcProperties:
             if obj.Name in self.objectslist:
                 result = []
                 for key,value in self.objectslist[obj.Name][1].items():
+                    if ";;" in key:
+                        # 0.19 format
+                        key = key.split(";;")
+                        pset = key[1]
+                        key = key[0]
+                    else:
+                        pset = value.split(";;")[0]
                     if text.lower() in key.lower():
                         if not key in result:
                             result.append(key)
-                    pset = value.split(";;")[0]
                     if text.lower() in pset.lower():
                         if not pset in result:
                             result.append(pset)
@@ -362,6 +373,10 @@ class BIM_IfcProperties:
                     pset = value[0]
                     ptype = value[1]
                     pvalue = value[2]
+                elif (len(value) == 2) and (";;" in key): # 0.19 format
+                    pset = key.split(";;")[1]
+                    ptype = value[0]
+                    pvalue = value[1]
                 elif len(value) == 2: # old system
                     pset = "Default property set"
                     ptype = value[0]
@@ -376,6 +391,10 @@ class BIM_IfcProperties:
                             otherpset = othervalue[0]
                             otherptype = othervalue[1]
                             otherpvalue = othervalue[2]
+                        elif (len(value) == 2) and (";;" in key): # 0.19 format
+                            otherpset = key.split(";;")[1]
+                            otherptype = othervalue[0]
+                            otherpvalue = othervalue[1]
                         elif len(value) == 2: # old system
                             otherpset = "Default property set"
                             otherptype = othervalue[0]
@@ -444,18 +463,18 @@ class BIM_IfcProperties:
                             if name in self.objectslist:
                                 #print("object",name,self.objectslist[name][1])
                                 if pvalue == "*VARIES*":
-                                    if not (prop in self.objectslist[name][1]):
+                                    if not (prop+";;"+pset in self.objectslist[name][1]):
                                         #print("adding",prop)
-                                        self.objectslist[name][1][prop] = pset+";;"+ptype+";;"
+                                        self.objectslist[name][1][prop+";;"+pset] = ptype+";;"
                                 else:
-                                    pval = pset+";;"+ptype+";;"+pvalue
+                                    pval = ptype+";;"+pvalue
                                     if prop in self.objectslist[name][1]:
-                                        if self.objectslist[name][1][prop] != pval:
+                                        if self.objectslist[name][1][prop+";;"+pset] != pval:
                                             #print("modifying",prop)
-                                            self.objectslist[name][1][prop] = pval
+                                            self.objectslist[name][1][prop+";;"+pset] = pval
                                     else:
                                         #print("adding",prop)
-                                        self.objectslist[name][1][prop] = pval
+                                        self.objectslist[name][1][prop+";;"+pset] = pval
         if remove:
             for index in sel:
                 if index.column() == 0:
