@@ -1,5 +1,7 @@
 # BIM workbench for FreeCAD
 
+[![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/yorikvanhavre/BIM_Workbench.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/yorikvanhavre/BIM_Workbench/context:python) [![FreeCAD Addon manager status](https://img.shields.io/badge/FreeCAD%20addon%20manager-available-brightgreen)](https://github.com/FreeCAD/FreeCAD-addons)
+
 ![](https://www.freecadweb.org/wiki/images/5/5e/BIM_workbench_presentation.png)
 
 This is a [workbench](https://www.freecadweb.org/wiki/Workbench_Concept) for [FreeCAD](https://www.freecadweb.org) that implements a complete set of [Building Information Modeling](https://en.wikipedia.org/wiki/Building_information_modeling) (BIM) tools and allows a proper BIM workflow similar to professional BIM applications like Revit, ArchiCAD, Tekla, AllPlan or BricsCAD.
@@ -9,8 +11,6 @@ FreeCAD is an open-source generic, parametric 3D modeling application. The BIM w
 But one of the specific goals of this particular workbench, is to try to focus on user experience. FreeCAD is a powerful application, but has a rather steep learning curve. In the BIM workbench, we try to ease that curve as best as we can.
 
 **Warning**: This is experimental work. Although it is perfectly safe to use, and won't break anything, it is meant to be an place where we can try things and experiment, and not a production environment (yet). You are more than welcome to try, give us your feedback and help us to build a better BIM workflow, just remember that some features might change or disappear without notice over time.
-
-[![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/yorikvanhavre/BIM_Workbench.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/yorikvanhavre/BIM_Workbench/context:python) [![FreeCAD Addon manager status](https://img.shields.io/badge/FreeCAD%20addon%20manager-available-brightgreen)](https://github.com/FreeCAD/FreeCAD-addons)
 
 ### Features
 
