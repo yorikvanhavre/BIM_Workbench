@@ -278,7 +278,7 @@ class BIM_WPView:
         done = False
         try:
             import BimViews
-        except:
+        except ImportError:
             pass
         else:
             v = BimViews.findWidget()
@@ -659,7 +659,7 @@ def setStatusIcons(show=True):
 
             try:
                 import git
-            except:
+            except ImportError:
                 return
             FreeCAD.Console.PrintLog("Checking for available updates of the BIM workbench\n")
             bimdir = os.path.join(FreeCAD.getUserAppDataDir(),"Mod","BIM")

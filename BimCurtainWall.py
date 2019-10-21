@@ -31,14 +31,14 @@ from DraftTools import translate
 def QT_TRANSLATE_NOOP(ctx,txt): return txt # dummy function for the QT translator
 
 
-class BIM_TogglePanels:
+class BIM_CurtainWall:
 
 
     def GetResources(self):
 
         return {'Pixmap'  : os.path.join(os.path.dirname(__file__),"icons","BIM_CurtainWall.svg"),
-                'MenuText': QT_TRANSLATE_NOOP("BIM_TogglePanels", "Curtain wall"),
-                'ToolTip' : QT_TRANSLATE_NOOP("BIM_TogglePanels", "Builds a curtain wall from a selected face"),
+                'MenuText': QT_TRANSLATE_NOOP("BIM_CurtainWall", "Curtain wall"),
+                'ToolTip' : QT_TRANSLATE_NOOP("BIM_CurtainWall", "Builds a curtain wall from a selected object"),
                 'Accel': 'C,W'}
 
     def Activated(self):

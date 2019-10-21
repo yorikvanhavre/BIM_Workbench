@@ -22,8 +22,8 @@
 
 """This module contains FreeCAD commands for the BIM workbench"""
 
-import FreeCAD,FreeCADGui,Draft
-from PySide import QtCore,QtGui
+import FreeCAD,FreeCADGui
+from PySide import QtGui
 from DraftTools import translate
 
 def QT_TRANSLATE_NOOP(ctx,txt): return txt # dummy function for the QT translator
@@ -64,15 +64,15 @@ class BIM_Nudge:
                         dist = scale[4]
                     else:
                         dist = scale[5]
-                    u = FreeCAD.Units.Quantity(dist,FreeCAD.Units.Length).UserString
+                    #u = FreeCAD.Units.Quantity(dist,FreeCAD.Units.Length).UserString
                     statuswidget.nudge.setText(translate("BIM","Auto"))
                 else:
                     try:
                         dist = FreeCAD.Units.Quantity(nudgeValue)
-                    except:
+                    except ValueError:
                         try:
                             dist = float(nudgeValue)
-                        except:
+                        except ValueError:
                             return None
                     else:
                         dist = dist.Value

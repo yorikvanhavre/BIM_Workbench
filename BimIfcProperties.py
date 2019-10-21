@@ -24,7 +24,7 @@
 
 """This module contains FreeCAD commands for the BIM workbench"""
 
-import sys,os,FreeCAD,FreeCADGui,Arch_rc,Draft,csv
+import sys,os,FreeCAD,FreeCADGui,Arch_rc,csv
 from PySide import QtCore,QtGui
 from DraftTools import translate
 
@@ -77,7 +77,7 @@ class BIM_IfcProperties:
         try:
             import ArchIFC
             self.ifcroles = ArchIFC.IfcTypes
-        except:
+        except (ImportError,AttributeError):
             import ArchComponent
             self.ifcroles = ArchComponent.IfcRoles
 
@@ -94,7 +94,7 @@ class BIM_IfcProperties:
         try:
             import ArchIFCSchema
             self.ptypes = list(ArchIFCSchema.IfcTypes.keys())
-        except:
+        except (ImportError, AttributeError):
             import ArchComponent
             self.ptypes = ArchComponent.SimplePropertyTypes + ArchComponent.MeasurePropertyTypes
         self.plabels = [''.join(map(lambda x: x if x.islower() else " "+x, t[3:]))[1:] for t in self.ptypes]
@@ -631,22 +631,22 @@ class propertiesDelegate(QtGui.QStyledItemDelegate):
             if "Integer" in editor.objectName():
                 try:
                     editor.setValue(int(index.data()))
-                except:
+                except ValueError:
                     editor.setValue(0)
             elif "Real" in editor.objectName():
                 try:
                     editor.setValue(float(index.data()))
-                except:
+                except ValueError:
                     editor.setValue(0)
             elif ("Boolean" in editor.objectName()) or ("Logical" in editor.objectName()):
                 try:
                     editor.setCurrentIndex(["true","false"].index(index.data().lower()))
-                except:
+                except ValueError:
                     editor.setCurrentIndex(1)
             elif "Measure" in editor.objectName():
                 try:
                     editor.setText(index.data())
-                except:
+                except ValueError:
                     editor.setValue(0)
             else:
                 editor.setText(index.data())

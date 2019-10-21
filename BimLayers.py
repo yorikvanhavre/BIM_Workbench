@@ -110,7 +110,7 @@ class BIM_Layers:
         self.update()
 
         # rock 'n roll!!!
-        result = self.dialog.exec_()
+        self.dialog.exec_()
 
     def accept(self):
 
@@ -329,7 +329,7 @@ class BIM_Layers:
         for index in self.dialog.tree.selectedIndexes():
             if index.column() == 0:
                 # get state from first selected row
-                if state == None:
+                if state is None:
                     if self.model.itemFromIndex(index).checkState() == QtCore.Qt.Checked:
                         state = QtCore.Qt.Unchecked
                     else:

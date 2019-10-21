@@ -64,33 +64,33 @@ class BIM_Setup:
         m = []
         try:
             import RebarTools
-        except:
+        except ImportError:
             m.append("Reinforcement")
         try:
             import BIMServer
-        except:
+        except ImportError:
             m.append("WebTools")
         if sys.version_info.major < 3:
             try:
                 import CommandsFrame
-            except:
+            except ImportError:
                 m.append("Flamingo")
         else:
             try:
                 import CFrame
-            except:
+            except ImportError:
                 m.append("Dodo")
         try:
             import FastenerBase
-        except:
+        except ImportError:
             m.append("Fasteners")
         try:
             import report
-        except:
+        except ImportError:
             m.append("Reporting")
         try:
             import ifcopenshell
-        except:
+        except ImportError:
             ifcok = False
         else:
             ifcok = True
@@ -310,7 +310,7 @@ class BIM_Setup:
             newdoc = False
             height = 4500
 
-        elif preset == None:
+        elif preset is None:
             # get values from settings
             unit = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Units").GetInt("UserSchema",0)
             unit = [0,2,3,3,1,5,0,4][unit] # less choices in our simplified dialog

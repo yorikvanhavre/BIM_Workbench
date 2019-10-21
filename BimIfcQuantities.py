@@ -24,7 +24,7 @@
 
 """This module contains FreeCAD commands for the BIM workbench"""
 
-import os,FreeCAD,FreeCADGui,Arch_rc,Draft
+import os,FreeCAD,FreeCADGui,Arch_rc
 from PySide import QtCore,QtGui
 from DraftTools import translate
 
@@ -71,7 +71,7 @@ class BIM_IfcQuantities:
         try:
             import ArchIFC
             self.ifcroles = ArchIFC.IfcTypes
-        except:
+        except (ImportError, AttributeError):
             import ArchComponent
             self.ifcroles = ArchComponent.IfcRoles
 
@@ -223,7 +223,7 @@ class BIM_IfcQuantities:
             for idx in sel:
                 if idx.column() == col:
                     item = self.qmodel.itemFromIndex(idx)
-                    if state == None:
+                    if state is None:
                         # take the state to apply from the first selected item
                         state = QtCore.Qt.Checked
                         if item.checkState():
@@ -234,8 +234,6 @@ class BIM_IfcQuantities:
 
         FreeCADGui.Selection.clearSelection()
         sel = self.form.quantities.selectedIndexes()
-        mode = None
-        mat = None
         for index in sel:
             if index.column() == 0:
                 obj = FreeCAD.ActiveDocument.getObject(self.qmodel.itemFromIndex(index).toolTip())

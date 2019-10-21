@@ -151,7 +151,7 @@ static char * IFC_xpm[] = {
         self.bimtools = ["Arch_Site","Arch_Building","Arch_Floor","Arch_Space","Separator",
                          "Arch_Wall","BIM_Column","BIM_Beam","BIM_Slab","Arch_Rebar","BIM_Door","Arch_Window","Arch_Pipe",
                          "Arch_PipeConnector","Arch_Stairs","Arch_Roof","Arch_Panel","Arch_Frame",
-                         "Separator","BIM_Box","Part_Builder","Draft_Facebinder","BIM_Library"]
+                         "Separator","BIM_Box","Part_Builder","Draft_Facebinder","BIM_Library","Arch_Component"]
 
         self.modify = ["Draft_Move","BIM_Copy","Draft_Rotate","BIM_Clone","BIM_Unclone","Draft_Offset",
                        "Part_Offset2D", "Draft_Trimex","Draft_Join","Draft_Split","Draft_Scale","Draft_Stretch",
@@ -189,9 +189,9 @@ static char * IFC_xpm[] = {
         if "Arch_Project" in Gui.listCommands():
             self.bimtools.insert(0,"Arch_Project")
         if "Arch_Reference" in Gui.listCommands():
-            self.bimtools.insert(-4,"Arch_Reference")
+            self.bimtools.insert(-5,"Arch_Reference")
         if "Arch_Fence" in Gui.listCommands():
-            self.bimtools.insert(-6,"Arch_Fence")
+            self.bimtools.insert(-7,"Arch_Fence")
         if "Draft_Arc_3Points" in Gui.listCommands():
             self.draftingtools.insert(5,"Draft_Arc_3Points")
         if 'Draft_CubicBezCurve' in Gui.listCommands():
@@ -201,7 +201,7 @@ static char * IFC_xpm[] = {
 
         try:
             import RebarTools
-        except:
+        except ImportError:
             pass
         else:
             # create popup group for Rebar tools
@@ -219,7 +219,7 @@ static char * IFC_xpm[] = {
 
         try:
             import bimbots
-        except:
+        except ImportError:
             pass
         else:
             class BIMBots:
@@ -234,7 +234,7 @@ static char * IFC_xpm[] = {
 
         try:
             import report
-        except:
+        except ImportError:
             pass
         else:
             if "Report_Create" in Gui.listCommands():
@@ -244,7 +244,7 @@ static char * IFC_xpm[] = {
 
         try:
             import BIMServer, Git, Sketchfab
-        except:
+        except ImportError:
             pass
         else:
             self.utils.extend(["WebTools_Git","WebTools_BimServer","WebTools_Sketchfab"])
@@ -253,7 +253,7 @@ static char * IFC_xpm[] = {
 
         try:
             import CommandsPolar,CommandsFrame,CommandsPipe
-        except:
+        except ImportError:
             flamingo = None
         else:
             flamingo = ["frameIt","fillFrame","insertPath","insertSection","FrameLineManager","spinSect",
@@ -266,7 +266,7 @@ static char * IFC_xpm[] = {
 
         try:
             import FastenerBase,FastenersCmd
-        except:
+        except ImportError:
             fasteners = None
         else:
             fasteners = [c for c in FastenerBase.FSGetCommands("screws") if not isinstance(c,tuple)]

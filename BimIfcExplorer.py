@@ -66,7 +66,7 @@ class BIM_IfcExplorer:
 
         try:
             import ifcopenshell
-        except:
+        except ImportError:
             FreeCAD.Console.PrintError(translate("BIM","IfcOpenShell was not found on this system. IFC support is disabled")+"\n")
             return
 
@@ -411,12 +411,12 @@ class BIM_IfcExplorer:
         while True:
             try:
                 argname = entity.attribute_name(i)
-            except:
+            except AttributeError:
                 break
             else:
                 try:
                     argvalue = getattr(entity,argname)
-                except:
+                except AttributeError:
                     FreeCAD.Console.PrintError(translate("BIM","Error in entity")+" "+self.tostr(entity)+"\n")
                     break
                 else:

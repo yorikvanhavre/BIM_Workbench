@@ -22,8 +22,8 @@
 
 """This module contains FreeCAD commands for the BIM workbench"""
 
-import FreeCAD,FreeCADGui,Part,Draft,Arch,os
-from PySide import QtCore,QtGui
+import FreeCAD,FreeCADGui,Part,Draft,os
+from PySide import QtGui
 from DraftTools import translate
 
 def QT_TRANSLATE_NOOP(ctx,txt): return txt # dummy function for the QT translator
@@ -312,7 +312,7 @@ class BIM_Diff:
                                 otherobj.ViewObject.LineColor = (1.0,1.0,0.0)
                                 otherobj.ViewObject.ShapeColor = (1.0,1.0,0.0)
                                 otherobj.ViewObject.Transparency = 60
-                            except:
+                            except AttributeError:
                                 print(otherobj.Label,"cannot be colorized")
         
                 if modified:
@@ -324,7 +324,7 @@ class BIM_Diff:
                                 otherobj.ViewObject.LineColor = (1.0,0.5,0.0)
                                 otherobj.ViewObject.ShapeColor = (1.0,0.5,0.0)
                                 otherobj.ViewObject.Transparency = 60
-                            except:
+                            except AttributeError:
                                 print(otherobj.Label,"cannot be colorized")
         
                 if subtractions:
@@ -352,8 +352,8 @@ class BIM_Diff:
                                 otherobj.ViewObject.LineColor = (0.0,1.0,0.0)
                                 otherobj.ViewObject.ShapeColor = (0.0,1.0,0.0)
                                 otherobj.ViewObject.Transparency = 60
-                            except:
+                            except AttributeError:
                                 print(otherobj.Label,"cannot be colorized")
 
         else:
-            reply = QtGui.QMessageBox.information(None,"",translate("BIM","You need two documents open to run this tool. One which is your main document, and one that contains new objects that you wish to compare against the existing one. Make sure only the objects you wish to compare in both documents are visible."))
+            QtGui.QMessageBox.information(None,"",translate("BIM","You need two documents open to run this tool. One which is your main document, and one that contains new objects that you wish to compare against the existing one. Make sure only the objects you wish to compare in both documents are visible."))

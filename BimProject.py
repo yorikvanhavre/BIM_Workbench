@@ -69,7 +69,7 @@ class BIM_Project:
 
     def accept(self):
 
-        if self.form.groupNewDocument.isChecked() or (FreeCAD.ActiveDocument == None):
+        if self.form.groupNewDocument.isChecked() or (FreeCAD.ActiveDocument is None):
             doc = FreeCAD.newDocument()
             if self.form.projectName.text():
                 doc.Label = self.form.projectName.text()

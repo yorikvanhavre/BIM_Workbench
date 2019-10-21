@@ -218,7 +218,7 @@ class BIM_Preflight_TaskPanel:
             msg = None
             try:
                 import ifcopenshell
-            except:
+            except ImportError:
                 msg = translate("BIM","ifcopenshell is not installed on your system or not available to FreeCAD. This library is responsible for IFC support in FreeCAD, and therefore IFC support is currently disabled. Check https://www.freecadweb.org/wiki/Extra_python_modules#IfcOpenShell to obtain more information.")+" "
                 self.failed(test)
             else:

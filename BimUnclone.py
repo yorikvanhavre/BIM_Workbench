@@ -24,7 +24,7 @@
 
 """This module contains FreeCAD commands for the BIM workbench"""
 
-import FreeCAD,FreeCADGui,Arch,Draft,Part,os
+import FreeCAD,FreeCADGui,Arch,Draft,os
 from DraftTools import translate
 
 def QT_TRANSLATE_NOOP(ctx,txt): return txt # dummy function for the QT translator

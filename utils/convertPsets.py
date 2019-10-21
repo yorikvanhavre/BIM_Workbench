@@ -23,7 +23,7 @@
 """This script converts a xml file containing pset definitions to a csv file. 
 Python3 only!! (py2 csv doesn't suppot utf8"""
 
-import xml.sax,os,codecs
+import xml.sax,os
 
 
 class PropertyDefHandler(xml.sax.ContentHandler):
@@ -36,6 +36,7 @@ class PropertyDefHandler(xml.sax.ContentHandler):
 
     def __init__(self):
 
+        super().__init__()
         self.psets = {}
         self.currentpset = None
         self.currentprop = None

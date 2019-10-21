@@ -203,7 +203,7 @@ class BIM_Library_TaskPanel:
         elif path.lower().endswith(".sat"):
             try:
                 import CadExchangerIO
-            except:
+            except ImportError:
                 FreeCAD.Console.PrintError(translate("BIM","Error: Unable to import SAT files - CadExchanger addon must be installed"))
             else:
                 path = CadExchangerIO.insert(path,FreeCAD.ActiveDocument.Name,returnpath = True)
@@ -254,7 +254,7 @@ class BIM_Library_TaskPanel:
 
     def storeInsert(self,index):
 
-        p = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM").SetInt("LibraryDefaultInsert",index)
+        FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM").SetInt("LibraryDefaultInsert",index)
 
     def mouseMove(self,point,info):
         

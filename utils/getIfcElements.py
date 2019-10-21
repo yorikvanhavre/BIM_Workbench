@@ -6,6 +6,7 @@ import xml.sax, json, copy
 class IfcElementHandler(xml.sax.ContentHandler):
 
     def __init__(self):
+        super().__init__()
         self.elements = {}
         self.current_element_name = None
         self.enums = {}

@@ -125,7 +125,6 @@ class BIM_Tutorial:
         for descr in self.descriptions:
             imagepaths = re.findall("<img.*?src=\"(.*?)\"",descr)
             if imagepaths:
-                storedimages = []
                 store = os.path.join(FreeCAD.getUserAppDataDir(),"BIM","Tutorial")
                 if not os.path.exists(store):
                     os.makedirs(store)

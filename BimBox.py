@@ -24,7 +24,7 @@ from __future__ import print_function
 
 """This module contains FreeCAD commands for the BIM workbench"""
 
-import os,FreeCAD,FreeCADGui,Draft,DraftTrackers,DraftVecUtils
+import os,FreeCAD,FreeCADGui,DraftTrackers,DraftVecUtils
 from PySide import QtCore,QtGui
 from DraftTools import translate
 
@@ -234,7 +234,6 @@ class BIM_Box:
     def setWidthUI(self):
 
         if (len(self.points) == 2) and self.currentpoint and self.WidthValue:
-            v1 = self.currentpoint.sub(self.points[1])
             self.normal = self.cubetracker[0].getNormal()
             if self.normal:
                 n = (self.points[1].sub(self.points[0])).cross(self.normal)

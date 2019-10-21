@@ -22,7 +22,7 @@
 
 """This module contains FreeCAD commands for the BIM workbench"""
 
-import os,FreeCAD,FreeCADGui,DraftTools
+import os,FreeCAD,FreeCADGui
 from DraftTools import translate
 
 def QT_TRANSLATE_NOOP(ctx,txt): return txt # dummy function for the QT translator
@@ -301,7 +301,7 @@ class BIM_Material:
                             parents = [parent for parent in oldmat.InList if (hasattr(parent,"Material") and (parent.Material == oldmat))]
                             name = oldmat.Name
                             FreeCAD.ActiveDocument.openTransaction("Merge material")
-                            for parent in parent:
+                            for parent in parents:
                                 parent.Material = mergemat
                             FreeCAD.ActiveDocument.removeObject(name)
                             FreeCAD.ActiveDocument.commitTransaction()

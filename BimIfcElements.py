@@ -530,7 +530,7 @@ class IfcElementsDelegate(QtGui.QStyledItemDelegate):
         try:
             import ArchIFC
             self.roles = ArchIFC.IfcTypes
-        except:
+        except (ImportError,AttributeError):
             import ArchComponent,Arch_rc
             self.roles = ArchComponent.IfcRoles
         self.mats = []
