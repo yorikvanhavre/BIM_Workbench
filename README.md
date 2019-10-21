@@ -10,7 +10,7 @@ But one of the specific goals of this particular workbench, is to try to focus o
 
 **Warning**: This is experimental work. Although it is perfectly safe to use, and won't break anything, it is meant to be an place where we can try things and experiment, and not a production environment (yet). You are more than welcome to try, give us your feedback and help us to build a better BIM workflow, just remember that some features might change or disappear without notice over time.
 
-[![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/yorikvanhavre/BIM_Workbench.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/yorikvanhavre/BIM_Workbench/context:python)
+[![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/yorikvanhavre/BIM_Workbench.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/yorikvanhavre/BIM_Workbench/context:python) [![FreeCAD Addon manager status](https://img.shields.io/badge/FreeCAD%20addon%20manager-available-brightgreen)](https://github.com/FreeCAD/FreeCAD-addons)
 
 ### Features
 
