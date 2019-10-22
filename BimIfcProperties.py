@@ -423,7 +423,10 @@ class BIM_IfcProperties:
             top.setToolTip("PropertySet")
             self.propmodel.appendRow([top,QtGui.QStandardItem(),QtGui.QStandardItem()])
             for plist in plists:
-                it1 = QtGui.QStandardItem(plist[0])
+                pname = plist[0]
+                if ";;" in pname:
+                    pname = pname.split(";;")[0]
+                it1 = QtGui.QStandardItem(pname)
                 it1.setDropEnabled(False)
                 it2 = QtGui.QStandardItem(plist[1])
                 it2.setDropEnabled(False)
@@ -449,6 +452,8 @@ class BIM_IfcProperties:
             if self.propmodel.item(row,0).hasChildren():
                 for childrow in range(self.propmodel.item(row,0).rowCount()):
                     prop = self.propmodel.item(row,0).child(childrow,0).text()
+                    if ";;" in prop:
+                        prop = prop.split(";;")[0]
                     ptype = self.propmodel.item(row,0).child(childrow,1).text()
                     if not ptype.startswith("Ifc"):
                         ptype = self.ptypes[self.plabels.index(ptype)]
@@ -482,7 +487,7 @@ class BIM_IfcProperties:
                     if name in self.objectslist:
                         for prop in remove:
                             if prop in self.objectslist[name][1]:
-                                #print("deleting",prop)
+                                print("deleting",prop)
                                 del self.objectslist[name][1][prop]
 
     def addProperty(self,idx=0,pset=None,prop=None,ptype=None):
@@ -631,22 +636,22 @@ class propertiesDelegate(QtGui.QStyledItemDelegate):
             if "Integer" in editor.objectName():
                 try:
                     editor.setValue(int(index.data()))
-                except ValueError:
+                except (ValueError,AttributeError):
                     editor.setValue(0)
             elif "Real" in editor.objectName():
                 try:
                     editor.setValue(float(index.data()))
-                except ValueError:
+                except (ValueError,AttributeError):
                     editor.setValue(0)
             elif ("Boolean" in editor.objectName()) or ("Logical" in editor.objectName()):
                 try:
                     editor.setCurrentIndex(["true","false"].index(index.data().lower()))
-                except ValueError:
+                except (ValueError,AttributeError):
                     editor.setCurrentIndex(1)
             elif "Measure" in editor.objectName():
                 try:
                     editor.setText(index.data())
-                except ValueError:
+                except (ValueError,AttributeError):
                     editor.setValue(0)
             else:
                 editor.setText(index.data())
