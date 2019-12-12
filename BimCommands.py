@@ -292,6 +292,10 @@ class BIM_WPView:
                     BimViews.show(v.lastSelected)
                     # Aligning on stored widget item
                     done = True
+            elif hasattr(FreeCAD,"DraftWorkingPlane"):
+                if hasattr(FreeCAD.DraftWorkingPlane,"lastBuildingPart"):
+                    BimViews.show(FreeCAD.DraftWorkingPlane.lastBuildingPart)
+                    done = True
         if not done:
             # Aligning on current working plane
             c = FreeCADGui.ActiveDocument.ActiveView.getCameraNode()
