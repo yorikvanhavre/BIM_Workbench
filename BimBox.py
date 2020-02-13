@@ -24,9 +24,15 @@ from __future__ import print_function
 
 """This module contains FreeCAD commands for the BIM workbench"""
 
-import os,FreeCAD,FreeCADGui,DraftTrackers,DraftVecUtils
+import os, FreeCAD, FreeCADGui, DraftVecUtils
 from PySide import QtCore,QtGui
 from DraftTools import translate
+
+try:
+    import DraftTrackers
+except Exception:
+    import draftguitools.gui_trackers as DraftTrackers
+
 
 def QT_TRANSLATE_NOOP(ctx,txt): return txt # dummy function for the QT translator
 

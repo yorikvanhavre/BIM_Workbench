@@ -219,7 +219,10 @@ class BIM_Library_TaskPanel:
         import Part
         self.shape = Part.read(path)
         if hasattr(FreeCADGui,"Snapper"):
-            import DraftTrackers
+            try:
+                import DraftTrackers
+            except Exception:
+                import draftguitools.gui_trackers as DraftTrackers
             self.box = DraftTrackers.ghostTracker(self.shape,dotted=True,scolor=(0.0,0.0,1.0),swidth=1.0)
             self.delta = self.shape.BoundBox.Center
             self.box.move(self.delta)
