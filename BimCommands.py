@@ -68,15 +68,14 @@ class BIM_TogglePanels:
                 togglebutton.setChecked(True)
 
 
-
 class BIM_Trash:
 
 
     def GetResources(self):
 
         return {'Pixmap'  : os.path.join(os.path.dirname(__file__),"icons","BIM_Trash.svg"),
-                'MenuText': QT_TRANSLATE_NOOP("BIM_TogglePanels", "Move to Trash"),
-                'ToolTip' : QT_TRANSLATE_NOOP("BIM_TogglePanels", "Moves the selected objects to the Trash folder"),
+                'MenuText': QT_TRANSLATE_NOOP("BIM_Trash", "Move to Trash"),
+                'ToolTip' : QT_TRANSLATE_NOOP("BIM_Trash", "Moves the selected objects to the Trash folder"),
                 'Accel': 'Shift+Del'}
 
     def Activated(self):
@@ -115,8 +114,8 @@ class BIM_EmptyTrash:
     def GetResources(self):
 
         return {'Pixmap'  : os.path.join(os.path.dirname(__file__),"icons","BIM_Trash.svg"),
-                'MenuText': QT_TRANSLATE_NOOP("BIM_TogglePanels", "Clean Trash"),
-                'ToolTip' : QT_TRANSLATE_NOOP("BIM_TogglePanels", "Deletes from the trash bin all objects that are not used by any other")}
+                'MenuText': QT_TRANSLATE_NOOP("BIM_EmptyTrash", "Clean Trash"),
+                'ToolTip' : QT_TRANSLATE_NOOP("BIM_EmptyTrash", "Deletes from the trash bin all objects that are not used by any other")}
 
     def Activated(self):
 
@@ -155,7 +154,7 @@ class BIM_Copy(DraftTools.Move):
 
         return {'Pixmap'  : os.path.join(os.path.dirname(__file__),"icons","BIM_Copy.svg"),
                 'MenuText': QT_TRANSLATE_NOOP("BIM_Copy", "Copy"),
-                'ToolTip' : QT_TRANSLATE_NOOP("BIM_TogglePanels", "Copies selected objects to another location"),
+                'ToolTip' : QT_TRANSLATE_NOOP("BIM_Copy", "Copies selected objects to another location"),
                 'Accel': 'C,P'}
 
 
@@ -166,6 +165,14 @@ class BIM_Clone(DraftTools.Draft_Clone):
     def __init__(self):
         DraftTools.Draft_Clone.__init__(self)
         self.moveAfterCloning = True
+
+
+    def GetResources(self):
+
+        return {'Pixmap'  : os.path.join(os.path.dirname(__file__),"icons","BIM_Clone.svg"),
+                'MenuText': QT_TRANSLATE_NOOP("BIM_Clone", "Clone"),
+                'ToolTip' : QT_TRANSLATE_NOOP("BIM_Clone", "Clones selected objects to another location"),
+                'Accel': 'C,L'}
 
 
 
@@ -439,6 +446,9 @@ class BIM_Slab:
                 'MenuText': QT_TRANSLATE_NOOP("BIM_Slab", "Slab"),
                 'ToolTip' : QT_TRANSLATE_NOOP("BIM_Slab", "Creates a slab from a planar shape"),
                 'Accel': 'S,B'}
+
+    def IsActive(self):
+        return not FreeCAD.ActiveDocument is None
 
     def Activated(self):
 

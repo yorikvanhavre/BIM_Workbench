@@ -23,9 +23,19 @@
 """This module contains FreeCAD commands for the BIM workbench"""
 
 import os,FreeCAD,FreeCADGui,sys
-from DraftTools import translate
 
-def QT_TRANSLATE_NOOP(ctx,txt): return txt # dummy function for the QT translator
+if FreeCAD.GuiUp:
+    import FreeCADGui
+    from PySide import QtCore, QtGui
+    from DraftTools import translate
+    from PySide.QtCore import QT_TRANSLATE_NOOP
+else:
+    # \cond
+    def translate(ctxt,txt):
+        return txt
+    def QT_TRANSLATE_NOOP(ctxt,txt):
+        return txt
+    # \endcond
 
 UPDATEINTERVAL = 2000 # number of milliseconds between BIM Views window update
 
