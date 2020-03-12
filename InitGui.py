@@ -224,7 +224,8 @@ static char * IFC_xpm[] = {
             FreeCADGui.addCommand('Arch_RebarTools', RebarGroupCommand())
             self.bimtools[self.bimtools.index("Arch_Rebar")] = "Arch_RebarTools"
             Log("Load Reinforcement Module...done\n")
-            RebarTools.updateLocale()
+            if hasattr(RebarTools,"updateLocale"):
+                RebarTools.updateLocale()
             # self.appendMenu(QT_TRANSLATE_NOOP("Arch_RebarTools","Reinforcement tools"),RebarTools.RebarCommands + ["Arch_Rebar"])
             self.rebar = RebarTools.RebarCommands + ["Arch_Rebar"]
 
