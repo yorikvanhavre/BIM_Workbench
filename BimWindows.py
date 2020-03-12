@@ -36,7 +36,7 @@ class BIM_Windows:
 
         return {'Pixmap'  : os.path.join(os.path.dirname(__file__),"icons","BIM_Windows.svg"),
                 'MenuText': QT_TRANSLATE_NOOP("BIM_Windows", "Manage doors and windows..."),
-                'ToolTip' : QT_TRANSLATE_NOOP("BIM_Levels", "Manage the different doors and windows of your BIM project")}
+                'ToolTip' : QT_TRANSLATE_NOOP("BIM_Windows", "Manage the different doors and windows of your BIM project")}
 
     def Activated(self):
         FreeCADGui.Control.showDialog(BIM_Windows_TaskPanel())

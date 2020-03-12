@@ -34,8 +34,8 @@ class BIM_Project:
     def GetResources(self):
 
         return {'Pixmap'  : os.path.join(os.path.dirname(__file__),"icons","BIM_Project.svg"),
-                'MenuText': QT_TRANSLATE_NOOP("BIM_Levels", "Manage project..."),
-                'ToolTip' : QT_TRANSLATE_NOOP("BIM_Levels", "Setup your BIM project")}
+                'MenuText': QT_TRANSLATE_NOOP("BIM_Project", "Manage project..."),
+                'ToolTip' : QT_TRANSLATE_NOOP("BIM_Project", "Setup your BIM project")}
 
     def Activated(self):
 
