@@ -175,8 +175,13 @@ static char * IFC_xpm[] = {
                        "BIM_IfcQuantities","BIM_IfcProperties","BIM_Classification",
                        "BIM_Material","Arch_Schedule","BIM_Preflight"]
 
+        if "Draft_WorkingPlaneProxy" in Gui.listCommands():
+            _tool = "Draft_WorkingPlaneProxy"
+        else:
+            _tool = "Draft_SetWorkingPlaneProxy"
+
         self.utils = ["BIM_TogglePanels","BIM_Trash","BIM_WPView",
-                      "Draft_Slope","Draft_SetWorkingPlaneProxy","Draft_AddConstruction",
+                      "Draft_Slope", _tool, "Draft_AddConstruction",
                       "Arch_SplitMesh","Arch_MeshToShape",
                       "Arch_SelectNonSolidMeshes","Arch_RemoveShape",
                       "Arch_CloseHoles","Arch_MergeWalls","Arch_Check",
