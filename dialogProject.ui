@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>450</width>
-    <height>483</height>
+    <width>402</width>
+    <height>470</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -34,6 +34,40 @@
     </widget>
    </item>
    <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_3">
+     <item>
+      <widget class="QPushButton" name="buttonSaveTemplate">
+       <property name="toolTip">
+        <string>Saves the current document as a template, including all the current BIM settings</string>
+       </property>
+       <property name="text">
+        <string>Save template...</string>
+       </property>
+       <property name="icon">
+        <iconset theme="gtk-save">
+         <normaloff/>
+        </iconset>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="buttonLoadTemplate">
+       <property name="toolTip">
+        <string>Loads the contents of a FCStd file into the active document, applying all the BIM settings stored in it if any</string>
+       </property>
+       <property name="text">
+        <string>Load template...</string>
+       </property>
+       <property name="icon">
+        <iconset theme="gtk-open">
+         <normaloff/>
+        </iconset>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
     <widget class="QScrollArea" name="scrollArea">
      <property name="widgetResizable">
       <bool>true</bool>
@@ -43,8 +77,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>417</width>
-        <height>1196</height>
+        <width>369</width>
+        <height>1214</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_2">

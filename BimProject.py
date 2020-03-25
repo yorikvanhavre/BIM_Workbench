@@ -57,8 +57,10 @@ class BIM_Project:
         QtCore.QObject.connect(self.form.presets,QtCore.SIGNAL("currentIndexChanged(QString)"), self.getPreset)
         QtCore.QObject.connect(self.form.buttonOK,QtCore.SIGNAL("clicked()"), self.accept)
         QtCore.QObject.connect(self.form.buttonCancel,QtCore.SIGNAL("clicked()"), self.reject)
+        QtCore.QObject.connect(self.form.buttonSaveTemplate, QtCore.SIGNAL("clicked()"), self.saveTemplate)
+        QtCore.QObject.connect(self.form.buttonLoadTemplate, QtCore.SIGNAL("clicked()"), self.loadTemplate)
         self.fillPresets()
-        
+
         # show dialog
         self.form.show()
 
@@ -264,7 +266,7 @@ class BIM_Project:
 
             s += "levelsWP="+str(int(self.form.levelsWP.isChecked()))+"\n"
             s += "levelsAxis="+str(int(self.form.levelsAxis.isChecked()))+"\n"
-            
+
             s += "addHumanFigure="+str(int(self.form.addHumanFigure.isChecked()))+"\n"
 
             f = open(os.path.join(presetdir,name+".txt"),"w")
@@ -352,4 +354,133 @@ class BIM_Project:
                             self.form.levelsAxis.setChecked(bool(int(s[1])))
                         elif s[0] == "addHumanFigure":
                             self.form.addHumanFigure.setChecked(bool(int(s[1])))
+
+    def saveTemplate(self):
+
+        """saves the contents of the current file as a template"""
+
+        d = FreeCAD.ActiveDocument
+        if not d:
+            d = FreeCAD.newDocument()
+
+        # build list of useful settings to store
+        values = {}
+        if hasattr(FreeCAD,"DraftWorkingPlane"):
+            values["wpposition"] = str(FreeCAD.DraftWorkingPlane.position)
+            values["wpu"] = str(FreeCAD.DraftWorkingPlane.u)
+            values["wpv"] = str(FreeCAD.DraftWorkingPlane.v)
+            values["wpaxis"] = str(FreeCAD.DraftWorkingPlane.axis)
+        values["unit"] = str(FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Units").GetInt("UserSchema",0))
+        values["textsize"] = str(FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").GetFloat("textheight",10))
+        values["textfont"] = str(FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").GetString("textfont","Sans"))
+        values["dimstyle"] = str(FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").GetInt("dimsymbol",0))
+        values["arrowsize"] = str(FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").GetFloat("arrowsize",5))
+        values["decimals"] = str(FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Units").GetInt("Decimals",2))
+        values["grid"] = str(FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").GetFloat("gridSpacing",10))
+        values["squares"] = str(FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").GetInt("gridEvery",10))
+        values["linewidth"] = str(FreeCAD.ParamGet("User parameter:BaseApp/Preferences/View").GetInt("DefautShapeLineWidth",2))
+        values["colFace"] = str(FreeCAD.ParamGet("User parameter:BaseApp/Preferences/View").GetUnsigned("DefaultShapeColor",4294967295))
+        values["colLine"] = str(FreeCAD.ParamGet("User parameter:BaseApp/Preferences/View").GetUnsigned("DefaultShapeLineColor",255))
+        values["colHelp"] = str(FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Arch").GetUnsigned("ColorHelpers",674321151))
+        values["colConst"] = str(FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").GetUnsigned("constructioncolor",746455039))
+
+        d.Meta = values
+        from PySide import QtCore,QtGui
+        filename = QtGui.QFileDialog.getSaveFileName(QtGui.QApplication.activeWindow(), translate("BIM","Save template file"), None, "FreeCAD file (*.FCStd)");
+        if filename:
+            filename = filename[0]
+            if not filename.lower().endswith(".FCStd"):
+                filename += ".FCStd"
+            d.saveCopy(filename)
+            FreeCAD.Console.PrintMessage(translate("BIM","Template saved successfully")+"\n")
+            self.reject()
+
+
+    def loadTemplate(self):
+
+        """loads the contents of a template into the current file"""
+
+        from PySide import QtCore,QtGui
+        filename = QtGui.QFileDialog.getOpenFileName(QtGui.QApplication.activeWindow(), translate("BIM","Open template file"), None, "FreeCAD file (*.FCStd)");
+        if filename:
+            filename = filename[0]
+            if FreeCAD.ActiveDocument:
+                d = FreeCAD.ActiveDocument
+                td = FreeCAD.openDocument(filename,True) #hidden
+                tname = td.Name
+                values = td.Meta
+                FreeCAD.closeDocument(tname)
+                d.mergeProject(filename)
+                FreeCADGui.ActiveDocument = FreeCADGui.getDocument(d.Name) # fix b/c hidden doc
+            else:
+                d = FreeCAD.openDocument(filename)
+                FreeCAD.ActiveDocument = d
+                values = d.Meta
+            bimunit = 0
+            if hasattr(FreeCAD,"DraftWorkingPlane"):
+                from FreeCAD import Vector
+                if "wppos" in values:
+                    FreeCAD.DraftWorkingPlane.position = eval(values["wpposition"])
+                if "wpu" in values:
+                    FreeCAD.DraftWorkingPlane.u = eval(values["wpu"])
+                if "wpv" in values:
+                    FreeCAD.DraftWorkingPlane.v = eval(values["wpv"])
+                if "wpaxis" in values:
+                    FreeCAD.DraftWorkingPlane.axis = eval(values["wpaxis"])
+            if "unit" in values:
+                FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Units").SetInt("UserSchema",int(values["unit"]))
+                if hasattr(FreeCAD.Units,"setSchema"):
+                    FreeCAD.Units.setSchema(int(values["unit"]))
+                    bimunit = [0,2,3,3,1,5,0,4][int(values["unit"])]
+            if "textsize" in values:
+                FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").SetFloat("textheight",float(values["textsize"]))
+                if hasattr(FreeCADGui,"draftToolBar"):
+                    FreeCADGui.draftToolBar.fontsizeButton.setValue(float(values["textsize"]))
+            if "textfont" in values:
+                FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").SetString("textfont",values["textfont"])
+            if "dimstyle" in values:
+                FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").SetInt("dimsymbol",int(values["dimstyle"]))
+            if "arrowsize" in values:
+                FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").SetFloat("arrowsize",float(values["arrowsize"]))
+            if "decimals" in values:
+                FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Units").SetInt("Decimals",int(values["decimals"]))
+            if "grid" in values:
+                FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").SetFloat("gridSpacing",float(values["grid"]))
+            if "squares" in values:
+                FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").SetInt("gridEvery",int(values["squares"]))
+            if hasattr(FreeCADGui,"Snapper"):
+                FreeCADGui.Snapper.setGrid()
+            if "linewidth" in values:
+                FreeCAD.ParamGet("User parameter:BaseApp/Preferences/View").SetInt("DefautShapeLineWidth",int(values["linewidth"]))
+                if hasattr(FreeCADGui,"draftToolBar"):
+                    FreeCADGui.draftToolBar.widthButton.setValue(int(values["linewidth"]))
+            if "colFace" in values:
+                FreeCAD.ParamGet("User parameter:BaseApp/Preferences/View").SetUnsigned("DefaultShapeColor",int(values["colFace"]))
+            if "colLine" in values:
+                FreeCAD.ParamGet("User parameter:BaseApp/Preferences/View").SetUnsigned("DefaultShapeLineColor",int(values["colLine"]))
+            if "colHelp" in values:
+                FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Arch").SetUnsigned("ColorHelpers",int(values["colHelp"]))
+            if "colConst" in values:
+                FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").SetUnsigned("constructioncolor",int(values["colConst"]))
+
+            # set the status bar widgets
+            mw = FreeCADGui.getMainWindow()
+            if mw:
+                st = mw.statusBar()
+                statuswidget = st.findChild(QtGui.QToolBar,"BIMStatusWidget")
+                if statuswidget:
+                    statuswidget.unitLabel.setText(statuswidget.unitsList[bimunit])
+                    # change the unit of the nudge button
+                    nudgeactions = statuswidget.nudge.menu().actions()
+                    if bimunit in [2,3,5,7]:
+                        nudgelabels = statuswidget.nudgeLabelsI
+                    else:
+                        nudgelabels = statuswidget.nudgeLabelsM
+                    for i in range(len(nudgelabels)):
+                        nudgeactions[i].setText(nudgelabels[i])
+                    if not "auto" in statuswidget.nudge.text().replace("&","").lower():
+                        statuswidget.nudge.setText(FreeCAD.Units.Quantity(statuswidget.nudge.text().replace("&","")).UserString)
+
+            FreeCAD.Console.PrintMessage(translate("BIM","Template successfully loaded into current document")+"\n")
+            self.reject()
 
