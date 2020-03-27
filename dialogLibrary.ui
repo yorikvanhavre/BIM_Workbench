@@ -22,6 +22,38 @@
     </widget>
    </item>
    <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <item>
+      <widget class="QCheckBox" name="checkOnline">
+       <property name="toolTip">
+        <string>If this is checked, the library doesn't need to be installed. Contents will be fetched online.</string>
+       </property>
+       <property name="text">
+        <string>Online</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="buttonRefresh">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="toolTip">
+        <string>Refresh the contents of the library. WARNING: Can take a few minutes. For faster results, install the library locally from menu Tools-&gt;Addon Manager</string>
+       </property>
+       <property name="text">
+        <string>Refresh</string>
+       </property>
+       <property name="icon">
+        <iconset theme="reload">
+         <normaloff/>
+        </iconset>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
     <widget class="QPushButton" name="buttonInsert">
      <property name="text">
       <string>Insert &gt;&gt;</string>
@@ -76,5 +108,22 @@
   </layout>
  </widget>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>checkOnline</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>buttonRefresh</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>66</x>
+     <y>192</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>184</x>
+     <y>197</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>
