@@ -303,7 +303,8 @@ static char * IFC_xpm[] = {
         # build a new list of bimtools only for menu
         # and put rebar menu with sub menus into it
         self.bimtools_menu = list(self.bimtools)
-        self.bimtools_menu.remove("Arch_RebarTools")        
+        if "Arch_RebarTools" in self.bimtools_menu:
+            self.bimtools_menu.remove("Arch_RebarTools")      
 
         self.appendMenu(QT_TRANSLATE_NOOP("BIM","&2D Drafting"),self.draftingtools)
         self.appendMenu(QT_TRANSLATE_NOOP("BIM","&3D/BIM"),self.bimtools_menu)
