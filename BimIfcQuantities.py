@@ -111,7 +111,7 @@ class BIM_IfcQuantities:
 
         if not self.quantitiesDrawn:
 
-            self.qmodel.setHorizontalHeaderLabels(translate("BIM",["Label"]) + trqprops)
+            self.qmodel.setHorizontalHeaderLabels([translate("BIM","Label")] + trqprops)
             quantheaders = self.form.quantities.header() #QHeaderView instance
             if hasattr(quantheaders,"setClickable"): # qt4
                 quantheaders.setClickable(True)
