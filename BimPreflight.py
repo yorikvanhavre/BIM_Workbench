@@ -57,6 +57,7 @@ class BIM_Preflight:
                 'ToolTip' : QT_TRANSLATE_NOOP("BIM_Preflight", "Checks several characteristics of this model before exporting to IFC")}
 
     def Activated(self):
+        FreeCADGui.BIMPreflightDone = False
         FreeCADGui.Control.showDialog(BIM_Preflight_TaskPanel())
 
 
@@ -202,6 +203,7 @@ class BIM_Preflight_TaskPanel:
                 self.reset(test)
                 if hasattr(self,test):
                     todo.delay(getattr(self,test),None)
+        FreeCADGui.BIMPreflightDone = True
 
 
     def testIFC4(self):

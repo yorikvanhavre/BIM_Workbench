@@ -47,8 +47,9 @@ class BIM_Welcome:
         # set the title image
         self.form.image.setPixmap(QtGui.QPixmap(os.path.join(os.path.dirname(__file__),"icons","banner.png")))
 
-        # handle the tutorial link
-        QtCore.QObject.connect(self.form.label_4, QtCore.SIGNAL("linkActivated(QString)"), self.launchTutorial)
+        # handle the tutorial links
+        QtCore.QObject.connect(self.form.label_4, QtCore.SIGNAL("linkActivated(QString)"), self.handleLink)
+        QtCore.QObject.connect(self.form.label_7, QtCore.SIGNAL("linkActivated(QString)"), self.handleLink)
 
         # center the dialog over FreeCAD window
         mw = FreeCADGui.getMainWindow()
@@ -62,8 +63,13 @@ class BIM_Welcome:
         # remove first time flag
         FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM").SetBool("FirstTime",False)
 
-    def launchTutorial(self,link):
+    def handleLink(self,link):
         
         if hasattr(self,"form"):
             self.form.hide()
-            FreeCADGui.runCommand("BIM_Tutorial")
+            if "BIM_Start_Tutorial" in link:
+                FreeCADGui.runCommand("BIM_Tutorial")
+            else:
+                #print("Opening link:",link)
+                url = QtCore.QUrl(link)
+                QtGui.QDesktopServices.openUrl(url)
