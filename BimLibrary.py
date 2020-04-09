@@ -25,6 +25,7 @@ from __future__ import print_function
 """The BIM library tool"""
 
 import os,FreeCAD,FreeCADGui,sys,re
+import datetime
 from DraftTools import translate
 import addonmanager_utilities
 
@@ -33,7 +34,8 @@ def QT_TRANSLATE_NOOP(ctx,txt): return txt # dummy function for the QT translato
 FILTERS = ["*.fcstd","*.FCStd","*.FCSTD","*.stp","*.STP","*.step","*.STEP", "*.brp", "*.BRP", "*.brep", "*.BREP", "*.ifc", "*.IFC", "*.sat", "*.SAT"]
 TEMPLIBPATH = os.path.join(FreeCAD.getUserAppDataDir(),"BIM","OfflineLibrary")
 LIBRARYURL = "https://github.com/FreeCAD/FreeCAD-library/tree/master"
-
+USE_API = True # True to use github API instead of web fetching... Way faster
+REFRESH_INTERVAL = 3600 # Min seconds between allowing a new API calls (3600 = one hour)
 
 class BIM_Library:
 
@@ -46,6 +48,8 @@ class BIM_Library:
 
     def Activated(self):
 
+        # setting up a min reload interval of one hour
+        FreeCADGui.BimLibrarytTimeStamp = None
         libok = False
         self.librarypath = FreeCAD.ParamGet('User parameter:Plugins/parts_library').GetString('destination','')
         if self.librarypath:
@@ -100,6 +104,11 @@ class BIM_Library_TaskPanel:
         self.form.checkOnline.toggled.connect(self.onCheckOnline)
         self.form.buttonRefresh.clicked.connect(self.onRefresh)
         self.form.checkOnline.setChecked(FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM").GetBool("LibraryOnline",False))
+        
+        # hide the refresh button when we're using the API (auto-refresh)
+        if USE_API:
+            self.form.buttonRefresh.hide()
+        
 
     def onSearch(self,text):
 
@@ -393,7 +402,7 @@ class BIM_Library_TaskPanel:
         elif idx == 9:
             return d.add(FreeCAD.Vector(-self.shape.BoundBox.XLength/2,self.shape.BoundBox.YLength/2,0))
 
-    def getOnlineContents(self,url):
+    def getOnlineContentsWEB(self,url):
 
         """Returns a dirs,files pair representing files found from a github url"""
 
@@ -419,13 +428,59 @@ class BIM_Library_TaskPanel:
                     d2 = re.findall("</span>(.*?)$",d)
                     if d1 and d2:
                         d = d1[0] + "/" + d2[0]
-                r = self.getOnlineContents(url+"/"+d.replace(" ","%20"))
+                r = self.getOnlineContentsWEB(url+"/"+d.replace(" ","%20"))
                 result[d] = r
             for f in files:
                 result[f] = f
         else:
             print("Cannot open URL:",url)
         return result
+
+    def getOnlineContentsAPI(self,url):
+        
+        """same as getOnlineContents but uses github API (faster)"""
+        
+        result = {}
+        import requests
+        import json
+        count = 0
+        r = requests.get('https://api.github.com/repos/FreeCAD/FreeCAD-library/git/trees/master?recursive=1')
+        if r.ok:
+            j = json.loads(r.content)
+            if j['truncated']:
+                print("WARNING: The fetched content exceeds maximum Github allowance and is truncated")
+            t = j['tree']
+            for f in t:
+                path = f['path'].split("/")
+                if f['type'] == 'tree':
+                    name = None
+                else:
+                    name = path[-1]
+                    path = path[:-1]
+                host = result
+                for fp in path:
+                    if fp in host:
+                        host = host[fp]
+                    else:
+                        host[fp] = {}
+                        host = host[fp]
+                if name:
+                    for ft in FILTERS:
+                        if name.endswith(ft[1:]):
+                            break
+                    else:
+                        continue
+                    host[name] = name
+                    count += 1
+        else:
+            print("Cannot fetch GIT tree from:",url)
+        #print("result:",result)
+        if not result:
+            print("WARNING: No results fetched")
+        else:
+            print("BIM Library: Reloaded",count,"files")
+        return result
+
 
     def onCheckOnline(self,state):
 
@@ -435,6 +490,14 @@ class BIM_Library_TaskPanel:
         p = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM").SetBool("LibraryOnline",state)
         if state:
             # online
+            if USE_API:
+                timestamp = datetime.datetime.now()
+                if (FreeCADGui.BimLibrarytTimeStamp is None) or ((timestamp - FreeCADGui.BimLibrarytTimeStamp).total_seconds() > REFRESH_INTERVAL):
+                    print("refreshing")
+                    if FreeCADGui.BimLibrarytTimeStamp is not None:
+                        print("elapsed seconds:",(timestamp - FreeCADGui.BimLibrarytTimeStamp).total_seconds())
+                    FreeCADGui.BimLibrarytTimeStamp = timestamp
+                    self.onRefresh()
             self.setOnlineModel()
         else:
             # offline
@@ -446,11 +509,15 @@ class BIM_Library_TaskPanel:
 
         def writeOfflineLib():
 
-            rootfiles = self.getOnlineContents(LIBRARYURL)
-            templibfile = os.path.join(TEMPLIBPATH,"OfflineLibrary.py")
-            tf = open(templibfile,"w")
-            tf.write("library="+str(rootfiles))
-            tf.close()
+            if USE_API:
+                rootfiles = self.getOnlineContentsAPI(LIBRARYURL)
+            else:
+                rootfiles = self.getOnlineContentsWEB(LIBRARYURL)
+            if rootfiles:
+                templibfile = os.path.join(TEMPLIBPATH,"OfflineLibrary.py")
+                tf = open(templibfile,"w")
+                tf.write("library="+str(rootfiles))
+                tf.close()
 
         from PySide import QtCore,QtGui
         reply = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM").GetBool("LibraryWarning",False)
@@ -460,7 +527,9 @@ class BIM_Library_TaskPanel:
             FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM").SetBool("LibraryWarning",True)
             self.form.setEnabled(False)
             QtGui.QApplication.setOverrideCursor(QtCore.Qt.WaitCursor)
-            QtCore.QTimer.singleShot(0,writeOfflineLib)
+            self.form.repaint()
+            QtGui.QApplication.processEvents()
+            QtCore.QTimer.singleShot(1,writeOfflineLib)
             self.form.setEnabled(True)
             QtGui.QApplication.restoreOverrideCursor()
         self.setOnlineModel()
