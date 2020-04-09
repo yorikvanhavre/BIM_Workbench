@@ -116,6 +116,9 @@ static char * IFC_xpm[] = {
         FreeCADGui.addCommand('BIM_Slab',BimCommands.BIM_Slab())
         FreeCADGui.addCommand('BIM_Door',BimCommands.BIM_Door())
         FreeCADGui.addCommand('BIM_ResetCloneColors',BimCommands.BIM_ResetCloneColors())
+        FreeCADGui.addCommand('BIM_SetWPTop',BimCommands.BIM_SetWPTop())
+        FreeCADGui.addCommand('BIM_SetWPFront',BimCommands.BIM_SetWPFront())
+        FreeCADGui.addCommand('BIM_SetWPSide',BimCommands.BIM_SetWPSide())
         FreeCADGui.addCommand('BIM_Rewire',BimCommands.BIM_Rewire())
         FreeCADGui.addCommand('BIM_Welcome',BimWelcome.BIM_Welcome())
         FreeCADGui.addCommand('BIM_Setup',BimSetup.BIM_Setup())
@@ -169,7 +172,8 @@ static char * IFC_xpm[] = {
                      'Draft_Snap_Grid','Draft_Snap_Intersection','Draft_Snap_Parallel',
                      'Draft_Snap_Endpoint','Draft_Snap_Angle','Draft_Snap_Center',
                      'Draft_Snap_Extension','Draft_Snap_Near','Draft_Snap_Ortho',
-                     'Draft_Snap_Special','Draft_Snap_Dimensions','Draft_Snap_WorkingPlane']
+                     'Draft_Snap_Special','Draft_Snap_Dimensions','Draft_Snap_WorkingPlane',
+                     'BIM_SetWPTop','BIM_SetWPFront','BIM_SetWPSide']
 
         self.manage = ["BIM_Setup","BIM_Project","BIM_Views","BIM_Windows","BIM_IfcElements",
                        "BIM_IfcQuantities","BIM_IfcProperties","BIM_Classification",

@@ -575,6 +575,49 @@ class BIM_Rewire:
         FreeCAD.ActiveDocument.recompute()
 
 
+class BIM_SetWPTop:
+
+
+    def GetResources(self):
+
+        return {'Pixmap'  : "view-top.svg",
+                'MenuText': QT_TRANSLATE_NOOP("BIM_SetWPTop", "Working Plane Top"),
+                'ToolTip' : QT_TRANSLATE_NOOP("BIM_SetWPTop", "Set the working plane to Top"),
+                'Accel': 'Ctrl+Shift+2'}
+
+    def Activated(self):
+
+        FreeCADGui.doCommandGui("FreeCAD.DraftWorkingPlane.setTop()")
+
+
+class BIM_SetWPFront:
+
+
+    def GetResources(self):
+
+        return {'Pixmap'  : "view-front.svg",
+                'MenuText': QT_TRANSLATE_NOOP("BIM_SetWPFront", "Working Plane Front"),
+                'ToolTip' : QT_TRANSLATE_NOOP("BIM_SetWPFront", "Set the working plane to Front"),
+                'Accel': 'Ctrl+Shift+1'}
+
+    def Activated(self):
+
+        FreeCADGui.doCommandGui("FreeCAD.DraftWorkingPlane.setFront()")
+
+
+class BIM_SetWPSide:
+
+
+    def GetResources(self):
+
+        return {'Pixmap'  : "view-right.svg",
+                'MenuText': QT_TRANSLATE_NOOP("BIM_SetWPSide", "Working Plane Side"),
+                'ToolTip' : QT_TRANSLATE_NOOP("BIM_SetWPSide", "Set the working plane to Side"),
+                'Accel': 'Ctrl+Shift+3'}
+
+    def Activated(self):
+
+        FreeCADGui.doCommandGui("FreeCAD.DraftWorkingPlane.setSide()")
 
 # Language path for InitGui.py
 
