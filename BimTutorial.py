@@ -96,14 +96,29 @@ class BIM_Tutorial:
             return
 
         # load tutorial from wiki
-        u = urllib2.urlopen(URL)
-        html = u.read()
-        if sys.version_info.major >= 3:
-            html = html.decode("utf8")
-        html = html.replace("\n"," ")
-        html = html.replace("\"/wiki/","\"https://www.freecadweb.org/wiki/")
-        html = re.sub("<div id=\"toc\".*?</ul> </div>","",html) # remove table of contents
-        u.close()
+        offlineloc = os.path.join(FreeCAD.getUserAppDataDir(),"BIM","Tutorial","Tutorial.html")
+        try:
+            u = urllib2.urlopen(URL)
+            html = u.read()
+            if sys.version_info.major >= 3:
+                html = html.decode("utf8")
+            html = html.replace("\n"," ")
+            html = html.replace("\"/wiki/","\"https://www.freecadweb.org/wiki/")
+            html = re.sub("<div id=\"toc\".*?</ul> </div>","",html) # remove table of contents
+            u.close()
+        except:
+            # unable to load tutorial. Look for offline version
+            if os.path.exists(offlineloc):
+                f = open(offlineloc)
+                html = f.read()
+                f.close()
+            else:
+                FreeCAD.Console.PrintError(translate("BIM","Unable to access the tutorial. Verify that you are online (This is needed only once).")+"\n")
+                return
+        else:
+            f = open(offlineloc,"w")
+            f.write(html)
+            f.close()
     
         # setup title and progress bar
         self.steps = len(re.findall("infotext",html))-1
@@ -129,16 +144,25 @@ class BIM_Tutorial:
                 if not os.path.exists(store):
                     os.makedirs(store)
                 for path in imagepaths:
-                    name = re.findall("[\\w.-]+\\.(?i)(?:jpg|png|gif|bmp)",path)[-1]
-                    storename = os.path.join(store,name)
-                    if not os.path.exists(storename):
-                        u = urllib2.urlopen(path)
-                        imagedata = u.read()
-                        f = open(storename,"wb")
-                        f.write(imagedata)
-                        f.close()
-                        u.close()
-                    descr = descr.replace(path,"file://"+storename.replace("\\","/"))
+                    name = re.findall("[\\w.-]+\\.(?i)(?:jpg|png|gif|bmp)",path)
+                    if name:
+                        name = name[-1]
+                        storename = os.path.join(store,name)
+                        if not os.path.exists(storename):
+                            if path.startswith("/images"):
+                                # relative path
+                                fullpath = "https://www.freecadweb.org/wiki"+path
+                            else:
+                                fullpath = path
+                            u = urllib2.urlopen(fullpath)
+                            imagedata = u.read()
+                            f = open(storename,"wb")
+                            f.write(imagedata)
+                            f.close()
+                            u.close()
+                        descr = descr.replace(path,"file://"+storename.replace("\\","/"))
+                    else:
+                        print("unparsable image path:",path)
             nd.append(descr)
         self.descriptions = nd
         
