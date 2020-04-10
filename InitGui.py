@@ -148,7 +148,8 @@ static char * IFC_xpm[] = {
         FreeCADGui.addCommand('BIM_IfcExplorer',BimIfcExplorer.BIM_IfcExplorer())
         FreeCADGui.addCommand('BIM_Layers',BimLayers.BIM_Layers())
 
-        self.draftingtools = ["BIM_Sketch","Draft_Line","Draft_Wire","Draft_Circle","Draft_Arc","Draft_Ellipse",
+        self.draftingtools = ["BIM_Sketch","Draft_Line","Draft_Wire","Draft_Circle",
+                              "Draft_Arc","Draft_Arc_3Points","Draft_Ellipse",
                               "Draft_Polygon","Draft_Rectangle", "Draft_BSpline", "Draft_BezCurve",
                               "Draft_Point"]
 
