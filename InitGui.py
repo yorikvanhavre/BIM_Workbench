@@ -92,13 +92,13 @@ static char * IFC_xpm[] = {
         import BimDiff
         import BimIfcExplorer
         import BimLayers
-        
-        
+
+
         # add translations path
-        FreeCADGui.addLanguagePath(BimCommands.getLanguagePath())        
+        FreeCADGui.addLanguagePath(BimCommands.getLanguagePath())
 
         # create BIM commands
-        
+
 
         FreeCADGui.addCommand('BIM_TogglePanels',BimCommands.BIM_TogglePanels())
         FreeCADGui.addCommand('BIM_Trash',BimCommands.BIM_Trash())
@@ -196,7 +196,7 @@ static char * IFC_xpm[] = {
         nudge = ["BIM_Nudge_Switch","BIM_Nudge_Up","BIM_Nudge_Down","BIM_Nudge_Left","BIM_Nudge_Right",
                  "BIM_Nudge_RotateLeft","BIM_Nudge_RotateRight","BIM_Nudge_Extend","BIM_Nudge_Shrink"]
 
-        
+
         # post-0.18 tools
 
         if "Draft_Layer" in Gui.listCommands():
@@ -213,20 +213,20 @@ static char * IFC_xpm[] = {
             self.draftingtools.insert(len(self.draftingtools)-2,'Draft_CubicBezCurve')
 
         # load rebar tools (Reinforcement addon)
-        def QT_TRANSLATE_NOOP(scope, text): 
+        def QT_TRANSLATE_NOOP(scope, text):
             return text
 
         try:
             import RebarTools
         except ImportError:
-            pass
+            self.rebar = None
         else:
             # create popup group for Rebar tools
-            class RebarGroupCommand:                
+            class RebarGroupCommand:
                 def GetCommands(self):
                     return tuple(["Arch_Rebar"]+RebarTools.RebarCommands)
-                def GetResources(self):                   
-                    return { 
+                def GetResources(self):
+                    return {
                         'MenuText': QT_TRANSLATE_NOOP('Arch_RebarTools','Reinforcement tools'),
                         'ToolTip': QT_TRANSLATE_NOOP('Arch_RebarTools','Reinforcement tools')}
                 def IsActive(self):
@@ -308,17 +308,18 @@ static char * IFC_xpm[] = {
         #    self.appendToolbar("Flamingo tools",flamingo)
 
         # create menus
-        
-        # ugly! 
+
+        # ugly!
         # build a new list of bimtools only for menu
         # and put rebar menu with sub menus into it
         self.bimtools_menu = list(self.bimtools)
         if "Arch_RebarTools" in self.bimtools_menu:
-            self.bimtools_menu.remove("Arch_RebarTools")      
+            self.bimtools_menu.remove("Arch_RebarTools")
 
         self.appendMenu(QT_TRANSLATE_NOOP("BIM","&2D Drafting"),self.draftingtools)
         self.appendMenu(QT_TRANSLATE_NOOP("BIM","&3D/BIM"),self.bimtools_menu)
-        self.appendMenu([QT_TRANSLATE_NOOP("BIM","&3D/BIM"),QT_TRANSLATE_NOOP("Arch_RebarTools","Reinforcement tools")],self.rebar)        
+        if self.rebar:
+            self.appendMenu([QT_TRANSLATE_NOOP("BIM","&3D/BIM"),QT_TRANSLATE_NOOP("Arch_RebarTools","Reinforcement tools")],self.rebar)
         self.appendMenu(QT_TRANSLATE_NOOP("BIM","&Annotation"),self.annotationtools)
         self.appendMenu(QT_TRANSLATE_NOOP("BIM","&Snapping"),self.snap)
         self.appendMenu(QT_TRANSLATE_NOOP("BIM","&Modify"),self.modify)
@@ -331,7 +332,7 @@ static char * IFC_xpm[] = {
         self.appendMenu([QT_TRANSLATE_NOOP("BIM","&Utils"),QT_TRANSLATE_NOOP("BIM","Nudge")],nudge)
         self.appendMenu("&Help",["BIM_Welcome","BIM_Help","BIM_Tutorial"])
 
-       
+
         # load Arch & Draft preference pages
         if hasattr(FreeCADGui,"draftToolBar"):
             if not hasattr(FreeCADGui.draftToolBar,"loadedArchPreferences"):
