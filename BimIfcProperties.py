@@ -53,27 +53,6 @@ class BIM_IfcProperties:
 
     def Activated(self):
 
-        # build objects list and fill search terms
-        self.objectslist = {}
-        searchterms = [""]
-        for obj in FreeCAD.ActiveDocument.Objects:
-            if hasattr(obj,"IfcProperties") and isinstance(obj.IfcProperties,dict):
-                if hasattr(obj,"IfcType"):
-                    self.objectslist[obj.Name] = [obj.IfcType,obj.IfcProperties]
-                if hasattr(obj,"IfcRole"):
-                    self.objectslist[obj.Name] = [obj.IfcRole,obj.IfcProperties]
-                for key,val in obj.IfcProperties.items():
-                    val = val.split(";;")
-                    if ";;" in key:
-                        # 0.19 format
-                        key = key.split(";;")
-                        val = [key[1]]+val
-                        key = key[0]
-                    if not key in searchterms:
-                        searchterms.append(key)
-                    if len(val) == 3:
-                        if not val[0] in searchterms:
-                            searchterms.append(val[0])
         try:
             import ArchIFC
             self.ifcroles = ArchIFC.IfcTypes
@@ -88,6 +67,13 @@ class BIM_IfcProperties:
         self.model = QtGui.QStandardItemModel()
         self.form.tree.setModel(self.model)
         self.form.tree.setUniformRowHeights(True)
+
+        # restore saved values
+        self.form.onlySelected.setChecked(FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM").GetInt("IfcPropertiesSelectedState",0))
+        self.form.onlyVisible.setChecked(FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM").GetInt("IfcPropertiesVisibleState",0))
+
+        # build objects list and fill search terms
+        self.objectslist,searchterms = self.rebuildObjectsList()
         self.form.searchField.addItems(searchterms)
 
         # set the properties editor
@@ -117,10 +103,10 @@ class BIM_IfcProperties:
         self.form.comboPset.addItems([translate("BIM", "Add property set..."),
                                       translate("BIM", "New...")]+self.psetkeys)
 
-
         QtCore.QObject.connect(self.form.tree.selectionModel(), QtCore.SIGNAL("selectionChanged(QItemSelection,QItemSelection)"), self.updateProperties)
         QtCore.QObject.connect(self.form.groupMode, QtCore.SIGNAL("currentIndexChanged(int)"), self.update)
-        QtCore.QObject.connect(self.form.onlyVisible, QtCore.SIGNAL("stateChanged(int)"), self.update)
+        QtCore.QObject.connect(self.form.onlyVisible, QtCore.SIGNAL("stateChanged(int)"), self.onVisible)
+        QtCore.QObject.connect(self.form.onlySelected, QtCore.SIGNAL("stateChanged(int)"), self.onSelected)
         QtCore.QObject.connect(self.form.buttonBox, QtCore.SIGNAL("accepted()"), self.accept)
         QtCore.QObject.connect(self.form.onlyMatches, QtCore.SIGNAL("stateChanged(int)"), self.update)
         QtCore.QObject.connect(self.form.searchField, QtCore.SIGNAL("currentIndexChanged(int)"), self.update)
@@ -137,6 +123,35 @@ class BIM_IfcProperties:
 
         self.update()
         self.form.show()
+
+    def rebuildObjectsList(self):
+
+        # build objects list and fill search terms
+        objectslist = {}
+        searchterms = [""]
+        if self.form.onlySelected.isChecked():
+            objects = FreeCADGui.Selection.getSelection()
+        else:
+            objects = FreeCAD.ActiveDocument.Objects
+        for obj in objects:
+            if hasattr(obj,"IfcProperties") and isinstance(obj.IfcProperties,dict):
+                if hasattr(obj,"IfcType"):
+                    objectslist[obj.Name] = [obj.IfcType,obj.IfcProperties]
+                if hasattr(obj,"IfcRole"):
+                    objectslist[obj.Name] = [obj.IfcRole,obj.IfcProperties]
+                for key,val in obj.IfcProperties.items():
+                    val = val.split(";;")
+                    if ";;" in key:
+                        # 0.19 format
+                        key = key.split(";;")
+                        val = [key[1]]+val
+                        key = key[0]
+                    if not key in searchterms:
+                        searchterms.append(key)
+                    if len(val) == 3:
+                        if not val[0] in searchterms:
+                            searchterms.append(val[0])
+        return objectslist,searchterms
 
     def update(self,index=None):
 
@@ -308,7 +323,7 @@ class BIM_IfcProperties:
     def accept(self):
 
         self.form.hide()
-        
+
         #print(self.objectslist)
         changed = False
         for key,values in self.objectslist.items():
@@ -544,7 +559,7 @@ class BIM_IfcProperties:
                 self.updateDicts()
         else:
             if idx != 0:
-                QtGui.QMessageBox.critical(None,'Error',translate("BIM","Please select or create a property set first in which the new property should be placed."), QtGui.QMessageBox.Ok) 
+                QtGui.QMessageBox.critical(None,'Error',translate("BIM","Please select or create a property set first in which the new property should be placed."), QtGui.QMessageBox.Ok)
         if idx != 0:
             self.form.comboProperty.setCurrentIndex(0)
 
@@ -597,6 +612,18 @@ class BIM_IfcProperties:
                 pset.takeRow(sel[0].row())
             self.updateDicts(remove=remove)
 
+    def onSelected(self,index):
+
+        FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM").SetInt("IfcPropertiesSelectedState",index)
+        self.objectslist,searchterms = self.rebuildObjectsList()
+        self.form.searchField.clear()
+        self.form.searchField.addItems(searchterms)
+        self.update()
+
+    def onVisible(self,index):
+
+        FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM").SetInt("IfcPropertiesVisibleState",index)
+        self.update()
 
 
 class propertiesDelegate(QtGui.QStyledItemDelegate):

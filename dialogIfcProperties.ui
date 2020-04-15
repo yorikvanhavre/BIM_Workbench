@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>633</width>
-    <height>607</height>
+    <width>553</width>
+    <height>515</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -25,14 +25,22 @@
     </widget>
    </item>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout"/>
-   </item>
-   <item>
-    <widget class="QCheckBox" name="onlyVisible">
-     <property name="text">
-      <string>only visible BIM objects</string>
-     </property>
-    </widget>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QCheckBox" name="onlySelected">
+       <property name="text">
+        <string>Only selected objects</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="onlyVisible">
+       <property name="text">
+        <string>Only visible BIM objects</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout_2">
