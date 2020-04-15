@@ -110,6 +110,7 @@ class BIM_IfcProperties:
         #self.ifcEditor.treeProperties.setDragDropMode(QtGui.QAbstractItemView.InternalMove)
         self.form.treeProperties.setUniformRowHeights(True)
         self.form.treeProperties.setItemDelegate(propertiesDelegate(container=self,ptypes=self.ptypes,plabels=self.plabels))
+        self.form.labelinfo.setText(self.form.labelinfo.text()+" "+translate("BIM","Custom properties sets can be defined in")+" "+custompath)
 
         # set combos
         self.form.comboProperty.addItems([translate("BIM", "Add property...")]+self.plabels)
