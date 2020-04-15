@@ -99,12 +99,10 @@ class BIM_IfcProperties:
             self.ptypes = ArchComponent.SimplePropertyTypes + ArchComponent.MeasurePropertyTypes
         self.plabels = [''.join(map(lambda x: x if x.islower() else " "+x, t[3:]))[1:] for t in self.ptypes]
         self.psetdefs = {}
-        psetspath = os.path.join(FreeCAD.getResourceDir(),"Mod","Arch","Presets","pset_definitions.csv")
-        if os.path.exists(psetspath):
-            with open(psetspath, "r") as csvfile:
-                reader = csv.reader(csvfile, delimiter=';')
-                for row in reader:
-                    self.psetdefs[row[0]] = row[1:]
+        psetpath = os.path.join(FreeCAD.getResourceDir(),"Mod","Arch","Presets","pset_definitions.csv")
+        custompath = os.path.join(FreeCAD.getUserAppDataDir(),"BIM","CustomPsets.csv")
+        self.psetdefs = self.readFromCSV(psetpath)
+        self.psetdefs.update(self.readFromCSV(custompath))
         self.psetkeys = [''.join(map(lambda x: x if x.islower() else " "+x, t[5:]))[1:] for t in self.psetdefs.keys()]
         self.psetkeys.sort()
         self.propmodel = QtGui.QStandardItemModel()
@@ -160,6 +158,17 @@ class BIM_IfcProperties:
             self.updateDefault()
         self.model.sort(0)
         self.form.tree.setColumnWidth(0,300)
+
+    def readFromCSV(self,csvfile):
+        """reads a csv file and returns a dict"""
+
+        result = {}
+        if os.path.exists(csvfile):
+            with open(csvfile, "r") as f:
+                reader = csv.reader(f, delimiter=';')
+                for row in reader:
+                    result[row[0]] = row[1:]
+        return result
 
     def updateByType(self):
 
