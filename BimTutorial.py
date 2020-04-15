@@ -116,6 +116,8 @@ class BIM_Tutorial:
                 FreeCAD.Console.PrintError(translate("BIM","Unable to access the tutorial. Verify that you are online (This is needed only once).")+"\n")
                 return
         else:
+            if not os.path.exists(os.path.dirname(offlineloc)):
+                os.makedirs(os.path.dirname(offlineloc))
             f = open(offlineloc,"w")
             f.write(html)
             f.close()
