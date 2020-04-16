@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>269</width>
-    <height>295</height>
+    <width>291</width>
+    <height>352</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,6 +19,9 @@
    </property>
    <item>
     <widget class="QTreeWidget" name="tree">
+     <property name="editTriggers">
+      <set>QAbstractItemView::EditKeyPressed</set>
+     </property>
      <property name="rootIsDecorated">
       <bool>false</bool>
      </property>
@@ -156,6 +159,25 @@
        </property>
        <property name="toolTip">
         <string>Saves the current camera position to the selected items</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="flat">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="buttonRename">
+       <property name="maximumSize">
+        <size>
+         <width>32</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="toolTip">
+        <string>Rename the selected item</string>
        </property>
        <property name="text">
         <string/>

@@ -318,7 +318,7 @@ class BIM_Convert:
 
         import Arch_rc
         return {'Pixmap'  : ":/icons/Arch_Component.svg",
-                'MenuText': QT_TRANSLATE_NOOP("BIM_Convert", "Convert to BIM type..."),
+                'MenuText': QT_TRANSLATE_NOOP("BIM_Convert", "Convert to BIM"),
                 'ToolTip' : QT_TRANSLATE_NOOP("BIM_Convert", "Converts any object to a BIM component")}
 
     def IsActive(self):

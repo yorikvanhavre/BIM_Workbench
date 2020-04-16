@@ -89,7 +89,8 @@ class BIM_Views:
                            dialog.buttonDelete,
                            dialog.buttonToggle,
                            dialog.buttonIsolate,
-                           dialog.buttonSaveView]:
+                           dialog.buttonSaveView,
+                           dialog.buttonRename]:
                 button.setMaximumSize(QtCore.QSize(size+4,size+4))
                 button.setIconSize(QtCore.QSize(size,size))
 
@@ -101,6 +102,7 @@ class BIM_Views:
             dialog.buttonToggle.setIcon(QtGui.QIcon(":/icons/dagViewVisible.svg"))
             dialog.buttonIsolate.setIcon(QtGui.QIcon(":/icons/view-refresh.svg"))
             dialog.buttonSaveView.setIcon(QtGui.QIcon(":/icons/view-perspective.svg"))
+            dialog.buttonRename.setIcon(QtGui.QIcon(":/icons/accessories-text-editor.svg"))
 
             # connect signals
             dialog.buttonAddLevel.clicked.connect(self.addLevel)
@@ -109,8 +111,10 @@ class BIM_Views:
             dialog.buttonToggle.clicked.connect(self.toggle)
             dialog.buttonIsolate.clicked.connect(self.isolate)
             dialog.buttonSaveView.clicked.connect(self.saveView)
+            dialog.buttonRename.clicked.connect(self.rename)
             dialog.tree.itemClicked.connect(self.select)
             dialog.tree.itemDoubleClicked.connect(show)
+            dialog.tree.itemChanged.connect(self.renameObject)
 
             # set the dock widget
             vm.setObjectName("BIM Views Manager")
@@ -137,7 +141,7 @@ class BIM_Views:
         from PySide import QtCore,QtGui
         vm = findWidget()
         if vm and FreeCAD.ActiveDocument:
-            if vm.isVisible():
+            if vm.isVisible() and (vm.tree.state() != vm.tree.EditingState):
                 vm.tree.clear()
                 import Draft
                 for obj in FreeCAD.ActiveDocument.Objects:
@@ -147,23 +151,27 @@ class BIM_Views:
                         if t in ["Building","BuildingPart"]:
                             u = FreeCAD.Units.Quantity(obj.Placement.Base.z,FreeCAD.Units.Length).UserString
                         it = QtGui.QTreeWidgetItem([obj.Label,u])
+                        it.setFlags(it.flags() | QtCore.Qt.ItemIsEditable)
                         it.setToolTip(0,obj.Name)
                         if obj.ViewObject:
                             if hasattr(obj.ViewObject,"Proxy") and hasattr(obj.ViewObject.Proxy,"getIcon"):
                                 it.setIcon(0,QtGui.QIcon(obj.ViewObject.Proxy.getIcon()))
                         vm.tree.addTopLevelItem(it)
+                        #if obj.Name in selected:
+                        if obj in FreeCADGui.Selection.getSelection():
+                            it.setSelected(True)
         if retrigger:
             QtCore.QTimer.singleShot(UPDATEINTERVAL, self.update)
-        
+
         # save state
         pref = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM")
         pref.SetInt("ViewManagerColumnWidth",vm.tree.columnWidth(0))
         pref.SetFloat("ViewManagerFloating",vm.isFloating())
 
     def select(self,item,column=None):
-        
+
         "selects a doc object corresponding to an item"
-        
+
         name = item.toolTip(0)
         obj = FreeCAD.ActiveDocument.getObject(name)
         if obj:
@@ -171,7 +179,7 @@ class BIM_Views:
             FreeCADGui.Selection.addSelection(obj)
 
     def addLevel(self):
-        
+
         "adds a building part"
 
         import Arch
@@ -193,7 +201,7 @@ class BIM_Views:
         self.update(False)
 
     def delete(self):
-        
+
         "deletes the selected object"
 
         vm = findWidget()
@@ -207,6 +215,26 @@ class BIM_Views:
                 FreeCAD.ActiveDocument.commitTransaction()
                 FreeCAD.ActiveDocument.recompute()
                 self.update(False)
+
+    def rename(self):
+
+        "renames the selected object"
+
+        vm = findWidget()
+        if vm:
+            if vm.tree.selectedItems():
+                if vm.tree.selectedItems():
+                    item = vm.tree.selectedItems()[-1]
+                    vm.tree.editItem(item,0)
+
+    def renameObject(self,item,column):
+
+        "renames the actual object"
+
+        if column == 0:
+            obj = FreeCAD.ActiveDocument.getObject(item.toolTip(column))
+            if obj:
+                obj.Label = item.text(column)
 
     def toggle(self):
 
@@ -223,7 +251,7 @@ class BIM_Views:
     def isolate(self):
 
         "turns all items off except the selected ones"
-        
+
         vm = findWidget()
         if vm:
             onnames = [item.toolTip(0) for item in vm.tree.selectedItems()]
@@ -272,16 +300,21 @@ def show(item,column=None):
 
     "item has been double-clicked"
 
+    obj = None
     vm = findWidget()
     if isinstance(item,str) or ((sys.version_info.major < 3) and isinstance(item,unicode)):
+        # called from Python code
         obj = FreeCAD.ActiveDocument.getObject(item)
     else:
+        # called from GUI
         if column == 1:
             # user clicked the level field
             if vm:
                 vm.tree.editItem(item,column)
                 return
-        obj = FreeCAD.ActiveDocument.getObject(item.toolTip(0))
+        else:
+            # TODO find a way to not edit the object name
+            obj = FreeCAD.ActiveDocument.getObject(item.toolTip(0))
     if obj:
         FreeCADGui.Selection.clearSelection()
         FreeCADGui.Selection.addSelection(obj)
