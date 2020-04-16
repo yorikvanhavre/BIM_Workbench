@@ -22,7 +22,14 @@
 
 """This module contains FreeCAD commands for the BIM workbench"""
 
-import os,FreeCAD,FreeCADGui,Draft,Arch,Part,csv,re
+import os,csv,re,sys
+import FreeCAD
+import FreeCADGui
+import Part
+import Draft
+import Arch
+import importlib
+import inspect
 from PySide import QtCore,QtGui
 from DraftTools import translate
 
@@ -80,6 +87,43 @@ class BIM_Preflight_TaskPanel:
             self.results[test] = None
             self.culprits[test] = None
 
+        # setup custom tests
+        self.customTests = {}
+        customModulePath = os.path.join(FreeCAD.getUserAppDataDir(),"BIM","Preflight")
+        if os.path.exists(customModulePath):
+            customModules = [m[:-3] for m in os.listdir(customModulePath) if m.endswith(".py")]
+            if customModules:
+                sys.path.append(customModulePath)
+                for customModule in customModules:
+                    mod = importlib.import_module(customModule)
+                    if not "Preflight" in mod.__file__:
+                        # prevent from using other modules with same name
+                        FreeCAD.Console.PrintLog("Preflight: loaded wrong module - skipping: "+customModule+" "+str(mod)+"\n")
+                        continue
+                    FreeCAD.Console.PrintLog("Preflight: found custom module: "+customModule+" "+str(mod)+"\n")
+                    functions = [o[0] for o in inspect.getmembers(mod) if inspect.isfunction(o[1])]
+                    if functions:
+                        box = QtGui.QGroupBox(customModule)
+                        lay = QtGui.QGridLayout(box)
+                        self.form.layout().addWidget(box)
+                        for funcname in functions:
+                            FreeCAD.Console.PrintLog("Preflight: found custom test: "+funcname+"\n")
+                            func = getattr(mod,funcname)
+                            descr = func.__doc__
+                            if not descr:
+                                descr = "Undefined"
+                            lab = QtGui.QLabel(descr)
+                            lab.setWordWrap(True)
+                            but = QtGui.QPushButton()
+                            butname = "Custom_"+customModule+"_"+funcname
+                            but.setObjectName(butname)
+                            setattr(self.form,butname,but)
+                            self.reset(butname)
+                            row = lay.rowCount()
+                            lay.addWidget(lab,row,0)
+                            lay.addWidget(but,row,1)
+                            but.clicked.connect(lambda: self.testCustom(butname))
+                            self.customTests[butname] = func
 
     def getStandardButtons(self):
 
@@ -124,8 +168,8 @@ class BIM_Preflight_TaskPanel:
 
         "shows test results"
 
-        if self.results[test]:
-            if self.culprits[test]:
+        if (test in self.results) and self.results[test]:
+            if (test in self.culprits) and self.culprits[test]:
                 FreeCADGui.Selection.clearSelection()
                 for c in self.culprits[test]:
                     FreeCADGui.Selection.addSelection(c)
@@ -203,6 +247,9 @@ class BIM_Preflight_TaskPanel:
                 self.reset(test)
                 if hasattr(self,test):
                     todo.delay(getattr(self,test),None)
+        for customTest in self.customTests.keys():
+            todo.delay(self.testCustom,customTest)
+            
         FreeCADGui.BIMPreflightDone = True
 
 
@@ -814,3 +861,21 @@ class BIM_Preflight_TaskPanel:
                 msg = self.getToolTip(test)
                 self.failed(test)
             self.results[test] = msg
+
+    def testCustom(self,test):
+        
+        "performs a custom test"
+
+        if test in self.customTests:
+            if getattr(self.form,test).text() == "Failed":
+                self.show(test)
+            else:
+                self.reset(test)
+                self.results[test] = None            
+                result = self.customTests[test]()
+                if result == True:
+                    self.passed(test)
+                else:
+                    self.failed(test)
+                    self.results[test] = result
+                
