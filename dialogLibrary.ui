@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>254</width>
-    <height>436</height>
+    <height>476</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -22,41 +22,94 @@
     </widget>
    </item>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_2">
+    <layout class="QHBoxLayout" name="horizontalLayout_3">
      <item>
-      <widget class="QCheckBox" name="checkOnline">
-       <property name="toolTip">
-        <string>If this is checked, the library doesn't need to be installed. Contents will be fetched online.</string>
-       </property>
+      <widget class="QPushButton" name="buttonOptions">
        <property name="text">
-        <string>Online</string>
+        <string>Options</string>
        </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="buttonRefresh">
-       <property name="enabled">
+       <property name="checkable">
         <bool>false</bool>
        </property>
-       <property name="toolTip">
-        <string>Refresh the contents of the library. WARNING: Can take a few minutes. For faster results, install the library locally from menu Tools-&gt;Addon Manager</string>
-       </property>
-       <property name="text">
-        <string>Refresh</string>
-       </property>
-       <property name="icon">
-        <iconset theme="reload">
-         <normaloff/>
-        </iconset>
+       <property name="flat">
+        <bool>true</bool>
        </property>
       </widget>
      </item>
+     <item>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
     </layout>
+   </item>
+   <item>
+    <widget class="QFrame" name="frameOptions">
+     <property name="frameShape">
+      <enum>QFrame::StyledPanel</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Raised</enum>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_2">
+      <item>
+       <widget class="QCheckBox" name="checkOnline">
+        <property name="toolTip">
+         <string>If this is checked, the library doesn't need to be installed. Contents will be fetched online.</string>
+        </property>
+        <property name="text">
+         <string>Online mode</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="checkWebSearch">
+        <property name="toolTip">
+         <string>Open the search results inside FreeCAD's web browser instead of the system browser</string>
+        </property>
+        <property name="text">
+         <string>Open search in FreeCAD web view</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="checkFCStdOnly">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="toolTip">
+         <string>If the FCStd format is available for a certain file, do not display other file formats (STEP, IFC, etc...)</string>
+        </property>
+        <property name="text">
+         <string>Display only FCStd if available</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
    </item>
    <item>
     <widget class="QPushButton" name="buttonInsert">
      <property name="text">
       <string>Insert &gt;&gt;</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>Note: STEP and BREP files can be placed at custom location. FCStd and IFC files will be placed where objects are defined in the file.</string>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
      </property>
     </widget>
    </item>
@@ -95,35 +148,8 @@
      </property>
     </widget>
    </item>
-   <item>
-    <widget class="QLabel" name="label">
-     <property name="text">
-      <string>Note: FCStd and IFC files cannot be placed. STEP and BREP files can be placed at custom location</string>
-     </property>
-     <property name="wordWrap">
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
   </layout>
  </widget>
  <resources/>
- <connections>
-  <connection>
-   <sender>checkOnline</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>buttonRefresh</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>66</x>
-     <y>192</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>184</x>
-     <y>197</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
 </ui>

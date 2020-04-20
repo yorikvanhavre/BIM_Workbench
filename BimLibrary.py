@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 #***************************************************************************
 #*                                                                         *
 #*   Copyright (c) 2018 Yorik van Havre <yorik@uncreated.net>              *
@@ -74,9 +75,11 @@ class BIM_Library_TaskPanel:
         self.librarypath = FreeCAD.ParamGet('User parameter:Plugins/parts_library').GetString('destination','')
         self.form = FreeCADGui.PySideUic.loadUi(os.path.join(os.path.dirname(__file__),"dialogLibrary.ui"))
         self.form.setWindowIcon(QtGui.QIcon(os.path.join(os.path.dirname(__file__),"icons","BIM_Library.svg")))
+
         # setting up a flat (no directories) file model for search
         self.filemodel = QtGui.QStandardItemModel()
         self.filemodel.setColumnCount(1)
+
         # setting up a directory model that shows only fcstd, step and brep
         self.dirmodel = LibraryModel()
         self.dirmodel.setRootPath(self.librarypath)
@@ -86,6 +89,7 @@ class BIM_Library_TaskPanel:
         self.form.tree.doubleClicked[QtCore.QModelIndex].connect(self.insert)
         self.form.buttonInsert.clicked.connect(self.insert)
         self.modelmode = 1 # 0 = File search, 1 = Dir mode
+
         # Don't show columns for size, file type, and last modified
         self.form.tree.setHeaderHidden(True)
         self.form.tree.hideColumn(1)
@@ -93,6 +97,8 @@ class BIM_Library_TaskPanel:
         self.form.tree.hideColumn(3)
         self.form.tree.setRootIndex(self.dirmodel.index(self.librarypath))
         self.form.searchBox.textChanged.connect(self.onSearch)
+
+        # setup UI
         self.form.buttonBimObject.setIcon(QtGui.QIcon(os.path.join(os.path.dirname(__file__),"icons","bimobject.png")))
         self.form.buttonBimObject.clicked.connect(self.onBimObject)
         self.form.buttonNBSLibrary.setIcon(QtGui.QIcon(os.path.join(os.path.dirname(__file__),"icons","nbslibrary.png")))
@@ -100,13 +106,14 @@ class BIM_Library_TaskPanel:
         self.form.buttonBimTool.setIcon(QtGui.QIcon(os.path.join(os.path.dirname(__file__),"icons","bimtool.png")))
         self.form.buttonBimTool.clicked.connect(self.onBimTool)
         self.form.checkOnline.toggled.connect(self.onCheckOnline)
-        self.form.buttonRefresh.clicked.connect(self.onRefresh)
         self.form.checkOnline.setChecked(FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM").GetBool("LibraryOnline",False))
-        
-        # hide the refresh button when we're using the API (auto-refresh)
-        if USE_API:
-            self.form.buttonRefresh.hide()
-        
+        self.form.checkFCStdOnly.toggled.connect(self.onCheckFCStdOnly)
+        self.form.checkFCStdOnly.setChecked(FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM").GetBool("LibraryFCStdOnly",False))
+        self.form.checkWebSearch.toggled.connect(self.onCheckWebSearch)
+        self.form.checkWebSearch.setChecked(FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM").GetBool("LibraryWebSearch",False))
+        self.form.frameOptions.hide()
+        self.form.buttonOptions.clicked.connect(self.onButtonOptions)
+        self.form.buttonOptions.setText(translate("BIM","Options")+" ▼")
 
     def onSearch(self,text):
 
@@ -186,7 +193,7 @@ class BIM_Library_TaskPanel:
             fn = []
             dn = []
             dp = []
-            for k,v in dir:
+            for k,v in d.items():
                 if isinstance(v,dict):
                     fn2,dn2,dp2 = addDir(v,root+"/"+k)
                     fn.extend(fn2)
@@ -223,23 +230,33 @@ class BIM_Library_TaskPanel:
             import urllib.parse
             return urllib.parse.quote_plus(text)
 
+    def openUrl(self,url):
+
+        p = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM")
+        s = p.GetBool("LibraryWebSearch",False)
+        if s:
+            import WebGui
+            WebGui.openBrowser(url)
+        else:
+            QtGui.QDesktopServices.openUrl(url)
+
     def onBimObject(self):
 
         term = self.form.searchBox.text()
         if term:
-            QtGui.QDesktopServices.openUrl("https://www.bimobject.com/en/product?filetype=8&freetext="+self.urlencode(term))
+            self.openUrl("https://www.bimobject.com/en/product?filetype=8&freetext="+self.urlencode(term))
 
     def onNBSLibrary(self):
 
         term = self.form.searchBox.text()
         if term:
-            QtGui.QDesktopServices.openUrl("https://www.nationalbimlibrary.com/en/search/?facet=Xo-P0w&searchTerm="+self.urlencode(term))
+            self.openUrl("https://www.nationalbimlibrary.com/en/search/?facet=Xo-P0w&searchTerm="+self.urlencode(term))
 
     def onBimTool(self):
 
         term = self.form.searchBox.text()
         if term:
-            QtGui.QDesktopServices.openUrl("https://www.bimtool.com/Catalog.aspx?criterio="+self.urlencode(term))
+            self.openUrl("https://www.bimtool.com/Catalog.aspx?criterio="+self.urlencode(term))
 
     def needsFullSpace(self):
 
@@ -299,12 +316,12 @@ class BIM_Library_TaskPanel:
         FreeCADGui.SendMsgToActiveView("ViewSelection")
 
     def download(self,url):
-        
+
         filepath = os.path.join(TEMPLIBPATH,url.split("/")[-1])
         url = url.replace(" ","%20")
         if not os.path.exists(filepath):
             from PySide import QtCore,QtGui
-            QtGui.QApplication.setOverrideCursor(QtCore.Qt.WaitCursor)           
+            QtGui.QApplication.setOverrideCursor(QtCore.Qt.WaitCursor)
             u = addonmanager_utilities.urlopen(url)
             if not u:
                 FreeCAD.Console.PrintError(translate("BIM", "Error: Unable to download")+ " "+url+"\n")
@@ -402,7 +419,9 @@ class BIM_Library_TaskPanel:
 
     def getOnlineContentsWEB(self,url):
 
-        """Returns a dirs,files pair representing files found from a github url"""
+        """Returns a dirs,files pair representing files found from a github url. OBSOLETE"""
+
+        # obsolete code - now using getOnlineContentsAPI
 
         result = {}
         u = addonmanager_utilities.urlopen(url)
@@ -435,9 +454,9 @@ class BIM_Library_TaskPanel:
         return result
 
     def getOnlineContentsAPI(self,url):
-        
+
         """same as getOnlineContents but uses github API (faster)"""
-        
+
         result = {}
         import requests
         import json
@@ -536,6 +555,33 @@ class BIM_Library_TaskPanel:
             self.form.setEnabled(True)
             QtGui.QApplication.restoreOverrideCursor()
         self.setOnlineModel()
+
+    def onCheckFCStdOnly(self,state):
+
+        """if the FCStd only checkbox is clicked"""
+
+        # save state
+        p = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM")
+        p.SetBool("LibraryFCStdOnly",state)
+
+    def onCheckWebSearch(self,state):
+
+        """if the web search checkbox is clicked"""
+
+        # save state
+        p = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM")
+        p.SetBool("LibraryWebSearch",state)
+
+    def onButtonOptions(self):
+
+        """hides/shows the options"""
+
+        if self.form.frameOptions.isVisible():
+            self.form.frameOptions.hide()
+            self.form.buttonOptions.setText(translate("BIM","Options")+" ▼")
+        else:
+            self.form.frameOptions.show()
+            self.form.buttonOptions.setText(translate("BIM","Options")+" ▲")
 
 
 if FreeCAD.GuiUp:
