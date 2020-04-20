@@ -39,7 +39,6 @@ REFRESH_INTERVAL = 3600 # Min seconds between allowing a new API calls (3600 = o
 
 class BIM_Library:
 
-
     def GetResources(self):
 
         return {'Pixmap'  : os.path.join(os.path.dirname(__file__),"icons","BIM_Library.svg"),
@@ -49,7 +48,6 @@ class BIM_Library:
     def Activated(self):
 
         # setting up a min reload interval of one hour
-        FreeCADGui.BimLibrarytTimeStamp = None
         libok = False
         self.librarypath = FreeCAD.ParamGet('User parameter:Plugins/parts_library').GetString('destination','')
         if self.librarypath:
@@ -433,7 +431,7 @@ class BIM_Library_TaskPanel:
             for f in files:
                 result[f] = f
         else:
-            print("Cannot open URL:",url)
+            FreeCAD.Console.PrintError(translate("BIM","Cannot open URL")+":"+url+"\n")
         return result
 
     def getOnlineContentsAPI(self,url):
@@ -473,12 +471,12 @@ class BIM_Library_TaskPanel:
                     host[name] = name
                     count += 1
         else:
-            print("Cannot fetch GIT tree from:",url)
+            FreeCAD.Console.PrintError(translate("BIM","Could not fetch library contents")+"\n")
         #print("result:",result)
         if not result:
-            print("WARNING: No results fetched")
+            FreeCAD.Console.PrintError(translate("BIM","No results fetched from online library")+"\n")
         else:
-            print("BIM Library: Reloaded",count,"files")
+            FreeCAD.Console.PrintLog("BIM Library: Reloaded "+str(count)+" files")
         return result
 
 
@@ -487,17 +485,22 @@ class BIM_Library_TaskPanel:
         """if the Online checkbox is clicked"""
 
         # save state
-        p = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM").SetBool("LibraryOnline",state)
+        p = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM")
+        p.SetBool("LibraryOnline",state)
         if state:
             # online
             if USE_API:
                 timestamp = datetime.datetime.now()
-                if (FreeCADGui.BimLibrarytTimeStamp is None) or ((timestamp - FreeCADGui.BimLibrarytTimeStamp).total_seconds() > REFRESH_INTERVAL):
-                    print("refreshing")
-                    if FreeCADGui.BimLibrarytTimeStamp is not None:
-                        print("elapsed seconds:",(timestamp - FreeCADGui.BimLibrarytTimeStamp).total_seconds())
-                    FreeCADGui.BimLibrarytTimeStamp = timestamp
-                    self.onRefresh()
+                stored = p.GetUnsigned("LibraryTimeStamp",0)
+                if stored:
+                    stored = datetime.datetime.fromordinal(stored)
+                    if(timestamp - stored).total_seconds() > REFRESH_INTERVAL:
+                        p.SetUnsigned("LibraryTimeStamp",timestamp.toordinal())
+                        self.onRefresh()
+                    else:
+                        FreeCAD.Console.PrintLog("BIM Library: Using cached library\n")
+                else:
+                    FreeCAD.Console.PrintLog("BIM Library: Using cached library\n")
             self.setOnlineModel()
         else:
             # offline
