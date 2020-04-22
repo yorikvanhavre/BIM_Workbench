@@ -99,7 +99,6 @@ static char * IFC_xpm[] = {
 
         # create BIM commands
 
-
         FreeCADGui.addCommand('BIM_TogglePanels',BimCommands.BIM_TogglePanels())
         FreeCADGui.addCommand('BIM_Trash',BimCommands.BIM_Trash())
         FreeCADGui.addCommand('BIM_EmptyTrash',BimCommands.BIM_EmptyTrash())
@@ -154,7 +153,8 @@ static char * IFC_xpm[] = {
                               "Draft_Point"]
 
         self.annotationtools = ["Draft_Text", "Draft_ShapeString", "Draft_Dimension",
-                                "Draft_Label","Arch_Axis","Arch_AxisSystem","Arch_Grid","Arch_SectionPlane"]
+                                "Draft_Label","Arch_Axis","Arch_AxisSystem","Arch_Grid",
+                                "Arch_SectionPlane"]
 
         self.bimtools = ["Arch_Site","Arch_Building","Arch_Floor","Arch_Space","Separator",
                          "Arch_Wall","BIM_Column","BIM_Beam","BIM_Slab","Arch_Rebar","BIM_Door","Arch_Window","Arch_Pipe",
@@ -211,6 +211,8 @@ static char * IFC_xpm[] = {
             self.draftingtools.insert(5,"Draft_Arc_3Points")
         if 'Draft_CubicBezCurve' in Gui.listCommands():
             self.draftingtools.insert(len(self.draftingtools)-2,'Draft_CubicBezCurve')
+        if "Draft_AnnotationStyleEditor" in Gui.listCommands():
+            self.manage.insert(4,"Draft_AnnotationStyleEditor")
 
         # load rebar tools (Reinforcement addon)
         def QT_TRANSLATE_NOOP(scope, text):
