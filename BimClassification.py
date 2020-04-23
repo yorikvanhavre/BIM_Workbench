@@ -99,12 +99,15 @@ class BIM_Classification:
         p = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Arch").GetString("DefaultClassificationSystem","")
         presetdir = os.path.join(FreeCAD.getUserAppDataDir(),"BIM","Classification")
         if os.path.isdir(presetdir):
+            presets = []
             for f in os.listdir(presetdir):
-                if f.endswith(".xml"):
+                if f.lower().endswith(".xml") or f.lower().endswith(".ifc"):
                     n = os.path.splitext(f)[0]
-                    self.form.comboSystem.addItem(n)
-                    if n == p:
-                        self.form.comboSystem.setCurrentIndex(self.form.comboSystem.count()-1)
+                    if not n in presets:
+                        presets.append(n)
+                        self.form.comboSystem.addItem(n)
+                        if n == p:
+                            self.form.comboSystem.setCurrentIndex(self.form.comboSystem.count()-1)
 
         # connect signals
         QtCore.QObject.connect(self.form.comboSystem, QtCore.SIGNAL("currentIndexChanged(int)"), self.updateClasses)
@@ -368,6 +371,45 @@ class BIM_Classification:
                     self.addChildren(c[2],it,search)
 
     def build(self,system):
+        
+        # try to load the IFC first
+        preset = os.path.join(FreeCAD.getUserAppDataDir(),"BIM","Classification",system+".ifc")
+        if os.path.exists(preset):
+            return self.build_ifc(system)
+        else:
+            preset = os.path.join(FreeCAD.getUserAppDataDir(),"BIM","Classification",system+".xml")
+            return self.build_xmlre(system)
+
+    def build_ifc(self,system):
+        
+        # builds from ifc instead of xml
+
+        preset = os.path.join(FreeCAD.getUserAppDataDir(),"BIM","Classification",system+".ifc")
+        if not os.path.exists(preset):
+            return None
+        import ifcopenshell
+        f = ifcopenshell.open(preset)
+        classes = f.by_type("IfcClassificationReference")
+        rootclass = f.by_type("IfcClassification")
+        if rootclass:
+            rootclass = rootclass[0]
+        else:
+            return None
+        root = Item()
+        classdict = {rootclass.id():root}
+        for cl in classes:
+                currentItem = Item()
+                currentItem.Name = cl.Name
+                currentItem.Description = cl.Description
+                currentItem.ID = cl.Identification
+                if cl.ReferencedSource:
+                    if cl.ReferencedSource.id() in classdict:
+                        currentItem.parent = classdict[cl.ReferencedSource.id()]
+                        classdict[cl.ReferencedSource.id()].children.append(currentItem)
+                classdict[cl.id()] = currentItem
+        return [self.listize(c) for c in root.children]
+
+    def build_xmlre(self,system):
 
         # a replacement function to parse xml that doesn't depend on expat
 
@@ -375,7 +417,7 @@ class BIM_Classification:
         if not os.path.exists(preset):
             return None
         import codecs,re
-        d = Item(None)
+        d = Item()
         with codecs.open(preset,"r","utf-8") as f:
             currentItem = d
             for l in f:
@@ -392,10 +434,6 @@ class BIM_Classification:
                     currentItem.Name = re.findall("<Description>(.*?)</Description>",l)[0]
         return [self.listize(c) for c in d.children]
 
-    def listize(self,item):
-
-        return [item.ID, item.Name, [self.listize(it) for it in item.children]]
-
     def build_xmddom(self,system):
 
         # currently not working for me because of the infamous expat/coin bug in debian...
@@ -406,6 +444,10 @@ class BIM_Classification:
         import xml.dom.minidom
         d = xml.dom.minidom.parse(preset)
         return self.getChildren(d.getElementsByTagName("Items")[0])
+
+    def listize(self,item):
+
+        return [item.ID, item.Name, [self.listize(it) for it in item.children]]
 
     def getChildren(self,node):
 
@@ -506,7 +548,7 @@ class Item:
 
     # only used by the non-expat version
 
-    def __init__(self,parent):
+    def __init__(self,parent=None):
         self.parent = parent
         self.ID = None
         self.Name = None

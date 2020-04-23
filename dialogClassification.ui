@@ -206,7 +206,7 @@
    <item>
     <widget class="QLabel" name="labelDownload">
      <property name="text">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;XML files of several classification systems can be downloaded from &lt;a href=&quot;http://www.graphisoft.com/downloads/archicad/BIM_Data.html&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;http://www.graphisoft.com/downloads/archicad/BIM_Data.html&lt;/span&gt;&lt;/a&gt; and placed in %s&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      <string>XML or IFC files of several classification systems can be downloaded from &lt;a href=&quot;https://github.com/Moult/IfcClassification&quot;&gt;https://github.com/Moult/IfcClassification&lt;/a&gt; and placed in %s</string>
      </property>
      <property name="wordWrap">
       <bool>true</bool>
