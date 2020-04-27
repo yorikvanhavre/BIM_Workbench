@@ -24,7 +24,7 @@ from __future__ import print_function
 
 """This is the tutorial of the BIM workbench"""
 
-import os,FreeCAD,FreeCADGui,re,sys
+import os,FreeCAD,FreeCADGui,re,sys,codecs
 if sys.version_info.major < 3:
     import urllib2
 else:
@@ -118,7 +118,7 @@ class BIM_Tutorial:
         else:
             if not os.path.exists(os.path.dirname(offlineloc)):
                 os.makedirs(os.path.dirname(offlineloc))
-            f = open(offlineloc,"w")
+            f = codecs.open(offlineloc,"w","utf-8")
             f.write(html)
             f.close()
     
