@@ -62,12 +62,8 @@ def doLanguage(tempfolder,translationsfolder,lncode):
 
 if __name__ == "__main__":
     
-    args = sys.argv[1:]
-    if len(args) < 1:
-        print("You must specify a path to the freecad zip file obtained from crowdin, ex: updateFromCrowdin.py /path/to/freecad.zip")
-        sys.exit()
-    zippath = args[0]
-    translationsfolder = os.path.join(os.path.abspath(os.path.dirname(__file__)),translations)
+    zippath = os.path.join(os.path.abspath(os.path.dirname(__file__)),"freecad-addons.zip")
+    translationsfolder = os.path.join(os.path.abspath(os.path.dirname(__file__)),"..",translations)
     tempfolder = tempfile.mkdtemp()
     print ("creating temp folder " + tempfolder)
     os.chdir(tempfolder)
