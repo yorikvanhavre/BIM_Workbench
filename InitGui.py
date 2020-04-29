@@ -215,6 +215,8 @@ static char * IFC_xpm[] = {
             self.manage.insert(4,"Draft_AnnotationStyleEditor")
         if "Arch_Truss" in Gui.listCommands():
             self.bimtools.insert(self.bimtools.index("Arch_Frame")+1,"Arch_Truss")
+        if "Arch_CurtainWall" in Gui.listCommands():
+            self.bimtools.insert(self.bimtools.index("Arch_Wall")+1,"Arch_CurtainWall")
 
         # load rebar tools (Reinforcement addon)
         def QT_TRANSLATE_NOOP(scope, text):
