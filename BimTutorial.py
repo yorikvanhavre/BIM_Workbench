@@ -162,7 +162,9 @@ class BIM_Tutorial:
                             f.write(imagedata)
                             f.close()
                             u.close()
-                        descr = descr.replace(path,"file://"+storename.replace("\\","/"))
+                        #descr = descr.replace(path,"file://"+storename.replace("\\","/"))
+                        # fix for windows - seems to work everywhere else too...
+                        descr = descr.replace(path,"file:///"+storename.replace("\\","/"))
                     else:
                         print("unparsable image path:",path)
             nd.append(descr)
