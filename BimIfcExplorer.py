@@ -353,15 +353,23 @@ class BIM_IfcExplorer:
 
         "adds a given entity and its children to the given tree item"
 
+        def get_name(e):
+            try:
+                return " : " + e.get_info()['Name']
+            except KeyError:
+                return ""
+
         if not eid in self.done:
             entity = self.ifc[eid]
             item = QtGui.QTreeWidgetItem(parent)
             #item.setText(0,self.tostr(eid))
-            item.setText(0,"#"+self.tostr(eid)+" : "+self.tostr(entity.is_a()))
+            name = ""
             if entity.is_a("IfcProduct"):
+                name = get_name(entity)
                 item.setFont(0,bold)
                 if isinstance(parent,QtGui.QTreeWidgetItem):
                     parent.setExpanded(True)
+            item.setText(0,"#"+self.tostr(eid)+" : "+self.tostr(entity.is_a())+name)
             if entity.is_a() in ["IfcWall","IfcWallStandardCase"]:
                 item.setIcon(0,QtGui.QIcon(":icons/Arch_Wall_Tree.svg"))
             elif entity.is_a() in ["IfcBuildingElementProxy"]:
