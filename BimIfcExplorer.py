@@ -419,7 +419,7 @@ class BIM_IfcExplorer:
         while True:
             try:
                 argname = entity.attribute_name(i)
-            except AttributeError:
+            except RuntimeError:
                 break
             else:
                 try:
