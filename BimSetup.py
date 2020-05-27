@@ -22,9 +22,11 @@
 
 """This module contains FreeCAD commands for the BIM workbench"""
 
-import os,sys,FreeCAD,FreeCADGui
+import os,sys,FreeCAD
 from FreeCAD import Vector
-from DraftTools import translate
+if FreeCAD.GuiUp:
+    from DraftTools import translate
+    import FreeCADGui
 
 def QT_TRANSLATE_NOOP(ctx,txt): return txt # dummy function for the QT translator
 
@@ -53,6 +55,7 @@ class BIM_Setup:
 
         # connect signals / slots
         self.form.comboPresets.currentIndexChanged[int].connect(self.setPreset)
+        self.form.labelIfcOpenShell.linkActivated.connect(self.handleLink)
 
         # fill default values
         self.setPreset(None)
@@ -393,6 +396,18 @@ class BIM_Setup:
             self.form.settingCameraHeight.setValue(height)
         # TODO - antialiasing?
 
+    def handleLink(self,link):
+        
+        if hasattr(self,"form"):
+            if "#install" in link:
+                getIfcOpenShell()
+            else:
+                #print("Opening link:",link)
+                from PySide import QtCore,QtGui
+                url = QtCore.QUrl(link)
+                QtGui.QDesktopServices.openUrl(url)
+
+
 def getPrefColor(color):
     r = ((color>>24)&0xFF)/255.0
     g = ((color>>16)&0xFF)/255.0
@@ -400,3 +415,77 @@ def getPrefColor(color):
     from PySide import QtGui
     return QtGui.QColor.fromRgbF(r,g,b)
 
+def getIfcOpenShell(force=False):
+    """downloads and installs IfcOpenShell"""
+
+    ifcok = False
+    if not force:
+        try:
+            import ifcopenshell
+        except:
+            ifcok = False
+        else:
+            ifcok = True
+
+    if not ifcok:
+        # ifcopenshell not installed
+        import re,json
+        from PySide import QtGui
+        import zipfile
+        import addonmanager_utilities
+        if force or (not FreeCAD.GuiUp):
+            reply = QtGui.QMessageBox.Yes
+        else:
+            reply = QtGui.QMessageBox.question(None,
+                                               translate("BIM","IfcOpenShell not found"),
+                                               translate("BIM","IfcOpenShell is needed to import and export IFC files. It appears to be missing on your system. Would you like to download and install it now? It will be installed in FreeCAD's Macros directory."),
+                                               QtGui.QMessageBox.Yes | QtGui.QMessageBox.No, 
+                                               QtGui.QMessageBox.No)
+        if reply == QtGui.QMessageBox.Yes:
+            print("Loading list of latest IfcOpenBot builds from https://github.com/IfcOpenBot/IfcOpenShell...")
+            url1 = "https://api.github.com/repos/IfcOpenBot/IfcOpenShell/comments?per_page=100"
+            u = addonmanager_utilities.urlopen(url1)
+            if u:
+                r = u.read()
+                u.close()
+                d = json.loads(r)
+                l = d[-1]['body']
+                links = re.findall("http.*?zip",l)
+                pyv = "python-"+str(sys.version_info.major)+str(sys.version_info.minor)
+                if sys.platform.startswith("linux"):
+                    plat = "linux"
+                elif sys.platform.startswith("win"):
+                    plat = "win"
+                elif sys.platform.startswith("darwin"):
+                    plat = "macos"
+                else:
+                    print("Error - unknown platform")
+                    return
+                if sys.maxsize > 2**32:
+                    plat += "64"
+                else:
+                    plat += "32"
+                print("Looking for",plat,pyv)
+                for link in links:
+                    if ("ifcopenshell-"+pyv in link) and (plat in link):
+                        print("Downloading "+link+"...")
+                        p = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Macro")
+                        fp = p.GetString("MacroPath",os.path.join(FreeCAD.getUserAppDataDir(),"Macros"))
+                        u = addonmanager_utilities.urlopen(link)
+                        if u:
+                            if sys.version_info.major < 3:
+                                import StringIO as io
+                                _stringio = io.StringIO
+                            else:
+                                import io
+                                _stringio = io.BytesIO
+                            zfile = _stringio()
+                            zfile.write(u.read())
+                            zfile = zipfile.ZipFile(zfile)
+                            zfile.extractall(fp)
+                            u.close()
+                            zfile.close()
+                            print("Successfully installed IfcOpenShell to",fp)
+                            break
+                else:
+                    print("Unable to find a build for your version")
