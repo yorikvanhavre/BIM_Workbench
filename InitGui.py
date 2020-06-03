@@ -93,6 +93,11 @@ static char * IFC_xpm[] = {
         import BimIfcExplorer
         import BimLayers
 
+        # experimental arch tools
+        from archguitools import gui_wall
+        from archguitools import gui_openings
+        from archguitools import gui_joinwalls
+        from archguitools import gui_archview
 
         # add translations path
         FreeCADGui.addLanguagePath(BimCommands.getLanguagePath())
@@ -179,6 +184,10 @@ static char * IFC_xpm[] = {
         self.manage = ["BIM_Setup","BIM_Project","BIM_Views","BIM_Windows","BIM_IfcElements",
                        "BIM_IfcQuantities","BIM_IfcProperties","BIM_Classification",
                        "BIM_Material","Arch_Schedule","BIM_Preflight"]
+
+        self.experimentaltools = ["Arch_Wall2","Arch_JoinWalls", "Separator", 
+                                  "Arch_Opening", "Arch_Door2", "Arch_Window2", "Separator",
+                                  "Arch_View"]
 
         if "Draft_WorkingPlaneProxy" in Gui.listCommands():
             _tool = "Draft_WorkingPlaneProxy"
@@ -310,6 +319,7 @@ static char * IFC_xpm[] = {
         self.appendToolbar(QT_TRANSLATE_NOOP("BIM","Annotation tools"),self.annotationtools)
         self.appendToolbar(QT_TRANSLATE_NOOP("BIM","Modification tools"),self.modify)
         self.appendToolbar(QT_TRANSLATE_NOOP("BIM","Manage tools"),self.manage)
+        self.appendToolbar(QT_TRANSLATE_NOOP("BIM","Experimental tools"),self.experimentaltools)
         #if flamingo:
         #    self.appendToolbar("Flamingo tools",flamingo)
 
