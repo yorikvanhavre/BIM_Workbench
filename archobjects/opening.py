@@ -61,7 +61,8 @@ class Opening(object):
 
         # Ifc Properties ----------------------------------------------------
         # IFCutils.set_ifc_properties(obj, "IfcProduct")
-        # obj.IfcType = "Opening Element"
+        obj.addProperty('App::PropertyString', 'IfcType', 'Ifc')
+        obj.IfcType = "Opening Element"
         # IFCutils.setup_ifc_attributes(obj)
         # obj.PredefinedType = "OPENING"
 
