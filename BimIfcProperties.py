@@ -512,7 +512,7 @@ class BIM_IfcProperties:
                     if name in self.objectslist:
                         for prop in remove:
                             if prop in self.objectslist[name][1]:
-                                print("deleting",prop)
+                                #print("deleting",prop)
                                 del self.objectslist[name][1][prop]
 
     def addProperty(self,idx=0,pset=None,prop=None,ptype=None):
@@ -604,11 +604,14 @@ class BIM_IfcProperties:
             item = self.propmodel.itemFromIndex(sel[0])
             if item.toolTip() == "PropertySet":
                 for i in range(item.rowCount()):
-                    remove.append(item.child(i,0).text())
+                    remove.append(item.child(i,0).text()+";;"+item.text())
                 self.propmodel.takeRow(sel[0].row())
             else:
                 pset = self.propmodel.itemFromIndex(sel[0].parent())
-                remove.append(item.text())
+                itemtext = item.text()
+                if isinstance(pset,QtGui.QStandardItem):
+                    itemtext += ";;"+pset.text()
+                remove.append(itemtext)
                 pset.takeRow(sel[0].row())
             self.updateDicts(remove=remove)
 
