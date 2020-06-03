@@ -25,7 +25,7 @@
 
 import FreeCAD as App
 
-from archutils import IFCutils
+# from archutils import IFCutils TODO: understand how to apply IFC Properties to C++ objects
 
 
 def make_type_opening(ifc_type):
@@ -85,9 +85,9 @@ def make_type_window(window_template=None, height=1350, width=800):
        window_type.Width = width
 
     # Ifc properties setup
-    IFCutils.set_ifc_properties(window_type, "IfcType") # IfcType not supported yet, treated as a IfcProduct
-    window_type.IfcType = "Window"
-    IFCutils.setup_ifc_attributes(window_type)
+    #IFCutils.set_ifc_properties(window_type, "IfcType") # IfcType not supported yet, treated as a IfcProduct
+    #window_type.IfcType = "Window"
+    #IFCutils.setup_ifc_attributes(window_type)
 
 
 def make_type_door(door_template=None, height=2100, width=800):
@@ -108,6 +108,6 @@ def make_type_door(door_template=None, height=2100, width=800):
        door_type.Width = width
 
     # Ifc properties setup
-    IFCutils.set_ifc_properties(door_type, "IfcType") # IfcType not supported yet, treated as a IfcProduct
-    door_type.IfcType = "Window"
-    IFCutils.setup_ifc_attributes(door_type)
+    #IFCutils.set_ifc_properties(door_type, "IfcType") # IfcType not supported yet, treated as a IfcProduct
+    #door_type.IfcType = "Window"
+    #IFCutils.setup_ifc_attributes(door_type)

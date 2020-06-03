@@ -31,7 +31,7 @@ inside the Opening objects.
 
 import FreeCAD as App
 
-from archutils import IFCutils
+# from archutils import IFCutils
 
 
 def make_template_opening(ifc_type="Window"):
