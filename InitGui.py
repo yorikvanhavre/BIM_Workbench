@@ -226,6 +226,8 @@ static char * IFC_xpm[] = {
             self.bimtools.insert(self.bimtools.index("Arch_Frame")+1,"Arch_Truss")
         if "Arch_CurtainWall" in Gui.listCommands():
             self.bimtools.insert(self.bimtools.index("Arch_Wall")+1,"Arch_CurtainWall")
+        if "Arch_Profile" in Gui.listCommands():
+            self.bimtools.insert(self.bimtools.index("BIM_Box"),"Arch_Profile")
 
         # load rebar tools (Reinforcement addon)
         def QT_TRANSLATE_NOOP(scope, text):
