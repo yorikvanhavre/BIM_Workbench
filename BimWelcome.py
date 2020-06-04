@@ -22,12 +22,9 @@
 
 """This module contains FreeCAD commands for the BIM workbench"""
 
-import os,FreeCAD,FreeCADGui
-
-from PySide import QtCore,QtGui
-
-def QT_TRANSLATE_NOOP(ctx,txt): return txt # dummy function for the QT translator
-
+import os
+import FreeCAD
+from BimTranslateUtils import *
 
 
 class BIM_Welcome:
@@ -41,6 +38,8 @@ class BIM_Welcome:
 
     def Activated(self):
 
+        import FreeCADGui
+        from PySide import QtCore,QtGui
         # load dialog
         self.form = FreeCADGui.PySideUic.loadUi(os.path.join(os.path.dirname(__file__),"dialogWelcome.ui"))
 
@@ -64,7 +63,9 @@ class BIM_Welcome:
         FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM").SetBool("FirstTime",False)
 
     def handleLink(self,link):
-        
+
+        import FreeCADGui
+        from PySide import QtCore,QtGui
         if hasattr(self,"form"):
             self.form.hide()
             if "BIM_Start_Tutorial" in link:

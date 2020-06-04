@@ -90,7 +90,7 @@ class BIM_Sketch:
 
     def GetResources(self):
 
-        return {'Pixmap'  : ":/icons/Sketcher_NewSketch.svg",
+        return {'Pixmap'  : os.path.join(os.path.dirname(__file__),"icons","Sketch.svg"),
                 'MenuText': QT_TRANSLATE_NOOP("BIM_Sketch", "Sketch"),
                 'ToolTip' : QT_TRANSLATE_NOOP("BIM_Sketch", "Creates a new sketch in the current working plane"),
                 'Accel'   : 'S,K'}

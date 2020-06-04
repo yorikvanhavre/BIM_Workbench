@@ -22,16 +22,15 @@
 #*                                                                         *
 #***************************************************************************
 
-"""This module contains FreeCAD commands for the BIM workbench"""
+"""Locate the translation utils"""
 
-import os,FreeCAD,FreeCADGui,Draft,DraftTools,ArchWindow
-
-def QT_TRANSLATE_NOOP(ctx,txt): return txt # dummy function for the QT translator
-from DraftTools import translate
+import FreeCAD
 
 # dummy function for the QT translator
 def QT_TRANSLATE_NOOP(ctx,txt): 
     return txt
+
+# use latest available translate function
 if hasattr(FreeCAD,"Qt"):
     translate = FreeCAD.Qt.translate
 else:

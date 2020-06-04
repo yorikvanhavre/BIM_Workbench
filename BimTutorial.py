@@ -24,23 +24,16 @@ from __future__ import print_function
 
 """This is the tutorial of the BIM workbench"""
 
-import os,FreeCAD,FreeCADGui,re,sys,codecs
-if sys.version_info.major < 3:
-    import urllib2
-else:
-    import urllib.request as urllib2
-from PySide import QtCore,QtGui
-from DraftTools import translate
 
-def QT_TRANSLATE_NOOP(ctx,txt): return txt # dummy function for the QT translator
+import os
+import FreeCAD
+from BimTranslateUtils import *
+
 
 html = """<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd">
 <html><head><meta name="qrichtext" content="1" /><style type="text/css">
 p, li { white-space: pre-wrap; }</style></head><body>inserthere</body></html>"""
 
-PIXYES = QtGui.QPixmap(":/icons/button_valid.svg").scaled(16,16)
-PIXNO = QtGui.QPixmap(":/icons/button_right.svg").scaled(16,16)
-PIXEMPTY = QtGui.QPixmap()
 URL = "https://www.freecadweb.org/wiki/BIM_ingame_tutorial"
 TESTINTERVAL = 1000 # interval between tests
 
@@ -56,6 +49,8 @@ class BIM_Tutorial:
 
     def Activated(self):
 
+        import FreeCADGui
+        from PySide import QtCore,QtGui
         # find existing tutorial
         m = FreeCADGui.getMainWindow()
         self.dock = m.findChild(QtGui.QDockWidget,"BIMTutorial")
@@ -82,6 +77,11 @@ class BIM_Tutorial:
 
             m.addDockWidget(QtCore.Qt.RightDockWidgetArea,self.dock)
 
+            # load icons
+            self.pixyes = QtGui.QPixmap(":/icons/button_valid.svg").scaled(16,16)
+            self.pixno = QtGui.QPixmap(":/icons/button_right.svg").scaled(16,16)
+            self.pixempty = QtGui.QPixmap()
+
             # fire the loading after displaying the widget
             from DraftGui import todo
             #self.load()
@@ -89,6 +89,12 @@ class BIM_Tutorial:
             QtCore.QTimer.singleShot(1000,self.load)
 
     def load(self,arg=None):
+
+        import re,sys,codecs
+        if sys.version_info.major < 3:
+            import urllib2
+        else:
+            import urllib.request as urllib2
 
         # initial loading
 
@@ -190,6 +196,8 @@ class BIM_Tutorial:
 
     def update(self):
 
+        from PySide import QtCore,QtGui
+
         if not hasattr(self,"form") or not self.form or not hasattr(self,"dock"):
             return
 
@@ -207,14 +215,14 @@ class BIM_Tutorial:
         self.form.textEdit.setHtml(html.replace("inserthere",t))
         self.form.labelGoal1.setText(self.goal1[self.step])
         if self.goal1[self.step]:
-            self.form.labelIcon1.setPixmap(PIXNO)
+            self.form.labelIcon1.setPixmap(self.pixno)
         else:
-            self.form.labelIcon1.setPixmap(PIXEMPTY)
+            self.form.labelIcon1.setPixmap(self.pixempty)
         self.form.labelGoal2.setText(self.goal2[self.step])
         if self.goal2[self.step]:
-            self.form.labelIcon2.setPixmap(PIXNO)
+            self.form.labelIcon2.setPixmap(self.pixno)
         else:
-            self.form.labelIcon2.setPixmap(PIXEMPTY)
+            self.form.labelIcon2.setPixmap(self.pixempty)
         if self.goal1[self.step] or self.goal2[self.step]:
             self.form.labelTasks.show()
         else:
@@ -242,6 +250,8 @@ class BIM_Tutorial:
 
     def checkGoals(self):
 
+        from PySide import QtCore,QtGui
+
         if not hasattr(self,"form"):
             return
 
@@ -255,7 +265,7 @@ class BIM_Tutorial:
                         result = False
                         self.done1 = True
                     if result:
-                        self.form.labelIcon1.setPixmap(PIXYES)
+                        self.form.labelIcon1.setPixmap(self.pixyes)
                         self.done1 = True
 
         if self.goal2[self.step]:
@@ -268,7 +278,7 @@ class BIM_Tutorial:
                         result = False
                         self.done2 = True
                     if result:
-                        self.form.labelIcon2.setPixmap(PIXYES)
+                        self.form.labelIcon2.setPixmap(self.pixyes)
                         self.done2 = True
 
         if (self.test1[self.step] or self.test2[self.step]) and ((not self.done1) or (not self.done2)):

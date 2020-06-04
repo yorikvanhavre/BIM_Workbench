@@ -24,13 +24,9 @@
 
 """This module contains FreeCAD commands for the BIM workbench"""
 
-import sys,os,FreeCAD,FreeCADGui,Arch_rc,csv
-from PySide import QtCore,QtGui
-from DraftTools import translate
-
-def QT_TRANSLATE_NOOP(ctx,txt): return txt # dummy function for the QT translator
-
-
+import os
+import FreeCAD
+from BimTranslateUtils import *
 
 class BIM_IfcProperties:
 
@@ -53,6 +49,8 @@ class BIM_IfcProperties:
 
     def Activated(self):
 
+        import FreeCADGui
+        from PySide import QtCore,QtGui
         try:
             import ArchIFC
             self.ifcroles = ArchIFC.IfcTypes
@@ -126,6 +124,7 @@ class BIM_IfcProperties:
 
     def rebuildObjectsList(self):
 
+        import FreeCADGui
         # build objects list and fill search terms
         objectslist = {}
         searchterms = [""]
@@ -157,8 +156,6 @@ class BIM_IfcProperties:
 
         "updates the tree widgets in all tabs"
 
-        import Draft
-
         self.model.clear()
         self.model.setHorizontalHeaderLabels([translate("BIM","Label"),translate("BIM","IFC type"),translate("BIM","Search results")])
         #self.form.tree.header().setResizeMode(QtGui.QHeaderView.Stretch)
@@ -178,6 +175,7 @@ class BIM_IfcProperties:
     def readFromCSV(self,csvfile):
         """reads a csv file and returns a dict"""
 
+        import csv
         result = {}
         if os.path.exists(csvfile):
             with open(csvfile, "r") as f:
@@ -188,6 +186,7 @@ class BIM_IfcProperties:
 
     def updateByType(self):
 
+        from PySide import QtCore,QtGui
         groups = {}
         for name,role in self.objectslist.items():
             role = role[0]
@@ -226,6 +225,7 @@ class BIM_IfcProperties:
 
     def updateByTree(self):
 
+        from PySide import QtCore,QtGui
         # order by hierarchy
         def istop(obj):
             for parent in obj.InList:
@@ -289,6 +289,7 @@ class BIM_IfcProperties:
 
     def updateDefault(self):
 
+        from PySide import QtCore,QtGui
         for name,role in self.objectslist.items():
             role = role[0]
             obj = FreeCAD.ActiveDocument.getObject(name)
@@ -340,6 +341,7 @@ class BIM_IfcProperties:
 
     def getSearchResults(self,obj):
 
+        from PySide import QtCore,QtGui
         text = self.form.searchField.currentText()
         if not text:
             return QtGui.QStandardItem()
@@ -372,8 +374,8 @@ class BIM_IfcProperties:
 
     def updateProperties(self,sel1=None,sel2=None):
 
+        from PySide import QtCore,QtGui
         self.propmodel.clear()
-
         self.propmodel.setHorizontalHeaderLabels([QtGui.QApplication.translate("Arch", "Property", None),
                                                  QtGui.QApplication.translate("Arch", "Type", None),
                                                  QtGui.QApplication.translate("Arch", "Value", None)])
@@ -517,6 +519,7 @@ class BIM_IfcProperties:
 
     def addProperty(self,idx=0,pset=None,prop=None,ptype=None):
 
+        from PySide import QtCore,QtGui
         if not self.form.tree.selectedIndexes():
             return
         if not pset:
@@ -565,6 +568,7 @@ class BIM_IfcProperties:
 
     def addPset(self,idx):
 
+        from PySide import QtCore,QtGui
         if not self.form.tree.selectedIndexes():
             return
         if idx == 1:
@@ -598,6 +602,7 @@ class BIM_IfcProperties:
 
     def removeProperty(self):
 
+        from PySide import QtCore,QtGui
         sel = self.form.treeProperties.selectedIndexes()
         remove = []
         if sel:
@@ -628,109 +633,113 @@ class BIM_IfcProperties:
         FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM").SetInt("IfcPropertiesVisibleState",index)
         self.update()
 
+if FreeCAD.GuiUp:
 
-class propertiesDelegate(QtGui.QStyledItemDelegate):
+    from PySide import QtCore,QtGui
 
-
-    def __init__(self, parent=None, container=None, ptypes=[], plabels=[], *args):
-
-        self.container = container
-        QtGui.QStyledItemDelegate.__init__(self, parent, *args)
-        self.ptypes = ptypes
-        self.plabels = plabels
-
-    def createEditor(self,parent,option,index):
-
-        if index.column() == 0: # property name
-            editor = QtGui.QLineEdit(parent)
-        elif index.column() == 1: # property type
-            editor = QtGui.QComboBox(parent)
-        else: # property value
-            ptype = index.sibling(index.row(),1).data()
-            if "Integer" in ptype:
-                editor = QtGui.QSpinBox(parent)
-            elif "Real" in ptype:
-                editor = QtGui.QDoubleSpinBox(parent)
-                editor.setDecimals(FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Units").GetInt("Decimals",2))
-            elif ("Boolean" in ptype) or ("Logical" in ptype):
-                editor = QtGui.QComboBox(parent)
-                editor.addItems(["True","False"])
-            elif "Measure" in ptype:
-                editor = FreeCADGui.UiLoader().createWidget("Gui::InputField")
-                editor.setParent(parent)
-            else:
+    class propertiesDelegate(QtGui.QStyledItemDelegate):
+    
+    
+        def __init__(self, parent=None, container=None, ptypes=[], plabels=[], *args):
+    
+            self.container = container
+            QtGui.QStyledItemDelegate.__init__(self, parent, *args)
+            self.ptypes = ptypes
+            self.plabels = plabels
+    
+        def createEditor(self,parent,option,index):
+    
+            if index.column() == 0: # property name
                 editor = QtGui.QLineEdit(parent)
-            editor.setObjectName("editor_"+ptype)
-        return editor
-
-    def setEditorData(self, editor, index):
-
-        if index.column() == 0:
-            editor.setText(index.data())
-        elif index.column() == 1:
-            editor.addItems(self.plabels)
-            if index.data() in self.plabels:
-                idx = self.plabels.index(index.data())
-                editor.setCurrentIndex(idx)
-        else:
-            if "Integer" in editor.objectName():
-                try:
-                    editor.setValue(int(index.data()))
-                except (ValueError,AttributeError):
-                    editor.setValue(0)
-            elif "Real" in editor.objectName():
-                try:
-                    editor.setValue(float(index.data()))
-                except (ValueError,AttributeError):
-                    editor.setValue(0)
-            elif ("Boolean" in editor.objectName()) or ("Logical" in editor.objectName()):
-                try:
-                    editor.setCurrentIndex(["true","false"].index(index.data().lower()))
-                except (ValueError,AttributeError):
-                    editor.setCurrentIndex(1)
-            elif "Measure" in editor.objectName():
-                try:
-                    editor.setText(index.data())
-                except (ValueError,AttributeError):
-                    editor.setValue(0)
-            else:
+            elif index.column() == 1: # property type
+                editor = QtGui.QComboBox(parent)
+            else: # property value
+                ptype = index.sibling(index.row(),1).data()
+                if "Integer" in ptype:
+                    editor = QtGui.QSpinBox(parent)
+                elif "Real" in ptype:
+                    editor = QtGui.QDoubleSpinBox(parent)
+                    editor.setDecimals(FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Units").GetInt("Decimals",2))
+                elif ("Boolean" in ptype) or ("Logical" in ptype):
+                    editor = QtGui.QComboBox(parent)
+                    editor.addItems(["True","False"])
+                elif "Measure" in ptype:
+                    editor = FreeCADGui.UiLoader().createWidget("Gui::InputField")
+                    editor.setParent(parent)
+                else:
+                    editor = QtGui.QLineEdit(parent)
+                editor.setObjectName("editor_"+ptype)
+            return editor
+    
+        def setEditorData(self, editor, index):
+    
+            if index.column() == 0:
                 editor.setText(index.data())
-
-    def setModelData(self, editor, model, index):
-
-        remove = []
-        if index.column() == 0:
-            oldtext = index.data()
-            if oldtext != editor.text():
-                remove.append(oldtext)
-            basename = editor.text()
-            # check for duplicate name
-            names = []
-            for i in range(model.rowCount()):
-                topitem = model.item(i,0)
-                names.append(topitem.text())
-                if topitem.hasChildren():
-                    for j in range(topitem.rowCount()):
-                        childitem = topitem.child(j,0)
-                        names.append(childitem.text())
-            suffix = 1
-            newname = basename
-            while newname in names:
-                newname = basename + str(suffix).zfill(3)
-                suffix += 1
-            model.setData(index,newname)
-        elif index.column() == 1:
-            if editor.currentIndex() > -1:
-                idx = editor.currentIndex()
-                data = self.plabels[idx]
-                model.setData(index,data)
-        else:
-            if ("Integer" in editor.objectName()) or ("Real" in editor.objectName()):
-                model.setData(index,str(editor.value()))
-            elif ("Boolean" in editor.objectName()) or ("Logical" in editor.objectName()):
-                model.setData(index,editor.currentText())
-            elif "Measure" in editor.objectName():
-                model.setData(index,editor.property("text"))
+            elif index.column() == 1:
+                editor.addItems(self.plabels)
+                if index.data() in self.plabels:
+                    idx = self.plabels.index(index.data())
+                    editor.setCurrentIndex(idx)
             else:
-                model.setData(index,editor.text())
-        self.container.updateDicts(remove)
+                if "Integer" in editor.objectName():
+                    try:
+                        editor.setValue(int(index.data()))
+                    except (ValueError,AttributeError):
+                        editor.setValue(0)
+                elif "Real" in editor.objectName():
+                    try:
+                        editor.setValue(float(index.data()))
+                    except (ValueError,AttributeError):
+                        editor.setValue(0)
+                elif ("Boolean" in editor.objectName()) or ("Logical" in editor.objectName()):
+                    try:
+                        editor.setCurrentIndex(["true","false"].index(index.data().lower()))
+                    except (ValueError,AttributeError):
+                        editor.setCurrentIndex(1)
+                elif "Measure" in editor.objectName():
+                    try:
+                        editor.setText(index.data())
+                    except (ValueError,AttributeError):
+                        editor.setValue(0)
+                else:
+                    editor.setText(index.data())
+    
+        def setModelData(self, editor, model, index):
+    
+            remove = []
+            if index.column() == 0:
+                oldtext = index.data()
+                if oldtext != editor.text():
+                    remove.append(oldtext)
+                basename = editor.text()
+                # check for duplicate name
+                names = []
+                for i in range(model.rowCount()):
+                    topitem = model.item(i,0)
+                    names.append(topitem.text())
+                    if topitem.hasChildren():
+                        for j in range(topitem.rowCount()):
+                            childitem = topitem.child(j,0)
+                            names.append(childitem.text())
+                suffix = 1
+                newname = basename
+                while newname in names:
+                    newname = basename + str(suffix).zfill(3)
+                    suffix += 1
+                model.setData(index,newname)
+            elif index.column() == 1:
+                if editor.currentIndex() > -1:
+                    idx = editor.currentIndex()
+                    data = self.plabels[idx]
+                    model.setData(index,data)
+            else:
+                if ("Integer" in editor.objectName()) or ("Real" in editor.objectName()):
+                    model.setData(index,str(editor.value()))
+                elif ("Boolean" in editor.objectName()) or ("Logical" in editor.objectName()):
+                    model.setData(index,editor.currentText())
+                elif "Measure" in editor.objectName():
+                    model.setData(index,editor.property("text"))
+                else:
+                    model.setData(index,editor.text())
+            self.container.updateDicts(remove)
+    

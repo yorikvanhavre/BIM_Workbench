@@ -24,11 +24,9 @@
 
 """This module contains FreeCAD commands for the BIM workbench"""
 
-import os,FreeCAD,FreeCADGui,Arch_rc
-from PySide import QtCore,QtGui
-from DraftTools import translate
-
-def QT_TRANSLATE_NOOP(ctx,txt): return txt # dummy function for the QT translator
+import os
+import FreeCAD
+from BimTranslateUtils import *
 
 qprops = ["Length","Width","Height","Area","HorizontalArea","VerticalArea","Volume"] # quantities columns
 trqprops = [translate("BIM","Length"),
@@ -61,6 +59,8 @@ class BIM_IfcQuantities:
 
     def Activated(self):
 
+        import FreeCADGui
+        from PySide import QtCore,QtGui
         # build objects list
         self.objectslist = {}
         for obj in FreeCAD.ActiveDocument.Objects:
@@ -105,6 +105,8 @@ class BIM_IfcQuantities:
         
         "updates the tree widgets in all tabs"
 
+        import FreeCADGui
+        from PySide import QtCore,QtGui
         import Draft
 
         # quantities tab - only fill once
@@ -232,6 +234,7 @@ class BIM_IfcQuantities:
 
     def onClickTree(self,index=None):
 
+        import FreeCADGui
         FreeCADGui.Selection.clearSelection()
         sel = self.form.quantities.selectedIndexes()
         for index in sel:

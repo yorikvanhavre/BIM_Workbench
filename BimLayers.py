@@ -24,23 +24,14 @@
 
 import os
 import FreeCAD
-import FreeCADGui
-from DraftTools import translate
-import Draft
-import Draft_rc
-from PySide import QtCore,QtGui
+from BimTranslateUtils import *
 
-
-def QT_TRANSLATE_NOOP(ctx,txt):
-
-    "dummy function for the QT translator"
-
-    return txt
 
 def getColorIcon(color):
 
     "returns a QtGui.QIcon from a color 3-float tuple"
 
+    from PySide import QtCore,QtGui
     c = QtGui.QColor(int(color[0]*255),int(color[1]*255),int(color[2]*255))
     im = QtGui.QImage(48,48,QtGui.QImage.Format_ARGB32)
     im.fill(c)
@@ -60,6 +51,9 @@ class BIM_Layers:
                 'ToolTip' : QT_TRANSLATE_NOOP("BIM_Layers", "Set/modify the different layers of your BIM project")}
 
     def Activated(self):
+
+        import FreeCADGui
+        from PySide import QtCore,QtGui
 
         # store changes to be committed
         self.deleteList = []
@@ -224,6 +218,7 @@ class BIM_Layers:
 
         "rebuild the model from document contents"
 
+        import Draft
         self.model.clear()
 
         # set header
@@ -248,6 +243,7 @@ class BIM_Layers:
 
         "adds a row to the model"
 
+        from PySide import QtCore,QtGui
         # create row with default values
         onItem = QtGui.QStandardItem()
         onItem.setCheckable(True)
@@ -325,6 +321,7 @@ class BIM_Layers:
 
         "toggle selected layers on/off"
 
+        from PySide import QtCore,QtGui
         state = None
         for index in self.dialog.tree.selectedIndexes():
             if index.column() == 0:
@@ -340,6 +337,7 @@ class BIM_Layers:
 
         "isolates the selected layers (turns all the others off"
 
+        from PySide import QtCore,QtGui
         onrows = []
         for index in self.dialog.tree.selectedIndexes():
             if not index.row() in onrows:
@@ -349,83 +347,86 @@ class BIM_Layers:
                 self.model.item(row,0).setCheckState(QtCore.Qt.Unchecked)
 
 
+if FreeCAD.GuiUp:
 
-class BIM_Layers_Delegate(QtGui.QStyledItemDelegate):
+    from PySide import QtCore,QtGui
 
-    "model delegate"
+    class BIM_Layers_Delegate(QtGui.QStyledItemDelegate):
 
-    def __init__(self, parent=None, *args):
+        "model delegate"
 
-        QtGui.QStyledItemDelegate.__init__(self, parent, *args)
-        # setEditorData() is triggered several times.
-        # But we want to show the color dialog only the first time
-        self.first = True
+        def __init__(self, parent=None, *args):
 
-    def createEditor(self,parent,option,index):
-
-        if index.column() == 0: # Layer on/off
-            editor = QtGui.QCheckBox(parent)
-        if index.column() == 1: # Layer name
-            editor = QtGui.QLineEdit(parent)
-        elif index.column() == 2: # Line width
-            editor = QtGui.QSpinBox(parent)
-            editor.setMaximum(99)
-        elif index.column() == 3: # Line style
-            editor = QtGui.QComboBox(parent)
-            editor.addItems(["Solid","Dashed","Dotted","Dashdot"])
-        elif index.column() == 4: # Line color
-            editor = QtGui.QLineEdit(parent)
+            QtGui.QStyledItemDelegate.__init__(self, parent, *args)
+            # setEditorData() is triggered several times.
+            # But we want to show the color dialog only the first time
             self.first = True
-        elif index.column() == 5: # Shape color
-            editor = QtGui.QLineEdit(parent)
-            self.first = True
-        elif index.column() == 6: # Transparency
-            editor = QtGui.QSpinBox(parent)
-            editor.setMaximum(100)
-        return editor
 
-    def setEditorData(self, editor, index):
+        def createEditor(self,parent,option,index):
 
-        if index.column() == 0: # Layer on/off
-            editor.setChecked(index.data())
-        elif index.column() == 1: # Layer name
-            editor.setText(index.data())
-        elif index.column() == 2: # Line width
-            editor.setValue(index.data())
-        elif index.column() == 3: # Line style
-            editor.setCurrentIndex(["Solid","Dashed","Dotted","Dashdot"].index(index.data()))
-        elif index.column() == 4: # Line color
-            editor.setText(str(index.data(QtCore.Qt.UserRole)))
-            if self.first:
-                c = index.data(QtCore.Qt.UserRole)
-                color = QtGui.QColorDialog.getColor(QtGui.QColor(int(c[0]*255),int(c[1]*255),int(c[2]*255)))
-                editor.setText(str(color.getRgbF()))
-                self.first = False
-        elif index.column() == 5: # Shape color
-            editor.setText(str(index.data(QtCore.Qt.UserRole)))
-            if self.first:
-                c = index.data(QtCore.Qt.UserRole)
-                color = QtGui.QColorDialog.getColor(QtGui.QColor(int(c[0]*255),int(c[1]*255),int(c[2]*255)))
-                editor.setText(str(color.getRgbF()))
-                self.first = False
-        elif index.column() == 6: # Transparency
-            editor.setValue(index.data())
+            if index.column() == 0: # Layer on/off
+                editor = QtGui.QCheckBox(parent)
+            if index.column() == 1: # Layer name
+                editor = QtGui.QLineEdit(parent)
+            elif index.column() == 2: # Line width
+                editor = QtGui.QSpinBox(parent)
+                editor.setMaximum(99)
+            elif index.column() == 3: # Line style
+                editor = QtGui.QComboBox(parent)
+                editor.addItems(["Solid","Dashed","Dotted","Dashdot"])
+            elif index.column() == 4: # Line color
+                editor = QtGui.QLineEdit(parent)
+                self.first = True
+            elif index.column() == 5: # Shape color
+                editor = QtGui.QLineEdit(parent)
+                self.first = True
+            elif index.column() == 6: # Transparency
+                editor = QtGui.QSpinBox(parent)
+                editor.setMaximum(100)
+            return editor
 
-    def setModelData(self, editor, model, index):
+        def setEditorData(self, editor, index):
 
-        if index.column() == 0: # Layer on/off
-            model.setData(index,editor.isChecked())
-        elif index.column() == 1: # Layer name
-            model.setData(index,editor.text())
-        elif index.column() == 2: # Line width
-            model.setData(index,editor.value())
-        elif index.column() == 3: # Line style
-            model.setData(index,["Solid","Dashed","Dotted","Dashdot"][editor.currentIndex()])
-        elif index.column() == 4: # Line color
-            model.setData(index,eval(editor.text()),QtCore.Qt.UserRole)
-            model.itemFromIndex(index).setIcon(getColorIcon(eval(editor.text())))
-        elif index.column() == 5: # Shape color
-            model.setData(index,eval(editor.text()),QtCore.Qt.UserRole)
-            model.itemFromIndex(index).setIcon(getColorIcon(eval(editor.text())))
-        elif index.column() == 6: # Transparency
-            model.setData(index,editor.value())
+            if index.column() == 0: # Layer on/off
+                editor.setChecked(index.data())
+            elif index.column() == 1: # Layer name
+                editor.setText(index.data())
+            elif index.column() == 2: # Line width
+                editor.setValue(index.data())
+            elif index.column() == 3: # Line style
+                editor.setCurrentIndex(["Solid","Dashed","Dotted","Dashdot"].index(index.data()))
+            elif index.column() == 4: # Line color
+                editor.setText(str(index.data(QtCore.Qt.UserRole)))
+                if self.first:
+                    c = index.data(QtCore.Qt.UserRole)
+                    color = QtGui.QColorDialog.getColor(QtGui.QColor(int(c[0]*255),int(c[1]*255),int(c[2]*255)))
+                    editor.setText(str(color.getRgbF()))
+                    self.first = False
+            elif index.column() == 5: # Shape color
+                editor.setText(str(index.data(QtCore.Qt.UserRole)))
+                if self.first:
+                    c = index.data(QtCore.Qt.UserRole)
+                    color = QtGui.QColorDialog.getColor(QtGui.QColor(int(c[0]*255),int(c[1]*255),int(c[2]*255)))
+                    editor.setText(str(color.getRgbF()))
+                    self.first = False
+            elif index.column() == 6: # Transparency
+                editor.setValue(index.data())
+
+        def setModelData(self, editor, model, index):
+
+            if index.column() == 0: # Layer on/off
+                model.setData(index,editor.isChecked())
+            elif index.column() == 1: # Layer name
+                model.setData(index,editor.text())
+            elif index.column() == 2: # Line width
+                model.setData(index,editor.value())
+            elif index.column() == 3: # Line style
+                model.setData(index,["Solid","Dashed","Dotted","Dashdot"][editor.currentIndex()])
+            elif index.column() == 4: # Line color
+                model.setData(index,eval(editor.text()),QtCore.Qt.UserRole)
+                model.itemFromIndex(index).setIcon(getColorIcon(eval(editor.text())))
+            elif index.column() == 5: # Shape color
+                model.setData(index,eval(editor.text()),QtCore.Qt.UserRole)
+                model.itemFromIndex(index).setIcon(getColorIcon(eval(editor.text())))
+            elif index.column() == 6: # Transparency
+                model.setData(index,editor.value())

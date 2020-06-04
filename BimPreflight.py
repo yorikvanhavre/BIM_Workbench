@@ -22,18 +22,11 @@
 
 """This module contains FreeCAD commands for the BIM workbench"""
 
-import os,csv,re,sys
-import FreeCAD
-import FreeCADGui
-import Part
-import Draft
-import Arch
-import importlib
-import inspect
-from PySide import QtCore,QtGui
-from DraftTools import translate
 
-def QT_TRANSLATE_NOOP(ctx,txt): return txt # dummy function for the QT translator
+import os
+import FreeCAD
+from BimTranslateUtils import *
+
 
 tests = ["testAll",
          "testIFC4",
@@ -64,6 +57,8 @@ class BIM_Preflight:
                 'ToolTip' : QT_TRANSLATE_NOOP("BIM_Preflight", "Checks several characteristics of this model before exporting to IFC")}
 
     def Activated(self):
+
+        import FreeCADGui
         FreeCADGui.BIMPreflightDone = False
         FreeCADGui.Control.showDialog(BIM_Preflight_TaskPanel())
 
@@ -74,6 +69,9 @@ class BIM_Preflight_TaskPanel:
 
     def __init__(self):
 
+        import sys
+        import FreeCADGui
+        from PySide import QtCore,QtGui
         self.results = {} # to store the result message
         self.culprits = {} # to store objects to highlight
         self.rform = None # to store the results dialog
@@ -127,11 +125,14 @@ class BIM_Preflight_TaskPanel:
 
     def getStandardButtons(self):
 
+        from PySide import QtCore,QtGui
         return int(QtGui.QDialogButtonBox.Close)
 
 
     def reject(self):
 
+        import FreeCADGui
+        from PySide import QtCore,QtGui
         QtGui.QApplication.restoreOverrideCursor()
         FreeCADGui.Control.closeDialog()
         FreeCAD.ActiveDocument.recompute()
@@ -141,6 +142,7 @@ class BIM_Preflight_TaskPanel:
 
         "sets the button as passed"
 
+        from PySide import QtCore,QtGui
         getattr(self.form,test).setIcon(QtGui.QIcon(":/icons/button_valid.svg"))
         getattr(self.form,test).setText(translate("BIM","Passed"))
         getattr(self.form,test).setToolTip(translate("BIM","This test has succeeded."))
@@ -150,6 +152,7 @@ class BIM_Preflight_TaskPanel:
 
         "sets the button as failed"
 
+        from PySide import QtCore,QtGui
         getattr(self.form,test).setIcon(QtGui.QIcon(":/icons/process-stop.svg"))
         getattr(self.form,test).setText("Failed")
         getattr(self.form,test).setToolTip(translate("BIM","This test has failed. Press the button to know more"))
@@ -159,6 +162,7 @@ class BIM_Preflight_TaskPanel:
 
         "reset the button"
 
+        from PySide import QtCore,QtGui
         getattr(self.form,test).setIcon(QtGui.QIcon(":/icons/button_right.svg"))
         getattr(self.form,test).setText(translate("BIM","Test"))
         getattr(self.form,test).setToolTip(translate("BIM","Press to perform the test"))
@@ -168,6 +172,7 @@ class BIM_Preflight_TaskPanel:
 
         "shows test results"
 
+        import FreeCADGui
         if (test in self.results) and self.results[test]:
             if (test in self.culprits) and self.culprits[test]:
                 FreeCADGui.Selection.clearSelection()
@@ -207,6 +212,7 @@ class BIM_Preflight_TaskPanel:
 
         "selects target objects"
 
+        import FreeCADGui
         objs = []
         if self.form.getAll.isChecked():
             objs = FreeCAD.ActiveDocument.Objects
@@ -240,6 +246,7 @@ class BIM_Preflight_TaskPanel:
 
         "runs all tests"
 
+        from PySide import QtCore,QtGui
         from DraftGui import todo
         for test in tests:
             if test != "testAll":
@@ -285,6 +292,9 @@ class BIM_Preflight_TaskPanel:
 
         "tests for project hierarchy support"
 
+        import FreeCADGui
+        import Draft
+        from PySide import QtCore,QtGui
         test = "testHierarchy"
         if getattr(self.form,test).text() == "Failed":
             self.show(test)
@@ -325,6 +335,9 @@ class BIM_Preflight_TaskPanel:
 
         "tests for Sites support"
 
+        import FreeCADGui
+        import Draft
+        from PySide import QtCore,QtGui
         test = "testSites"
         if getattr(self.form,test).text() == "Failed":
             self.show(test)
@@ -361,6 +374,7 @@ class BIM_Preflight_TaskPanel:
 
         "tests for Buildings support"
 
+        from PySide import QtCore,QtGui
         test = "testBuildings"
         if getattr(self.form,test).text() == "Failed":
             self.show(test)
@@ -397,6 +411,7 @@ class BIM_Preflight_TaskPanel:
 
         "tests for Building Storey support"
 
+        from PySide import QtCore,QtGui
         test = "testStoreys"
         if getattr(self.form,test).text() == "Failed":
             self.show(test)
@@ -432,6 +447,7 @@ class BIM_Preflight_TaskPanel:
 
         "tests for undefined BIM objects"
 
+        from PySide import QtCore,QtGui
         test = "testUndefined"
         if getattr(self.form,test).text() == "Failed":
             self.show(test)
@@ -479,6 +495,7 @@ class BIM_Preflight_TaskPanel:
 
         "tests for invalid/non-solid BIM objects"
 
+        from PySide import QtCore,QtGui
         test = "testSolid"
         if getattr(self.form,test).text() == "Failed":
             self.show(test)
@@ -510,6 +527,7 @@ class BIM_Preflight_TaskPanel:
 
         "tests for explicit quantities export"
 
+        from PySide import QtCore,QtGui
         test = "testQuantities"
         if getattr(self.form,test).text() == "Failed":
             self.show(test)
@@ -545,6 +563,7 @@ class BIM_Preflight_TaskPanel:
 
         "tests for common property sets"
 
+        from PySide import QtCore,QtGui
         test = "testCommonPsets"
         if getattr(self.form,test).text() == "Failed":
             self.show(test)
@@ -599,6 +618,7 @@ class BIM_Preflight_TaskPanel:
 
         "tests for property sets integrity"
 
+        from PySide import QtCore,QtGui
         test = "testPsets"
         if getattr(self.form,test).text() == "Failed":
             self.show(test)
@@ -664,6 +684,7 @@ class BIM_Preflight_TaskPanel:
 
         "tests for materials in BIM objects"
 
+        from PySide import QtCore,QtGui
         test = "testMaterials"
         if getattr(self.form,test).text() == "Failed":
             self.show(test)
@@ -694,6 +715,7 @@ class BIM_Preflight_TaskPanel:
 
         "tests for standards in BIM objects"
 
+        from PySide import QtCore,QtGui
         test = "testStandards"
         if getattr(self.form,test).text() == "Failed":
             self.show(test)
@@ -729,6 +751,7 @@ class BIM_Preflight_TaskPanel:
 
         "tests is all objects are extrusions"
 
+        from PySide import QtCore,QtGui
         test = "testExtrusions"
         if getattr(self.form,test).text() == "Failed":
             self.show(test)
@@ -771,6 +794,8 @@ class BIM_Preflight_TaskPanel:
 
         "tests for structs and wall standard cases"
 
+        import Draft
+        from PySide import QtCore,QtGui
         test = "testStandardCases"
         if getattr(self.form,test).text() == "Failed":
             self.show(test)
@@ -804,6 +829,7 @@ class BIM_Preflight_TaskPanel:
 
         "tests for objects with tiny lines (< 0.8mm)"
 
+        from PySide import QtCore,QtGui
         test = "testTinyLines"
         if getattr(self.form,test).text() == "Failed":
             self.show(test)

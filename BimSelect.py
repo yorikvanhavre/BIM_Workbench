@@ -1,9 +1,10 @@
-import FreeCAD, FreeCADGui
-from pivy import coin
+import FreeCAD
 
 class CyclicSelectionObserver:
 
     def addSelection(self, document, object, element, position):
+
+        import FreeCADGui
 
         if not FreeCAD.ActiveDocument:
             return
@@ -27,6 +28,8 @@ class CyclicObjectSelector():
 
     def selectObject(self, event_callback):
 
+        import FreeCADGui
+        from pivy import coin
         if not FreeCAD.ActiveDocument:
             return
         event = event_callback.getEvent()
@@ -49,6 +52,7 @@ class CyclicObjectSelector():
 
     def cycleSelectableObjects(self, event_callback):
 
+        import FreeCADGui
         if not FreeCAD.ActiveDocument:
             return
         event = event_callback.getEvent()
@@ -81,6 +85,7 @@ class Setup():
 
     def slotActivateDocument(self, doc):
 
+        from pivy import coin
         cos = CyclicObjectSelector()
         if doc and doc.ActiveView:
             self.callback = doc.ActiveView.addEventCallbackPivy(coin.SoMouseButtonEvent.getClassTypeId(), cos.selectObject)

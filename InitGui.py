@@ -67,14 +67,8 @@ static char * IFC_xpm[] = {
         def QT_TRANSLATE_NOOP(scope, text):
             return text
 
-        # All BIM commands are specified either in BimCommands.py, or
-        # in separate files (BimSetup.py, BimProject.py...) that are imported in BimCommands.
-        # So importing BimCommands is all that is needed to get all the commands.
-
         import DraftTools
         import Arch
-        import PartGui
-        import SketcherGui
 
         import BimCommands
         import BimWelcome
@@ -91,7 +85,6 @@ static char * IFC_xpm[] = {
         import BimIfcQuantities
         import BimIfcProperties
         import BimNudge
-        import BimUnclone
         import BimPreflight
         import BimReextrude
         import BimDiff
@@ -103,6 +96,7 @@ static char * IFC_xpm[] = {
         import BimStructure
         import BimStatusBar
         import BimWorkingPlaneTools
+        import BimPartTools
 
         # experimental arch tools
         from archguitools import gui_wall
@@ -160,11 +154,22 @@ static char * IFC_xpm[] = {
         FreeCADGui.addCommand('BIM_Nudge_Shrink',BimNudge.BIM_Nudge_Shrink())
         FreeCADGui.addCommand('BIM_Nudge_RotateLeft',BimNudge.BIM_Nudge_RotateLeft())
         FreeCADGui.addCommand('BIM_Nudge_RotateRight',BimNudge.BIM_Nudge_RotateRight())
-        FreeCADGui.addCommand('BIM_Unclone',BimUnclone.BIM_Unclone())
+        FreeCADGui.addCommand('BIM_Unclone',BimClone.BIM_Unclone())
         FreeCADGui.addCommand('BIM_Preflight',BimPreflight.BIM_Preflight())
         FreeCADGui.addCommand('BIM_Diff',BimDiff.BIM_Diff())
         FreeCADGui.addCommand('BIM_IfcExplorer',BimIfcExplorer.BIM_IfcExplorer())
         FreeCADGui.addCommand('BIM_Layers',BimLayers.BIM_Layers())
+        FreeCADGui.addCommand('BIM_Reextrude',BimReextrude.BIM_Reextrude())
+        
+        # wrapped Part tools
+        FreeCADGui.addCommand('BIM_Builder',BimPartTools.BIM_Builder())
+        FreeCADGui.addCommand('BIM_Offset2D',BimPartTools.BIM_Offset2D())
+        FreeCADGui.addCommand('BIM_Extrude',BimPartTools.BIM_Extrude())
+        FreeCADGui.addCommand('BIM_Cut',BimPartTools.BIM_Cut())
+        FreeCADGui.addCommand('BIM_Fuse',BimPartTools.BIM_Fuse())
+        FreeCADGui.addCommand('BIM_Common',BimPartTools.BIM_Common())
+        FreeCADGui.addCommand('BIM_Compound',BimPartTools.BIM_Compound())
+        FreeCADGui.addCommand('BIM_SimpleCopy',BimPartTools.BIM_SimpleCopy())
 
         self.draftingtools = ["BIM_Sketch","Draft_Line","Draft_Wire","Draft_Circle",
                               "Draft_Arc","Draft_Arc_3Points","Draft_Ellipse",
@@ -178,15 +183,15 @@ static char * IFC_xpm[] = {
         self.bimtools = ["Arch_Site","Arch_Building","Arch_Floor","Arch_Space","Separator",
                          "Arch_Wall","BIM_Column","BIM_Beam","BIM_Slab","Arch_Rebar","BIM_Door","Arch_Window","Arch_Pipe",
                          "Arch_PipeConnector","Arch_Stairs","Arch_Roof","Arch_Panel","Arch_Frame",
-                         "Separator","BIM_Box","Part_Builder","Draft_Facebinder","BIM_Library","Arch_Component"]
+                         "Separator","BIM_Box","BIM_Builder","Draft_Facebinder","BIM_Library","Arch_Component"]
 
         self.modify = ["Draft_Move","BIM_Copy","Draft_Rotate","BIM_Clone","BIM_Unclone","Draft_Offset",
-                       "Part_Offset2D", "Draft_Trimex","Draft_Join","Draft_Split","Draft_Scale","Draft_Stretch",
+                       "BIM_Offset2D", "Draft_Trimex","Draft_Join","Draft_Split","Draft_Scale","Draft_Stretch",
                        "BIM_Rewire","BIM_Glue","Draft_Upgrade", "Draft_Downgrade",
                        "Draft_Draft2Sketch","Arch_CutPlane","Arch_Add","Arch_Remove","BIM_Reextrude",
                        "Draft_Array","Draft_PathArray","Draft_PointArray",
-                       "Draft_Mirror","Part_Extrude","Part_Cut","Part_Fuse","Part_Common","Part_Compound",
-                       "Part_SimpleCopy","Draft_Shape2DView"]
+                       "Draft_Mirror","BIM_Extrude","BIM_Cut","BIM_Fuse","BIM_Common","BIM_Compound",
+                       "BIM_SimpleCopy","Draft_Shape2DView"]
 
         self.snap = ['Draft_ToggleGrid','Draft_Snap_Lock','Draft_Snap_Midpoint','Draft_Snap_Perpendicular',
                      'Draft_Snap_Grid','Draft_Snap_Intersection','Draft_Snap_Parallel',

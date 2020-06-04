@@ -22,11 +22,9 @@
 
 """This module contains FreeCAD commands for the BIM workbench"""
 
-import os,FreeCAD,FreeCADGui
-from DraftTools import translate
-
-def QT_TRANSLATE_NOOP(ctx,txt): return txt # dummy function for the QT translator
-
+import os
+import FreeCAD
+from BimTranslateUtils import *
 
 
 class BIM_Windows:
@@ -39,6 +37,8 @@ class BIM_Windows:
                 'ToolTip' : QT_TRANSLATE_NOOP("BIM_Windows", "Manage the different doors and windows of your BIM project")}
 
     def Activated(self):
+
+        import FreeCADGui
         FreeCADGui.Control.showDialog(BIM_Windows_TaskPanel())
 
 
@@ -48,6 +48,7 @@ class BIM_Windows_TaskPanel:
 
     def __init__(self):
 
+        import FreeCADGui
         from PySide import QtCore,QtGui
         self.form = FreeCADGui.PySideUic.loadUi(os.path.join(os.path.dirname(__file__),"dialogWindows.ui"))
         self.form.setWindowIcon(QtGui.QIcon(os.path.join(os.path.dirname(__file__),"icons","BIM_Windows.svg")))
@@ -70,6 +71,7 @@ class BIM_Windows_TaskPanel:
 
     def reject(self):
 
+        import FreeCADGui
         FreeCADGui.Control.closeDialog()
         FreeCAD.ActiveDocument.recompute()
 
@@ -140,6 +142,7 @@ class BIM_Windows_TaskPanel:
 
     def editWindow(self,item,column):
 
+        import FreeCADGui
         if len(self.form.windows.selectedItems()) == 1:
             # don't change the contents if we have more than one floor selected
             window = FreeCAD.ActiveDocument.getObject(item.toolTip(0))
@@ -160,6 +163,7 @@ class BIM_Windows_TaskPanel:
 
     def showWindow(self,item,column):
 
+        import FreeCADGui
         window = FreeCAD.ActiveDocument.getObject(item.toolTip(0))
         if window:
             FreeCADGui.Selection.clearSelection()
@@ -214,6 +218,7 @@ class BIM_Windows_TaskPanel:
 
     def setMaterial(self):
 
+        import FreeCADGui
         import Draft,Arch_rc
         from PySide import QtGui
         form = FreeCADGui.PySideUic.loadUi(os.path.join(os.path.dirname(__file__),"dialogMaterialChooser.ui"))

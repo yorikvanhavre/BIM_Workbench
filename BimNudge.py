@@ -22,12 +22,9 @@
 
 """This module contains FreeCAD commands for the BIM workbench"""
 
-import FreeCAD,FreeCADGui
-from PySide import QtGui
-from DraftTools import translate
-
-def QT_TRANSLATE_NOOP(ctx,txt): return txt # dummy function for the QT translator
-
+import os
+import FreeCAD
+from BimTranslateUtils import *
 
 
 class BIM_Nudge:
@@ -38,6 +35,8 @@ class BIM_Nudge:
 
         "mode can be dist, up, down, left, right. dist returns a float in mm, other modes return a 3D vector"
 
+        import FreeCADGui
+        from PySide import QtCore,QtGui
         mw = FreeCADGui.getMainWindow()
         if mw:
             st = mw.statusBar()
@@ -117,10 +116,13 @@ class BIM_Nudge_Switch(BIM_Nudge):
 
     def GetResources(self):
 
-        return {'MenuText': QT_TRANSLATE_NOOP("BIM_Nudge_Switch", "Nudge Switch"),'Accel': 'Ctrl+/'}
+        return {'MenuText': QT_TRANSLATE_NOOP("BIM_Nudge_Switch", "Nudge Switch"),
+                'Accel': 'Ctrl+/'}
 
     def Activated(self):
 
+        import FreeCADGui
+        from PySide import QtCore,QtGui
         mw = FreeCADGui.getMainWindow()
         if mw:
             st = mw.statusBar()
@@ -140,10 +142,12 @@ class BIM_Nudge_Up(BIM_Nudge):
 
     def GetResources(self):
 
-        return {'MenuText': QT_TRANSLATE_NOOP("BIM_Nudge_Up", "Nudge Up"),'Accel': 'Ctrl+Up'}
+        return {'MenuText': QT_TRANSLATE_NOOP("BIM_Nudge_Up", "Nudge Up"),
+                'Accel': 'Ctrl+Up'}
 
     def Activated(self):
 
+        import FreeCADGui
         sel = FreeCADGui.Selection.getSelection()
         if sel:
             nudge = self.getNudgeValue("up")
@@ -157,10 +161,12 @@ class BIM_Nudge_Down(BIM_Nudge):
 
     def GetResources(self):
 
-        return {'MenuText': QT_TRANSLATE_NOOP("BIM_Nudge_Down", "Nudge Down"),'Accel': 'Ctrl+Down'}
+        return {'MenuText': QT_TRANSLATE_NOOP("BIM_Nudge_Down", "Nudge Down"),
+                'Accel': 'Ctrl+Down'}
 
     def Activated(self):
 
+        import FreeCADGui
         sel = FreeCADGui.Selection.getSelection()
         if sel:
             nudge = self.getNudgeValue("down")
@@ -174,10 +180,12 @@ class BIM_Nudge_Left(BIM_Nudge):
 
     def GetResources(self):
 
-        return {'MenuText': QT_TRANSLATE_NOOP("BIM_Nudge_Left", "Nudge Left"),'Accel': 'Ctrl+Left'}
+        return {'MenuText': QT_TRANSLATE_NOOP("BIM_Nudge_Left", "Nudge Left"),
+                'Accel': 'Ctrl+Left'}
 
     def Activated(self):
 
+        import FreeCADGui
         sel = FreeCADGui.Selection.getSelection()
         if sel:
             nudge = self.getNudgeValue("left")
@@ -191,10 +199,12 @@ class BIM_Nudge_Right(BIM_Nudge):
 
     def GetResources(self):
 
-        return {'MenuText': QT_TRANSLATE_NOOP("BIM_Nudge_Right", "Nudge Right"),'Accel': 'Ctrl+Right'}
+        return {'MenuText': QT_TRANSLATE_NOOP("BIM_Nudge_Right", "Nudge Right"),
+                'Accel': 'Ctrl+Right'}
 
     def Activated(self):
 
+        import FreeCADGui
         sel = FreeCADGui.Selection.getSelection()
         if sel:
             nudge = self.getNudgeValue("right")
@@ -208,10 +218,12 @@ class BIM_Nudge_Extend(BIM_Nudge):
 
     def GetResources(self):
 
-        return {'MenuText': QT_TRANSLATE_NOOP("BIM_Nudge_Extend", "Nudge Extend"),'Accel': 'Ctrl+PgUp'}
+        return {'MenuText': QT_TRANSLATE_NOOP("BIM_Nudge_Extend", "Nudge Extend"),
+                'Accel': 'Ctrl+PgUp'}
 
     def Activated(self):
 
+        import FreeCADGui
         sel = FreeCADGui.Selection.getSelection()
         if sel:
             nudge = self.getNudgeValue("dist")
@@ -226,10 +238,12 @@ class BIM_Nudge_Shrink(BIM_Nudge):
 
     def GetResources(self):
 
-        return {'MenuText': QT_TRANSLATE_NOOP("BIM_Nudge_Shrink", "Nudge Shrink"),'Accel': 'Ctrl+PgDown'}
+        return {'MenuText': QT_TRANSLATE_NOOP("BIM_Nudge_Shrink", "Nudge Shrink"),
+                'Accel': 'Ctrl+PgDown'}
 
     def Activated(self):
 
+        import FreeCADGui
         sel = FreeCADGui.Selection.getSelection()
         if sel:
             nudge = self.getNudgeValue("dist")
@@ -244,10 +258,12 @@ class BIM_Nudge_RotateLeft(BIM_Nudge):
 
     def GetResources(self):
 
-        return {'MenuText': QT_TRANSLATE_NOOP("BIM_Nudge_RotateLeft", "Nudge Rotate Left"),'Accel': 'Ctrl+,'}
+        return {'MenuText': QT_TRANSLATE_NOOP("BIM_Nudge_RotateLeft", "Nudge Rotate Left"),
+                'Accel': 'Ctrl+,'}
 
     def Activated(self):
 
+        import FreeCADGui
         sel = FreeCADGui.Selection.getSelection()
         if sel:
             center = self.getCenter(sel)
@@ -261,10 +277,12 @@ class BIM_Nudge_RotateRight(BIM_Nudge):
 
     def GetResources(self):
 
-        return {'MenuText': QT_TRANSLATE_NOOP("BIM_Nudge_RotateRight", "Nudge Rotate Right"),'Accel': 'Ctrl+.'}
+        return {'MenuText': QT_TRANSLATE_NOOP("BIM_Nudge_RotateRight", "Nudge Rotate Right"),
+                'Accel': 'Ctrl+.'}
 
     def Activated(self):
 
+        import FreeCADGui
         sel = FreeCADGui.Selection.getSelection()
         if sel:
             center = self.getCenter(sel)

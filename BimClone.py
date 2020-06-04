@@ -78,3 +78,91 @@ class BIM_ResetCloneColors:
             if hasattr(obj,"CloneOf") and obj.CloneOf:
                 obj.ViewObject.DiffuseColor = obj.CloneOf.ViewObject.DiffuseColor
 
+
+class BIM_Unclone:
+
+
+    def GetResources(self):
+
+        return {'Pixmap'  : os.path.join(os.path.dirname(__file__),"icons","BIM_Unclone.svg"),
+                'MenuText': QT_TRANSLATE_NOOP("BIM_Unclone", "Unclone"),
+                'ToolTip' : QT_TRANSLATE_NOOP("BIM_Unclone", "Makes a selected clone object independent from its original"),
+               }
+
+    def IsActive(self):
+
+        import FreeCADGui
+        if FreeCADGui.Selection.getSelection():
+            return True
+        else:
+            return False
+
+    def Activated(self):
+
+        import FreeCADGui
+        import Draft
+        # get selected object and face
+        sel = FreeCADGui.Selection.getSelection()
+
+        if len(sel) == 1:
+
+            # make this undoable
+            FreeCAD.ActiveDocument.openTransaction("Reextrude")
+            obj = sel[0]
+
+            # check that types are identical
+            if hasattr(obj,"CloneOf") and obj.CloneOf:
+                cloned = obj.CloneOf
+                placement = FreeCAD.Placement(obj.Placement)
+                if Draft.getType(obj) != Draft.getType(cloned):
+                    # wrong type - we need to create a new object
+                    newobj = getattr(Arch,"make"+Draft.getType(cloned))()
+                else:
+                    newobj = obj
+                    newobj.CloneOf = None
+
+                # copy properties over, except special ones
+                for prop in cloned.PropertiesList:
+                    if not prop in ["Objects","CloneOf","ExpressionEngine","HorizontalArea","Area","VerticalArea","PerimeterLength","Proxy","Shape"]:
+                        setattr(newobj,prop,getattr(cloned,prop))
+                        FreeCAD.ActiveDocument.recompute()
+                        newobj.Placement = cloned.Placement.multiply(placement)
+                # update/reset view properties too? no i think...
+                #for prop in cloned.ViewObject.PropertiesList:
+                #    if not prop in ["Proxy"]:
+                #        setattr(newobj.ViewObject,prop,getattr(cloned.ViewObject,prop))
+
+                # update objects relating to this one
+                for parent in obj.InList:
+                    for prop in parent.PropertiesList:
+                        if getattr(parent,prop) == obj:
+                            setattr(parent,prop,newobj)
+                            FreeCAD.Console.PrintMessage("Object "+parent.Label+"'s reference to this object has been updated\n")
+                        elif isinstance(getattr(parent,prop),list) and (obj in getattr(parent,prop)):
+                            if (prop == "Group") and hasattr(parent,"addObject"):
+                                parent.addObject(newobj)
+                            else:
+                                g = getattr(parent,prop)
+                                g.append(newobj)
+                                setattr(parent,prop,g)
+                            FreeCAD.Console.PrintMessage("Object "+parent.Label+"'s reference to this object has been updated\n")
+                        # TODO treat PropertyLinkSub / PropertyLinkSubList DANGEROUS - toponaming
+
+                # remove old object if needed, and relabel new object
+                if newobj != obj:
+                    name = obj.Name
+                    label = obj.Label
+                    from DraftGui import todo
+                    FreeCAD.ActiveDocument.removeObject(name)
+                    newobj.Label = label
+
+                # commit changes
+                FreeCAD.ActiveDocument.commitTransaction()
+                FreeCAD.ActiveDocument.recompute()
+
+            elif Draft.getType(obj) == "Clone":
+                FreeCAD.Console.PrintError(translate("BIM","Draft Clones are not supported yet!")+"\n")
+            else:
+                FreeCAD.Console.PrintError(translate("BIM","The selected object is not a clone")+"\n")
+        else:
+            FreeCAD.Console.PrintError(translate("BIM","Please select exactly one object")+"\n")

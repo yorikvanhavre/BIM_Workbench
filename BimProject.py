@@ -22,11 +22,10 @@
 
 """This module contains FreeCAD commands for the BIM workbench"""
 
-import os,FreeCAD,FreeCADGui
-from DraftTools import translate
 
-def QT_TRANSLATE_NOOP(ctx,txt): return txt # dummy function for the QT translator
-
+import os
+import FreeCAD
+from BimTranslateUtils import *
 
 class BIM_Project:
 
@@ -38,6 +37,8 @@ class BIM_Project:
                 'ToolTip' : QT_TRANSLATE_NOOP("BIM_Project", "Setup your BIM project")}
 
     def Activated(self):
+
+        import FreeCADGui
 
         # load dialog
         from PySide import QtCore,QtGui
@@ -71,6 +72,10 @@ class BIM_Project:
 
     def accept(self):
 
+        import Draft
+        import Arch
+        import Part
+        import FreeCADGui
         if self.form.groupNewDocument.isChecked() or (FreeCAD.ActiveDocument is None):
             doc = FreeCAD.newDocument()
             if self.form.projectName.text():
@@ -78,7 +83,6 @@ class BIM_Project:
             FreeCAD.ActiveDocument = doc
         if not FreeCAD.ActiveDocument:
             FreeCAD.Console.PrintError(translate("BIM","No active document, aborting.")+"\n")
-        import Draft,Arch,Part
         site = None
         outline = None
         if self.form.groupSite.isChecked():
@@ -400,6 +404,7 @@ class BIM_Project:
 
         """loads the contents of a template into the current file"""
 
+        import FreeCADGui
         from PySide import QtCore,QtGui
         filename = QtGui.QFileDialog.getOpenFileName(QtGui.QApplication.activeWindow(), translate("BIM","Open template file"), None, "FreeCAD file (*.FCStd)");
         if filename:

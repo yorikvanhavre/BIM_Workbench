@@ -22,20 +22,10 @@
 
 """This module contains FreeCAD commands for the BIM workbench"""
 
-import os,FreeCAD,FreeCADGui,sys
 
-if FreeCAD.GuiUp:
-    import FreeCADGui
-    from PySide import QtCore, QtGui
-    from DraftTools import translate
-    from PySide.QtCore import QT_TRANSLATE_NOOP
-else:
-    # \cond
-    def translate(ctxt,txt):
-        return txt
-    def QT_TRANSLATE_NOOP(ctxt,txt):
-        return txt
-    # \endcond
+import os
+import FreeCAD
+from BimTranslateUtils import *
 
 UPDATEINTERVAL = 2000 # number of milliseconds between BIM Views window update
 
@@ -53,6 +43,7 @@ class BIM_Views:
 
     def Activated(self):
 
+        import FreeCADGui
         from PySide import QtCore,QtGui
         vm = findWidget()
         bimviewsbutton = None
@@ -287,6 +278,7 @@ def findWidget():
 
     "finds the manager widget, if present"
 
+    import FreeCADGui
     from PySide import QtGui
     mw = FreeCADGui.getMainWindow()
     vm = mw.findChild(QtGui.QDockWidget,"BIM Views Manager")
@@ -300,6 +292,7 @@ def show(item,column=None):
 
     "item has been double-clicked"
 
+    import FreeCADGui
     obj = None
     vm = findWidget()
     if isinstance(item,str) or ((sys.version_info.major < 3) and isinstance(item,unicode)):

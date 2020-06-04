@@ -21,28 +21,10 @@
 #***************************************************************************
 
 from __future__ import print_function
-import FreeCAD
-import FreeCADGui
+
 import os
-import six
-import Mesh
-from DraftTools import translate
-from PySide import QtCore,QtGui
-
-def QT_TRANSLATE_NOOP(ctxt,txt):
-    return txt
-
-# setting up a font
-bold = QtGui.QFont()
-bold.setWeight(75)
-bold.setBold(True)
-
-# setting up a link fint
-linkfont = QtGui.QFont()
-linkfont.setUnderline(True)
-
-# setup a brush to paint text in system link color
-linkbrush = QtGui.QApplication.palette().link()
+import FreeCAD
+from BimTranslateUtils import *
 
 
 class BIM_IfcExplorer:
@@ -56,7 +38,7 @@ class BIM_IfcExplorer:
     def GetResources(self):
 
         import Arch_rc
-        return {'Pixmap'  : ":/icons/IFC.svg",
+        return {'Pixmap'  : os.path.join(os.path.dirname(__file__),"icons","IFC.svg"),
                 'MenuText': QT_TRANSLATE_NOOP("BIM_IfcExplorer", "IFC explorer"),
                 'ToolTip' : QT_TRANSLATE_NOOP("BIM_IfcExplorer", "IFC explorer utility"),
                }
@@ -64,11 +46,25 @@ class BIM_IfcExplorer:
 
     def Activated(self):
 
+        import FreeCADGui
+        from PySide import QtCore,QtGui
         try:
             import ifcopenshell
         except ImportError:
             FreeCAD.Console.PrintError(translate("BIM","IfcOpenShell was not found on this system. IFC support is disabled")+"\n")
             return
+
+        # setting up a font
+        self.bold = QtGui.QFont()
+        self.bold.setWeight(75)
+        self.bold.setBold(True)
+        
+        # setting up a link fint
+        self.linkfont = QtGui.QFont()
+        self.linkfont.setUnderline(True)
+        
+        # setup a brush to paint text in system link color
+        self.linkbrush = QtGui.QApplication.palette().link()
 
         # draw the main tree widget
         self.tree = QtGui.QTreeWidget()
@@ -166,7 +162,7 @@ class BIM_IfcExplorer:
         "opens a file"
         
         import ifcopenshell
-
+        from PySide import QtCore,QtGui
         self.filename = None
         lastfolder = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM").GetString("lastIfcExplorerFolder","")
         filename = QtGui.QFileDialog.getOpenFileName(None,translate("BIM","Select an IFC file"),lastfolder,translate("BIM","IFC files (*.ifc)"))
@@ -225,13 +221,13 @@ class BIM_IfcExplorer:
         
         "inserts selected objects in the active document"
         
+        import importIFC
         doc = FreeCAD.ActiveDocument
         if doc and self.filename:
             item = self.tree.currentItem()
             if item:
                 eid = item.data(0,QtCore.Qt.UserRole)
                 if eid:
-                    import importIFC
                     importIFC.ZOOMOUT = False
                     importIFC.insert(self.filename,doc.Name,only=[eid])
                     if self.currentmesh:
@@ -242,6 +238,9 @@ class BIM_IfcExplorer:
         
         "turns mesh display on/off"
 
+        import FreeCADGui
+        import ifcopenshell
+        from ifcopenshell import geom
         if not FreeCAD.ActiveDocument:
             FreeCAD.newDocument()
         if FreeCAD.ActiveDocument:
@@ -257,8 +256,6 @@ class BIM_IfcExplorer:
                         trf = FreeCAD.Matrix()
                         trf.scale(s,s,s)
                     basemesh = Mesh.Mesh()
-                    import ifcopenshell
-                    from ifcopenshell import geom
                     s = geom.settings()
                     s.set(s.USE_WORLD_COORDS,True)
                     for product in self.products:
@@ -353,6 +350,8 @@ class BIM_IfcExplorer:
 
         "adds a given entity and its children to the given tree item"
 
+        from PySide import QtCore,QtGui
+
         def get_name(e):
             try:
                 return " : " + e.get_info()['Name']
@@ -366,7 +365,7 @@ class BIM_IfcExplorer:
             name = ""
             if entity.is_a("IfcProduct"):
                 name = get_name(entity)
-                item.setFont(0,bold)
+                item.setFont(0,self.bold)
                 if isinstance(parent,QtGui.QTreeWidgetItem):
                     parent.setExpanded(True)
             item.setText(0,"#"+self.tostr(eid)+" : "+self.tostr(entity.is_a())+name)
@@ -412,6 +411,7 @@ class BIM_IfcExplorer:
         "adds the attributes of the given IFC entity under the given QTreeWidgetITem"
 
         import ifcopenshell
+        from PySide import QtCore,QtGui
         
         entity = self.ifc[eid]
 
@@ -445,10 +445,10 @@ class BIM_IfcExplorer:
                         if t and (t != "None"):
                             item.setText(1,t)
                             if colored:
-                                item.setForeground(1,linkbrush)
-                                item.setFont(1,linkfont)
+                                item.setForeground(1,self.linkbrush)
+                                item.setFont(1,self.linkfont)
                             if argname == "Name":
-                                item.setFont(1,bold)
+                                item.setFont(1,self.bold)
                         if isinstance(argvalue,(list,tuple)):
                             j = 0
                             for argitem in argvalue:
@@ -465,14 +465,14 @@ class BIM_IfcExplorer:
                                 if j == 0:
                                     item.setText(1,t)
                                     if colored:
-                                        item.setForeground(1,linkbrush)
-                                        item.setFont(1,linkfont)
+                                        item.setForeground(1,self.linkbrush)
+                                        item.setFont(1,self.linkfont)
                                 else:
                                     subitem = QtGui.QTreeWidgetItem(item)
                                     subitem.setText(1,t)
                                     if colored:
-                                        subitem.setForeground(1,linkbrush)
-                                        subitem.setFont(1,linkfont)
+                                        subitem.setForeground(1,self.linkbrush)
+                                        subitem.setFont(1,self.linkfont)
                                 j += 1
                 i += 1
 
@@ -480,7 +480,8 @@ class BIM_IfcExplorer:
     def addProperties(self,eid,parent):
     
         "adds properties of a given entity to the given QTReeWidgetItem"
-        
+
+        from PySide import QtCore,QtGui
         entity = self.ifc[eid]
         if hasattr(entity,"IsDefinedBy"):
             for rel in entity.IsDefinedBy:
@@ -488,7 +489,7 @@ class BIM_IfcExplorer:
                     if rel.RelatingPropertyDefinition:
                         item = QtGui.QTreeWidgetItem(parent)
                         item.setText(0,"PropertySet: "+self.tostr(rel.RelatingPropertyDefinition.Name))
-                        item.setFont(0,bold)
+                        item.setFont(0,self.bold)
                         self.properties.setFirstItemColumnSpanned(item,True)
                         if hasattr(rel.RelatingPropertyDefinition,"HasProperties"):
                             for prop in rel.RelatingPropertyDefinition.HasProperties:
@@ -501,6 +502,7 @@ class BIM_IfcExplorer:
 
         "resolves py2/py3 string representation hassles"
 
+        import six
         if six.PY2:
             if isinstance(text,unicode):
                 return text.encode("utf8")
@@ -516,7 +518,8 @@ class BIM_IfcExplorer:
     def onSelectTree(self,item,previous):
         
         "displays attributes and properties of a tree item"
-        
+
+        from PySide import QtCore,QtGui
         self.backnav.append(previous)
         eid = item.data(0,QtCore.Qt.UserRole)
         self.attributes.clear()

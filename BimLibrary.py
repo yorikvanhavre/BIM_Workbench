@@ -25,12 +25,10 @@ from __future__ import print_function
 
 """The BIM library tool"""
 
-import os,FreeCAD,FreeCADGui,sys,re
-import datetime
-from DraftTools import translate
-import addonmanager_utilities
 
-def QT_TRANSLATE_NOOP(ctx,txt): return txt # dummy function for the QT translator
+import os
+import FreeCAD
+from BimTranslateUtils import *
 
 FILTERS = ["*.fcstd","*.FCStd","*.FCSTD","*.stp","*.STP","*.step","*.STEP", "*.brp", "*.BRP", "*.brep", "*.BREP", "*.ifc", "*.IFC", "*.sat", "*.SAT"]
 TEMPLIBPATH = os.path.join(FreeCAD.getUserAppDataDir(),"BIM","OfflineLibrary")
@@ -48,6 +46,7 @@ class BIM_Library:
 
     def Activated(self):
 
+        import FreeCADGui
         # setting up a min reload interval of one hour
         libok = False
         self.librarypath = FreeCAD.ParamGet('User parameter:Plugins/parts_library').GetString('destination','')
@@ -117,8 +116,6 @@ class BIM_Library_TaskPanel:
 
     def onSearch(self,text):
 
-        from PySide import QtGui
-        import PartGui
         if text:
             self.setSearchModel(text)
         else:
@@ -126,6 +123,8 @@ class BIM_Library_TaskPanel:
 
     def setSearchModel(self,text):
 
+        import PartGui
+        from PySide import QtGui
         self.form.tree.setModel(self.filemodel)
         self.filemodel.clear()
         if self.form.checkOnline.isChecked():
@@ -149,19 +148,21 @@ class BIM_Library_TaskPanel:
 
     def setFileModel(self):
 
-            #self.form.tree.clear()
-            self.form.tree.setModel(self.dirmodel)
-            self.dirmodel.setRootPath(self.librarypath)
-            self.dirmodel.setNameFilters(FILTERS)
-            self.dirmodel.setNameFilterDisables(False)
-            self.form.tree.setRootIndex(self.dirmodel.index(self.librarypath))
-            self.modelmode = 1
-            self.form.tree.setHeaderHidden(True)
-            self.form.tree.hideColumn(1)
-            self.form.tree.hideColumn(2)
-            self.form.tree.hideColumn(3)
+        #self.form.tree.clear()
+        self.form.tree.setModel(self.dirmodel)
+        self.dirmodel.setRootPath(self.librarypath)
+        self.dirmodel.setNameFilters(FILTERS)
+        self.dirmodel.setNameFilterDisables(False)
+        self.form.tree.setRootIndex(self.dirmodel.index(self.librarypath))
+        self.modelmode = 1
+        self.form.tree.setHeaderHidden(True)
+        self.form.tree.hideColumn(1)
+        self.form.tree.hideColumn(2)
+        self.form.tree.hideColumn(3)
 
     def setOnlineModel(self):
+
+        from PySide import QtGui
 
         def addItems(root,d,path):
 
@@ -220,8 +221,8 @@ class BIM_Library_TaskPanel:
 
 
     def urlencode(self,text):
-
-        from PySide import QtGui
+        
+        import sys
         print(text,type(text))
         if sys.version_info.major < 3:
             import urllib
@@ -232,6 +233,7 @@ class BIM_Library_TaskPanel:
 
     def openUrl(self,url):
 
+        from PySide import QtGui
         p = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM")
         s = p.GetBool("LibraryWebSearch",False)
         if s:
@@ -269,6 +271,7 @@ class BIM_Library_TaskPanel:
 
     def reject(self):
 
+        import FreeCADGui
         if hasattr(self,"box") and self.box:
             self.box.off()
         FreeCADGui.Control.closeDialog()
@@ -301,14 +304,21 @@ class BIM_Library_TaskPanel:
             importIFC.insert(path,FreeCAD.ActiveDocument.Name)
             from DraftGui import todo
             todo.delay(self.reject,None)
-        elif path.lower().endswith(".sat"):
+        elif path.lower().endswith(".sat") or path.lower().endswith(".sab"):
             try:
-                import CadExchangerIO
+                # InventorLoader addon
+                import importerIL
             except ImportError:
-                FreeCAD.Console.PrintError(translate("BIM","Error: Unable to import SAT files - CadExchanger addon must be installed"))
+                try:
+                    # CADExchanger addon
+                    import CadExchangerIO
+                except ImportError:
+                    FreeCAD.Console.PrintError(translate("BIM","Error: Unable to import SAT files - CadExchanger addon must be installed"))
+                else:
+                    path = CadExchangerIO.insert(path,FreeCAD.ActiveDocument.Name,returnpath = True)
+                    self.place(path)
             else:
-                path = CadExchangerIO.insert(path,FreeCAD.ActiveDocument.Name,returnpath = True)
-                self.place(path)
+                path = importerIL.insert(path,FreeCAD.ActiveDocument.Name)
         FreeCADGui.Selection.clearSelection()
         for o in FreeCAD.ActiveDocument.Objects:
             if not o in before:
@@ -334,6 +344,7 @@ class BIM_Library_TaskPanel:
 
     def place(self,path):
 
+        import FreeCADGui
         import Part
         self.shape = Part.read(path)
         if hasattr(FreeCADGui,"Snapper"):
@@ -384,7 +395,7 @@ class BIM_Library_TaskPanel:
     def mouseClick(self,point,info):
 
         if point:
-            import Arch,Part
+            import Arch
             self.box.off()
             self.shape.translate(point.add(self.getDelta()))
             obj = Arch.makeEquipment()
@@ -423,6 +434,7 @@ class BIM_Library_TaskPanel:
 
         # obsolete code - now using getOnlineContentsAPI
 
+        import addonmanager_utilities
         result = {}
         u = addonmanager_utilities.urlopen(url)
         if u:
@@ -503,6 +515,7 @@ class BIM_Library_TaskPanel:
 
         """if the Online checkbox is clicked"""
 
+        import datetime
         # save state
         p = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM")
         p.SetBool("LibraryOnline",state)

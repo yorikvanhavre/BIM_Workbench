@@ -22,14 +22,9 @@
 
 """This module contains FreeCAD commands for the BIM workbench"""
 
-import os,sys,FreeCAD
-from FreeCAD import Vector
-if FreeCAD.GuiUp:
-    from DraftTools import translate
-    import FreeCADGui
-
-def QT_TRANSLATE_NOOP(ctx,txt): return txt # dummy function for the QT translator
-
+import os
+import FreeCAD
+from BimTranslateUtils import *
 
 
 class BIM_Setup:
@@ -42,6 +37,8 @@ class BIM_Setup:
                 'ToolTip' : QT_TRANSLATE_NOOP("BIM_Setup", "Set some common FreeCAD preferences for BIM workflow")}
 
     def Activated(self):
+
+        import FreeCADGui
 
         TECHDRAWDIMFACTOR = 0.16 # How many times TechDraw dim arrows are smaller than Draft
 
