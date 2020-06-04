@@ -24,12 +24,9 @@
 
 """This module contains FreeCAD commands for the BIM workbench"""
 
-import os,FreeCAD,FreeCADGui,Arch_rc,Draft
-from PySide import QtCore,QtGui
-from DraftTools import translate
-
-def QT_TRANSLATE_NOOP(ctx,txt): return txt # dummy function for the QT translator
-
+import os
+import FreeCAD
+from BimTranslateUtils import *
 
 class BIM_IfcElements:
 
@@ -52,6 +49,8 @@ class BIM_IfcElements:
 
     def Activated(self):
 
+        import FreeCADGui
+        from PySide import QtCore,QtGui
         # build objects list
         self.objectslist = {}
         for obj in FreeCAD.ActiveDocument.Objects:
@@ -105,8 +104,6 @@ class BIM_IfcElements:
     def update(self,index=None):
         
         "updates the tree widgets in all tabs"
-
-        import Draft
 
         # store current state of tree into self.objectslist before redrawing
         for row in range(self.model.rowCount()):
@@ -441,6 +438,9 @@ class BIM_IfcElements:
 
     def checkMatChanged(self):
         
+        import FreeCADGui
+        import Draft
+        from PySide import QtCore,QtGui
         if FreeCADGui.Control.activeDialog():
             QtCore.QTimer.singleShot(500, self.checkMatChanged)
         else:
@@ -522,86 +522,91 @@ class BIM_IfcElements:
             FreeCAD.ActiveDocument.commitTransaction()
             FreeCAD.ActiveDocument.recompute()
 
-class IfcElementsDelegate(QtGui.QStyledItemDelegate):
+if FreeCAD.GuiUp:
+    
 
+    from PySide import QtCore,QtGui
 
-    def __init__(self, parent=None, dialog=None, *args):
-
-        try:
-            import ArchIFC
-            self.roles = ArchIFC.IfcTypes
-        except (ImportError,AttributeError):
-            import ArchComponent,Arch_rc
-            self.roles = ArchComponent.IfcRoles
-        self.mats = []
-        self.matlabels = []
-        for o in FreeCAD.ActiveDocument.Objects:
-            if o.isDerivedFrom("App::MaterialObject"):
-                self.mats.append(o.Name)
-                self.matlabels.append(o.Label)
-        self.dialog = dialog
-        self.btn = QtGui.QPushButton()
-        self.btn.setIcon(QtGui.QIcon(":/icons/IFC.svg"))
-        self.btn.setText("")
-        QtGui.QStyledItemDelegate.__init__(self, parent, *args)
-
-    def paint(self, painter, option, index):
-        # not used - ugly and fake!
-        if index.column() == 3:
-            self.btn.setGeometry(option.rect)
-            if option.state == QtGui.QStyle.State_Selected:
-                painter.fillRect(option.rect, option.palette.highlight())
-            p = QtGui.QPixmap.grabWidget(self.btn)
-            painter.drawPixmap(option.rect.x(),option.rect.y(),p)
-        else:
-            QtGui.QStyledItemDelegate.paint(self, painter, option, index)
-
-    def createEditor(self,parent,option,index):
-
-        if index.column() > 0:
-            editor = QtGui.QComboBox(parent)
-        else:
-            editor = QtGui.QLineEdit(parent)
-        return editor
-
-    def setEditorData(self, editor, index):
-
-        if index.column() == 1:
-            idx = -1
-            editor.addItems(self.roles)
-            if index.data() in self.roles:
-                idx = self.roles.index(index.data())
-            editor.setCurrentIndex(idx)
-        elif index.column() == 2:
-            idx = -1
-            editor.addItems(self.matlabels)
-            item = index.model().itemFromIndex(index)
-            if item.toolTip() in self.mats:
-                idx = self.mats.index(item.toolTip())
-            editor.setCurrentIndex(idx)
-        else:
-            editor.setText(index.data())
-
-    def setModelData(self, editor, model, index):
-
-        if index.column() == 1:
-            if editor.currentIndex() == -1:
-                model.setData(index, "")
+    class IfcElementsDelegate(QtGui.QStyledItemDelegate):
+    
+    
+        def __init__(self, parent=None, dialog=None, *args):
+    
+            try:
+                import ArchIFC
+                self.roles = ArchIFC.IfcTypes
+            except (ImportError,AttributeError):
+                import ArchComponent,Arch_rc
+                self.roles = ArchComponent.IfcRoles
+            self.mats = []
+            self.matlabels = []
+            for o in FreeCAD.ActiveDocument.Objects:
+                if o.isDerivedFrom("App::MaterialObject"):
+                    self.mats.append(o.Name)
+                    self.matlabels.append(o.Label)
+            self.dialog = dialog
+            self.btn = QtGui.QPushButton()
+            self.btn.setIcon(QtGui.QIcon(":/icons/IFC.svg"))
+            self.btn.setText("")
+            QtGui.QStyledItemDelegate.__init__(self, parent, *args)
+    
+        def paint(self, painter, option, index):
+            # not used - ugly and fake!
+            if index.column() == 3:
+                self.btn.setGeometry(option.rect)
+                if option.state == QtGui.QStyle.State_Selected:
+                    painter.fillRect(option.rect, option.palette.highlight())
+                p = QtGui.QPixmap.grabWidget(self.btn)
+                painter.drawPixmap(option.rect.x(),option.rect.y(),p)
             else:
-                model.setData(index,self.roles[editor.currentIndex()])
-        elif index.column() == 2:
-            if editor.currentIndex() > -1:
-                idx = editor.currentIndex()
+                QtGui.QStyledItemDelegate.paint(self, painter, option, index)
+    
+        def createEditor(self,parent,option,index):
+    
+            if index.column() > 0:
+                editor = QtGui.QComboBox(parent)
+            else:
+                editor = QtGui.QLineEdit(parent)
+            return editor
+    
+        def setEditorData(self, editor, index):
+    
+            if index.column() == 1:
+                idx = -1
+                editor.addItems(self.roles)
+                if index.data() in self.roles:
+                    idx = self.roles.index(index.data())
+                editor.setCurrentIndex(idx)
+            elif index.column() == 2:
+                idx = -1
+                editor.addItems(self.matlabels)
+                item = index.model().itemFromIndex(index)
+                if item.toolTip() in self.mats:
+                    idx = self.mats.index(item.toolTip())
+                editor.setCurrentIndex(idx)
+            else:
+                editor.setText(index.data())
+    
+        def setModelData(self, editor, model, index):
+    
+            if index.column() == 1:
+                if editor.currentIndex() == -1:
+                    model.setData(index, "")
+                else:
+                    model.setData(index,self.roles[editor.currentIndex()])
+            elif index.column() == 2:
+                if editor.currentIndex() > -1:
+                    idx = editor.currentIndex()
+                    item = model.itemFromIndex(index)
+                    item.setText(self.matlabels[idx])
+                    item.setToolTip(self.mats[idx])
+            else:
+                model.setData(index,editor.text())
                 item = model.itemFromIndex(index)
-                item.setText(self.matlabels[idx])
-                item.setToolTip(self.mats[idx])
-        else:
-            model.setData(index,editor.text())
-            item = model.itemFromIndex(index)
-            obj = FreeCAD.ActiveDocument.getObject(item.toolTip())
-            if obj:
-                obj.Label = editor.text()
-        self.dialog.update()
+                obj = FreeCAD.ActiveDocument.getObject(item.toolTip())
+                if obj:
+                    obj.Label = editor.text()
+            self.dialog.update()
 
 
 

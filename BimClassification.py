@@ -24,13 +24,11 @@ from __future__ import print_function
 
 """This module contains FreeCAD commands for the BIM workbench"""
 
-import os,FreeCAD,FreeCADGui,Arch_rc,Draft
-from PySide import QtCore,QtGui
-from DraftTools import translate
+import os
+import FreeCAD
+from BimTranslateUtils import *
 
-def QT_TRANSLATE_NOOP(ctx,txt): return txt # dummy function for the QT translator
-
-
+USE_EXPAT = True # Change this to False if you get Expat-related errors...
 
 class BIM_Classification:
 
@@ -49,6 +47,9 @@ class BIM_Classification:
             return False
 
     def Activated(self):
+
+        import FreeCADGui,Draft
+        from PySide import QtCore,QtGui
 
         # init checks
         if not hasattr(self,"Classes"):
@@ -171,6 +172,7 @@ class BIM_Classification:
 
     def updateByType(self):
 
+        from PySide import QtCore,QtGui
         groups = {}
         for name in self.objectslist.keys():
             obj = FreeCAD.ActiveDocument.getObject(name)
@@ -201,6 +203,7 @@ class BIM_Classification:
 
     def updateByMaterial(self):
 
+        from PySide import QtCore,QtGui
         groups = {}
         claimed = []
         for name in self.matlist.keys():
@@ -234,6 +237,7 @@ class BIM_Classification:
 
     def updateByTree(self):
 
+        from PySide import QtCore,QtGui
         # order by hierarchy
         def istop(obj):
             for parent in obj.InList:
@@ -294,6 +298,7 @@ class BIM_Classification:
 
     def updateDefault(self):
 
+        from PySide import QtCore,QtGui
         d = self.objectslist.copy()
         d.update(self.matlist)
         for name,code in d.items():
@@ -353,6 +358,7 @@ class BIM_Classification:
 
     def addChildren(self,children,parent,search=""):
 
+        from PySide import QtCore,QtGui
         if children:
             for c in children:
                 it = None
@@ -378,11 +384,21 @@ class BIM_Classification:
             return self.build_ifc(system)
         else:
             preset = os.path.join(FreeCAD.getUserAppDataDir(),"BIM","Classification",system+".xml")
-            return self.build_xmlre(system)
+            if USE_EXPAT:
+                return self.build_xmldom(system)
+            else:
+                return self.build_xmlre(system)
 
     def build_ifc(self,system):
         
         # builds from ifc instead of xml
+
+        class Item:
+            def __init__(self,parent=None):
+                self.parent = parent
+                self.ID = None
+                self.Name = None
+                self.children = []
 
         preset = os.path.join(FreeCAD.getUserAppDataDir(),"BIM","Classification",system+".ifc")
         if not os.path.exists(preset):
@@ -413,6 +429,13 @@ class BIM_Classification:
 
         # a replacement function to parse xml that doesn't depend on expat
 
+        class Item:
+            def __init__(self,parent=None):
+                self.parent = parent
+                self.ID = None
+                self.Name = None
+                self.children = []
+
         preset = os.path.join(FreeCAD.getUserAppDataDir(),"BIM","Classification",system+".xml")
         if not os.path.exists(preset):
             return None
@@ -434,7 +457,7 @@ class BIM_Classification:
                     currentItem.Name = re.findall("<Description>(.*?)</Description>",l)[0]
         return [self.listize(c) for c in d.children]
 
-    def build_xmddom(self,system):
+    def build_xmldom(self,system):
 
         # currently not working for me because of the infamous expat/coin bug in debian...
 
@@ -543,13 +566,3 @@ class BIM_Classification:
             if self.form.treeClass.itemBelow(i):
                 self.form.treeClass.setCurrentItem(self.form.treeClass.itemBelow(i))
 
-
-class Item:
-
-    # only used by the non-expat version
-
-    def __init__(self,parent=None):
-        self.parent = parent
-        self.ID = None
-        self.Name = None
-        self.children = []

@@ -24,57 +24,15 @@
 
 """This module contains FreeCAD commands for the BIM workbench"""
 
-import os
-import FreeCAD
-from BimTranslateUtils import *
-import DraftTools
+import os,FreeCAD,FreeCADGui,Draft,DraftTools,ArchWindow
 
+def QT_TRANSLATE_NOOP(ctx,txt): return txt # dummy function for the QT translator
+from DraftTools import translate
 
-class BIM_Copy(DraftTools.Move):
-
-
-    def __init__(self):
-        DraftTools.Move.__init__(self)
-        self.copymode = True
-
-    def GetResources(self):
-
-        return {'Pixmap'  : os.path.join(os.path.dirname(__file__),"icons","BIM_Copy.svg"),
-                'MenuText': QT_TRANSLATE_NOOP("BIM_Copy", "Copy"),
-                'ToolTip' : QT_TRANSLATE_NOOP("BIM_Copy", "Copies selected objects to another location"),
-                'Accel': 'C,P'}
-
-
-class BIM_Clone(DraftTools.Draft_Clone):
-
-
-    def __init__(self):
-        DraftTools.Draft_Clone.__init__(self)
-        self.moveAfterCloning = True
-
-
-    def GetResources(self):
-
-        return {'Pixmap'  : os.path.join(os.path.dirname(__file__),"icons","BIM_Clone.svg"),
-                'MenuText': QT_TRANSLATE_NOOP("BIM_Clone", "Clone"),
-                'ToolTip' : QT_TRANSLATE_NOOP("BIM_Clone", "Clones selected objects to another location"),
-                'Accel': 'C,L'}
-
-
-class BIM_ResetCloneColors:
-
-
-    def GetResources(self):
-
-        return {'Pixmap'  : os.path.join(os.path.dirname(__file__),"icons","BIM_ResetCloneColors.svg"),
-                'MenuText': QT_TRANSLATE_NOOP("BIM_ResetCloneColors", "Reset colors"),
-                'ToolTip' : QT_TRANSLATE_NOOP("BIM_ResetCloneColors", "Resets the colors of this object from its cloned original"),
-                'Accel': 'D,O'}
-
-    def Activated(self):
-
-        import FreeCADGui
-        for obj in FreeCADGui.Selection.getSelection():
-            if hasattr(obj,"CloneOf") and obj.CloneOf:
-                obj.ViewObject.DiffuseColor = obj.CloneOf.ViewObject.DiffuseColor
-
+# dummy function for the QT translator
+def QT_TRANSLATE_NOOP(ctx,txt): 
+    return txt
+if hasattr(FreeCAD,"Qt"):
+    translate = FreeCAD.Qt.translate
+else:
+    from DraftTools import translate

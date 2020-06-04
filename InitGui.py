@@ -102,6 +102,7 @@ static char * IFC_xpm[] = {
         import BimClone
         import BimStructure
         import BimStatusBar
+        import BimWorkingPlaneTools
 
         # experimental arch tools
         from archguitools import gui_wall
@@ -122,12 +123,12 @@ static char * IFC_xpm[] = {
         FreeCADGui.addCommand('BIM_WPView',BimCommands.BIM_WPView())
         FreeCADGui.addCommand('BIM_Convert',BimCommands.BIM_Convert())
         FreeCADGui.addCommand('BIM_Ungroup',BimCommands.BIM_Ungroup())
-        FreeCADGui.addCommand('BIM_SetWPTop',BimCommands.BIM_SetWPTop())
-        FreeCADGui.addCommand('BIM_SetWPFront',BimCommands.BIM_SetWPFront())
-        FreeCADGui.addCommand('BIM_SetWPSide',BimCommands.BIM_SetWPSide())
         FreeCADGui.addCommand('BIM_Rewire',BimCommands.BIM_Rewire())
         FreeCADGui.addCommand('BIM_Door',BimCommands.BIM_Door())
 
+        FreeCADGui.addCommand('BIM_SetWPTop',BimWorkingPlaneTools.BIM_SetWPTop())
+        FreeCADGui.addCommand('BIM_SetWPFront',BimWorkingPlaneTools.BIM_SetWPFront())
+        FreeCADGui.addCommand('BIM_SetWPSide',BimWorkingPlaneTools.BIM_SetWPSide())
         FreeCADGui.addCommand('BIM_TogglePanels',BimTogglePanels.BIM_TogglePanels())
         FreeCADGui.addCommand('BIM_Trash',BimTrash.BIM_Trash())
         FreeCADGui.addCommand('BIM_EmptyTrash',BimTrash.BIM_EmptyTrash())

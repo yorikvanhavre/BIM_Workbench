@@ -24,10 +24,9 @@
 
 """This module contains FreeCAD commands for the BIM workbench"""
 
-import os,FreeCAD,FreeCADGui,Draft,DraftTools,ArchStructure,ArchWindow
-
-def QT_TRANSLATE_NOOP(ctx,txt): return txt # dummy function for the QT translator
-from DraftTools import translate
+import os
+import FreeCAD
+from BimTranslateUtils import *
 
 
 # Language path for InitGui.py
@@ -45,6 +44,7 @@ def setStatusIcons(show=True):
 
     "shows or hides the BIM icons in the status bar"
 
+    import FreeCADGui
     from PySide import QtCore,QtGui
 
     unitsList = [translate("BIM","Millimeters"),

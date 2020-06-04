@@ -24,12 +24,10 @@
 
 """This module contains FreeCAD commands for the BIM workbench"""
 
-import os,FreeCAD,FreeCADGui,Draft,DraftTools,ArchStructure,ArchWindow
-
-def QT_TRANSLATE_NOOP(ctx,txt): return txt # dummy function for the QT translator
-from DraftTools import translate
-
-
+import os
+import FreeCAD
+from BimTranslateUtils import *
+import ArchWindow
 
 class BIM_Help:
 
@@ -58,6 +56,7 @@ class BIM_Glue:
 
     def IsActive(self):
 
+        import FreeCADGui
         if FreeCADGui.Selection.getSelection():
             return True
         else:
@@ -65,6 +64,7 @@ class BIM_Glue:
 
     def Activated(self):
 
+        import FreeCADGui
         sel = FreeCADGui.Selection.getSelection()
         if sel:
             rem = []
@@ -104,6 +104,7 @@ class BIM_Sketch:
 
     def Activated(self):
 
+        import FreeCADGui
         if hasattr(FreeCAD,"DraftWorkingPlane"):
             FreeCAD.DraftWorkingPlane.setup()
         if hasattr(FreeCADGui,"Snapper"):
@@ -137,6 +138,7 @@ class BIM_WPView:
 
     def Activated(self):
 
+        import FreeCADGui
         done = False
         try:
             import BimViews
@@ -185,6 +187,7 @@ class BIM_Convert:
 
     def Activated(self):
 
+        import FreeCADGui
         sel = FreeCADGui.Selection.getSelection()
         if sel:
             FreeCADGui.Control.showDialog(BIM_Convert_TaskPanel(sel))
@@ -240,6 +243,7 @@ class BIM_Ungroup:
 
     def Activated(self):
 
+        import FreeCADGui
         sel = FreeCADGui.Selection.getSelection()
         first = True
         if sel:
@@ -291,6 +295,7 @@ class BIM_Rewire:
 
     def Activated(self):
 
+        import FreeCADGui
         import Part
         import DraftGeomUtils
         
@@ -320,47 +325,5 @@ class BIM_Rewire:
         FreeCAD.ActiveDocument.recompute()
 
 
-class BIM_SetWPTop:
 
-
-    def GetResources(self):
-
-        return {'Pixmap'  : "view-top.svg",
-                'MenuText': QT_TRANSLATE_NOOP("BIM_SetWPTop", "Working Plane Top"),
-                'ToolTip' : QT_TRANSLATE_NOOP("BIM_SetWPTop", "Set the working plane to Top"),
-                'Accel': 'Ctrl+Shift+2'}
-
-    def Activated(self):
-
-        FreeCADGui.doCommandGui("FreeCAD.DraftWorkingPlane.setTop()")
-
-
-class BIM_SetWPFront:
-
-
-    def GetResources(self):
-
-        return {'Pixmap'  : "view-front.svg",
-                'MenuText': QT_TRANSLATE_NOOP("BIM_SetWPFront", "Working Plane Front"),
-                'ToolTip' : QT_TRANSLATE_NOOP("BIM_SetWPFront", "Set the working plane to Front"),
-                'Accel': 'Ctrl+Shift+1'}
-
-    def Activated(self):
-
-        FreeCADGui.doCommandGui("FreeCAD.DraftWorkingPlane.setFront()")
-
-
-class BIM_SetWPSide:
-
-
-    def GetResources(self):
-
-        return {'Pixmap'  : "view-right.svg",
-                'MenuText': QT_TRANSLATE_NOOP("BIM_SetWPSide", "Working Plane Side"),
-                'ToolTip' : QT_TRANSLATE_NOOP("BIM_SetWPSide", "Set the working plane to Side"),
-                'Accel': 'Ctrl+Shift+3'}
-
-    def Activated(self):
-
-        FreeCADGui.doCommandGui("FreeCAD.DraftWorkingPlane.setSide()")
 

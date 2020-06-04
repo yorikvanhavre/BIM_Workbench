@@ -24,10 +24,10 @@
 
 """This module contains FreeCAD commands for the BIM workbench"""
 
-import os,FreeCAD,FreeCADGui,Draft,DraftTools,ArchStructure,ArchWindow
-
-def QT_TRANSLATE_NOOP(ctx,txt): return txt # dummy function for the QT translator
-from DraftTools import translate
+import os
+import FreeCAD
+from BimTranslateUtils import *
+import ArchStructure
 
 
 class BIM_Column(ArchStructure._CommandStructure):
@@ -79,6 +79,7 @@ class BIM_Slab:
 
     def Activated(self):
 
+        import FreeCADGui
         self.removeCallback()
         sel = FreeCADGui.Selection.getSelection()
         if sel:
@@ -93,6 +94,7 @@ class BIM_Slab:
 
     def proceed(self):
 
+        import FreeCADGui
         self.removeCallback()
         sel = FreeCADGui.Selection.getSelection()
         if len(sel) == 1:
@@ -119,6 +121,7 @@ class BIM_Slab:
 
     def finish(self):
 
+        import FreeCADGui
         self.removeCallback()
         if hasattr(FreeCADGui,"draftToolBar"):
             FreeCADGui.draftToolBar.offUi()

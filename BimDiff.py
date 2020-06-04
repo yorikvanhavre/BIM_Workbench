@@ -22,9 +22,9 @@
 
 """This module contains FreeCAD commands for the BIM workbench"""
 
-import FreeCAD,FreeCADGui,Part,Draft,os
-from PySide import QtGui
-from DraftTools import translate
+import os
+import FreeCAD
+from BimTranslateUtils import *
 
 def QT_TRANSLATE_NOOP(ctx,txt): return txt # dummy function for the QT translator
 
@@ -55,6 +55,9 @@ class BIM_Diff:
         
         MOVE_TOLERANCE = 0.2 # the max allowed move in mm
         VOL_TOLERANCE = 250 # the max allowed volume diff in mm^3
+        
+        import FreeCADGui
+        from PySide import QtCore,QtGui
         
         documents = FreeCAD.listDocuments()
         

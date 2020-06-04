@@ -24,12 +24,9 @@
 
 """This module contains FreeCAD commands for the BIM workbench"""
 
-import os,FreeCAD,FreeCADGui,DraftTools,DraftVecUtils
-from  PySide import QtCore,QtGui
-from DraftTools import translate
-
-def QT_TRANSLATE_NOOP(ctx,txt): return txt # dummy function for the QT translator
-
+import os
+import FreeCAD
+from BimTranslateUtils import *
 
 class BIM_CurtainWall:
 
@@ -43,6 +40,7 @@ class BIM_CurtainWall:
 
     def Activated(self):
 
+        import FreeCADGui
         import Part
         edges = []
         for sel in FreeCADGui.Selection.getSelectionEx():
@@ -55,6 +53,7 @@ class BIM_CurtainWall:
 
 def sortedge(edge):
 
+    import DraftVecUtils
     vdir = FreeCAD.Vector(1,0,0)
     proj = DraftVecUtils.project(edge.CenterOfMass,vdir)
     if proj.getAngle(vdir) < 1:
@@ -64,7 +63,9 @@ def sortedge(edge):
 
 def makeFlatFace(mobile=[],fixed=[],vert=False):
     
-    import Part,DraftGeomUtils
+    import Part
+    import DraftVecUtils
+    import DraftGeomUtils
     if not fixed:
         pol = Part.makePolygon(mobile+[mobile[0]])
         pol = DraftGeomUtils.flattenWire(pol)
@@ -91,7 +92,6 @@ def makeFlatFace(mobile=[],fixed=[],vert=False):
 def makeCurtainWall(edges,subdiv=5,detach=False):
     
     import Part
-    
     edges = sorted(edges,key=sortedge)
     faces = []
     p0 = edges[0].Vertexes[0].Point

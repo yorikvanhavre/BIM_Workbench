@@ -22,11 +22,9 @@
 
 """This module contains FreeCAD commands for the BIM workbench"""
 
-import os,FreeCAD,FreeCADGui
-from DraftTools import translate
-
-def QT_TRANSLATE_NOOP(ctx,txt): return txt # dummy function for the QT translator
-
+import os
+import FreeCAD
+from BimTranslateUtils import *
 
 if FreeCAD.GuiUp:
 
@@ -63,6 +61,7 @@ class BIM_Material:
 
     def Activated(self):
 
+        import FreeCADGui
         self.dlg = None
         self.dlg = QtGui.QDialog()
         self.dlg.objects = [obj for obj in FreeCADGui.Selection.getSelection() if hasattr(obj,"Material")]
@@ -281,6 +280,7 @@ class BIM_Material:
 
     def onMergeTo(self):
 
+        import FreeCADGui
         if self.dlg:
             item = self.dlg.matList.currentItem()
             if item:
@@ -336,12 +336,14 @@ class BIM_Material:
 
     def onCreate(self):
 
+        import FreeCADGui
         if self.dlg:
             self.dlg.hide()
             FreeCADGui.runCommand("Arch_Material")
 
     def onMulti(self):
 
+        import FreeCADGui
         if self.dlg:
             self.dlg.hide()
             FreeCADGui.runCommand("Arch_MultiMaterial")
@@ -406,6 +408,7 @@ class BIM_Material:
 
     def rescan(self,rebuild=False):
 
+        from PySide import QtCore,QtGui
         if self.dlg:
             self.dlg.materials = []
             for o in FreeCAD.ActiveDocument.Objects:
@@ -429,6 +432,7 @@ class BIM_Material:
 
     def createIcon(self,obj):
 
+        from PySide import QtCore,QtGui
         if hasattr(obj,"Materials"):
             return QtGui.QIcon(":/icons/Arch_Material_Multi.svg")
         elif hasattr(obj,"Color"):

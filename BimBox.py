@@ -24,18 +24,9 @@ from __future__ import print_function
 
 """This module contains FreeCAD commands for the BIM workbench"""
 
-import os, FreeCAD, FreeCADGui, DraftVecUtils
-from PySide import QtCore,QtGui
-from DraftTools import translate
-
-try:
-    import DraftTrackers
-except Exception:
-    import draftguitools.gui_trackers as DraftTrackers
-
-
-def QT_TRANSLATE_NOOP(ctx,txt): return txt # dummy function for the QT translator
-
+import os
+import FreeCAD
+from BimTranslateUtils import *
 
 
 class BIM_Box:
@@ -56,6 +47,12 @@ class BIM_Box:
 
     def Activated(self):
 
+        import FreeCADGui
+        try:
+            import DraftTrackers
+        except Exception:
+            import draftguitools.gui_trackers as DraftTrackers
+
         # here we will store our points
         self.points = []
         # we build a special cube tracker which is a list of 4 rectangle trackers
@@ -71,6 +68,7 @@ class BIM_Box:
 
     def MoveCallback(self,point,snapinfo):
 
+        import DraftVecUtils
         self.currentpoint = point
         if len(self.points) == 1:
             # we have the base point already
@@ -105,6 +103,7 @@ class BIM_Box:
 
     def PointCallback(self,point,snapinfo):
 
+        import FreeCADGui
         if not point:
             # cancelled
             if hasattr(FreeCAD,"DraftWorkingPlane"):
@@ -173,6 +172,7 @@ class BIM_Box:
 
         "sets up a taskbox widget"
 
+        from PySide import QtCore,QtGui
         wid = QtGui.QWidget()
         ui = FreeCADGui.UiLoader()
         wid.setWindowTitle(translate("BIM","Box dimensions"))
@@ -226,6 +226,7 @@ class BIM_Box:
 
     def setLengthUI(self):
         
+        import FreeCADGui
         if (len(self.points) == 1) and self.currentpoint and self.LengthValue:
             baseline = self.currentpoint.sub(self.points[0])
             baseline.normalize()
@@ -239,6 +240,7 @@ class BIM_Box:
 
     def setWidthUI(self):
 
+        import FreeCADGui
         if (len(self.points) == 2) and self.currentpoint and self.WidthValue:
             self.normal = self.cubetracker[0].getNormal()
             if self.normal:
@@ -269,6 +271,7 @@ class BIM_Box:
 
     def setHeightUI(self):
 
+        import FreeCADGui
         if (len(self.points) == 3) and self.HeightValue:
             cube = FreeCAD.ActiveDocument.addObject("Part::Box","Cube")
             cube.Length = self.LengthValue

@@ -28,39 +28,50 @@ import os
 import FreeCAD
 from BimTranslateUtils import *
 
-class BIM_TogglePanels:
+
+class BIM_SetWPTop:
+
 
     def GetResources(self):
 
-        return {'Pixmap'  : os.path.join(os.path.dirname(__file__),"icons","BIM_TogglePanels.svg"),
-                'MenuText': QT_TRANSLATE_NOOP("BIM_TogglePanels", "Toggle bottom panels"),
-                'ToolTip' : QT_TRANSLATE_NOOP("BIM_TogglePanels", "Toggle bottom dock panels on/off"),
-                'Accel': 'Ctrl+0'}
+        return {'Pixmap'  : "view-top.svg",
+                'MenuText': QT_TRANSLATE_NOOP("BIM_SetWPTop", "Working Plane Top"),
+                'ToolTip' : QT_TRANSLATE_NOOP("BIM_SetWPTop", "Set the working plane to Top"),
+                'Accel': 'Ctrl+Shift+2'}
 
     def Activated(self):
 
-        from  PySide import QtCore,QtGui
-        mw = FreeCADGui.getMainWindow()
-        togglebutton = None
-        st = mw.statusBar()
-        statuswidget = st.findChild(QtGui.QToolBar,"BIMStatusWidget")
-        if statuswidget:
-            if hasattr(statuswidget,"togglebutton"):
-                togglebutton = statuswidget.togglebutton
-        dockwidgets = mw.findChildren(QtGui.QDockWidget)
-        bottomwidgets = [w for w in dockwidgets if ((mw.dockWidgetArea(w) == QtCore.Qt.BottomDockWidgetArea) and w.isVisible())]
-        if bottomwidgets:
-            hidden = ""
-            for w in bottomwidgets:
-                w.hide()
-                hidden += w.objectName() + ";;"
-                FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM").SetString("HiddenWidgets",hidden)
-            if togglebutton:
-                    togglebutton.setChecked(False)
-        else:
-            widgets = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM").GetString("HiddenWidgets","Python console;;Report view;;Selection view;;")
-            widgets = [mw.findChild(QtGui.QWidget,w) for w in widgets.split(";;") if w]
-            for w in widgets:
-                w.show()
-            if togglebutton:
-                togglebutton.setChecked(True)
+        import FreeCADGui
+        FreeCADGui.doCommandGui("FreeCAD.DraftWorkingPlane.setTop()")
+
+
+class BIM_SetWPFront:
+
+
+    def GetResources(self):
+
+        return {'Pixmap'  : "view-front.svg",
+                'MenuText': QT_TRANSLATE_NOOP("BIM_SetWPFront", "Working Plane Front"),
+                'ToolTip' : QT_TRANSLATE_NOOP("BIM_SetWPFront", "Set the working plane to Front"),
+                'Accel': 'Ctrl+Shift+1'}
+
+    def Activated(self):
+
+        import FreeCADGui
+        FreeCADGui.doCommandGui("FreeCAD.DraftWorkingPlane.setFront()")
+
+
+class BIM_SetWPSide:
+
+
+    def GetResources(self):
+
+        return {'Pixmap'  : "view-right.svg",
+                'MenuText': QT_TRANSLATE_NOOP("BIM_SetWPSide", "Working Plane Side"),
+                'ToolTip' : QT_TRANSLATE_NOOP("BIM_SetWPSide", "Set the working plane to Side"),
+                'Accel': 'Ctrl+Shift+3'}
+
+    def Activated(self):
+
+        import FreeCADGui
+        FreeCADGui.doCommandGui("FreeCAD.DraftWorkingPlane.setSide()")

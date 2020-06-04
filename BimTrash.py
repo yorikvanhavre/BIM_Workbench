@@ -24,10 +24,9 @@
 
 """This module contains FreeCAD commands for the BIM workbench"""
 
-import os,FreeCAD,FreeCADGui,Draft,DraftTools,ArchStructure,ArchWindow
-
-def QT_TRANSLATE_NOOP(ctx,txt): return txt # dummy function for the QT translator
-from DraftTools import translate
+import os
+import FreeCAD
+from BimTranslateUtils import *
 
 
 class BIM_Trash:
@@ -42,6 +41,7 @@ class BIM_Trash:
 
     def Activated(self):
 
+        import FreeCADGui
         if FreeCADGui.Selection.getSelection():
             trash = FreeCAD.ActiveDocument.getObject("Trash")
             if not trash or not trash.isDerivedFrom("App::DocumentObjectGroup"):
@@ -63,6 +63,7 @@ class BIM_Trash:
 
     def IsActive(self):
 
+        import FreeCADGui
         if FreeCADGui.Selection.getSelection():
             return True
         else:
