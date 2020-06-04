@@ -46,7 +46,7 @@ class Arch_Wall:
         return {'Pixmap'  : os.path.join(os.path.dirname(__file__),"..","icons","Arch_Wall_Experimental.svg"),
                 'MenuText': "Wall_EXPERIMENTAL",
                 'Accel': "W, A",
-                'ToolTip': "EXPERIMENTAL\nCreates a wall object from scratch or from a selected object (wire, face or solid)"}
+                'ToolTip': "EXPERIMENTAL\nCreate a wall object from scratch."}
 
     def IsActive(self):
 
