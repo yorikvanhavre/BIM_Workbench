@@ -62,6 +62,11 @@ static char * IFC_xpm[] = {
 
     def Initialize(self):
 
+        # QT macro
+        
+        def QT_TRANSLATE_NOOP(scope, text):
+            return text
+
         # All BIM commands are specified either in BimCommands.py, or
         # in separate files (BimSetup.py, BimProject.py...) that are imported in BimCommands.
         # So importing BimCommands is all that is needed to get all the commands.
@@ -92,6 +97,11 @@ static char * IFC_xpm[] = {
         import BimDiff
         import BimIfcExplorer
         import BimLayers
+        import BimTogglePanels
+        import BimTrash
+        import BimClone
+        import BimStructure
+        import BimStatusBar
 
         # experimental arch tools
         from archguitools import gui_wall
@@ -100,30 +110,33 @@ static char * IFC_xpm[] = {
         from archguitools import gui_archview
 
         # add translations path
-        FreeCADGui.addLanguagePath(BimCommands.getLanguagePath())
+        FreeCADGui.addLanguagePath(BimStatusBar.getLanguagePath())
 
         # create BIM commands
+        # maybe this should go back in each module...
 
-        FreeCADGui.addCommand('BIM_TogglePanels',BimCommands.BIM_TogglePanels())
-        FreeCADGui.addCommand('BIM_Trash',BimCommands.BIM_Trash())
-        FreeCADGui.addCommand('BIM_EmptyTrash',BimCommands.BIM_EmptyTrash())
-        FreeCADGui.addCommand('BIM_Copy',BimCommands.BIM_Copy())
-        FreeCADGui.addCommand('BIM_Clone',BimCommands.BIM_Clone())
+        # these should be move out of BimCommands
         FreeCADGui.addCommand('BIM_Help',BimCommands.BIM_Help())
         FreeCADGui.addCommand('BIM_Glue',BimCommands.BIM_Glue())
         FreeCADGui.addCommand('BIM_Sketch',BimCommands.BIM_Sketch())
         FreeCADGui.addCommand('BIM_WPView',BimCommands.BIM_WPView())
         FreeCADGui.addCommand('BIM_Convert',BimCommands.BIM_Convert())
         FreeCADGui.addCommand('BIM_Ungroup',BimCommands.BIM_Ungroup())
-        FreeCADGui.addCommand('BIM_Column',BimCommands.BIM_Column())
-        FreeCADGui.addCommand('BIM_Beam',BimCommands.BIM_Beam())
-        FreeCADGui.addCommand('BIM_Slab',BimCommands.BIM_Slab())
-        FreeCADGui.addCommand('BIM_Door',BimCommands.BIM_Door())
-        FreeCADGui.addCommand('BIM_ResetCloneColors',BimCommands.BIM_ResetCloneColors())
         FreeCADGui.addCommand('BIM_SetWPTop',BimCommands.BIM_SetWPTop())
         FreeCADGui.addCommand('BIM_SetWPFront',BimCommands.BIM_SetWPFront())
         FreeCADGui.addCommand('BIM_SetWPSide',BimCommands.BIM_SetWPSide())
         FreeCADGui.addCommand('BIM_Rewire',BimCommands.BIM_Rewire())
+        FreeCADGui.addCommand('BIM_Door',BimCommands.BIM_Door())
+
+        FreeCADGui.addCommand('BIM_TogglePanels',BimTogglePanels.BIM_TogglePanels())
+        FreeCADGui.addCommand('BIM_Trash',BimTrash.BIM_Trash())
+        FreeCADGui.addCommand('BIM_EmptyTrash',BimTrash.BIM_EmptyTrash())
+        FreeCADGui.addCommand('BIM_Copy',BimClone.BIM_Copy())
+        FreeCADGui.addCommand('BIM_Clone',BimClone.BIM_Clone())
+        FreeCADGui.addCommand('BIM_Column',BimStructure.BIM_Column())
+        FreeCADGui.addCommand('BIM_Beam',BimStructure.BIM_Beam())
+        FreeCADGui.addCommand('BIM_Slab',BimStructure.BIM_Slab())
+        FreeCADGui.addCommand('BIM_ResetCloneColors',BimClone.BIM_ResetCloneColors())
         FreeCADGui.addCommand('BIM_Welcome',BimWelcome.BIM_Welcome())
         FreeCADGui.addCommand('BIM_Setup',BimSetup.BIM_Setup())
         FreeCADGui.addCommand('BIM_Project',BimProject.BIM_Project())
@@ -185,10 +198,11 @@ static char * IFC_xpm[] = {
                        "BIM_IfcQuantities","BIM_IfcProperties","BIM_Classification",
                        "BIM_Material","Arch_Schedule","BIM_Preflight"]
 
-        self.experimentaltools = ["Arch_Wall2","Arch_JoinWalls", "Separator", 
+        self.experimentaltools = ["Arch_Wall2","Arch_JoinWalls", "Separator",
                                   "Arch_Opening", "Arch_Door2", "Arch_Window2", "Separator",
                                   "Arch_View"]
 
+        # fixed command names
         if "Draft_WorkingPlaneProxy" in Gui.listCommands():
             _tool = "Draft_WorkingPlaneProxy"
         else:
@@ -230,8 +244,6 @@ static char * IFC_xpm[] = {
             self.bimtools.insert(self.bimtools.index("BIM_Box"),"Arch_Profile")
 
         # load rebar tools (Reinforcement addon)
-        def QT_TRANSLATE_NOOP(scope, text):
-            return text
 
         try:
             import RebarTools
@@ -315,7 +327,6 @@ static char * IFC_xpm[] = {
 
         # create toolbars
 
-
         self.appendToolbar(QT_TRANSLATE_NOOP("BIM","Drafting tools"),self.draftingtools)
         self.appendToolbar(QT_TRANSLATE_NOOP("BIM","3D/BIM tools"),self.bimtools)
         self.appendToolbar(QT_TRANSLATE_NOOP("BIM","Annotation tools"),self.annotationtools)
@@ -352,6 +363,7 @@ static char * IFC_xpm[] = {
 
 
         # load Arch & Draft preference pages
+
         if hasattr(FreeCADGui,"draftToolBar"):
             if not hasattr(FreeCADGui.draftToolBar,"loadedArchPreferences"):
                 import Arch_rc
@@ -384,11 +396,11 @@ static char * IFC_xpm[] = {
             FreeCADGui.Snapper.show()
 
         from DraftGui import todo
-        import BimCommands
+        import BimStatusBar
 
         if FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM").GetBool("FirstTime",True) and (not hasattr(FreeCAD,"TestEnvironment")):
             todo.delay(FreeCADGui.runCommand,"BIM_Welcome")
-        todo.delay(BimCommands.setStatusIcons,True)
+        todo.delay(BimStatusBar.setStatusIcons,True)
 
         FreeCADGui.Control.clearTaskWatcher()
 
@@ -438,12 +450,12 @@ static char * IFC_xpm[] = {
             FreeCADGui.Snapper.hide()
 
         from DraftGui import todo
-        import BimCommands
+        import BimStatusBar
         import BimViews
 
         #print("Deactivating status icon")
 
-        todo.delay(BimCommands.setStatusIcons,False)
+        todo.delay(BimStatusBar.setStatusIcons,False)
 
         FreeCADGui.Control.clearTaskWatcher()
 
@@ -460,7 +472,7 @@ static char * IFC_xpm[] = {
 
     def ContextMenu(self, recipient):
 
-        import BimCommands,DraftTools
+        import DraftTools
         if (recipient == "Tree"):
             groups = False
             ungroupable = False

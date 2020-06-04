@@ -56,7 +56,7 @@ class BIM_Material:
 
     def GetResources(self):
 
-        return {'Pixmap'  : ":/icons/Arch_Material_Group.svg",
+        return {'Pixmap'  : os.path.join(os.path.dirname(__file__),"icons","BIM_Material.svg"),
                 'MenuText': QT_TRANSLATE_NOOP("BIM_Material", "Material"),
                 'Accel': "M, A",
                 'ToolTip' : QT_TRANSLATE_NOOP("BIM_Material", "Sets or creates a material for selected objects")}
