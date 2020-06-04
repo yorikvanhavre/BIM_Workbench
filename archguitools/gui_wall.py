@@ -19,11 +19,14 @@
 #*   USA                                                                   *
 #*                                                                         *
 #***************************************************************************
+
 """Provide the Arch_Wall command."""
+
 ## @package gui_wall
 # \ingroup ARCH
 # \brief Provide the Arch_Wall command used in Arch to create an Arch Wall.
 
+import os
 import FreeCAD as App
 import FreeCADGui as Gui
 import Draft
@@ -40,7 +43,7 @@ class Arch_Wall:
 
     def GetResources(self):
 
-        return {'Pixmap'  : 'Arch_Wall',
+        return {'Pixmap'  : os.path.join(os.path.dirname(__file__),"..","icons","Arch_Wall_Experimental.svg"),
                 'MenuText': "Wall_EXPERIMENTAL",
                 'Accel': "W, A",
                 'ToolTip': "EXPERIMENTAL\nCreates a wall object from scratch or from a selected object (wire, face or solid)"}

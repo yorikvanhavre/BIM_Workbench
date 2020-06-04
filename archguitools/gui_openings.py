@@ -25,6 +25,7 @@
 # \ingroup ARCH
 # \brief Provide the Arch_Opening, Arch_Door, Arch_Window commands commands.
 
+import os
 from PySide import QtGui
 
 import FreeCAD as App
@@ -142,9 +143,9 @@ class Arch_Opening(Arch_Openings):
     """The Arch Opening command definition"""
 
     def GetResources(self):
-        return {'Pixmap'  : 'Arch_Window',
+        return {'Pixmap'  : os.path.join(os.path.dirname(__file__),"..","icons","Arch_Window_Experimental.svg"),
                 'MenuText': "Opening_EXPERIMENTAL",
-                'Accel': "W, A",
+                #'Accel': "W, A",
                 'ToolTip': "EXPERIMENTAL\nCreates an Opening object"}
 
     def Activated(self):
@@ -181,9 +182,9 @@ class Arch_Window(Arch_Openings):
     """The Arch Window command definition"""
 
     def GetResources(self):
-        return {'Pixmap'  : 'Arch_Window',
+        return {'Pixmap'  : os.path.join(os.path.dirname(__file__),"..","icons","Arch_Window_Experimental.svg"),
                 'MenuText': "Window_EXPERIMENTAL",
-                'Accel': "W, A",
+                #'Accel': "W, A",
                 'ToolTip': "EXPERIMENTAL\nCreates an Opening object filled with a Window"}
 
     def Activated(self):
@@ -220,9 +221,9 @@ class Arch_Door(Arch_Openings):
     """The Arch Door command definition"""
 
     def GetResources(self):
-        return {'Pixmap'  : 'Arch_Window',
+        return {'Pixmap'  : os.path.join(os.path.dirname(__file__),"..","icons","BIM_Door_Experimental.svg"),
                 'MenuText': "Door_EXPERIMENTAL",
-                'Accel': "W, A",
+                #'Accel': "W, A",
                 'ToolTip': "EXPERIMENTAL\nCreates an Opening object filled with a Door"}
 
     def Activated(self):
