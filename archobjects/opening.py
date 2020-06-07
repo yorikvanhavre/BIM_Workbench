@@ -27,44 +27,36 @@ import FreeCAD as App
 
 import DraftVecUtils
 
-# from archutils import IFCutils
+from archobjects.base import ShapeGroup
+from ArchIFC import IfcProduct
 
 
-class Opening(object):
+class Opening(ShapeGroup, IfcProduct):
     def __init__(self, obj=None):
+        super(Opening, self).__init__(obj)
         self.Object = obj
         if obj:
             self.attach(obj)
 
-    def __getstate__(self):
-        return
 
-    def __setstate__(self,_state):
-        return
-    
+    def attach(self,obj):
+        ShapeGroup.attach(self, obj)
+        self.set_properties(obj)
+   
+
     def execute(self, obj):
         a_shape = self.get_addition_shape(obj)
         f_shape = self.get_filling_shape(obj)
-        v_shape = self.get_void_shape(obj)
        
         obj.Shape = f_shape
 
 
-    def attach(self,obj):
-        obj.addExtension('App::GeoFeatureGroupExtensionPython', None)
-        self.set_properties(obj)
-
     def set_properties(self, obj):
-        # obj.addProperty('App::PropertyPlacement', 'GlobalPlacement', 
-        #                'Base', 
-        #                'Object global Placement', 1)
-
+        """ Setup object properties.
+        """
         # Ifc Properties ----------------------------------------------------
-        # IFCutils.set_ifc_properties(obj, "IfcProduct")
-        obj.addProperty('App::PropertyString', 'IfcType', 'Ifc')
+        IfcProduct.setProperties(self, obj)
         obj.IfcType = "Opening Element"
-        # IFCutils.setup_ifc_attributes(obj)
-        # obj.PredefinedType = "OPENING"
 
         # COMPONENTS - ADDITIONS (not implemented yet) ----------------------------
         _tip = 'Link the door or the window that you want to insert into the opening'
@@ -117,76 +109,11 @@ class Opening(object):
         obj.addProperty('App::PropertyLength', 'HostThickness', 
                         'Geometry', _tip).HostThickness = 500
 
-    # ADDITIONS ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-    def get_addition_shape(self, obj):
-        pass
-
-    # FILLING ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-    
-    def get_filling_shape(self, obj):
-        import Part
-
-        f = None
-        if 'Filling' in obj.PropertiesList and obj.Filling == "None":
-            # return an empty shape
-            f = Part.Shape()
-        elif 'Filling' in obj.PropertiesList and obj.Filling == "Default Door":
-            f = self.get_default_door_shape(obj)
-        elif 'Filling' in obj.PropertiesList and obj.Filling == "Default Window":
-            f = self.get_default_window_shape(obj)
-        elif 'Filling' in obj.PropertiesList and obj.Filling == "By Sketch":
-            f = self.get_filling_by_sketch(obj)
-        elif 'Filling' in obj.PropertiesList and obj.Filling == "Custom":
-            if 'FillingElement' in obj.PropertiesList and obj.FillingElement:
-                # TODO: Inherit custom window shape
-                f = obj.FillingElement.Shape
-        if f: return f
-
-    def get_default_door_shape(self, obj):
-        import Part
-
-        if (not 'OpeningWidth' in obj.PropertiesList or
-            not 'OpeningHeight' in obj.PropertiesList):
-            return None
-        f = Part.makeBox(obj.OpeningWidth,60,obj.OpeningHeight)
-        m = App.Matrix()
-        m.move(-obj.OpeningWidth/2, 0, 0)
-        f = f.transformGeometry(m)
-        return f
-
-    def get_default_window_shape(self, obj):
-        import Part
-
-        if (not 'OpeningWidth' in obj.PropertiesList or
-            not 'OpeningHeight' in obj.PropertiesList):
-            return None
-        f = Part.makeBox(obj.OpeningWidth,60,obj.OpeningHeight)
-        m = App.Matrix()
-        m.move(-obj.OpeningWidth/2, 0, 0)
-        f = f.transformGeometry(m)
-        return f
-
-    def get_filling_by_sketch(self, obj):
-        #TODO: To be implemented
-        pass
-
-    # VOID ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-    def get_void_shape(self, obj):
-        import Part
-
-        void = None
-        if obj.Void == "Rectangular":
-            void = Part.makeBox(obj.OpeningWidth.Value, obj.HostThickness.Value + 50, obj.OpeningHeight.Value)
-            void.Placement = obj.Placement
-            void.Placement.Base.x -= obj.OpeningWidth.Value/2
-            void.Placement.Base.y -= obj.HostThickness.Value/2
-        return void
-
-
 
     def onChanged(self, obj, prop):
+        """This method is activated when a property changes.
+        """
+        super(Opening, self).onChanged(obj, prop)
         if 'Addition' in obj.PropertiesList and prop == 'Addition':
             if obj.Addition != "Custom" and 'AdditionElements' in obj.PropertiesList:
                 obj.setPropertyStatus("AdditionElements", 2)
@@ -211,3 +138,76 @@ class Opening(object):
 
     def onDocumentRestored(self, obj):
         self.Object = obj
+
+
+    # ADDITIONS ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+    def get_addition_shape(self, obj):
+        pass
+
+
+    # FILLING ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    
+    def get_filling_shape(self, obj):
+        import Part
+
+        f = None
+        if 'Filling' in obj.PropertiesList and obj.Filling == "None":
+            # return an empty shape
+            f = Part.Shape()
+        elif 'Filling' in obj.PropertiesList and obj.Filling == "Default Door":
+            f = self.get_default_door_shape(obj)
+        elif 'Filling' in obj.PropertiesList and obj.Filling == "Default Window":
+            f = self.get_default_window_shape(obj)
+        elif 'Filling' in obj.PropertiesList and obj.Filling == "By Sketch":
+            f = self.get_filling_by_sketch(obj)
+        elif 'Filling' in obj.PropertiesList and obj.Filling == "Custom":
+            if 'FillingElement' in obj.PropertiesList and obj.FillingElement:
+                # TODO: Inherit custom window shape
+                f = obj.FillingElement.Shape
+        if f: return f
+
+
+    def get_default_door_shape(self, obj):
+        import Part
+
+        if (not 'OpeningWidth' in obj.PropertiesList or
+            not 'OpeningHeight' in obj.PropertiesList):
+            return None
+        f = Part.makeBox(obj.OpeningWidth,60,obj.OpeningHeight)
+        m = App.Matrix()
+        m.move(-obj.OpeningWidth/2, 0, 0)
+        f = f.transformGeometry(m)
+        return f
+
+
+    def get_default_window_shape(self, obj):
+        import Part
+
+        if (not 'OpeningWidth' in obj.PropertiesList or
+            not 'OpeningHeight' in obj.PropertiesList):
+            return None
+        f = Part.makeBox(obj.OpeningWidth,60,obj.OpeningHeight)
+        m = App.Matrix()
+        m.move(-obj.OpeningWidth/2, 0, 0)
+        f = f.transformGeometry(m)
+        return f
+
+
+    def get_filling_by_sketch(self, obj):
+        #TODO: To be implemented
+        pass
+
+
+    # VOID ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+    def get_void_shape(self, obj):
+        import Part
+
+        void = None
+        if obj.Void == "Rectangular":
+            void = Part.makeBox(obj.OpeningWidth.Value, obj.HostThickness.Value + 50, obj.OpeningHeight.Value)
+            void.Placement = obj.Placement
+            void.Placement.Base.x -= obj.OpeningWidth.Value/2
+            void.Placement.Base.y -= obj.HostThickness.Value/2
+        return void

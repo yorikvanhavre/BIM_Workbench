@@ -24,24 +24,28 @@
 # \ingroup ARCH
 # \brief Provide the viewprovider code for Arch Opening.
 
+from archviewproviders.view_base import ViewProviderShapeGroup
 
-class ViewProviderOpening(object):
-    def __init__(self,vobj=None):
-        if vobj:
-            vobj.Proxy = self
-            self.attach(vobj)
-        else:
-            self.ViewObject = None
 
-    def attach(self,vobj):
-        vobj.addExtension('Gui::ViewProviderGeoFeatureGroupExtensionPython', None)
-        self.ViewObject = vobj
+class ViewProviderOpening(ViewProviderShapeGroup):
+    
+    def __init__(self, vobj=None):
+        super(ViewProviderOpening, self).__init__(vobj)
+
+    def getIcon(self):
+        """Return the path to the appropriate icon.
+
+        Return the Arch wall icon.
+
+        Returns
+        -------
+        str
+            Path to the appropriate icon .svg file.
+        """ 
+        return ":/icons/Arch_Wall_Tree_next.svg"
 
     def getDefaultDisplayMode(self):
         return "Flat Lines"
 
-    def __getstate__(self):
-        return None
-
-    def __setstate__(self, _state):
-        return None
+    def onChanged(self, vobj, prop):
+        super(ViewProviderOpening, self).onChanged(vobj, prop)

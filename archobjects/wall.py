@@ -221,7 +221,8 @@ class Wall(ShapeGroup, IfcProduct):
     
 
     def onChanged(self, obj, prop):
-        """this method is activated when a property changes"""
+        """This method is activated when a property changes.
+        """
         super(Wall, self).onChanged(obj, prop)
 
         if prop == "Placement":
@@ -292,7 +293,8 @@ class Wall(ShapeGroup, IfcProduct):
 
                     if hasattr(o, "IfcType"):
                         if o.IfcType == 'Opening Element':
-                            self.add_opening(o)
+                            self.add_opening(obj, o)
+                            continue
 
                     if not o in obj.Subtractions:
                         print("added a new object to the wall")
@@ -535,7 +537,7 @@ class Wall(ShapeGroup, IfcProduct):
         if Draft.get_type(obj) != "Arch_Wall":
             print("Wall " + obj.Name + "is not a valid Arch_Wall objects")
             return False
-        if obj.BaseGeometry is not None:
+        if obj.BaseGeometry != []:
             print("Wall Joining only works if base geometry is not set")
             return False
         return True
@@ -760,7 +762,7 @@ class Wall(ShapeGroup, IfcProduct):
               add it to subtractions
         """
         openings = obj.Openings
-        openings.append(o)
+        openings.append(child)
         obj.Openings = openings
 
 

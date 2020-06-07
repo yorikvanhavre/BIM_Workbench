@@ -57,41 +57,6 @@ class ViewProviderWall(ViewProviderShapeGroup):
 
     def onChanged(self, vobj, prop):
         super(ViewProviderWall, self).onChanged(vobj, prop)
-
-    def onDelete(self, vobj, subelements): # subelements is a tuple of strings
-        """
-        Activated when object is deleted
-        """
-        # ask if the user is sure and wants to delete contained objects
-        if not vobj.Object.Group:
-            return True
-
-        msgBox = QtGui.QMessageBox()
-        msgBox.setText("Deleting wall object " + vobj.Object.Label + ".")
-        msgBox.setInformativeText("Do you want to delete also contained objects?")
-        msgBox.setStandardButtons(QtGui.QMessageBox.Yes | QtGui.QMessageBox.No | QtGui.QMessageBox.Cancel)
-        msgBox.setDefaultButton(QtGui.QMessageBox.Yes)
-        ret = msgBox.exec_()
-
-        if ret == QtGui.QMessageBox.Yes:
-            delete_children = True
-        elif ret == QtGui.QMessageBox.No:
-            delete_children = False
-        elif ret == QtGui.QMessageBox.Cancel:
-            # the object won't be deleted
-            return False
-        else:
-            # the object won't be deleted
-            return False
-
-        vobj.Object.Proxy.remove_linked_walls_references(vobj.Object)
-
-        if delete_children:
-            for o in vobj.Object.Group:
-                App.ActiveDocument.removeObject(o.Name)
-
-        # the object will be deleted
-        return True
     
     def setupContextMenu(self, vobj, menu):
         """
