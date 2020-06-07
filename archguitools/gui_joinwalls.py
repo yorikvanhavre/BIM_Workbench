@@ -37,15 +37,15 @@ from PySide import QtCore,QtGui
 # this is just a very rough implementation to test the objects
 # ---------------------------------------------------------------------------
 
-class Arch_JoinWalls:
+class Arch_ExtendWall:
 
     "the Arch JoinWalls command definition"
 
     def GetResources(self):
 
         return {'Pixmap'  : os.path.join(os.path.dirname(__file__),"..","icons","Arch_Wall_Experimental.svg"),
-                'MenuText': "Join_Walls_EXPERIMENTAL",
-                'ToolTip': "EXPERIMENTAL\nJoin two walls.\nSelect first the wall that you want to\n extend and then the target wall."}
+                'MenuText': "Extend_Walls_EXPERIMENTAL",
+                'ToolTip': "EXPERIMENTAL\nExtend one wall to another.\nSelect first the wall that you want to\nextend and then the target wall."}
 
     def IsActive(self):
 
@@ -58,7 +58,29 @@ class Arch_JoinWalls:
         join_walls(w1, w2)
         App.ActiveDocument.recompute()
 
+class Arch_JoinWalls:
+
+    "the Arch JoinWalls command definition"
+
+    def GetResources(self):
+
+        return {'Pixmap'  : os.path.join(os.path.dirname(__file__),"..","icons","Arch_Wall_Experimental.svg"),
+                'MenuText': "Join_Walls_EXPERIMENTAL",
+                'ToolTip': "EXPERIMENTAL\nCorner join two walls.\nSelect 2 walls."}
+
+    def IsActive(self):
+
+        return not App.ActiveDocument is None
+
+    def Activated(self):
+        sel = Gui.Selection.getSelection()
+        w1 = sel[0]
+        w2 = sel[1]
+        join_walls(w1, w2)
+        join_walls(w2, w1)
+        App.ActiveDocument.recompute()
 
 
 
 Gui.addCommand('Arch_JoinWalls', Arch_JoinWalls())
+Gui.addCommand('Arch_ExtendWall', Arch_ExtendWall())

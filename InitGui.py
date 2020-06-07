@@ -204,7 +204,7 @@ static char * IFC_xpm[] = {
                        "BIM_IfcQuantities","BIM_IfcProperties","BIM_Classification",
                        "BIM_Material","Arch_Schedule","BIM_Preflight"]
 
-        self.experimentaltools = ["Arch_Wall2","Arch_JoinWalls", "Separator",
+        self.experimentaltools = ["Arch_Wall2","Arch_JoinWalls", "Arch_ExtendWall", "Separator",
                                   "Arch_Opening", "Arch_Door2", "Arch_Window2", "Separator",
                                   "Arch_View"]
 
