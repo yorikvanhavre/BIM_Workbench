@@ -31,8 +31,6 @@ import Draft
 import DraftVecUtils
 import DraftGeomUtils
 
-# from archutils import IFCutils # to be rearranged with multiple inheritance of IfcProduct
-
 from archobjects.base import ShapeGroup
 from ArchIFC import IfcProduct
 
@@ -59,6 +57,10 @@ class Wall(ShapeGroup, IfcProduct):
         self.Type = 'Arch_Wall'
 
 
+    def attach(self, obj):
+        ShapeGroup.attach(self, obj)
+        self.set_properties(obj)
+
 
     def set_properties(self, obj):
         """ Setup object properties.
@@ -67,6 +69,47 @@ class Wall(ShapeGroup, IfcProduct):
         IfcProduct.setProperties(self, obj)
         obj.IfcType = "Wall"
         obj.PredefinedType = "STANDARD"
+
+        # COMPONENTS Properties (partially implemented at the moment) ---------
+        _tip = 'Optional objects to use as base geometry for the wall shape'
+        obj.addProperty('App::PropertyLinkListChild', 'BaseGeometry',
+                        'Components', _tip) # TODO: better PropertyLinkListGlobal or PropertyLinkListChild?
+        
+        _tip = 'List of objects to include in a compound with the base wall shape'
+        obj.addProperty('App::PropertyLinkListChild', 'Additions',
+                        'Components', _tip) # TODO: better PropertyLinkListGlobal or PropertyLinkListChild?
+        
+        _tip = 'List of objects to subtract from the wall shape'
+        obj.addProperty('App::PropertyLinkListGlobal', 'Subtractions',
+                        'Components', _tip)
+
+        _tip = 'List of Openings inserted into the wall.\n'\
+               'Openings have to be grouped into the wall object.'
+        obj.addProperty('App::PropertyLinkListChild', 'Openings',
+                        'Components', _tip)
+
+        # GEOMETRY Properties -----------------------------------------------
+        _tip = 'Define the X coordinate of the start point of the core axis.\n'
+        obj.addProperty('App::PropertyDistance', 'AxisFirstPointX', #change to BaselineStart
+                        'Geometry', _tip).AxisFirstPointX = 0.0
+
+        _tip = 'Define the X coordinate of the end point of the core axis.\n'
+        obj.addProperty('App::PropertyDistance', 'AxisLastPointX', #change to BaselineEnd
+                        'Geometry', _tip).AxisLastPointX = 4000.0
+
+        _tip = 'Link to an edge subobject to bind the wall axis\n'\
+               'Not implemented yet' # TODO: implement external axis binding
+        obj.addProperty('App::PropertyLinkSubGlobal', 'AxisLink',
+                        'Geometry', _tip)
+
+        obj.addProperty('App::PropertyLength', 'Length',
+                        'Geometry', 'Wall length',1).Length = '4 m'
+
+        obj.addProperty('App::PropertyLength', 'Width',
+                        'Geometry', 'Wall width').Width = '35 cm'
+
+        obj.addProperty('App::PropertyLength', 'Height',
+                        'Geometry', 'Wall height').Height = '2.7 m'
 
         # LEVEL Properties (not implemented yet) ----------------------------
         _tip = 'Constrain the wall base to the parent level (Not implemented yet).'
@@ -90,49 +133,6 @@ class Wall(ShapeGroup, IfcProduct):
         obj.addProperty('App::PropertyLength', 'TopOffset', 
                         'Level properties', 
                         _tip).TopOffset = '0'
-
-        # COMPONENTS Properties (partially implemented at the moment) ---------
-        _tip = 'Optional object to use as base geometry for the wall shape'
-        obj.addProperty('App::PropertyLinkChild', 'BaseGeometry',
-                        'Components', _tip) # TODO: better PropertyLinkListGlobal or PropertyLinkListChild?
-        
-        _tip = 'List of objects to fuse with the wall shape'
-        obj.addProperty('App::PropertyLinkListGlobal', 'Fusions',
-                        'Components', _tip) # TODO: better PropertyLinkListGlobal or PropertyLinkListChild?
-        
-        _tip = 'List of objects to subtract from the wall shape'
-        obj.addProperty('App::PropertyLinkListGlobal', 'Subtractions',
-                        'Components', _tip)
-
-        _tip = 'List of Openings inserted into the wall.\n'\
-               'Openings have to be grouped into the wall object.'
-        obj.addProperty('App::PropertyLinkListChild', 'Openings',
-                        'Components', _tip)
-
-        # GEOMETRY Properties -----------------------------------------------
-        _tip = 'Define the X coordinate of the start point of the core axis.\n'\
-               'Value in millimeters'
-        obj.addProperty('App::PropertyDistance', 'AxisFirstPointX', #change to BaselineStart
-                        'Geometry', _tip).AxisFirstPointX = 0.0
-
-        _tip = 'Define the X coordinate of the end point of the core axis.\n'\
-               'Value in millimeters'
-        obj.addProperty('App::PropertyDistance', 'AxisLastPointX', #change to BaselineEnd
-                        'Geometry', _tip).AxisLastPointX = 4000.0
-
-        _tip = 'Link to an edge subobject to bind the wall axis\n'\
-               'Not implemented yet' # TODO: implement external axis binding
-        obj.addProperty('App::PropertyLinkSubGlobal', 'AxisLink',
-                        'Geometry', _tip)
-
-        obj.addProperty('App::PropertyLength', 'Length',
-                        'Geometry', 'Wall length',1).Length = '4 m'
-
-        obj.addProperty('App::PropertyLength', 'Width',
-                        'Geometry', 'Wall width').Width = '35 cm'
-
-        obj.addProperty('App::PropertyLength', 'Height',
-                        'Geometry', 'Wall height').Height = '2.7 m'
 
         # WALL CONNECTIONS Properties ---------------------------------------
         _tip = "Allow automatic compute of first end"
@@ -190,71 +190,6 @@ class Wall(ShapeGroup, IfcProduct):
                         'Wall Ends', _tip,4).LastCoreOuterAngle = '90 deg'
 
 
-    def attach(self, obj):
-        ShapeGroup.attach(self, obj)
-        self.set_properties(obj)
-
-
-    def execute(self, obj):
-        """ Compute the wall shape as boolean operations among the component objects """
-        # print("running " + obj.Name + " execute() method\n")
-        # get wall base shape from BaseGeometry object
-        wall_shape = None
-
-        if hasattr(obj, "BaseGeometry") and obj.BaseGeometry:
-            if hasattr(obj.BaseGeometry, "Shape"):
-                wall_shape = obj.BaseGeometry.Shape
-        else:
-            wall_shape = self.get_default_shape(obj)
-        
-        if wall_shape is None:
-            return
-
-        """
-        Perform boolean operations between the base shape and 
-        Additions, Subtractions, and Openings.
-
-        Openings have to provide a proper shape to cut the wall through
-        opening.Proxy.get_void_shape(opening) method that returns a Part Shape
-        already in the right relative position.
-        """
-
-        # subtract Subtractions
-        if hasattr(obj, "Subtractions"):
-            if obj.Subtractions is not None and obj.Subtractions != []:
-                for o in obj.Subtractions:
-                    if o in obj.Group and hasattr(o, "Shape"):
-                        # subtraction object is inside the wall
-                        relative_placement = o.Placement
-                        if hasattr(o, "InList"):
-                            if o.InList[0] != obj:
-                                relative_placement = o.InList[0].Placement.multiply(o.Placement)
-                        cut_shape = o.Shape.copy()
-                        cut_shape.Placement = relative_placement
-                        wall_shape = wall_shape.cut(cut_shape)
-                    elif hasattr(o, "Shape"):
-                        # subtraction object is not inside the wall, compute it's correct relative placement
-                        global_placement = o.getGlobalPlacement()
-                        relative_placement = obj.getGlobalPlacement().inverse().multiply(global_placement)
-                        cut_shape = o.Shape.copy()
-                        cut_shape.Placement = relative_placement
-                        wall_shape = wall_shape.cut(cut_shape)
-
-        if hasattr(obj,"Openings"):
-            # objects marked as Openings must be appropriate Opening objects to cut the wall
-            if obj.Openings and obj.Openings != []:
-                for opening in obj.Openings:
-                    # cut opening void
-                    void = None
-                    if hasattr(opening, "Proxy") and hasattr(opening.Proxy, "get_void_shape"):
-                        void = opening.Proxy.get_void_shape(opening)
-                        if void is not None:
-                            # void.Placement = container_placement.multiply(cut_shape.Placement) # this is not necessary anymore because Opening object provide a correct shape to cut the wall
-                            wall_shape = wall_shape.cut(void)
-
-        obj.Shape = wall_shape
-
-
     def onBeforeChange(self, obj, prop):
         """this method is activated before a property changes"""
         
@@ -285,14 +220,169 @@ class Wall(ShapeGroup, IfcProduct):
             self.oldGroup = obj.Group
     
 
+    def onChanged(self, obj, prop):
+        """this method is activated when a property changes"""
+        super(Wall, self).onChanged(obj, prop)
+
+        if prop == "Placement":
+            if hasattr(obj, "Placement"): # TODO: recompute only if end is set
+                # Recompute wall joinings
+                self.recompute_ends(obj, 0)
+                self.recompute_ends(obj, 1)
+                for t_name in obj.IncomingTJoins:
+                    t = App.ActiveDocument.getObject(t_name)
+                    t.Proxy.recompute_ends(t, 0)
+                    t.Proxy.recompute_ends(t, 1)
+                # Update global placement Property (not working so good)
+                # obj.GlobalPlacement = obj.getGlobalPlacement()
+
+        # WALL JOIN ENDS properties
+        if (hasattr(obj, "JoinFirstEndTo") and hasattr(obj, "JoinLastEndTo") and
+            hasattr(obj, "JoinFirstEnd")and hasattr(obj, "JoinLastEnd")):
+
+            if prop == "JoinFirstEndTo" and obj.JoinFirstEnd:
+                self.recompute_ends(obj, 0)
+
+            elif prop == "JoinLastEndTo" and obj.JoinLastEnd:
+                self.recompute_ends(obj, 1)
+
+        if prop == "AxisFirstPointX" or prop == "AxisLastPointX":
+            if hasattr(obj, "AxisFirstPointX") and hasattr(obj, "AxisLastPointX"):
+                #if obj.AxisFirstPointX.x > obj.AxisLastPointX.x:   circular
+                #    obj.AxisFirstPointX, obj.AxisLastPointX = obj.AxisLastPointX, obj.AxisFirstPointX
+                if hasattr(obj, "Length"):
+                    obj.Length = abs(obj.AxisLastPointX - obj.AxisFirstPointX)
+
+        # CHILDREN properties: remember to first assign basegeometry and then add the object to the group
+        if prop == "BaseGeometry":
+            if hasattr(obj, "BaseGeometry"):
+                pass
+
+        # Group property: an object is added or removed from the wall
+        if prop == "Group":
+            if hasattr(obj, "Group") and hasattr(obj, "BaseGeometry") and hasattr(obj, "Subtractions"):
+                if hasattr(self, "oldGroup"):
+                    # understand if the object was added or removed
+                    added_objs = [x for x in obj.Group if x not in self.oldGroup]
+                    removed_objs = [x for x in self.oldGroup if x not in obj.Group]
+                    del self.oldGroup
+                for o in removed_objs:
+                    # if it was removed, remove it from wall children linking
+                    print("Removing " + o.Label + " from " + obj.Label)
+                    if o == obj.BaseGeometry:
+                        obj.BaseGeometry = None
+
+                    elif o in obj.Subtractions:
+                        openings = obj.Subtractions
+                        openings.remove(o)
+                        obj.Subtractions = openings
+
+                    elif o in obj.Openings:
+                        openings = obj.Openings
+                        openings.remove(o)
+                        obj.Openings = openings
+
+                for o in added_objs:
+                    # if it was added, check if it is an opening or ask if it has to be treated as an Opening
+                    print("Adding " + o.Name + " to " + obj.Label)
+                    if o == obj.BaseGeometry:
+                        continue
+
+                    if hasattr(o, "IfcType"):
+                        if o.IfcType == 'Opening Element':
+                            openings = obj.Openings
+                            openings.append(o)
+                            obj.Openings = openings
+                            continue
+
+                    if not o in obj.Subtractions:
+                        print("added a new object to the wall")
+                        self.add_subtraction(obj, o)
+
+
+    def execute(self, obj):
+        """ Compute the wall shape as boolean operations among the component objects """
+        # print("running " + obj.Name + " execute() method\n")
+        import Part
+
+        # gather base wall_shape (from obj.BaseGeometry or from default shape)
+        wall_shape = None
+        if hasattr(obj, "BaseGeometry") and obj.BaseGeometry:
+            # get wall base shape from BaseGeometry objects
+            shape_collection = []
+            for o in obj.BaseGeometry:
+                if hasattr(o, "Shape") and not o.Shape.isNull():
+                    shape_collection.append(o.Shape)
+            wall_shape = Part.makeCompound(shape_collection)
+        else:
+            wall_shape = self.get_default_shape(obj)
+        
+        if wall_shape is None:
+            return
+
+        """
+        Perform boolean operations between the base shape and 
+        Additions, Subtractions, and Openings.
+
+        Openings have to provide a proper shape to cut the wall through
+        opening.Proxy.get_void_shape(opening) method that returns a Part Shape
+        already in the right relative position.
+        If the user wants to use a random shape to cut the wall he will use 
+        the Subtractions list.
+        """
+        if hasattr(obj, "Additions") and obj.Additions:
+            # get wall base shape from BaseGeometry objects
+            shape_collection = []
+            for o in obj.Additions:
+                if hasattr(o, "Shape") and not o.Shape.isNull():
+                    shape_collection.append(o.Shape)
+            if shape_collection:
+                shape_collection.append(wall_shape)
+                # TODO: Is it better to fuse the additions instead of grouping them with a compound?
+                wall_shape = Part.makeCompound(shape_collection)
+
+        # subtract Subtractions
+        if hasattr(obj, "Subtractions") and obj.Subtractions:
+            for o in obj.Subtractions:
+                if o in obj.Group and hasattr(o, "Shape"):
+                    # subtraction object is inside the wall
+                    relative_placement = o.Placement
+                    if hasattr(o, "InList"):
+                        if o.InList[0] != obj:
+                            relative_placement = o.InList[0].Placement.multiply(o.Placement)
+                    cut_shape = o.Shape.copy()
+                    cut_shape.Placement = relative_placement
+                    wall_shape = wall_shape.cut(cut_shape)
+                elif hasattr(o, "Shape"):
+                    # subtraction object is not inside the wall, compute it's correct relative placement
+                    global_placement = o.getGlobalPlacement()
+                    relative_placement = obj.getGlobalPlacement().inverse().multiply(global_placement)
+                    cut_shape = o.Shape.copy()
+                    cut_shape.Placement = relative_placement
+                    wall_shape = wall_shape.cut(cut_shape)
+
+        if hasattr(obj,"Openings") and obj.Openings:
+            # objects marked as Openings must be appropriate Opening objects to cut the wall
+            # TODO: Add a flag to also subtract window positive shapes from wall
+            for opening in obj.Openings:
+                # cut opening void
+                void = None
+                if hasattr(opening, "Proxy") and hasattr(opening.Proxy, "get_void_shape"):
+                    void = opening.Proxy.get_void_shape(opening)
+                    if void is not None:
+                        # void.Placement = container_placement.multiply(cut_shape.Placement) # this is not necessary anymore because Opening object provide a correct shape to cut the wall
+                        wall_shape = wall_shape.cut(void)
+
+        obj.Shape = wall_shape
+
+
     def get_default_shape(self, obj):
         """
         The wall default base shape is defined as 2 Part Wedge solids, fused together;
         splays are controlled by obj.FirstCoreOuterAngle, obj.LastCoreOuterAngle
-                                obj.FirstCoreInnerAngle, obj.LastCoreInnerAngle
+                                 obj.FirstCoreInnerAngle, obj.LastCoreInnerAngle
 
-        TODO: For further development maybe we can add another 2 Part Wedges
-            to simulate inner layer and outer layer (ATM only core is represented)
+        TODO: Adding support for default multi-layer walls.
 
                 <--> first_splay                <--> last_splay
                 ---------------------------------  outer surface
@@ -389,86 +479,6 @@ class Wall(ShapeGroup, IfcProduct):
         #       I was thinking to just 3 layers in the representation, cause it's usually enough
 
         return core_layer
-
-
-    def onChanged(self, obj, prop):
-        """this method is activated when a property changes"""
-        super(Wall, self).onChanged(obj, prop)
-
-        if prop == "Placement":
-            if hasattr(obj, "Placement"): # TODO: recompute only if end is set
-                # Recompute wall joinings
-                self.recompute_ends(obj, 0)
-                self.recompute_ends(obj, 1)
-                for t_name in obj.IncomingTJoins:
-                    t = App.ActiveDocument.getObject(t_name)
-                    t.Proxy.recompute_ends(t, 0)
-                    t.Proxy.recompute_ends(t, 1)
-                # Update global placement Property (not working so good)
-                # obj.GlobalPlacement = obj.getGlobalPlacement()
-
-        # WALL JOIN ENDS properties
-        if (hasattr(obj, "JoinFirstEndTo") and hasattr(obj, "JoinLastEndTo") and
-            hasattr(obj, "JoinFirstEnd")and hasattr(obj, "JoinLastEnd")):
-
-            if prop == "JoinFirstEndTo" and obj.JoinFirstEnd:
-                self.recompute_ends(obj, 0)
-
-            elif prop == "JoinLastEndTo" and obj.JoinLastEnd:
-                self.recompute_ends(obj, 1)
-
-        if prop == "AxisFirstPointX" or prop == "AxisLastPointX":
-            if hasattr(obj, "AxisFirstPointX") and hasattr(obj, "AxisLastPointX"):
-                #if obj.AxisFirstPointX.x > obj.AxisLastPointX.x:   circular
-                #    obj.AxisFirstPointX, obj.AxisLastPointX = obj.AxisLastPointX, obj.AxisFirstPointX
-                if hasattr(obj, "Length"):
-                    obj.Length = abs(obj.AxisLastPointX - obj.AxisFirstPointX)
-
-        # CHILDREN properties: remember to first assign basegeometry and then add the object to the group
-        if prop == "BaseGeometry":
-            if hasattr(obj, "BaseGeometry"):
-                pass
-
-        # Group property: an object is added or removed from the wall
-        if prop == "Group":
-            if hasattr(obj, "Group") and hasattr(obj, "BaseGeometry") and hasattr(obj, "Subtractions"):
-                if hasattr(self, "oldGroup"):
-                    # understand if the object was added or removed
-                    added_objs = [x for x in obj.Group if x not in self.oldGroup]
-                    removed_objs = [x for x in self.oldGroup if x not in obj.Group]
-                    del self.oldGroup
-                for o in removed_objs:
-                    # if it was removed, remove it from wall children linking
-                    print("Removing " + o.Label + " from " + obj.Label)
-                    if o == obj.BaseGeometry:
-                        obj.BaseGeometry = None
-
-                    elif o in obj.Subtractions:
-                        openings = obj.Subtractions
-                        openings.remove(o)
-                        obj.Subtractions = openings
-
-                    elif o in obj.Openings:
-                        openings = obj.Openings
-                        openings.remove(o)
-                        obj.Openings = openings
-
-                for o in added_objs:
-                    # if it was added, check if it is an opening or ask if it has to be treated as an Opening
-                    print("Adding " + o.Name + " to " + obj.Label)
-                    if o == obj.BaseGeometry:
-                        continue
-
-                    if hasattr(o, "IfcType"):
-                        if o.IfcType == 'Opening Element':
-                            openings = obj.Openings
-                            openings.append(o)
-                            obj.Openings = openings
-                            continue
-
-                    if not o in obj.Subtractions:
-                        print("added a new object to the wall")
-                        self.add_subtraction(obj, o)
 
 
     # Wall joinings methods +++++++++++++++++++++++++++++++++++++++++++++++++
