@@ -173,6 +173,7 @@ class BIM_Box:
         "sets up a taskbox widget"
 
         from PySide import QtCore,QtGui
+        import FreeCADGui
         wid = QtGui.QWidget()
         ui = FreeCADGui.UiLoader()
         wid.setWindowTitle(translate("BIM","Box dimensions"))
