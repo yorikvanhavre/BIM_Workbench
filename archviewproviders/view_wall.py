@@ -24,6 +24,7 @@
 # \ingroup ARCH
 # \brief Provide the viewprovider code for Arch Wall.
 
+import os
 from PySide import QtCore,QtGui
 from pivy import coin
 
@@ -49,9 +50,8 @@ class ViewProviderWall(ViewProviderShapeGroup):
         str
             Path to the appropriate icon .svg file.
         """ 
-        return ":/icons/Arch_Wall_Tree_next.svg"
+        return os.path.join(os.path.dirname(__file__),"..","icons","Arch_Wall_Experimental.svg")
 
-        
     def getDefaultDisplayMode(self):
         return "Flat Lines"
 

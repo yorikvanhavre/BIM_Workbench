@@ -124,6 +124,8 @@ class ViewProviderShapeGroup(object):
         """
         Activated when object is deleted
         """
+        from PySide import QtGui
+        
         # ask if the user is sure and wants to delete contained objects
         if not vobj.Object.Group:
             return True

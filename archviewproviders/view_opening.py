@@ -24,6 +24,7 @@
 # \ingroup ARCH
 # \brief Provide the viewprovider code for Arch Opening.
 
+import os
 from archviewproviders.view_base import ViewProviderShapeGroup
 
 
@@ -42,10 +43,24 @@ class ViewProviderOpening(ViewProviderShapeGroup):
         str
             Path to the appropriate icon .svg file.
         """ 
-        return ":/icons/Arch_Wall_Tree_next.svg"
+        return os.path.join(os.path.dirname(__file__),"..","icons","Arch_Opening_Experimental.svg")
 
     def getDefaultDisplayMode(self):
         return "Flat Lines"
 
     def onChanged(self, vobj, prop):
         super(ViewProviderOpening, self).onChanged(vobj, prop)
+
+    # Drag handling
+
+    def canDropObject(self, incoming_object):
+        """Return True if the dropped object is accepted.
+        """
+        return hasattr(incoming_object, 'Shape')
+        
+    def dropObject(self, vobj, incoming_object):
+        """Called when an object is dropped over the Opening ViewProvider in the tree.
+        TODO: Setup the Type or add the object.
+        """
+        print(incoming_object.Name)
+        vobj.Object.addObject(incoming_object)

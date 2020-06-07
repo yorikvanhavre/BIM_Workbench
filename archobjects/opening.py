@@ -45,10 +45,22 @@ class Opening(ShapeGroup, IfcProduct):
    
 
     def execute(self, obj):
+        import Part
+
+        shapes_collection = []
+
         a_shape = self.get_addition_shape(obj)
+        if a_shape:
+            shapes_collection.append(a_shape)
+
         f_shape = self.get_filling_shape(obj)
-       
-        obj.Shape = f_shape
+        if f_shape:
+            shapes_collection.append(f_shape)
+
+        if len(shapes_collection) > 0:
+            obj.Shape = Part.makeCompound(shapes_collection)
+        else:
+            obj.Shape = Part.Shape()
 
 
     def set_properties(self, obj):
@@ -59,61 +71,76 @@ class Opening(ShapeGroup, IfcProduct):
         obj.IfcType = "Opening Element"
 
         # COMPONENTS - ADDITIONS (not implemented yet) ----------------------------
-        _tip = 'Link the door or the window that you want to insert into the opening'
+        _tip = 'List of available shapes for the opening Additions.\n'\
+               'Chose Custom to use the Addition Elements objects shape.'
         obj.addProperty('App::PropertyEnumeration', 'Addition', 
                         'Component - Additions', _tip).Addition = ["Default Sill", "Custom"]
 
-        _tip = 'Link the door or the window that you want to insert into the opening'
-        obj.addProperty('App::PropertyLinkListGlobal', 'AdditionElements', 
+        _tip = 'List of objects to be merged into the opening shape.'
+        obj.addProperty('App::PropertyLinkListChild', 'AdditionElements', 
                         'Component - Additions', _tip)
         obj.setPropertyStatus("AdditionElements", 2)
 
+        _tip = 'Chose if the Addition Elements have to be individually displayed or\n'\
+               'merged into the Opening object shape.'
+        obj.addProperty('App::PropertyEnumeration', 'AdditionMode', 
+                        'Component - Additions', _tip).AdditionMode = ["Embed Shape", "Display Children"]
+
         # COMPONENTS - FILLING Properties (Windows, doors) ----------------------------
-        _tip = 'Link the door or the window that you want to insert into the opening'
+        _tip = 'List of available shapes for the Filling element.\n'\
+               'Chose Custom to use the Filling Element object shape.'
         obj.addProperty('App::PropertyEnumeration', 'Filling', 
                         'Component - Filling', _tip).Filling = ["None", "Default Door", "Default Window", "By Sketch", "Custom"]
 
-        _tip = 'Link the door or the window that you want to insert into the opening'
+        _tip = 'Alignment of the Filling Element according to the Host Thickness property.'
         obj.addProperty('App::PropertyEnumeration', 'FillingAlignment', 
                         'Component - Filling', _tip).FillingAlignment = ["Left", "Center", "Right", "Offset"]
         
-        _tip = 'Link the door or the window that you want to insert into the opening'
+        _tip = 'Offset of the Filling Element from the chosen Filling Alignment.'
         obj.addProperty('App::PropertyDistance', 'FillingDisplacement', 
                         'Component - Filling', _tip).FillingDisplacement = 0.0
 
-        _tip = 'Link the door or the window that you want to insert into the opening'
+        _tip = 'Link the door or the window that you want to insert into the opening.'
         obj.addProperty('App::PropertyLinkGlobal', 'FillingElement', 
                         'Component - Filling', _tip)
 
-        _tip = 'Link the door or the window that you want to insert into the opening'
+        _tip = 'Chose if the Filling Element have to be individually displayed or\n'\
+               'merged into the Opening object shape.'
         obj.addProperty('App::PropertyEnumeration', 'FillingMode', 
                         'Component - Filling', _tip).FillingMode = ["Embed Shape", "Display Child"]
 
         # COMPONENTS Properties (not implemented yet) ----------------------------
-        _tip = 'Link the door or the window that you want to insert into the opening'
+        _tip = 'List of available shapes of the Opening void.\n'\
+               'Chose Custom to use the Void Element object shape.'
         obj.addProperty('App::PropertyEnumeration', 'Void', 
                         'Component - Void', _tip).Void = ["Rectangular", "Arc", "Custom"]
 
-        _tip = 'Link the door or the window that you want to insert into the opening'
+        _tip = 'Ponter to the object that will be used to cut the wall.\n'\
+               'To use it, set Void property to Custom'
         obj.addProperty('App::PropertyLinkGlobal', 'VoidElement', 
                         'Component - Void', _tip)
 
         # Geometry Properties (not implemented yet) ----------------------------
-        _tip = 'Link the door or the window that you want to insert into the opening'
+        _tip = 'Architectural Width of the opening object'
         obj.addProperty('App::PropertyLength', 'OpeningWidth', 
                         'Geometry', _tip).OpeningWidth = 800
-        _tip = 'Link the door or the window that you want to insert into the opening'
+        _tip = 'Architectural Height of the opening object'
         obj.addProperty('App::PropertyLength', 'OpeningHeight', 
                         'Geometry', _tip).OpeningHeight = 1500
-        _tip = 'Link the door or the window that you want to insert into the opening'
+        _tip = 'Thickness of the hosted object.\n'\
+               'This property is set by the hosting wall on creation'
         obj.addProperty('App::PropertyLength', 'HostThickness', 
                         'Geometry', _tip).HostThickness = 500
+        _tip = 'Propagate geometry properties to opening childrens'
+        obj.addProperty('App::PropertyBool', 'PropagateGeometry', 
+                        'Geometry', _tip).PropagateGeometry = False
 
 
     def onChanged(self, obj, prop):
         """This method is activated when a property changes.
         """
         super(Opening, self).onChanged(obj, prop)
+
         if 'Addition' in obj.PropertiesList and prop == 'Addition':
             if obj.Addition != "Custom" and 'AdditionElements' in obj.PropertiesList:
                 obj.setPropertyStatus("AdditionElements", 2)
@@ -124,9 +151,6 @@ class Opening(ShapeGroup, IfcProduct):
             pass
 
         if 'Filling' in obj.PropertiesList and prop == 'Filling':
-            pass
-
-        if 'FillingElement' in obj.PropertiesList and prop == 'FillingElement':
             pass
 
         if 'Void' in obj.PropertiesList and prop == 'Void':
@@ -143,29 +167,37 @@ class Opening(ShapeGroup, IfcProduct):
     # ADDITIONS ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
     def get_addition_shape(self, obj):
-        pass
+        return None
 
 
     # FILLING ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     
     def get_filling_shape(self, obj):
+        """Return a shape representing the filling of the Opening object, 
+        being it for example a window, a door, a custom filling or just None.
+        """
         import Part
 
-        f = None
         if 'Filling' in obj.PropertiesList and obj.Filling == "None":
-            # return an empty shape
-            f = Part.Shape()
+            return None
+
         elif 'Filling' in obj.PropertiesList and obj.Filling == "Default Door":
-            f = self.get_default_door_shape(obj)
+            return self.get_default_door_shape(obj)
         elif 'Filling' in obj.PropertiesList and obj.Filling == "Default Window":
-            f = self.get_default_window_shape(obj)
+            return self.get_default_window_shape(obj)
         elif 'Filling' in obj.PropertiesList and obj.Filling == "By Sketch":
-            f = self.get_filling_by_sketch(obj)
+            return self.get_filling_by_sketch(obj)
         elif 'Filling' in obj.PropertiesList and obj.Filling == "Custom":
             if 'FillingElement' in obj.PropertiesList and obj.FillingElement:
-                # TODO: Inherit custom window shape
-                f = obj.FillingElement.Shape
-        if f: return f
+                if 'Shape' in obj.FillingElement.PropertiesList and not obj.FillingElement.Shape.isNull():
+                    if 'FillingMode' in obj.PropertiesList and obj.FillingMode == "Embed Shape":
+                        # if FillingMode is "Embed Shape" look for a shape to return
+                        return obj.FillingElement.Shape
+                    elif 'FillingMode' in obj.PropertiesList and obj.FillingMode == "Display Child":
+                        # if FillingMode is "Display Child" return None cause the children will be visible by itself
+                        # BUG: This option does not work so good.
+                        return None
+        return None
 
 
     def get_default_door_shape(self, obj):

@@ -143,7 +143,7 @@ class Arch_Opening(Arch_Openings):
     """The Arch Opening command definition"""
 
     def GetResources(self):
-        return {'Pixmap'  : os.path.join(os.path.dirname(__file__),"..","icons","Arch_Window_Experimental.svg"),
+        return {'Pixmap'  : os.path.join(os.path.dirname(__file__),"..","icons","Arch_Opening_Experimental.svg"),
                 'MenuText': "Opening_EXPERIMENTAL",
                 #'Accel': "W, A",
                 'ToolTip': "EXPERIMENTAL\nCreates an Opening object"}
