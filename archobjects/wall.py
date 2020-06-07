@@ -269,18 +269,20 @@ class Wall(ShapeGroup, IfcProduct):
                 for o in removed_objs:
                     # if it was removed, remove it from wall children linking
                     print("Removing " + o.Label + " from " + obj.Label)
-                    if o == obj.BaseGeometry:
-                        obj.BaseGeometry = None
+                    if o in obj.BaseGeometry:
+                        BaseGeometry = obj.BaseGeometry
+                        BaseGeometry.remove(o)
+                        obj.BaseGeometry = BaseGeometry
 
                     elif o in obj.Subtractions:
-                        openings = obj.Subtractions
-                        openings.remove(o)
-                        obj.Subtractions = openings
+                        Subtractions = obj.Subtractions
+                        Subtractions.remove(o)
+                        obj.Subtractions = Subtractions
 
                     elif o in obj.Openings:
-                        openings = obj.Openings
-                        openings.remove(o)
-                        obj.Openings = openings
+                        Openings = obj.Openings
+                        Openings.remove(o)
+                        obj.Openings = Openings
 
                 for o in added_objs:
                     # if it was added, check if it is an opening or ask if it has to be treated as an Opening
@@ -290,14 +292,11 @@ class Wall(ShapeGroup, IfcProduct):
 
                     if hasattr(o, "IfcType"):
                         if o.IfcType == 'Opening Element':
-                            openings = obj.Openings
-                            openings.append(o)
-                            obj.Openings = openings
-                            continue
+                            self.add_opening(o)
 
                     if not o in obj.Subtractions:
                         print("added a new object to the wall")
-                        self.add_subtraction(obj, o)
+                        self.add_as_base_shape(obj, o)
 
 
     def execute(self, obj):
@@ -752,16 +751,20 @@ class Wall(ShapeGroup, IfcProduct):
     # Group objects handling methods ++++++++++++++++++++++++++++++++++++++++
 
 
-    def add_window(self, obj, child):
+    def add_opening(self, obj, child):
         """
         This method is called when a new object is added to the wall and
-        it has a IfcType property that is set to 'Window'.
+        it has a IfcType property that is set to 'Opening Element'.
+        
+        TODO: check if the opening is a proper FreeCAD Opening object, else
+              add it to subtractions
         """
-        pass
-        # TODO: not implemented yet
+        openings = obj.Openings
+        openings.append(o)
+        obj.Openings = openings
 
 
-    def add_subtraction(self, obj, child):
+    def add_as_base_shape(self, obj, child):
         """
         This method is called when a new object is added to the wall.
         It ask the user if the object has to be treated as an opening.
@@ -769,15 +772,15 @@ class Wall(ShapeGroup, IfcProduct):
         """
         msgBox = QtGui.QMessageBox()
         msgBox.setText("Object " + obj.Label + " has been added to the wall.")
-        msgBox.setInformativeText("Do you want to treat it as an opening?\n")
+        msgBox.setInformativeText("Do you want to add it to the wall Base Geometry?\n")
         msgBox.setStandardButtons(QtGui.QMessageBox.Yes | QtGui.QMessageBox.No)
         msgBox.setDefaultButton(QtGui.QMessageBox.Yes)
         ret = msgBox.exec_()
 
         if ret == QtGui.QMessageBox.Yes:
-            openings = obj.Subtractions
-            openings.append(child)
-            obj.Subtractions = openings
+            BaseGeometry = obj.BaseGeometry
+            BaseGeometry.append(child)
+            obj.BaseGeometry = BaseGeometry
             child.Visibility = False
         elif ret == QtGui.QMessageBox.No:
             return
