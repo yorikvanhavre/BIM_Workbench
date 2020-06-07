@@ -34,13 +34,14 @@ import DraftGeomUtils
 # from archutils import IFCutils # to be rearranged with multiple inheritance of IfcProduct
 
 from archobjects.base import ShapeGroup
+from ArchIFC import IfcProduct
 
 if App.GuiUp:
     import FreeCADGui as Gui
     from PySide import QtCore, QtGui
 
 
-class Wall(ShapeGroup):
+class Wall(ShapeGroup, IfcProduct):
     """
     A prototype for a new wall object for the Arch Workbench
     """
@@ -60,15 +61,12 @@ class Wall(ShapeGroup):
 
 
     def set_properties(self, obj):
-        # obj.addProperty('App::PropertyPlacement', 'GlobalPlacement', 
-        #                'Base', 
-        #                'Object global Placement', 1)
-
+        """ Setup object properties.
+        """
         # Ifc Properties ----------------------------------------------------
-        # IFCutils.set_ifc_properties(obj, "IfcProduct")
-        # obj.IfcType = "Wall"
-        # IFCutils.setup_ifc_attributes(obj)
-        # obj.PredefinedType = "STANDARD"
+        IfcProduct.setProperties(self, obj)
+        obj.IfcType = "Wall"
+        obj.PredefinedType = "STANDARD"
 
         # LEVEL Properties (not implemented yet) ----------------------------
         _tip = 'Constrain the wall base to the parent level (Not implemented yet).'
@@ -193,7 +191,7 @@ class Wall(ShapeGroup):
 
 
     def attach(self, obj):
-        super(Wall, self).attach(obj)
+        ShapeGroup.attach(self, obj)
         self.set_properties(obj)
 
 
@@ -395,6 +393,7 @@ class Wall(ShapeGroup):
 
     def onChanged(self, obj, prop):
         """this method is activated when a property changes"""
+        super(Wall, self).onChanged(obj, prop)
 
         if prop == "Placement":
             if hasattr(obj, "Placement"): # TODO: recompute only if end is set
