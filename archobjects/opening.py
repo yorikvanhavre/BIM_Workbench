@@ -30,6 +30,7 @@ import DraftVecUtils
 from archobjects.base import ShapeGroup
 from ArchIFC import IfcProduct
 
+import archobjects.window_presets as window_presets
 
 class Opening(ShapeGroup, IfcProduct):
     def __init__(self, obj=None):
@@ -219,11 +220,17 @@ class Opening(ShapeGroup, IfcProduct):
         if (not 'OpeningWidth' in obj.PropertiesList or
             not 'OpeningHeight' in obj.PropertiesList):
             return None
-        f = Part.makeBox(obj.OpeningWidth,60,obj.OpeningHeight)
+        return window_presets.window_single_pane(obj.HostThickness.Value,
+                                                 obj.OpeningHeight.Value,
+                                                 obj.OpeningWidth.Value,
+                                                 frame_width=50,
+                                                 frame_th=50,
+                                                 glass_th=21)
+        '''f = Part.makeBox(obj.OpeningWidth,60,obj.OpeningHeight)
         m = App.Matrix()
         m.move(-obj.OpeningWidth/2, 0, 0)
         f = f.transformGeometry(m)
-        return f
+        return f'''
 
 
     def get_filling_by_sketch(self, obj):
