@@ -52,40 +52,47 @@ def clear_doc():
     for obj in DOC.Objects:
         DOC.removeObject(obj.Name)
 
-if FreeCAD.ActiveDocument is None:
-    FreeCAD.newDocument(DOC_NAME)
-    if DBG_LOAD is True:    
-        print("Document: {0} Created".format(DOC_NAME))
+# =========================
+
+# the code below creates a document on every BIM workbench load
+# so turning it off for now - Yorik
+
+# if FreeCAD.ActiveDocument is None:
+#    FreeCAD.newDocument(DOC_NAME)
+#    if DBG_LOAD is True:    
+#        print("Document: {0} Created".format(DOC_NAME))
 
 # test if there is an active document with a "proper" name
-if FreeCAD.ActiveDocument.Name == DOC_NAME:
-    if DBG_LOAD is True:    
-        print("DOC_NAME exist")
-else:
-    if DBG_LOAD is True:    
-        print("DOC_NAME is not active")
-    # test if there is a document with a "proper" name
-    try:
-        FreeCAD.getDocument(DOC_NAME)
-    except NameError:
-        if DBG_LOAD is True:    
-            print("No Document: {0}".format(DOC_NAME))
-        FreeCAD.newDocument(DOC_NAME)
-        if DBG_LOAD is True:    
-            print("Document {0} Created".format(DOC_NAME))
+#if FreeCAD.ActiveDocument.Name == DOC_NAME:
+#    if DBG_LOAD is True:    
+#        print("DOC_NAME exist")
+#else:
+#    if DBG_LOAD is True:    
+#        print("DOC_NAME is not active")
+#    # test if there is a document with a "proper" name
+#    try:
+#        FreeCAD.getDocument(DOC_NAME)
+#    except NameError:
+#        if DBG_LOAD is True:    
+#            print("No Document: {0}".format(DOC_NAME))
+#        FreeCAD.newDocument(DOC_NAME)
+#        if DBG_LOAD is True:    
+#            print("Document {0} Created".format(DOC_NAME))
 
-DOC = FreeCAD.getDocument(DOC_NAME)
-GUI = FreeCADGui.getDocument(DOC_NAME)
-VIEW = GUI.ActiveView    
-if DBG_LOAD is True:    
-    print("DOC : {0} GUI : {1}".format(DOC, GUI))
+#DOC = FreeCAD.getDocument(DOC_NAME)
+#GUI = FreeCADGui.getDocument(DOC_NAME)
+#VIEW = GUI.ActiveView    
+#if DBG_LOAD is True:    
+#    print("DOC : {0} GUI : {1}".format(DOC, GUI))
 
-activate_doc()
+# activate_doc()
 
-if DBG_LOAD is True:    
-    print(FreeCAD.ActiveDocument.Name)
+# if DBG_LOAD is True:    
+#    print(FreeCAD.ActiveDocument.Name)
 
-clear_doc()
+# clear_doc()
+
+# =================================
 
 EPS = 0.002
 
