@@ -39,6 +39,7 @@ class BIM_TogglePanels:
 
     def Activated(self):
 
+        import FreeCADGui
         from  PySide import QtCore,QtGui
         mw = FreeCADGui.getMainWindow()
         togglebutton = None
