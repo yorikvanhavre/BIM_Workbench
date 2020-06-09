@@ -98,18 +98,6 @@ static char * IFC_xpm[] = {
         import BimWorkingPlaneTools
         import BimPartTools
 
-        # experimental arch tools (for 0.19 only)
-        try:
-            import ArchIFC
-        except:
-            # this is 0.18
-            pass
-        else:
-            from archguitools import gui_wall
-            from archguitools import gui_openings
-            from archguitools import gui_joinwalls
-            from archguitools import gui_archview
-
         # add translations path
         FreeCADGui.addLanguagePath(BimStatusBar.getLanguagePath())
 
@@ -210,9 +198,20 @@ static char * IFC_xpm[] = {
                        "BIM_IfcQuantities","BIM_IfcProperties","BIM_Classification",
                        "BIM_Material","Arch_Schedule","BIM_Preflight"]
 
-        self.experimentaltools = ["Arch_Wall2","Arch_JoinWalls", "Arch_ExtendWall", "Separator",
-                                  "Arch_Opening", "Arch_Door2", "Arch_Window2", "Separator",
-                                  "Arch_View"]
+        # experimental arch tools (for 0.19 only)
+        try:
+            import ArchIFC
+        except:
+            # this is 0.18
+            self.experimentaltools = None
+        else:
+            from archguitools import gui_wall
+            from archguitools import gui_openings
+            from archguitools import gui_joinwalls
+            from archguitools import gui_archview
+            self.experimentaltools = ["Arch_Wall2","Arch_JoinWalls", "Arch_ExtendWall", "Separator",
+                                      "Arch_Opening", "Arch_Door2", "Arch_Window2", "Separator",
+                                      "Arch_View"]
 
         # fixed command names
         if "Draft_WorkingPlaneProxy" in Gui.listCommands():
@@ -344,7 +343,8 @@ static char * IFC_xpm[] = {
         self.appendToolbar(QT_TRANSLATE_NOOP("BIM","Annotation tools"),self.annotationtools)
         self.appendToolbar(QT_TRANSLATE_NOOP("BIM","Modification tools"),self.modify)
         self.appendToolbar(QT_TRANSLATE_NOOP("BIM","Manage tools"),self.manage)
-        self.appendToolbar(QT_TRANSLATE_NOOP("BIM","Experimental tools"),self.experimentaltools)
+        if self.experimentaltools:
+            self.appendToolbar(QT_TRANSLATE_NOOP("BIM","Experimental tools"),self.experimentaltools)
         #if flamingo:
         #    self.appendToolbar("Flamingo tools",flamingo)
 
