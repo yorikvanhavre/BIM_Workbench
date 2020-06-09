@@ -57,7 +57,8 @@ class BIM_Library:
             # check if the library is at the standard addon location
             addondir = os.path.join(FreeCAD.getUserAppDataDir(),"Mod","parts_library")
             if os.path.exists(addondir):
-                FreeCAD.ParamGet('User parameter:Plugins/parts_library').SetString('destination',addondir)
+                # save file paths with forward slashes even on windows
+                FreeCAD.ParamGet('User parameter:Plugins/parts_library').SetString('destination',addondir.replace("\\","/"))
                 libok = True
         if libok:
             FreeCADGui.Control.showDialog(BIM_Library_TaskPanel())
