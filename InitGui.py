@@ -98,11 +98,17 @@ static char * IFC_xpm[] = {
         import BimWorkingPlaneTools
         import BimPartTools
 
-        # experimental arch tools
-        from archguitools import gui_wall
-        from archguitools import gui_openings
-        from archguitools import gui_joinwalls
-        from archguitools import gui_archview
+        # experimental arch tools (for 0.19 only)
+        try:
+            import ArchIFC
+        except:
+            # this is 0.18
+            pass
+        else:
+            from archguitools import gui_wall
+            from archguitools import gui_openings
+            from archguitools import gui_joinwalls
+            from archguitools import gui_archview
 
         # add translations path
         FreeCADGui.addLanguagePath(BimStatusBar.getLanguagePath())
