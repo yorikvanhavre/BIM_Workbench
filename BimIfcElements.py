@@ -53,21 +53,17 @@ class BIM_IfcElements:
         from PySide import QtCore,QtGui
         # build objects list
         self.objectslist = {}
+        try:
+            import ArchIFC
+            self.ifctypes = ArchIFC.IfcTypes
+        except (ImportError,AttributeError):
+            import ArchComponent
+            self.ifctypes = ArchComponent.IfcRoles
         for obj in FreeCAD.ActiveDocument.Objects:
-            if hasattr(obj,"IfcType"):
-                import ArchIFC
-                self.ifctypes = ArchIFC.IfcTypes
-                mat = ""
-                if hasattr(obj,"Material") and obj.Material:
-                    mat = obj.Material.Name
-                self.objectslist[obj.Name] = [obj.IfcType,mat]
-            elif hasattr(obj,"IfcRole"):
-                import ArchComponent
-                self.ifctypes = ArchComponent.IfcRoles
-                mat = ""
-                if hasattr(obj,"Material") and obj.Material:
-                    mat = obj.Material.Name
-                self.objectslist[obj.Name] = [obj.IfcRole,mat]
+            mat = ""
+            if hasattr(obj,"Material") and obj.Material:
+                mat = obj.Material.Name
+            self.objectslist[obj.Name] = [obj.IfcRole,mat]
 
         # load the form and set the tree model up
         self.form = FreeCADGui.PySideUic.loadUi(os.path.join(os.path.dirname(__file__),"dialogIfcElements.ui"))
@@ -532,11 +528,12 @@ if FreeCAD.GuiUp:
     
         def __init__(self, parent=None, dialog=None, *args):
     
+            import Arch_rc
             try:
                 import ArchIFC
                 self.roles = ArchIFC.IfcTypes
             except (ImportError,AttributeError):
-                import ArchComponent,Arch_rc
+                import ArchComponent
                 self.roles = ArchComponent.IfcRoles
             self.mats = []
             self.matlabels = []
