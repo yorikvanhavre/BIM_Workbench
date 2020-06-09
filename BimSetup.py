@@ -22,7 +22,7 @@
 
 """This module contains FreeCAD commands for the BIM workbench"""
 
-import os
+import os,sys
 import FreeCAD
 from BimTranslateUtils import *
 
