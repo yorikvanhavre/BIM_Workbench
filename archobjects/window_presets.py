@@ -1,22 +1,33 @@
+#***************************************************************************
+#*  Copyright (c) 2020 Carlo Dormeletti (onekk) carlo.dormeletti@yahoo.com *
+#*                                                                         *
+#*  This program is free software; you can redistribute it and/or modify   *
+#*  it under the terms of the GNU Lesser General Public License (LGPL)     *
+#*  as published by the Free Software Foundation; either version 2 of      *
+#*  the License, or (at your option) any later version.                    *
+#*  for detail see the LICENCE text file.                                  *
+#*                                                                         *
+#*  This program is distributed in the hope that it will be useful,        *
+#*  but WITHOUT ANY WARRANTY; without even the implied warranty of         *
+#*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the          *
+#*  GNU Library General Public License for more details.                   *
+#*                                                                         *
+#*  You should have received a copy of the GNU Library General Public      *
+#*  License along with this program; if not, write to the Free Software    *
+#*  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307   *
+#*  USA                                                                    *
+#*                                                                         *
+#***************************************************************************
+"""Provide the window presets to be used in the Arch Opening object
 """
- FreeCAD script - macro
- to be used with the OnePartLib part library
-
- copyright 2019 Carlo Dormeletti (onekk)
- carlo.dormeletti@yahoo.com
-
- Version:   
-
-"""
-
-import sys
-import datetime
-import time
+## @package window_presets
+# \ingroup ARCH
+# \brief Provide the window presets to be used in the Arch Opening object.
 
 import FreeCAD
 import FreeCADGui
 from FreeCAD import Rotation, Vector
-import Part
+
 App = FreeCAD
 
 # BEGIN DOC Settings
@@ -24,75 +35,6 @@ DEBUG = True
 DBG_LOAD = False
 DOC_NAME = "finestra"
 # END DOC settings
-
-
-#from math import pi cos, sin, pi, sqrt
-import numpy as np
-
-
-def activate_doc():
-    """activate document"""
-    FreeCAD.setActiveDocument(DOC_NAME)
-    FreeCAD.ActiveDocument = FreeCAD.getDocument(DOC_NAME)
-    FreeCADGui.ActiveDocument = FreeCADGui.getDocument(DOC_NAME)
-    if DBG_LOAD is True:    
-        print("{0} activated".format(DOC_NAME))
-
-
-def setview():
-    """Rearrange View"""
-    DOC.recompute()
-    VIEW.viewAxometric()
-    VIEW.setAxisCross(True)
-    VIEW.fitAll()
-
-
-def clear_doc():
-    """Clear the active document deleting all the objects"""
-    for obj in DOC.Objects:
-        DOC.removeObject(obj.Name)
-
-# =========================
-
-# the code below creates a document on every BIM workbench load
-# so turning it off for now - Yorik
-
-# if FreeCAD.ActiveDocument is None:
-#    FreeCAD.newDocument(DOC_NAME)
-#    if DBG_LOAD is True:    
-#        print("Document: {0} Created".format(DOC_NAME))
-
-# test if there is an active document with a "proper" name
-#if FreeCAD.ActiveDocument.Name == DOC_NAME:
-#    if DBG_LOAD is True:    
-#        print("DOC_NAME exist")
-#else:
-#    if DBG_LOAD is True:    
-#        print("DOC_NAME is not active")
-#    # test if there is a document with a "proper" name
-#    try:
-#        FreeCAD.getDocument(DOC_NAME)
-#    except NameError:
-#        if DBG_LOAD is True:    
-#            print("No Document: {0}".format(DOC_NAME))
-#        FreeCAD.newDocument(DOC_NAME)
-#        if DBG_LOAD is True:    
-#            print("Document {0} Created".format(DOC_NAME))
-
-#DOC = FreeCAD.getDocument(DOC_NAME)
-#GUI = FreeCADGui.getDocument(DOC_NAME)
-#VIEW = GUI.ActiveView    
-#if DBG_LOAD is True:    
-#    print("DOC : {0} GUI : {1}".format(DOC, GUI))
-
-# activate_doc()
-
-# if DBG_LOAD is True:    
-#    print(FreeCAD.ActiveDocument.Name)
-
-# clear_doc()
-
-# =================================
 
 EPS = 0.002
 
@@ -107,24 +49,25 @@ PL0 = App.Placement(VZOR, ROT0)
 
 # DOCUMENT START HERE
 
-def frame_rectangular(tel_name, tel_w, tel_h , tel_ww, tel_wh, tel_th, et=0):
+# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ Components
+
+def frame_rectangular(tel_w, tel_h , tel_ww, tel_wh, tel_th, et=0):
+    """ Return the shape of a rectangular frame.
+    """
+    import Part
+
     i_tel_w = tel_w - tel_ww * 2
     i_tel_h = tel_h - tel_wh * 2
 
-    if et == 0:
-        ofz = 0
-    else:
-        ofz = tel_wh
+    ep0 = (tel_w * -0.5, 0, 0)
+    ep1 = (tel_w * 0.5, 0, 0)
+    ep2 = (tel_w * 0.5, 0, tel_h)
+    ep3 = (tel_w * -0.5, 0, tel_h)
 
-    ep0 = (tel_w * -0.5, 0, ofz)
-    ep1 = (tel_w * 0.5, 0, ofz)
-    ep2 = (tel_w * 0.5, 0, tel_h + ofz)
-    ep3 = (tel_w * -0.5, 0, tel_h + ofz)
-
-    ip0 = (i_tel_w * -0.5, 0, tel_ww + ofz)
-    ip1 = (i_tel_w * 0.5, 0, tel_ww + ofz)
-    ip2 = (i_tel_w * 0.5, 0, tel_ww + i_tel_h + ofz)
-    ip3 = (i_tel_w * -0.5, 0, tel_ww + i_tel_h + ofz)
+    ip0 = (i_tel_w * -0.5, 0, tel_ww)
+    ip1 = (i_tel_w * 0.5, 0, tel_ww)
+    ip2 = (i_tel_w * 0.5, 0, tel_ww + i_tel_h)
+    ip3 = (i_tel_w * -0.5, 0, tel_ww + i_tel_h)
   
     tel_b = (ep0, ep1, ip1, ip0, ep0)
     tel_bp = Part.makePolygon([Vector(*vtx) for vtx in tel_b])
@@ -149,56 +92,134 @@ def frame_rectangular(tel_name, tel_w, tel_h , tel_ww, tel_wh, tel_th, et=0):
 
     tel_fl = Part.makeFilledFace(tel_lp.Edges) 
     tel_fls = tel_fl.extrude(Vector(0, tel_th, 0))    
+    
+    return Part.makeCompound([tel_fbs, tel_frs, tel_fts, tel_fls])
 
-    #obj0 = DOC.addObject("Part::Feature", tel_name)
-    return Part.makeCompound((tel_fbs, tel_frs, tel_fts, tel_fls))
-    #obj0.ViewObject.ShapeColor = (0.54, 0.27, 0.07) # rgb(139, 69, 19)
 
-    #return obj0
+def glass(ea_w, ea_h, ef_w, ef_h, v_a, frame_th, glass_th): 
+    """Return the shape of a rectangular glass panel.
+    TODO: Check if a Part::Box is faster
+    """
+    import Part
 
+    v_w = ea_w - ef_w + v_a * 2
+    v_h = ea_h - ef_h + v_a * 2
+    
+    vp0 = (v_w * -0.5, 0, ef_w - v_a)
+    vp1 = (v_w * 0.5, 0, ef_w  - v_a)
+    vp2 = (v_w * 0.5, 0, ef_h - v_a + v_h)
+    vp3 = (v_w * -0.5, 0, ef_h - v_a + v_h)
+    
+    glass_pt = (vp0, vp1, vp2, vp3, vp0)    
+    glass_p = Part.makePolygon([Vector(*vtx) for vtx in glass_pt])
+        
+    glass_f = Part.makeFilledFace(glass_p.Edges) 
+    glass_s = glass_f.extrude(Vector(0, glass_th, 0))
+
+    return glass_s
+
+
+def default_sill(opening_width, host_thickness, sill_thickness, front_protrusion, lateral_protrusion, inner_covering): 
+    """Return the shape of a rectangular glass panel.
+    TODO: Check if a Part::Box is faster
+    """
+    import Part
+
+    sill_wid = opening_width + lateral_protrusion * 2
+    sill_th = sill_thickness
+    sill_len = host_thickness + front_protrusion - inner_covering
+    sill = Part.makeBox(sill_wid, sill_len, sill_th)
+    sill.Placement.Base = Vector(sill_wid * -0.5, host_thickness * -0.5 + inner_covering , sill_thickness * -1)
+
+    return sill
+
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ Windows
 
 def window_single_pane(opening_th=300, opening_height=1400, opening_width=1200,
-             frame_width=50, frame_th=50, glass_th=21):
-    vetro_add = 5
-    # permit to differentiate from the top-bottom 
-    # and left right    
+             frame_width=50, frame_th=50, glass_th=21, n_pan=1):
+    """Return the shape of a full n_panes rectangular window.
+    """
+    import Part
+
+    # permit to differentiate from the top-bottom and left right    
     frame_height = frame_width 
-    cont_w = frame_width * 2
-    cont_h = frame_height * 2
+    
+    # congruency check:
+    frame_ov_wid = n_pan * (frame_width * 2) + frame_width * 2
+    
+    light_fact = (opening_width - frame_ov_wid) / opening_width 
+    #print("FW LF >",frame_ov_wid, light_fact)
 
-    ea_w = opening_width - cont_w
-    ea_h = opening_height - cont_h
+    # frame reduction 
+    ef_w = frame_width * 2
+    ef_h = frame_height * 2
+    
+    res_w = opening_width - ef_w     
+    res_h = opening_height - ef_h
+    
+    # glass margin into the frame
+    v_a = 0
 
-    v_w = ea_w - cont_w + vetro_add * 2
-    v_h = ea_h - cont_h + vetro_add * 2
+    # TODO Adapt the warning to FreeCAD warning standard
+    if  light_fact < 0.40 :
+        print("Too Many panes in the window resulting in < 40% of the opening")
+        return 
+
+    # CREATE COMPONENTS
+    components = []
+
+    # CREATE FIXED FRAME
+    components.append(frame_rectangular(opening_width, opening_height, frame_width, 
+                   frame_height, frame_th))
+
+    # CREATE OPENING PANELS
+    if n_pan == 0:
+        # TODO: If n_pan == 0 create a fixed window
+        return
+
+    if n_pan == 1:
+        # Create a single pane window
+        ea_w = res_w
+        ea_h = res_h
+        
+        open_frame = frame_rectangular(ea_w, ea_h, frame_width,  frame_height, frame_th)
+        open_frame.Placement = FreeCAD.Placement(Vector(0, 0, frame_height), ROT0)
+        components.append(open_frame)
+
+        glass_s = glass(ea_w, ea_h, ef_w, ef_h, v_a, frame_th, glass_th)  
+        pl_v = FreeCAD.Placement(Vector(0, (frame_th - glass_th) * 0.5, 0), ROT0)        
+        glass_s.Placement = pl_v
+
+        components.append(glass_s)        
+
+    elif n_pan > 1 and n_pan < 10: 
+        # Create a multi pane window
+        fact_w = res_w / n_pan
+        
+        loop = True
+        cnt = 1
+        while loop is True:
+            if cnt > n_pan:
+                break
+            ea_w = fact_w
+            adv_x = (cnt - 1) * fact_w
+            ofx = (res_w * -0.5) + fact_w * 0.5 + adv_x
+            ea_h = res_h
+
+            open_frame = frame_rectangular(ea_w, ea_h, frame_width,  frame_height, frame_th)
+            pl_ea = FreeCAD.Placement(Vector(ofx, 0, frame_height), ROT0)               
+            open_frame.Placement = pl_ea
+        
+            components.append(open_frame)        
+        
+            glass_s = glass(ea_w, ea_h, ef_w, ef_h, v_a, frame_th, glass_th)  
+            pl_v = FreeCAD.Placement(Vector(ofx, (frame_th - glass_th) * 0.5, 0), ROT0)        
+            glass_s.Placement = pl_v
+
+            components.append(glass_s)
+
+            cnt += 1
+
+    window = Part.makeCompound(components)
  
-    vp0 = (v_w * -0.5, 0, cont_w - vetro_add)
-    vp1 = (v_w * 0.5, 0, cont_w  - vetro_add)
-    vp2 = (v_w * 0.5, 0, cont_h - vetro_add + v_h)
-    vp3 = (v_w * -0.5, 0, cont_h - vetro_add + v_h)
-
-    vetro_pt = (vp0, vp1, vp2, vp3, vp0)    
-    vetro_p = Part.makePolygon([Vector(*vtx) for vtx in vetro_pt])
-
-    vetro_f = Part.makeFilledFace(vetro_p.Edges) 
-    vetro_s = vetro_f.extrude(Vector(0, glass_th, 0))
-    vetro_s.Placement = FreeCAD.Placement(Vector(0, (frame_th - glass_th) * 0.5, 0), ROT0)
-
-    obj_t = frame_rectangular("telaio", opening_width, opening_height, frame_width, 
-                   frame_height, frame_th, 0)
-   
-    obj_ea = frame_rectangular("elemento apribile", ea_w, ea_h, frame_width, 
-                   frame_height, frame_th, 1)
-
-    compound = Part.makeCompound([obj_t, obj_ea, vetro_s])
-    return compound
-    obj1 = DOC.addObject("Part::Feature", "vetro")
-    obj1.Shape = vetro_s
-    obj1.ViewObject.ShapeColor = (0.33, 0.67, 1.00)
-    obj1.ViewObject.Transparency = 50
-
-    obj_f = DOC.addObject("Part::Compound", "finestra")
-    obj_f.Links = [obj_t, obj_ea, obj1]  
- 
-    return obj_f
-
+    return window

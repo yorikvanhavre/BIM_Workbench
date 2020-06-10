@@ -168,7 +168,26 @@ class Opening(ShapeGroup, IfcProduct):
     # ADDITIONS ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
     def get_addition_shape(self, obj):
+        if 'Addition' in obj.PropertiesList and obj.Addition == "None":
+            return None
+
+        elif 'Addition' in obj.PropertiesList and obj.Addition == "Default Sill":
+            return self.get_default_sill_shape(obj)
+
+        elif 'Addition' in obj.PropertiesList and obj.Addition == "Custom":
+            return None
+
         return None
+
+
+    def get_default_sill_shape(self, obj):
+        
+        return window_presets.default_sill(opening_width=obj.OpeningWidth.Value,
+                                           host_thickness=obj.HostThickness.Value,
+                                           sill_thickness=50.0,
+                                           front_protrusion=50.0,
+                                           lateral_protrusion=50.0,
+                                           inner_covering=30.0)
 
 
     # FILLING ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -177,17 +196,18 @@ class Opening(ShapeGroup, IfcProduct):
         """Return a shape representing the filling of the Opening object, 
         being it for example a window, a door, a custom filling or just None.
         """
-        import Part
-
         if 'Filling' in obj.PropertiesList and obj.Filling == "None":
             return None
 
         elif 'Filling' in obj.PropertiesList and obj.Filling == "Default Door":
             return self.get_default_door_shape(obj)
+
         elif 'Filling' in obj.PropertiesList and obj.Filling == "Default Window":
             return self.get_default_window_shape(obj)
+
         elif 'Filling' in obj.PropertiesList and obj.Filling == "By Sketch":
             return self.get_filling_by_sketch(obj)
+
         elif 'Filling' in obj.PropertiesList and obj.Filling == "Custom":
             if 'FillingElement' in obj.PropertiesList and obj.FillingElement:
                 if 'Shape' in obj.FillingElement.PropertiesList and not obj.FillingElement.Shape.isNull():
@@ -220,17 +240,14 @@ class Opening(ShapeGroup, IfcProduct):
         if (not 'OpeningWidth' in obj.PropertiesList or
             not 'OpeningHeight' in obj.PropertiesList):
             return None
+
         return window_presets.window_single_pane(obj.HostThickness.Value,
                                                  obj.OpeningHeight.Value,
                                                  obj.OpeningWidth.Value,
                                                  frame_width=50,
                                                  frame_th=50,
-                                                 glass_th=21)
-        '''f = Part.makeBox(obj.OpeningWidth,60,obj.OpeningHeight)
-        m = App.Matrix()
-        m.move(-obj.OpeningWidth/2, 0, 0)
-        f = f.transformGeometry(m)
-        return f'''
+                                                 glass_th=21,
+                                                 n_pan=2)
 
 
     def get_filling_by_sketch(self, obj):
@@ -246,7 +263,7 @@ class Opening(ShapeGroup, IfcProduct):
         void = None
         if obj.Void == "Rectangular":
             void = Part.makeBox(obj.OpeningWidth.Value, obj.HostThickness.Value + 50, obj.OpeningHeight.Value)
-            void.Placement = obj.Placement
             void.Placement.Base.x -= obj.OpeningWidth.Value/2
             void.Placement.Base.y -= obj.HostThickness.Value/2
+            void.Placement = obj.Placement.multiply(void.Placement)
         return void
