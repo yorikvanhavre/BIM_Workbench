@@ -202,10 +202,11 @@ class BIM_IfcExplorer:
         
         "close the dialog"
         
-        if self.mesh:
-            FreeCAD.ActiveDocument.removeObject(self.mesh.Name)
-        if self.currentmesh:
-            FreeCAD.ActiveDocument.removeObject(self.currentmesh.Name)
+        if FreeCAD.ActiveDocument:
+            if self.mesh:
+                FreeCAD.ActiveDocument.removeObject(self.mesh.Name)
+            if self.currentmesh:
+                FreeCAD.ActiveDocument.removeObject(self.currentmesh.Name)
 
 
     def back(self):
@@ -239,17 +240,23 @@ class BIM_IfcExplorer:
         "turns mesh display on/off"
 
         import FreeCADGui
+        import Mesh
         import ifcopenshell
         from ifcopenshell import geom
         if not FreeCAD.ActiveDocument:
-            FreeCAD.newDocument()
+            doc = FreeCAD.newDocument()
+            FreeCAD.setActiveDocument(doc.Name)
         if FreeCAD.ActiveDocument:
             if checked:
                 if self.mesh:
                     self.mesh.ViewObject.show()
                 else:
-                    import importIFC
-                    s = importIFC.getScaling(self.ifc)
+                    try:
+                        import importIFCHelper
+                        s = importIFCHelper.getScaling(self.ifc)
+                    except:
+                        import importIFC
+                        s = importIFC.getScaling(self.ifc)
                     s *= 1000 # ifcopenshell outputs its meshes in metres
                     trf = None
                     if s != 1:
@@ -355,7 +362,7 @@ class BIM_IfcExplorer:
         def get_name(e):
             try:
                 return " : " + e.get_info()['Name']
-            except KeyError:
+            except:
                 return ""
 
         if not eid in self.done:
