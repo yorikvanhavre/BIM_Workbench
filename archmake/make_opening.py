@@ -45,12 +45,12 @@ def make_opening(width=1000, height=2000, host_thickness=500, z_offset=0):
 def make_opening_window(width=900, height=1400, host_thickness=500, z_offset=1000):
     opening = make_opening(width, height, host_thickness, z_offset)
     opening.Label = "Window"
-    opening.Filling = "Default Window"
+    opening.Fill = "Default Window"
     return opening
 
 
 def make_opening_door(width=1000, height=2000, host_thickness=500, z_offset=0):
     opening = make_opening(width, height, host_thickness, z_offset)
     opening.Label = "Door"
-    opening.Filling = "Default Door"
+    opening.Fill = "Default Door"
     return opening

@@ -24,30 +24,13 @@
 # \ingroup ARCH
 # \brief Provide the window presets to be used in the Arch Opening object.
 
-import FreeCAD
-import FreeCADGui
-from FreeCAD import Rotation, Vector
-
-App = FreeCAD
+from FreeCAD import Vector
 
 # BEGIN DOC Settings
 DEBUG = True
 DBG_LOAD = False
 DOC_NAME = "finestra"
 # END DOC settings
-
-EPS = 0.002
-
-VZOR = App.Vector(0, 0, 0)
-ROT0 = App.Rotation(0, 0, 0)
-ROTX90 = App.Rotation(0, 0, 90)
-ROTXN90 = App.Rotation(0, 0, -90)
-ROTY90 = App.Rotation(0, 90, 0)
-ROTZ180 = App.Rotation(180, 0, 0)
-#Used to shorten most Placements
-PL0 = App.Placement(VZOR, ROT0)
-
-# DOCUMENT START HERE
 
 # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ Components
 
@@ -135,7 +118,7 @@ def default_sill(opening_width, host_thickness, sill_thickness, front_protrusion
 
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ Windows
 
-def window_single_pane(opening_th=300, opening_height=1400, opening_width=1200,
+def window_rectangular(opening_th=300, opening_height=1400, opening_width=1200,
              frame_width=50, frame_th=50, glass_th=21, n_pan=1):
     """Return the shape of a full n_panes rectangular window.
     """
@@ -183,12 +166,11 @@ def window_single_pane(opening_th=300, opening_height=1400, opening_width=1200,
         ea_h = res_h
         
         open_frame = frame_rectangular(ea_w, ea_h, frame_width,  frame_height, frame_th)
-        open_frame.Placement = FreeCAD.Placement(Vector(0, 0, frame_height), ROT0)
+        open_frame.Placement.Base.z = frame_height
         components.append(open_frame)
 
         glass_s = glass(ea_w, ea_h, ef_w, ef_h, v_a, frame_th, glass_th)  
-        pl_v = FreeCAD.Placement(Vector(0, (frame_th - glass_th) * 0.5, 0), ROT0)        
-        glass_s.Placement = pl_v
+        glass_s.Placement.Base.y = (frame_th - glass_th) * 0.5
 
         components.append(glass_s)        
 
@@ -207,14 +189,14 @@ def window_single_pane(opening_th=300, opening_height=1400, opening_width=1200,
             ea_h = res_h
 
             open_frame = frame_rectangular(ea_w, ea_h, frame_width,  frame_height, frame_th)
-            pl_ea = FreeCAD.Placement(Vector(ofx, 0, frame_height), ROT0)               
-            open_frame.Placement = pl_ea
+            open_frame.Placement.Base.x = ofx
+            open_frame.Placement.Base.z = frame_height
         
             components.append(open_frame)        
         
             glass_s = glass(ea_w, ea_h, ef_w, ef_h, v_a, frame_th, glass_th)  
-            pl_v = FreeCAD.Placement(Vector(ofx, (frame_th - glass_th) * 0.5, 0), ROT0)        
-            glass_s.Placement = pl_v
+            glass_s.Placement.Base.x = ofx
+            glass_s.Placement.Base.y = (frame_th - glass_th) * 0.5
 
             components.append(glass_s)
 
