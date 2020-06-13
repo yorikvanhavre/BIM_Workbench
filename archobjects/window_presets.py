@@ -158,9 +158,12 @@ def window_rectangular(opening_th=300, opening_height=1400, opening_width=1200,
     # CREATE OPENING PANELS
     if n_pan == 0:
         # TODO: If n_pan == 0 create a fixed window
-        return
+        glass_s = glass(opening_width, opening_height, frame_width, frame_height, v_a, frame_th, glass_th)  
+        glass_s.Placement.Base.y = (frame_th - glass_th) * 0.5
 
-    if n_pan == 1:
+        components.append(glass_s)
+
+    elif n_pan == 1:
         # Create a single pane window
         ea_w = res_w
         ea_h = res_h

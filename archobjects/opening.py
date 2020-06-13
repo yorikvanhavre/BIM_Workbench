@@ -50,14 +50,17 @@ class Opening(ShapeGroup, IfcProduct):
 
         shapes_collection = []
 
+        # ADDITIONS
         a_shape = self.get_addition_shape(obj)
         if a_shape:
             shapes_collection.append(a_shape)
 
+        # FILLING
         f_shape = self.get_fill_shape(obj)
         if f_shape:
             shapes_collection.append(f_shape)
 
+        # create object positive shape
         if len(shapes_collection) > 0:
             obj.Shape = Part.makeCompound(shapes_collection)
         else:
@@ -95,8 +98,9 @@ class Opening(ShapeGroup, IfcProduct):
 
         _tip = 'Alignment of the Fill Element according to the Host Thickness property.'
         obj.addProperty('App::PropertyEnumeration', 'FillAlignment', 
-                        'Component - Filling', _tip).FillAlignment = ["Left", "Center", "Right", "Offset"]
-        
+                        'Component - Filling', _tip).FillAlignment = ["Left", "Center", "Right"]
+        obj.FillAlignment = "Right"
+
         _tip = 'Offset of the Fill Element from the chosen Fill Alignment.'
         obj.addProperty('App::PropertyDistance', 'FillDisplacement', 
                         'Component - Filling', _tip).FillDisplacement = 0.0
@@ -110,7 +114,7 @@ class Opening(ShapeGroup, IfcProduct):
         obj.addProperty('App::PropertyEnumeration', 'FillMode', 
                         'Component - Filling', _tip).FillMode = ["Embed Shape", "Display Child"]
 
-        # COMPONENTS Properties (not implemented yet) ----------------------------
+        # COMPONENTS - VOID Properties (not implemented yet) ----------------------------
         _tip = 'List of available shapes of the Opening void.\n'\
                'Chose Custom to use the Void Element object shape.'
         obj.addProperty('App::PropertyEnumeration', 'Void', 
@@ -120,6 +124,10 @@ class Opening(ShapeGroup, IfcProduct):
                'To use it, set Void property to Custom'
         obj.addProperty('App::PropertyLinkGlobal', 'VoidElement', 
                         'Component - Void', _tip)
+
+        _tip = 'Subtract also positive shapes from the wall.'
+        obj.addProperty('App::PropertyBool', 'VoidSubtractAll', 
+                        'Component - Void', _tip).VoidSubtractAll = False
 
         # Geometry Properties (not implemented yet) ----------------------------
         _tip = 'Architectural Width of the opening object'
@@ -156,10 +164,8 @@ class Opening(ShapeGroup, IfcProduct):
             pass
 
         if 'Fill' in obj.PropertiesList and prop == 'Fill':
-            if obj.Fill == "None":
-                self.remove_filling_properties(obj)
-            else:
-                self.setup_filling_properties(obj)
+            self.remove_filling_properties(obj)
+            self.setup_filling_properties(obj)
 
         if 'Void' in obj.PropertiesList and prop == 'Void':
             pass
@@ -167,9 +173,6 @@ class Opening(ShapeGroup, IfcProduct):
         if 'VoidElement' in obj.PropertiesList and prop == 'VoidElement':
             pass
 
-    def setup_filling_properties(self, obj):
-        if obj.Fill == "Default Window":
-            self.add_default_window_properties(obj)
 
     def remove_filling_properties(self, obj):
         """Remove properties for Filling when not used.
@@ -179,14 +182,37 @@ class Opening(ShapeGroup, IfcProduct):
                 continue
             obj.removeProperty(property)   
 
+    def setup_filling_properties(self, obj):
+        if obj.Fill == "None":
+            return
+        if obj.Fill == "Default Window":
+            self.add_default_window_properties(obj)
+        if obj.Fill == "Default Door":
+            self.add_default_door_properties(obj)
+
     def add_default_window_properties(self, obj):
         _tip = 'Alignment of the Fill Element according to the Host Thickness property.'
         obj.addProperty('App::PropertyEnumeration', 'FillType', 
                         'Component - Filling - Options', _tip).FillType = ["Rectangular"]
 
-        _tip = 'Alignment of the Fill Element according to the Host Thickness property.'
+        _tip = 'Number of openable frames. Set 0 for a fixed window.'
         obj.addProperty('App::PropertyInteger', 'NumberOfPanes', 
                         'Component - Filling - Options', _tip).NumberOfPanes = 1
+
+        _tip = 'DESCRIBE.'
+        obj.addProperty('App::PropertyLength', 'FrameWidth', 
+                        'Component - Filling - Options', _tip).FrameWidth = 50.0
+
+        _tip = 'DESCRIBE.'
+        obj.addProperty('App::PropertyLength', 'FrameThickness', 
+                        'Component - Filling - Options', _tip).FrameThickness = 50.0
+
+        _tip = 'DESCRIBE.'
+        obj.addProperty('App::PropertyLength', 'GlassThickness', 
+                        'Component - Filling - Options', _tip).GlassThickness = 20.0
+
+    def add_default_door_properties(self, obj):
+        pass
 
     # ADDITIONS ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -219,29 +245,42 @@ class Opening(ShapeGroup, IfcProduct):
         """Return a shape representing the fill of the Opening object, 
         being it for example a window, a door, a custom fill or just None.
         """
+        f_shape = None
         if 'Fill' in obj.PropertiesList and obj.Fill == "None":
-            return None
+            f_shape = None
 
         elif 'Fill' in obj.PropertiesList and obj.Fill == "Default Door":
-            return self.get_default_door_shape(obj)
+            f_shape = self.get_default_door_shape(obj)
 
         elif 'Fill' in obj.PropertiesList and obj.Fill == "Default Window":
-            return self.get_default_window_shape(obj)
+            f_shape = self.get_default_window_shape(obj)
 
         elif 'Fill' in obj.PropertiesList and obj.Fill == "By Sketch":
-            return self.get_fill_by_sketch(obj)
+            f_shape = self.get_fill_by_sketch(obj)
 
         elif 'Fill' in obj.PropertiesList and obj.Fill == "Custom":
             if 'FillElement' in obj.PropertiesList and obj.FillElement:
                 if 'Shape' in obj.FillElement.PropertiesList and not obj.FillElement.Shape.isNull():
                     if 'FillMode' in obj.PropertiesList and obj.FillMode == "Embed Shape":
                         # if FillMode is "Embed Shape" look for a shape to return
-                        return obj.FillElement.Shape
+                        f_shape = obj.FillElement.Shape.copy()
                     elif 'FillMode' in obj.PropertiesList and obj.FillMode == "Display Child":
                         # if FillMode is "Display Child" return None cause the children will be visible by itself
                         # BUG: This option does not work so good.
-                        return None
-        return None
+                        f_shape = None
+
+        if f_shape:
+            # set the correct placement of filling shape according to alignement and displacement
+            if obj.FillAlignment == "Left":
+                f_shape.Placement.Base.y = obj.HostThickness.Value/2
+            elif obj.FillAlignment == "Center":
+                pass
+            elif obj.FillAlignment == "Right":
+                f_shape.Placement.Base.y = -obj.HostThickness.Value/2
+            f_shape.Placement.Base.y += obj.FillDisplacement.Value
+            return f_shape
+        else:
+            return None
 
 
     def get_default_door_shape(self, obj):
@@ -267,9 +306,9 @@ class Opening(ShapeGroup, IfcProduct):
         return window_presets.window_rectangular(obj.HostThickness.Value,
                                                  obj.OpeningHeight.Value,
                                                  obj.OpeningWidth.Value,
-                                                 frame_width=50,
-                                                 frame_th=50,
-                                                 glass_th=21,
+                                                 frame_width=obj.FrameWidth.Value,
+                                                 frame_th=obj.FrameThickness.Value,
+                                                 glass_th=obj.GlassThickness.Value,
                                                  n_pan=obj.NumberOfPanes)
 
 
@@ -289,4 +328,10 @@ class Opening(ShapeGroup, IfcProduct):
             void.Placement.Base.x -= obj.OpeningWidth.Value/2
             void.Placement.Base.y -= obj.HostThickness.Value/2
             void.Placement = obj.Placement.multiply(void.Placement)
+        
+        if obj.VoidSubtractAll:
+            # subtract also positive shapes from the wall
+            nv = Part.makeCompound([void, obj.Shape])
+            return nv
+
         return void
