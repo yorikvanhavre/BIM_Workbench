@@ -66,3 +66,10 @@ class ViewProviderWall(ViewProviderShapeGroup):
         action1 = QtGui.QAction("Flip wall", menu)
         QtCore.QObject.connect(action1,QtCore.SIGNAL("triggered()"),lambda f=vobj.Object.Proxy.flip_wall, arg=vobj.Object:f(arg))
         menu.addAction(action1)
+
+    def onDelete(self, vobj, subelements): # subelements is a tuple of strings
+        delete_ok = super(ViewProviderWall, self).onDelete(vobj, subelements)
+
+        if delete_ok:
+            vobj.Object.Proxy.remove_linked_walls_references(vobj.Object)
+            return True

@@ -148,8 +148,6 @@ class ViewProviderShapeGroup(object):
             # the object won't be deleted
             return False
 
-        vobj.Object.Proxy.remove_linked_walls_references(vobj.Object)
-
         if delete_children:
             for o in vobj.Object.Group:
                 App.ActiveDocument.removeObject(o.Name)
