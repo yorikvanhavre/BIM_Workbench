@@ -805,18 +805,27 @@ class Wall(ShapeGroup, IfcProduct):
             return core_axis
 
     def get_first_point(self, obj):
-        """returns a part line representing the core axis of the wall"""
+        """return a part line representing the core axis of the wall"""
         p1 = obj.getGlobalPlacement().multVec(App.Vector(obj.AxisFirstPointX,
                                                          0,
                                                          0))
         return p1
 
     def get_last_point(self, obj):
-        """returns a part line representing the core axis of the wall"""
+        """return a part line representing the core axis of the wall"""
         p2 = obj.getGlobalPlacement().multVec(App.Vector(obj.AxisLastPointX,
                                                          0,
                                                          0))
         return p2
+
+    def get_point_on_axis(self, obj, point):
+        """get_point_on_axis(self, obj, point)
+
+        Return the projection of a point on the wall axis referred to the wall local coordinates."""
+        gpl = obj.getGlobalPlacement()
+        proj = point.projectToLine(gpl.multVec(self.get_first_point(obj)),
+                                   gpl.multVec(self.get_last_point(obj)))
+        return gpl.inverse().multVec(proj)
 
 
     # General setter methods ++++++++++++++++++++++++++++++++++++++++++++++++

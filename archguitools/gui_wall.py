@@ -79,7 +79,8 @@ class Arch_Wall:
                              callback=self.getPoint,
                              movecallback=self.on_moved,
                              extradlg=self.taskbox(),
-                             title="Pick point:")
+                             title="Pick point:",
+                             mode="line")
 
     def getPoint(self, point=None, obj=None):
         """ This function is called by the snapper when it has a 3D point."""
@@ -98,7 +99,7 @@ class Arch_Wall:
         self.tracker.height(self.Height)
         self.tracker.on()
         # search for a clicked wall
-        self.join_first = self.get_picked_wall()
+        self.join_first = self.get_picked_wall()           
 
     def on_moved(self, point, info):
         """ This function is called when user move the mouse after first input."""
@@ -148,6 +149,13 @@ class Arch_Wall:
         if self.join_first != self.join_last:
             if self.join_first:
                 wall.JoinFirstEndTo = self.join_first
+                """target = App.ActiveDocument.getObject(self.join_first) # TODO: Fix this
+                if target:
+                    point_on_target_axis = target.Proxy.get_point_on_axis(target, self.points[0])
+                    if point_on_target_axis.sub(target.Proxy.get_first_point(target)).Length < target.Width/2:
+                        target.JoinFirstEndTo = wall.Name
+                    elif point_on_target_axis.sub(target.Proxy.get_last_point(target)).Length < target.Width/2:
+                        target.JoinLastEndTo = wall.Name"""
             if self.join_last:
                 wall.JoinLastEndTo = self.join_last            
 
