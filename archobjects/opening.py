@@ -211,6 +211,14 @@ class Opening(ShapeGroup, IfcProduct):
         obj.addProperty('App::PropertyLength', 'GlassThickness', 
                         'Component - Filling - Options', _tip).GlassThickness = 20.0
 
+        _tip = 'DESCRIBE.'
+        obj.addProperty('App::PropertyLength', 'IncreaseHeight', 
+                        'Component - Filling - Options', _tip).IncreaseHeight = 0.0
+
+        _tip = 'DESCRIBE.'
+        obj.addProperty('App::PropertyLength', 'IncreaseWidth', 
+                        'Component - Filling - Options', _tip).IncreaseWidth = 0.0
+
     def add_default_door_properties(self, obj):
         pass
 
@@ -304,8 +312,8 @@ class Opening(ShapeGroup, IfcProduct):
             return None
 
         return window_presets.window_rectangular(obj.HostThickness.Value,
-                                                 obj.OpeningHeight.Value,
-                                                 obj.OpeningWidth.Value,
+                                                 obj.OpeningHeight.Value + obj.IncreaseHeight.Value,
+                                                 obj.OpeningWidth.Value + obj.IncreaseWidth.Value,
                                                  frame_width=obj.FrameWidth.Value,
                                                  frame_th=obj.FrameThickness.Value,
                                                  glass_th=obj.GlassThickness.Value,
