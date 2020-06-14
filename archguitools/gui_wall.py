@@ -27,40 +27,132 @@
 # \brief Provide the Arch_Wall command used in Arch to create an Arch Wall.
 
 import os
+
 import FreeCAD as App
 import FreeCADGui as Gui
+
 import Draft
+import DraftVecUtils
+
 import archmake.make_wall as make_wall
 from PySide import QtCore,QtGui
+
+import draftguitools.gui_trackers as DraftTrackers
 
 # ---------------------------------------------------------------------------
 # this is just a very rough implementation to test the objects
 # ---------------------------------------------------------------------------
 
 class Arch_Wall:
-
-    "the Arch Wall command definition"
+    """Arch_Wall command definition.
+    """
 
     def GetResources(self):
-
         return {'Pixmap'  : os.path.join(os.path.dirname(__file__),"..","icons","Arch_Wall_Experimental.svg"),
                 'MenuText': "Wall_EXPERIMENTAL",
                 'Accel': "W, A",
                 'ToolTip': "EXPERIMENTAL\nCreate a wall object from scratch."}
 
     def IsActive(self):
-
         return not App.ActiveDocument is None
 
     def Activated(self):
-        self.first_end = None
-        self.last_end = None
         self.points = []
+        self.join_first = None
+        self.join_last = None
+        self.set_default_parameters()
+        self.tracker = DraftTrackers.boxTracker()
+        self.setup_snapper_callback()
 
-        Gui.Snapper.getPoint(callback=self.getPoint,
+    def set_default_parameters(self):
+        p = App.ParamGet("User parameter:BaseApp/Preferences/Mod/Arch")
+        self.Align = ["Center", "Left", "Right"][p.GetInt("WallAlignment", 0)]
+        self.MultiMat = None
+        self.Length = None
+        self.lengthValue = 0
+        self.continueCmd = False
+        self.Width = p.GetFloat("WallWidth", 200)
+        self.Height = p.GetFloat("WallHeight", 3000)
+
+    def setup_snapper_callback(self):
+        Gui.Snapper.getPoint(last=self.points[0] if len(self.points)==1 else None,
+                             callback=self.getPoint,
+                             movecallback=self.on_moved,
                              extradlg=self.taskbox(),
-                             title="First point of wall"+":")
+                             title="Pick point:")
 
+    def getPoint(self, point=None, obj=None):
+        """ This function is called by the snapper when it has a 3D point."""
+        if len(self.points) == 0:
+            self.on_picked_first_point(point, obj)
+            self.setup_snapper_callback()
+        elif len(self.points) == 1:
+            # picked last point
+            self.on_picked_last_point(point, obj)
+
+    def on_picked_first_point(self, point=None, obj=None):
+        """ This function is called when user input first point."""
+        self.points.append(point)
+        # set tracker
+        self.tracker.width(self.Width)
+        self.tracker.height(self.Height)
+        self.tracker.on()
+        # search for a clicked wall
+        self.join_first = self.get_picked_wall()
+
+    def on_moved(self, point, info):
+        """ This function is called when user move the mouse after first input."""
+        if len(self.points) != 1:
+            return
+        b = self.points[0]
+        n = App.DraftWorkingPlane.axis
+        bv = point.sub(b)
+        dv = bv.cross(n)
+        dv = DraftVecUtils.scaleTo(dv,self.Width/2)
+        if self.Align == "Center":
+            self.tracker.update([b,point])
+        elif self.Align == "Left":
+            self.tracker.update([b.add(dv),point.add(dv)])
+        else:
+            dv = dv.negative()
+            self.tracker.update([b.add(dv),point.add(dv)])
+
+    def on_picked_last_point(self, point=None, obj=None):
+        """ This function is called when user input last point."""
+        self.points.append(point) 
+        self.tracker.finalize()
+        # search for a clicked wall
+        self.join_last = self.get_picked_wall()
+        # create the wall
+        self.commit()
+
+    def get_picked_wall(self):
+        v=Gui.activeDocument().activeView()
+        pos = v.getCursorPos()
+        info = v.getObjectInfo(pos)
+        if info:
+            return info['Object']
+        else:
+            return None
+
+    def commit(self):
+        """ Create the wall."""
+        App.ActiveDocument.openTransaction("Create Wall")
+        wall = make_wall.make_wall_from_points(p1 = self.points[0], 
+                                               p2 = self.points[1],
+                                               width=self.Width,
+                                               height=self.Height,
+                                               align="Center",
+                                               name="Wall")
+        # Apply end joining if present
+        if self.join_first != self.join_last:
+            if self.join_first:
+                wall.JoinFirstEndTo = self.join_first
+            if self.join_last:
+                wall.JoinLastEndTo = self.join_last            
+
+        App.ActiveDocument.commitTransaction()
+        App.ActiveDocument.recompute()
 
     def taskbox(self):
         "sets up a taskbox widget"
@@ -92,39 +184,6 @@ class Arch_Wall:
         grid.addWidget(label5,1,0,1,1)
         grid.addWidget(self.Length,1,1,1,1)
         return w
-
-    def getPoint(self,point=None, snapped_wall=None):
-        """ this function is called by the snapper when it has a 3D point """
-
-        if len(self.points) == 0:
-            # picked first point
-            if snapped_wall:
-                print("\njoin first end to: "+snapped_wall.Name+"\n")
-                # TODO: check if it is a wall
-                self.first_end = snapped_wall.Name
-
-            self.points.append(point)
-
-            Gui.Snapper.getPoint(last=self.points[0],
-                                 callback=self.getPoint,
-                                 movecallback=None,
-                                 extradlg=self.taskbox(),
-                                 title="Next point"+":",mode="line")
-
-        elif len(self.points) == 1:
-            # picked last point
-            if snapped_wall:
-                print("\njoin first end to: "+snapped_wall.Name+"\n")
-                # TODO: check if it is a wall
-                self.last_end = snapped_wall.Name
-
-            self.points.append(point) 
-
-            wall = make_wall.make_wall_from_points(p1 = self.points[0], 
-                                                   p2 = self.points[1])
-                                                   #join_first = self.first_end, 
-                                                   #join_last = self.last_end)
-
 
 
 Gui.addCommand('Arch_Wall2', Arch_Wall())

@@ -46,7 +46,7 @@ class Arch_JoinWalls:
 
         return {'Pixmap'  : os.path.join(os.path.dirname(__file__),"..","icons","Arch_Wall_Experimental.svg"),
                 'MenuText': "Join_Walls_EXPERIMENTAL",
-                'ToolTip': "EXPERIMENTAL\nCorner join.\nSelect 2 walls to join them.""}
+                'ToolTip': "EXPERIMENTAL\nCorner join.\nSelect 2 walls to join them."}
 
     def IsActive(self):
 

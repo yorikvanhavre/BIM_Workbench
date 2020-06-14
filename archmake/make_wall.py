@@ -57,7 +57,7 @@ def make_wall_from_base(baseobj):
             App.Console.PrintWarning(str(translate("Arch","Walls can only be based on Part or Mesh objects")))
     '''
 
-def make_wall_from_points(p1, p2, join_first=None, join_last=None,
+def make_wall_from_points(p1, p2,
                           width=None, height=None, align="Center",
                           name="Wall"):
 
@@ -81,13 +81,10 @@ def make_wall_from_points(p1, p2, join_first=None, join_last=None,
     angle = DraftVecUtils.angle(p2-p1,App.Vector(1,0,0))
     obj.Placement.Rotation.Angle = -angle
     obj.AxisLastPointX = length
-    
-    # Apply end joining if present
-    if join_first != join_last:
-        if join_first:
-            obj.JoinFirstEndTo = join_first
-        if join_last:
-            obj.JoinLastEndTo = join_last            
+
+    # Set the wall properties
+    obj.Width = width
+    obj.Height = height
 
     App.ActiveDocument.recompute()
 
