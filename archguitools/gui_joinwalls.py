@@ -37,9 +37,66 @@ from PySide import QtCore,QtGui
 # this is just a very rough implementation to test the objects
 # ---------------------------------------------------------------------------
 
-class Arch_ExtendWall:
 
-    "the Arch JoinWalls command definition"
+class Arch_JoinWalls:
+    """ Arch_JoinWalls command definition.
+    """
+
+    def GetResources(self):
+
+        return {'Pixmap'  : os.path.join(os.path.dirname(__file__),"..","icons","Arch_Wall_Experimental.svg"),
+                'MenuText': "Join_Walls_EXPERIMENTAL",
+                'ToolTip': "EXPERIMENTAL\nCorner join.\nSelect 2 walls to join them.""}
+
+    def IsActive(self):
+
+        return not App.ActiveDocument is None
+
+    def Activated(self):
+        self.walls = Gui.Selection.getSelection()
+        self.continue_mode = False
+
+        if len(self.walls) == 2:
+            try:
+                self.join_walls()
+            except:
+                self.join_by_selection()
+        else:
+            self.join_by_selection()
+    
+    def join_walls(self):
+        join_walls(self.walls[0], self.walls[1], "L")
+        App.ActiveDocument.recompute()
+
+    def join_by_selection(self):
+        App.Console.PrintMessage("Select the first wall"+ "\n")
+        self.walls = []
+        self.callback = Gui.Selection.addObserver(self)
+
+    def addSelection(self, doc, obj, sub, pnt):
+        Gui.Selection.removeObserver(self)
+        if len(self.walls) == 0:
+            App.Console.PrintMessage("Select the second wall"+ "\n")
+            self.walls.append(App.getDocument(doc).getObject(obj))
+            self.callback = Gui.Selection.addObserver(self)
+        elif len(self.walls) == 1:
+            self.walls.append(App.getDocument(doc).getObject(obj))
+            self.join_walls()
+            self.walls = []
+            if self.continue_mode:
+                # TODO: fix continue mode according to Draft Commands
+                self.callback = Gui.Selection.addObserver(self)
+            else:
+                self.finish()
+
+    def finish(self):
+        if self.callback:
+            Gui.Selection.removeObserver(self.callback)
+            
+
+class Arch_ExtendWall(Arch_JoinWalls):
+    """ Arch_ExtendWall command definition.
+    """
 
     def GetResources(self):
 
@@ -51,34 +108,9 @@ class Arch_ExtendWall:
 
         return not App.ActiveDocument is None
 
-    def Activated(self):
-        sel = Gui.Selection.getSelection()
-        w1 = sel[0]
-        w2 = sel[1]
-        join_walls(w1, w2, "T")
+    def join_walls(self):
+        join_walls(self.walls[0], self.walls[1], "T")
         App.ActiveDocument.recompute()
-
-class Arch_JoinWalls:
-
-    "the Arch JoinWalls command definition"
-
-    def GetResources(self):
-
-        return {'Pixmap'  : os.path.join(os.path.dirname(__file__),"..","icons","Arch_Wall_Experimental.svg"),
-                'MenuText': "Join_Walls_EXPERIMENTAL",
-                'ToolTip': "EXPERIMENTAL\nCorner join two walls.\nSelect 2 walls."}
-
-    def IsActive(self):
-
-        return not App.ActiveDocument is None
-
-    def Activated(self):
-        sel = Gui.Selection.getSelection()
-        w1 = sel[0]
-        w2 = sel[1]
-        join_walls(w1, w2, "L")
-        App.ActiveDocument.recompute()
-
 
 
 Gui.addCommand('Arch_JoinWalls', Arch_JoinWalls())
