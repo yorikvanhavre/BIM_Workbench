@@ -157,14 +157,6 @@ class Wall(ShapeGroup, IfcProduct):
 
         # WALL ENDS Properties ---------------------------------------------- 
         # All the angle properties are meant to be hidden and showed just on user demand
-        _tip = 'Angular cut of first wall end inner layer (to be implemented)'
-        obj.addProperty('App::PropertyAngle', 'FirstInnerLayerAngle',
-                        'Wall Ends', _tip, 4).FirstInnerLayerAngle = '90 deg'
-
-        _tip = 'Angular cut of first wall end outer layer (to be implemented)'
-        obj.addProperty('App::PropertyAngle', 'FirstOuterLayerAngle', 
-                        'Wall Ends', _tip, 4).FirstOuterLayerAngle = '90 deg'
-        
         _tip = 'Angular cut of first wall end core inner half'
         obj.addProperty('App::PropertyAngle', 'FirstCoreInnerAngle', 
                         'Wall Ends', _tip, 4).FirstCoreInnerAngle = '90 deg'
@@ -173,22 +165,22 @@ class Wall(ShapeGroup, IfcProduct):
         obj.addProperty('App::PropertyAngle', 'FirstCoreOuterAngle', 
                         'Wall Ends', _tip, 4).FirstCoreOuterAngle = '90 deg'
 
-        _tip = 'Angular cut of first wall end (to be implemented)'
-        obj.addProperty('App::PropertyAngle', 'LastInnerLayerAngle', 
-                        'Wall Ends', _tip, 4).LastInnerLayerAngle = '90 deg'
-        
-        _tip = 'Angular cut of first wall end (to be implemented)'
-        obj.addProperty('App::PropertyAngle', 'LastOuterLayerAngle', 
-                        'Wall Ends', _tip, 4).LastOuterLayerAngle = '90 deg'
-        
-        _tip = 'Angular cut of first wall end (to be implemented)'
-        obj.addProperty('App::PropertyAngle', 'LastCoreInnerAngle', 
-                        'Wall Ends', _tip, 4).LastCoreInnerAngle = '90 deg'
-        
-        _tip = 'Angular cut of last wall end (to be implemented)'
-        obj.addProperty('App::PropertyAngle', 'LastCoreOuterAngle', 
-                        'Wall Ends', _tip,4).LastCoreOuterAngle = '90 deg'
+        _tip = 'First core axis endline offset'
+        obj.addProperty('App::PropertyDistance', 'FirstCoreOffset', 
+                        'Wall Ends', _tip, 4).FirstCoreOffset = 0.0
 
+        _tip = 'Angular cut of first wall end inner layer (to be implemented)'
+        obj.addProperty('App::PropertyAngle', 'LastCoreInnerAngle',
+                        'Wall Ends', _tip, 4).LastCoreInnerAngle = '90 deg'
+
+        _tip = 'Angular cut of first wall end outer layer (to be implemented)'
+        obj.addProperty('App::PropertyAngle', 'LastCoreOuterAngle', 
+                        'Wall Ends', _tip, 4).LastCoreOuterAngle = '90 deg'
+        
+        _tip = 'Last core axis endline offset'
+        obj.addProperty('App::PropertyDistance', 'LastCoreOffset', 
+                        'Wall Ends', _tip, 4).LastCoreOffset = 0.0
+        
 
     def onBeforeChange(self, obj, prop):
         """this method is activated before a property changes"""
@@ -228,24 +220,27 @@ class Wall(ShapeGroup, IfcProduct):
         if prop == "Placement":
             if hasattr(obj, "Placement"): # TODO: recompute only if end is set
                 # Recompute wall joinings
-                self.recompute_ends(obj, 0)
-                self.recompute_ends(obj, 1)
+                self.recompute_ends(obj)
                 for t_name in obj.IncomingTJoins:
                     t = App.ActiveDocument.getObject(t_name)
-                    t.Proxy.recompute_ends(t, 0)
-                    t.Proxy.recompute_ends(t, 1)
+                    t.Proxy.recompute_ends(t)
                 # Update global placement Property (not working so good)
                 # obj.GlobalPlacement = obj.getGlobalPlacement()
+
+        if hasattr(obj, "Width") and prop == "Width" and hasattr(obj, "IncomingTJoins") :
+            for t_name in obj.IncomingTJoins:
+                t = App.ActiveDocument.getObject(t_name)
+                t.Proxy.recompute_ends(t)
 
         # WALL JOIN ENDS properties
         if (hasattr(obj, "JoinFirstEndTo") and hasattr(obj, "JoinLastEndTo") and
             hasattr(obj, "JoinFirstEnd")and hasattr(obj, "JoinLastEnd")):
 
             if prop == "JoinFirstEndTo" and obj.JoinFirstEnd:
-                self.recompute_ends(obj, 0)
+                self.recompute_end(obj, 0)
 
             elif prop == "JoinLastEndTo" and obj.JoinLastEnd:
-                self.recompute_ends(obj, 1)
+                self.recompute_end(obj, 1)
 
         if prop == "AxisFirstPointX" or prop == "AxisLastPointX":
             if hasattr(obj, "AxisFirstPointX") and hasattr(obj, "AxisLastPointX"):
@@ -416,16 +411,16 @@ class Wall(ShapeGroup, IfcProduct):
         first_splay = obj.Width/2 * math.tan(math.pi/2-math.radians(obj.FirstCoreInnerAngle))
         last_splay = obj.Width/2 * math.tan(math.pi/2-math.radians(obj.LastCoreInnerAngle))
         
-        Xmin = 0
+        Xmin = -obj.FirstCoreOffset
         Ymin = 0
         Zmin = 0
         Z2min = 0
-        X2min = first_splay
-        Xmax = length
+        X2min = first_splay - obj.FirstCoreOffset
+        Xmax = length + obj.LastCoreOffset
         Ymax = obj.Width/2
         Zmax = obj.Height
         Z2max = obj.Height
-        X2max = length - last_splay
+        X2max = length - last_splay + obj.LastCoreOffset
 
         # checking conditions that will break Part.makeWedge()
         if first_splay >= length:
@@ -446,16 +441,16 @@ class Wall(ShapeGroup, IfcProduct):
         first_splay = obj.Width/2 * math.tan(math.pi/2-math.radians(obj.FirstCoreOuterAngle))
         last_splay = obj.Width/2 * math.tan(math.pi/2-math.radians(obj.LastCoreOuterAngle))          
         
-        Xmin = first_splay
+        Xmin = first_splay - obj.FirstCoreOffset
         Ymin = 0
         Zmin = 0
         Z2min = 0
-        X2min = 0
-        Xmax = length - last_splay
+        X2min = -obj.FirstCoreOffset
+        Xmax = length - last_splay + obj.LastCoreOffset
         Ymax = obj.Width/2
         Zmax = obj.Height
         Z2max = obj.Height
-        X2max = length
+        X2max = length + obj.LastCoreOffset
 
         # checking conditions that will break Part.makeWedge()
         if first_splay >= length:
@@ -483,9 +478,11 @@ class Wall(ShapeGroup, IfcProduct):
 
 
     # Wall joinings methods +++++++++++++++++++++++++++++++++++++++++++++++++
+    def recompute_ends(self, obj):
+        self.recompute_end(obj, 0)
+        self.recompute_end(obj, 1)
 
-
-    def recompute_ends(self, obj, end_idx):
+    def recompute_end(self, obj, end_idx):
         """
         This method auto recompute the first or the last wall end joint
         If the obj and the target objects are both joinable it recompute the
@@ -672,9 +669,11 @@ class Wall(ShapeGroup, IfcProduct):
         if idx == 0:
             wall.FirstCoreInnerAngle = angle
             wall.FirstCoreOuterAngle = -angle
+            wall.FirstCoreOffset = - abs(target.Width / 2 / math.cos(math.pi / 2 - math.radians(angle)))
         elif idx == 1:
             wall.LastCoreInnerAngle = -angle
             wall.LastCoreOuterAngle = angle
+            wall.LastCoreOffset = - abs(target.Width / 2 / math.cos(math.pi / 2 - math.radians(angle)))
 
         if not wall.Name in target.IncomingTJoins:
             target_list = target.IncomingTJoins
@@ -745,9 +744,11 @@ class Wall(ShapeGroup, IfcProduct):
         if idx == 0:
             wall.FirstCoreInnerAngle = w_angle
             wall.FirstCoreOuterAngle = -w_angle
+            wall.FirstCoreOffset = 0.0
         elif idx == 1:
             wall.LastCoreInnerAngle = -w_angle
             wall.LastCoreOuterAngle = +w_angle
+            wall.LastCoreOffset = 0.0
 
 
     # Group objects handling methods ++++++++++++++++++++++++++++++++++++++++

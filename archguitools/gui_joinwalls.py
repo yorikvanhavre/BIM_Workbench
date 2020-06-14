@@ -55,7 +55,7 @@ class Arch_ExtendWall:
         sel = Gui.Selection.getSelection()
         w1 = sel[0]
         w2 = sel[1]
-        join_walls(w1, w2)
+        join_walls(w1, w2, "T")
         App.ActiveDocument.recompute()
 
 class Arch_JoinWalls:
@@ -76,8 +76,7 @@ class Arch_JoinWalls:
         sel = Gui.Selection.getSelection()
         w1 = sel[0]
         w2 = sel[1]
-        join_walls(w1, w2)
-        join_walls(w2, w1)
+        join_walls(w1, w2, "L")
         App.ActiveDocument.recompute()
 
 

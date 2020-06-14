@@ -1,5 +1,4 @@
 #***************************************************************************
-#*   Copyright (c) 2011 Yorik van Havre <yorik@uncreated.net>              *
 #*   Copyright (c) 2020 Carlo Pavan                                        *
 #*                                                                         *
 #*   This program is free software; you can redistribute it and/or modify  *

@@ -85,12 +85,24 @@ def join_walls(w1, w2, join_type="T"):
     if join_type == "T":
         if w1_end == 0:
             w1.JoinFirstEndTo = w2.Name
+            # w1.FirstCoreOffset = - w2.Width / 2
         elif w1_end == 1:
             w1.JoinLastEndTo = w2.Name
+            # w1.LastCoreOffset = - w2.Width / 2
         return True
 
     elif join_type == "L":
-        raise NotImplementedError
+        # join first wall on the second
+        if w1_end == 0:
+            w1.JoinFirstEndTo = w2.Name
+        elif w1_end == 1:
+            w1.JoinLastEndTo = w2.Name
+        # join second wall on the first
+        if w2_end == 0:
+            w2.JoinFirstEndTo = w1.Name
+        elif w2_end == 1:
+            w2.JoinLastEndTo = w1.Name
+        return True
 
     elif join_type == "X":
         raise NotImplementedError

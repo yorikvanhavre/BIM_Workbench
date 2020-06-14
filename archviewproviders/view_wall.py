@@ -1,5 +1,4 @@
 #***************************************************************************
-#*   Copyright (c) 2011 Yorik van Havre <yorik@uncreated.net>              *
 #*   Copyright (c) 2020 Carlo Pavan                                        *
 #*                                                                         *
 #*   This program is free software; you can redistribute it and/or modify  *
@@ -66,6 +65,9 @@ class ViewProviderWall(ViewProviderShapeGroup):
         action1 = QtGui.QAction("Flip wall", menu)
         QtCore.QObject.connect(action1,QtCore.SIGNAL("triggered()"),lambda f=vobj.Object.Proxy.flip_wall, arg=vobj.Object:f(arg))
         menu.addAction(action1)
+        action2 = QtGui.QAction("Recompute wall ends", menu)
+        QtCore.QObject.connect(action2,QtCore.SIGNAL("triggered()"),lambda f=vobj.Object.Proxy.recompute_ends, arg=vobj.Object:f(arg))
+        menu.addAction(action2)
 
     def onDelete(self, vobj, subelements): # subelements is a tuple of strings
         delete_ok = super(ViewProviderWall, self).onDelete(vobj, subelements)
