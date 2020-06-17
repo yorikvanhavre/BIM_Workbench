@@ -284,17 +284,17 @@ class Wall(ShapeGroup, IfcProduct):
                         obj.Openings = Openings
 
                 for o in added_objs:
-                    # if it was added, check if it is an opening or ask if it has to be treated as an Opening
+                    # if it was added, check if it is an opening or ask if it has to be treated as a 
                     print("Adding " + o.Name + " to " + obj.Label)
                     if o == obj.BaseGeometry:
-                        continue
+                        continue # check if this is necessary
 
                     if hasattr(o, "IfcType"):
                         if o.IfcType == 'Opening Element':
                             self.add_opening(obj, o)
                             continue
 
-                    if not o in obj.Subtractions:
+                    if not o in obj.Subtractions: # subtracting objects can be wherever in the document
                         print("added a new object to the wall")
                         self.add_as_base_shape(obj, o)
 
@@ -383,14 +383,14 @@ class Wall(ShapeGroup, IfcProduct):
 
         TODO: Adding support for default multi-layer walls.
 
-                <--> first_splay                <--> last_splay
-                ---------------------------------  outer surface
-                \         Part Wedge 1          \ 
-                \           core axis           \ 
+                 <--> first_splay                <--> last_splay
+                 ---------------------------------  outer surface
+                  \         Part Wedge 1          \ 
+                   \           core axis           \ 
         first_point o-------------------------------o  last_point
-                    \                               \ 
-                    \       Part Wedge 2            \ 
-                    ---------------------------------  inner surface
+                     \                               \ 
+                      \       Part Wedge 2            \ 
+                       ---------------------------------  inner surface
                     <--> first_splay                <--> last_splay
         """
         import Part
@@ -481,9 +481,11 @@ class Wall(ShapeGroup, IfcProduct):
 
 
     # Wall joinings methods +++++++++++++++++++++++++++++++++++++++++++++++++
+
     def recompute_ends(self, obj):
         self.recompute_end(obj, 0)
         self.recompute_end(obj, 1)
+
 
     def recompute_end(self, obj, end_idx):
         """
@@ -807,6 +809,7 @@ class Wall(ShapeGroup, IfcProduct):
             core_axis= Part.Line(p1, p2)
             return core_axis
 
+
     def get_first_point(self, obj):
         """return a part line representing the core axis of the wall"""
         p1 = obj.getGlobalPlacement().multVec(App.Vector(obj.AxisFirstPointX,
@@ -814,12 +817,14 @@ class Wall(ShapeGroup, IfcProduct):
                                                          0))
         return p1
 
+
     def get_last_point(self, obj):
         """return a part line representing the core axis of the wall"""
         p2 = obj.getGlobalPlacement().multVec(App.Vector(obj.AxisLastPointX,
                                                          0,
                                                          0))
         return p2
+
 
     def get_point_on_axis(self, obj, point):
         """get_point_on_axis(self, obj, point)
@@ -833,7 +838,6 @@ class Wall(ShapeGroup, IfcProduct):
 
     # General setter methods ++++++++++++++++++++++++++++++++++++++++++++++++
 
-
     def set_first_point(self, obj, first_point, local=False):
         """returns a part line representing the core axis of the wall"""
         if first_point.x != obj.AxisLastPointX:
@@ -843,6 +847,7 @@ class Wall(ShapeGroup, IfcProduct):
             print("You are trying to set the first point equal to the last point, this is not allowed.\n")
             return False
 
+
     def set_last_point(self, obj, last_point, local=False):
         """returns a part line representing the core axis of the wall"""
         if last_point.x != obj.AxisFirstPointX:
@@ -851,6 +856,7 @@ class Wall(ShapeGroup, IfcProduct):
         else:
             print("You are trying to set the last point equal to the first point, this is not allowed.\n")
             return False
+
 
     def set_point(self, obj, point, point_idx, local=False):
         """returns a part line representing the core axis of the wall"""
@@ -867,7 +873,6 @@ class Wall(ShapeGroup, IfcProduct):
 
 
     # Other methods +++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
 
     def flip_wall(self, obj):
         """
