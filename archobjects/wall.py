@@ -224,13 +224,16 @@ class Wall(ShapeGroup, IfcProduct):
                 for t_name in obj.IncomingTJoins:
                     t = App.ActiveDocument.getObject(t_name)
                     t.Proxy.recompute_ends(t)
-                # Update global placement Property (not working so good)
-                # obj.GlobalPlacement = obj.getGlobalPlacement()
 
-        if hasattr(obj, "Width") and prop == "Width" and hasattr(obj, "IncomingTJoins") :
+        if hasattr(obj, "Width") and prop == "Width" and hasattr(obj, "IncomingTJoins") and hasattr(obj, "Openings"):
+            obj.Proxy.recompute_ends(obj)
             for t_name in obj.IncomingTJoins:
                 t = App.ActiveDocument.getObject(t_name)
                 t.Proxy.recompute_ends(t)
+            for opening in obj.Openings:
+                if not hasattr(opening, "HostThickness"):
+                    continue
+                opening.HostThickness = obj.Width
 
         # WALL JOIN ENDS properties
         if (hasattr(obj, "JoinFirstEndTo") and hasattr(obj, "JoinLastEndTo") and
