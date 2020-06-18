@@ -223,6 +223,7 @@ class BIM_IfcExplorer:
         "inserts selected objects in the active document"
         
         import importIFC
+        from PySide import QtCore,QtGui
         doc = FreeCAD.ActiveDocument
         if doc and self.filename:
             item = self.tree.currentItem()
@@ -570,6 +571,8 @@ class BIM_IfcExplorer:
     def onDoubleClickTree(self,item,column):
 
         "when a property or attribute is double-clicked"
+
+        from PySide import QtCore,QtGui
 
         if self.tree:
             txt = item.text(column)
