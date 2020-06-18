@@ -230,7 +230,10 @@ class BIM_IfcExplorer:
                 eid = item.data(0,QtCore.Qt.UserRole)
                 if eid:
                     importIFC.ZOOMOUT = False
-                    importIFC.insert(self.filename,doc.Name,only=[eid])
+                    try:
+                        importIFC.insert(self.ifc,doc.Name,only=[eid])
+                    except TypeError:
+                        importIFC.insert(self.filename,doc.Name,only=[eid])
                     if self.currentmesh:
                         self.currentmesh.ViewObject.hide()
 
