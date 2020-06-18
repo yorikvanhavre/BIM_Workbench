@@ -329,17 +329,26 @@ class Opening(ShapeGroup, IfcProduct):
 
     def get_void_shape(self, obj):
         import Part
-
         void = None
         if obj.Void == "Rectangular":
-            void = Part.makeBox(obj.OpeningWidth.Value, obj.HostThickness.Value + 50, obj.OpeningHeight.Value)
-            void.Placement.Base.x -= obj.OpeningWidth.Value/2
-            void.Placement.Base.y -= obj.HostThickness.Value/2
-            void.Placement = obj.Placement.multiply(void.Placement)
-        
+            if obj.Addition == "None":
+                void = self.get_rectangular_void(obj)
+            if obj.Addition == "Default Sill":
+                void = self.get_rectangular_void(obj)
+
         if obj.VoidSubtractAll:
             # subtract also positive shapes from the wall
-            nv = Part.makeCompound([void, obj.Shape])
-            return nv
+            ps = []
+            for s in obj.Shape.Solids:
+                ps.append(s.copy())
+            void = void.fuse(ps)
 
+        return void
+
+    def get_rectangular_void(self, obj):
+        import Part
+        void = Part.makeBox(obj.OpeningWidth.Value, obj.HostThickness.Value + 50, obj.OpeningHeight.Value)
+        void.Placement.Base.x -= obj.OpeningWidth.Value/2
+        void.Placement.Base.y -= obj.HostThickness.Value/2
+        void.Placement = obj.Placement.multiply(void.Placement)
         return void
