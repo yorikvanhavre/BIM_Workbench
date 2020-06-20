@@ -1,5 +1,6 @@
 #***************************************************************************
 #*  Copyright (c) 2020 Carlo Dormeletti (onekk) carlo.dormeletti@yahoo.com *
+#*  Copyright (c) 2020 Carlo Pavan                                         *
 #*                                                                         *
 #*  This program is free software; you can redistribute it and/or modify   *
 #*  it under the terms of the GNU Lesser General Public License (LGPL)     *
@@ -26,13 +27,55 @@
 
 from FreeCAD import Vector
 
-# BEGIN DOC Settings
-DEBUG = True
-DBG_LOAD = False
-DOC_NAME = "finestra"
-# END DOC settings
+def get_preset_window_shape(obj):
+    if not 'FillType' in obj.PropertiesList:
+        return
 
-# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ Components
+    if (not 'OpeningWidth' in obj.PropertiesList or
+        not 'OpeningHeight' in obj.PropertiesList):
+        return None
+
+    if obj.FillType == 'Rectangular':
+        return window_rectangular(obj.HostThickness.Value,
+                                  obj.OpeningHeight.Value + obj.IncreaseHeight.Value,
+                                  obj.OpeningWidth.Value + obj.IncreaseWidth.Value,
+                                  frame_width=obj.FrameWidth.Value,
+                                  frame_th=obj.FrameThickness.Value,
+                                  glass_th=obj.GlassThickness.Value,
+                                  n_pan=obj.NumberOfPanes)
+
+    elif obj.FillType == 'Elliptical':
+        #TODO: add code to draw elliptical window
+        pass
+
+    elif obj.FillType == 'Arc':
+        #TODO: add code to draw elliptical window
+        pass
+
+
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+#                                                      PRESET WINDOW PROPERTIES
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+def add_preset_window_properties(obj):
+    if not 'FillType' in obj.PropertiesList:
+        _tip = 'Preset window types.'
+        obj.addProperty('App::PropertyEnumeration', 'FillType', 
+                        'Component - Filling - Options', _tip)
+        obj.FillType = ["Rectangular", "Elliptical", "Arc"]
+
+def add_preset_window_subproperties(obj):
+    if obj.FillType == 'Rectangular':
+        add_preset_window_rectangular_subproperties(obj)
+    if obj.FillType == 'Elliptical':
+        pass
+    if obj.FillType == 'Arc':
+        pass
+
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+#                                                             SHARED COMPONENTS
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 def frame_rectangular(tel_w, tel_h , tel_ww, tel_wh, tel_th, et=0):
     """ Return the shape of a rectangular frame.
@@ -116,7 +159,36 @@ def default_sill(opening_width, host_thickness, sill_thickness, front_protrusion
 
     return sill
 
-# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ Windows
+
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+#                                                  WINDOW PRESETS - RECTANGULAR
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+def add_preset_window_rectangular_subproperties(obj):
+    _tip = 'Number of openable frames. Set 0 for a fixed window.'
+    obj.addProperty('App::PropertyInteger', 'NumberOfPanes', 
+                    'Component - Filling - Options', _tip).NumberOfPanes = 1
+
+    _tip = 'DESCRIBE.'
+    obj.addProperty('App::PropertyLength', 'FrameWidth', 
+                    'Component - Filling - Options', _tip).FrameWidth = 50.0
+
+    _tip = 'DESCRIBE.'
+    obj.addProperty('App::PropertyLength', 'FrameThickness', 
+                    'Component - Filling - Options', _tip).FrameThickness = 50.0
+
+    _tip = 'DESCRIBE.'
+    obj.addProperty('App::PropertyLength', 'GlassThickness', 
+                    'Component - Filling - Options', _tip).GlassThickness = 20.0
+
+    _tip = 'DESCRIBE.'
+    obj.addProperty('App::PropertyLength', 'IncreaseHeight', 
+                    'Component - Filling - Options', _tip).IncreaseHeight = 0.0
+
+    _tip = 'DESCRIBE.'
+    obj.addProperty('App::PropertyLength', 'IncreaseWidth', 
+                    'Component - Filling - Options', _tip).IncreaseWidth = 0.0
+
 
 def window_rectangular(opening_th=300, opening_height=1400, opening_width=1200,
              frame_width=50, frame_th=50, glass_th=21, n_pan=1):
@@ -208,3 +280,14 @@ def window_rectangular(opening_th=300, opening_height=1400, opening_width=1200,
     window = Part.makeCompound(components)
  
     return window
+
+
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+#                                                     WINDOW PRESETS - ELLIPTIC
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+#                                                          WINDOW PRESETS - ARC
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

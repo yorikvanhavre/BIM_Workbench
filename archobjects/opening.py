@@ -73,6 +73,7 @@ class Opening(ShapeGroup, IfcProduct):
         if vs:
             obj.VoidShape = vs
 
+
     def set_properties(self, obj):
         """ Setup object properties.
         """
@@ -101,7 +102,7 @@ class Opening(ShapeGroup, IfcProduct):
         _tip = 'List of available shapes for the Fill element.\n'\
                'Chose Custom to use the Fill Element object shape.'
         obj.addProperty('App::PropertyEnumeration', 'Fill', 
-                        'Component - Filling', _tip).Fill = ["None", "Default Door", "Default Window", "By Sketch", "Custom"]
+                        'Component - Filling', _tip).Fill = ["None", "Preset Door", "Preset Window", "By Sketch", "Custom"]
 
         _tip = 'Alignment of the Fill Element according to the Host Thickness property.'
         obj.addProperty('App::PropertyEnumeration', 'FillAlignment', 
@@ -165,18 +166,22 @@ class Opening(ShapeGroup, IfcProduct):
         """
         super(Opening, self).onChanged(obj, prop)
 
-        if 'Addition' in obj.PropertiesList and prop == 'Addition':
+        if prop == 'Addition' and 'Addition' in obj.PropertiesList:
             if obj.Addition != "Custom" and 'AdditionElements' in obj.PropertiesList:
                 obj.setPropertyStatus("AdditionElements", 2)
             elif 'AdditionElements' in obj.PropertiesList:
                 obj.setPropertyStatus("AdditionElements", -2)
 
-        if 'AdditionElements' in obj.PropertiesList and prop == 'AdditionElements':
+        if prop == 'AdditionElements' and 'AdditionElements' in obj.PropertiesList:
             pass
 
-        if 'Fill' in obj.PropertiesList and prop == 'Fill':
+        if prop == 'Fill' and 'Fill' in obj.PropertiesList:
             self.remove_filling_properties(obj)
             self.setup_filling_properties(obj)
+
+        if prop == 'FillType' and 'FillType' in obj.PropertiesList:
+            # this is used to mathch filling preset properties
+            self.sync_filling_preset_subproperties(obj)
 
         if 'Void' in obj.PropertiesList and prop == 'Void':
             pass
@@ -186,7 +191,7 @@ class Opening(ShapeGroup, IfcProduct):
 
 
     def remove_filling_properties(self, obj):
-        """Remove properties for Filling when not used.
+        """Remove 'Component - Filling - Options' properties when not used.
         """
         for property in obj.PropertiesList:
             if obj.getGroupOfProperty(property) != "Component - Filling - Options":
@@ -196,42 +201,21 @@ class Opening(ShapeGroup, IfcProduct):
     def setup_filling_properties(self, obj):
         if obj.Fill == "None":
             return
-        if obj.Fill == "Default Window":
-            self.add_default_window_properties(obj)
-        if obj.Fill == "Default Door":
-            self.add_default_door_properties(obj)
+        if obj.Fill == "Preset Window":
+            window_presets.add_preset_window_properties(obj)
+            self.sync_filling_preset_subproperties(obj)
+        if obj.Fill == "Preset Door":
+            pass
 
-    def add_default_window_properties(self, obj):
-        _tip = 'Alignment of the Fill Element according to the Host Thickness property.'
-        obj.addProperty('App::PropertyEnumeration', 'FillType', 
-                        'Component - Filling - Options', _tip).FillType = ["Rectangular"]
-
-        _tip = 'Number of openable frames. Set 0 for a fixed window.'
-        obj.addProperty('App::PropertyInteger', 'NumberOfPanes', 
-                        'Component - Filling - Options', _tip).NumberOfPanes = 1
-
-        _tip = 'DESCRIBE.'
-        obj.addProperty('App::PropertyLength', 'FrameWidth', 
-                        'Component - Filling - Options', _tip).FrameWidth = 50.0
-
-        _tip = 'DESCRIBE.'
-        obj.addProperty('App::PropertyLength', 'FrameThickness', 
-                        'Component - Filling - Options', _tip).FrameThickness = 50.0
-
-        _tip = 'DESCRIBE.'
-        obj.addProperty('App::PropertyLength', 'GlassThickness', 
-                        'Component - Filling - Options', _tip).GlassThickness = 20.0
-
-        _tip = 'DESCRIBE.'
-        obj.addProperty('App::PropertyLength', 'IncreaseHeight', 
-                        'Component - Filling - Options', _tip).IncreaseHeight = 0.0
-
-        _tip = 'DESCRIBE.'
-        obj.addProperty('App::PropertyLength', 'IncreaseWidth', 
-                        'Component - Filling - Options', _tip).IncreaseWidth = 0.0
-
-    def add_default_door_properties(self, obj):
-        pass
+    def sync_filling_preset_subproperties(self, obj):
+        """Add 'Component - Filling - Options' subproperties according to chosen preset type.
+        """
+        for property in obj.PropertiesList:
+            if (obj.getGroupOfProperty(property) != "Component - Filling - Options" or 
+                property == 'FillType'):
+                continue
+            obj.removeProperty(property)   
+        window_presets.add_preset_window_subproperties(obj)
 
     # ADDITIONS ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -268,11 +252,11 @@ class Opening(ShapeGroup, IfcProduct):
         if 'Fill' in obj.PropertiesList and obj.Fill == "None":
             f_shape = None
 
-        elif 'Fill' in obj.PropertiesList and obj.Fill == "Default Door":
-            f_shape = self.get_default_door_shape(obj)
+        elif 'Fill' in obj.PropertiesList and obj.Fill == "Preset Door":
+            f_shape = self.get_preset_door_shape(obj)
 
-        elif 'Fill' in obj.PropertiesList and obj.Fill == "Default Window":
-            f_shape = self.get_default_window_shape(obj)
+        elif 'Fill' in obj.PropertiesList and obj.Fill == "Preset Window":
+            f_shape = window_presets.get_preset_window_shape(obj)
 
         elif 'Fill' in obj.PropertiesList and obj.Fill == "By Sketch":
             f_shape = self.get_fill_by_sketch(obj)
@@ -302,7 +286,7 @@ class Opening(ShapeGroup, IfcProduct):
             return None
 
 
-    def get_default_door_shape(self, obj):
+    def get_preset_door_shape(self, obj):
         import Part
 
         if (not 'OpeningWidth' in obj.PropertiesList or
@@ -313,22 +297,6 @@ class Opening(ShapeGroup, IfcProduct):
         m.move(-obj.OpeningWidth/2, 0, 0)
         f = f.transformGeometry(m)
         return f
-
-
-    def get_default_window_shape(self, obj):
-        import Part
-
-        if (not 'OpeningWidth' in obj.PropertiesList or
-            not 'OpeningHeight' in obj.PropertiesList):
-            return None
-
-        return window_presets.window_rectangular(obj.HostThickness.Value,
-                                                 obj.OpeningHeight.Value + obj.IncreaseHeight.Value,
-                                                 obj.OpeningWidth.Value + obj.IncreaseWidth.Value,
-                                                 frame_width=obj.FrameWidth.Value,
-                                                 frame_th=obj.FrameThickness.Value,
-                                                 glass_th=obj.GlassThickness.Value,
-                                                 n_pan=obj.NumberOfPanes)
 
 
     def get_fill_by_sketch(self, obj):
@@ -363,3 +331,4 @@ class Opening(ShapeGroup, IfcProduct):
         void.Placement.Base.y -= obj.HostThickness.Value/2
         void.Placement = obj.Placement.multiply(void.Placement)
         return void
+        
