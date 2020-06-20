@@ -30,7 +30,7 @@ import DraftVecUtils
 from archobjects.base import ShapeGroup
 from ArchIFC import IfcProduct
 
-import archobjects.window_presets as window_presets
+import archobjects.preset_windows as window_presets
 
 class Opening(ShapeGroup, IfcProduct):
     def __init__(self, obj=None):
@@ -331,4 +331,3 @@ class Opening(ShapeGroup, IfcProduct):
         void.Placement.Base.y -= obj.HostThickness.Value/2
         void.Placement = obj.Placement.multiply(void.Placement)
         return void
-        

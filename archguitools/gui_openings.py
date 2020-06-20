@@ -165,11 +165,11 @@ class Arch_Opening(Arch_Openings):
         super(Arch_Opening, self).finish()
         App.ActiveDocument.openTransaction("Create Window")
 
-        opening = make_opening.make_opening(self.opening_width,
-                                            self.opening_height,
-                                            self.host_thickness,
-                                            self.sill_height
-                                            )
+        opening = make_opening.makeOpening(self.opening_width,
+                                           self.opening_height,
+                                           self.host_thickness,
+                                           self.sill_height
+                                           )
         opening.Placement = self.pl
         if self.host:
             self.host.addObject(opening)
@@ -204,11 +204,11 @@ class Arch_Window(Arch_Openings):
         super(Arch_Window, self).finish()
         App.ActiveDocument.openTransaction("Create Window")
 
-        opening = make_opening.make_opening_window(self.opening_width,
-                                                   self.opening_height,
-                                                   self.host_thickness,
-                                                   self.sill_height
-                                                   )
+        opening = make_opening.makeOpeningWindow(self.opening_width,
+                                                 self.opening_height,
+                                                 self.host_thickness,
+                                                 self.sill_height
+                                                 )
         opening.Placement = self.pl
         if self.host:
             self.host.addObject(opening)
@@ -243,11 +243,11 @@ class Arch_Door(Arch_Openings):
         super(Arch_Door, self).finish()
         App.ActiveDocument.openTransaction("Create Window")
 
-        opening = make_opening.make_opening_door(self.opening_width,
-                                                 self.opening_height,
-                                                 self.host_thickness,
-                                                 self.sill_height
-                                                 )
+        opening = make_opening.makeOpeningDoor(self.opening_width,
+                                               self.opening_height,
+                                               self.host_thickness,
+                                               self.sill_height
+                                               )
         opening.Placement = self.pl
         if self.host:
             self.host.addObject(opening)

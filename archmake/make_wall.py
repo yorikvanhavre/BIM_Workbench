@@ -33,7 +33,7 @@ if App.GuiUp:
     from archviewproviders.view_wall import ViewProviderWall
 
 
-def make_wall_from_base(baseobj):
+def makeWallFromBase(baseobj):
     """
     NOT IMPLEMENTED YET
     """
@@ -57,9 +57,9 @@ def make_wall_from_base(baseobj):
             App.Console.PrintWarning(str(translate("Arch","Walls can only be based on Part or Mesh objects")))
     '''
 
-def make_wall_from_points(p1, p2,
-                          width=None, height=None, align="Center",
-                          name="Wall"):
+def makeWallFromPoints(p1, p2,
+                       width=None, height=None, align="Center",
+                       name="Wall"):
 
     '''makeWall([obj],[length],[width],[height],[align],[face],[name]): creates a wall based on the
     given object, which can be a sketch, a draft object, a face or a solid, or no object at

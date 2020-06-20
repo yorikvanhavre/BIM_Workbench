@@ -39,12 +39,12 @@ from PySide import QtCore,QtGui
 
 import draftguitools.gui_trackers as DraftTrackers
 
-# ---------------------------------------------------------------------------
-# this is just a very rough implementation to test the objects
-# ---------------------------------------------------------------------------
+
 
 class Arch_Wall:
     """Arch_Wall command definition.
+
+    This is just a very rough implementation to test the objects.
     """
 
     def GetResources(self):
@@ -139,12 +139,12 @@ class Arch_Wall:
     def commit(self):
         """ Create the wall."""
         App.ActiveDocument.openTransaction("Create Wall")
-        wall = make_wall.make_wall_from_points(p1 = self.points[0], 
-                                               p2 = self.points[1],
-                                               width=self.Width,
-                                               height=self.Height,
-                                               align="Center",
-                                               name="Wall")
+        wall = make_wall.makeWallFromPoints(p1 = self.points[0], 
+                                            p2 = self.points[1],
+                                            width=self.Width,
+                                            height=self.Height,
+                                            align="Center",
+                                            name="Wall")
         # Apply end joining if present
         if self.join_first != self.join_last:
             if self.join_first:
