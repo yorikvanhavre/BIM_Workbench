@@ -66,10 +66,17 @@ class Opening(ShapeGroup, IfcProduct):
         else:
             obj.Shape = Part.Shape()
 
+        # VOID
+        vs = self.get_void_shape(obj)
+
+        # create object negative shape
+        if vs:
+            obj.VoidShape = vs
 
     def set_properties(self, obj):
         """ Setup object properties.
         """
+    
         # Ifc Properties ----------------------------------------------------
         IfcProduct.setProperties(self, obj)
         obj.IfcType = "Opening Element"
@@ -128,6 +135,10 @@ class Opening(ShapeGroup, IfcProduct):
         _tip = 'Subtract also positive shapes from the wall.'
         obj.addProperty('App::PropertyBool', 'VoidSubtractAll', 
                         'Component - Void', _tip).VoidSubtractAll = False
+
+        _tip = 'This property stores the shape of the Void object to be subtracted from the host.'
+        obj.addProperty('Part::PropertyPartShape', 'VoidShape', 
+                    'Base', _tip)
 
         # Geometry Properties (not implemented yet) ----------------------------
         _tip = 'Architectural Width of the opening object'

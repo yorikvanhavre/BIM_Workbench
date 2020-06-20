@@ -366,11 +366,15 @@ class Wall(ShapeGroup, IfcProduct):
             for opening in obj.Openings:
                 # cut opening void
                 void = None
-                if hasattr(opening, "Proxy") and hasattr(opening.Proxy, "get_void_shape"):
+                if hasattr(opening, "VoidShape"):
+                    void = opening.VoidShape
+                    if void is not None:
+                        wall_shape = wall_shape.cut(void)
+                '''elif hasattr(opening, "Proxy") and hasattr(opening.Proxy, "get_void_shape"):
                     void = opening.Proxy.get_void_shape(opening)
                     if void is not None:
                         # void.Placement = container_placement.multiply(cut_shape.Placement) # this is not necessary anymore because Opening object provide a correct shape to cut the wall
-                        wall_shape = wall_shape.cut(void)
+                        wall_shape = wall_shape.cut(void)''' # to be deleted because we now have a VoidShape Property in opening
 
         obj.Shape = wall_shape
 
