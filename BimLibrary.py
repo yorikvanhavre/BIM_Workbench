@@ -70,8 +70,8 @@ class BIM_Library_TaskPanel:
 
 
     def __init__(self):
-
         from PySide import QtCore,QtGui
+        import FreeCADGui
         self.librarypath = FreeCAD.ParamGet('User parameter:Plugins/parts_library').GetString('destination','')
         self.form = FreeCADGui.PySideUic.loadUi(os.path.join(os.path.dirname(__file__),"dialogLibrary.ui"))
         self.form.setWindowIcon(QtGui.QIcon(os.path.join(os.path.dirname(__file__),"icons","BIM_Library.svg")))
@@ -279,7 +279,7 @@ class BIM_Library_TaskPanel:
         FreeCAD.ActiveDocument.recompute()
 
     def insert(self, index=None):
-
+        import FreeCADGui
         if not index:
             index = self.form.tree.selectedIndexes()
             if not index:
