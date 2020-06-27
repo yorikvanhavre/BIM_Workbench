@@ -138,6 +138,7 @@ class Arch_Wall:
 
     def commit(self):
         """ Create the wall."""
+        import Draft
         App.ActiveDocument.openTransaction("Create Wall")
         wall = make_wall.makeWallFromPoints(p1 = self.points[0], 
                                             p2 = self.points[1],
@@ -158,7 +159,7 @@ class Arch_Wall:
                         target.JoinLastEndTo = wall.Name"""
             if self.join_last:
                 wall.JoinLastEndTo = self.join_last            
-
+        Draft.autogroup(wall)
         App.ActiveDocument.commitTransaction()
         App.ActiveDocument.recompute()
 
