@@ -18,24 +18,15 @@
 #*   USA                                                                   *
 #*                                                                         *
 #***************************************************************************
-"""Provide the object code for Arch View."""
+"""Provide the object code for Arch View.
+This object is a spaghetti Frankenstein of various code written by Yorik.
+"""
 ## @package archview
 # \ingroup ARCH
 # \brief Provide the object code for Arch View.
 
-import math
-
 from PySide.QtCore import QT_TRANSLATE_NOOP
 import FreeCAD as App
-
-import Draft,ArchComponent,ArchCommands,math
-
-import DraftVecUtils, DraftGeomUtils
-import Part, Draft
-
-if App.GuiUp:
-    import FreeCADGui as Gui
-    from PySide import QtCore, QtGui
 
 
 class ArchView(object):
@@ -60,29 +51,39 @@ class ArchView(object):
         if not "Placement" in pl:
             _tip = "The placement of this object"
             obj.addProperty("App::PropertyPlacement", "Placement",
-                            "SectionPlane", QT_TRANSLATE_NOOP("App::Property", _tip))
+                            "Base", QT_TRANSLATE_NOOP("App::Property", _tip))
         
         if not "Shape" in pl:
             obj.addProperty("Part::PropertyPartShape", "Shape",
-                            "SectionPlane", QT_TRANSLATE_NOOP("App::Property","The shape of this object"))
+                            "Base", QT_TRANSLATE_NOOP("App::Property","The shape of this object"))
         
         if not "Objects" in pl:
             obj.addProperty("App::PropertyLinkListGlobal", "Objects", #changed to global
-                            "SectionPlane", QT_TRANSLATE_NOOP("App::Property","The objects that must be considered by this section plane. Empty means the whole document."))
+                            "Section Plane", QT_TRANSLATE_NOOP("App::Property","The objects that must be considered by this section plane. Empty means the whole document."))
         
         if not "OnlySolids" in pl:
             obj.addProperty("App::PropertyBool", "OnlySolids",
-                            "SectionPlane", QT_TRANSLATE_NOOP("App::Property","If false, non-solids will be cut too, with possible wrong results."))
+                            "Section Plane", QT_TRANSLATE_NOOP("App::Property","If false, non-solids will be cut too, with possible wrong results."))
             obj.OnlySolids = True
         
         if not "Clip" in pl:
             obj.addProperty("App::PropertyBool", "Clip",
-                            "SectionPlane", QT_TRANSLATE_NOOP("App::Property","If True, resulting views will be clipped to the section plane area."))
+                            "Section Plane", QT_TRANSLATE_NOOP("App::Property","If True, resulting views will be clipped to the section plane area."))
         
         if not "UseMaterialColorForFill" in pl:
             obj.addProperty("App::PropertyBool", "UseMaterialColorForFill",
-                            "SectionPlane",QT_TRANSLATE_NOOP("App::Property","If true, the color of the objects material will be used to fill cut areas."))
+                            "Section Plane",QT_TRANSLATE_NOOP("App::Property","If true, the color of the objects material will be used to fill cut areas."))
             obj.UseMaterialColorForFill = False
+
+        if not "GenerateSectionGeometry" in pl:
+            obj.addProperty("App::PropertyBool", "GenerateSectionGeometry",
+                            "Geometry", QT_TRANSLATE_NOOP("App::Property","If true, a new object is generated to display the section cut shape."))
+            obj.GenerateSectionGeometry = False
+
+        if not "SectionGeometry" in pl:
+            obj.addProperty("App::PropertyLinkChild", "SectionGeometry",
+                            "Geometry", QT_TRANSLATE_NOOP("App::Property","If true, a new object is generated to display the section cut shape."))
+
         self.Type = "SectionPlane"
 
 
@@ -126,12 +127,74 @@ class ArchView(object):
             self.svgcache = None
             self.shapecache = None
 
+        if (prop in ('GenerateSectionGeometry', 'SectionGeometry') and
+                'GenerateSectionGeometry' in obj.PropertiesList and 
+                'SectionGeometry' in obj.PropertiesList):
+            self.setSectionGeometry(obj)
+        
+        if prop == 'Objects' and hasattr(obj, 'Objects'):
+            if hasattr(obj, 'GenerateSectionGeometry') and obj.GenerateSectionGeometry:
+                self.recomputeSectionGeometry(obj)
+
+
     def getNormal(self, obj):
         return obj.Shape.Faces[0].normalAt(0,0)
 
 
-    # Other methods +++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    # Create section cut ++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+    def setSectionGeometry(self, obj):
+        if obj.GenerateSectionGeometry:
+            if obj.SectionGeometry:
+                self.recomputeSectionGeometry(obj)
+            else:
+                return self.createCutObject(obj)
+        else:
+            if obj.SectionGeometry:
+                App.ActiveDocument.removeObject(obj.SectionGeometry.Name)
+
+
+    def createCutObject(self, obj):
+        cut_object = App.ActiveDocument.addObject('Part::Feature', 'SectionCut')
+        obj.addObject(cut_object)
+        obj.SectionGeometry = cut_object
+        if App.GuiUp:
+            cut_object.ViewObject.Selectable = False
+
+
+    def recomputeSectionGeometry(self, obj):
+        if obj.Objects is None or len(obj.Objects) == 0:
+            return
+        if obj.Visibility == False:
+            return
+        if App.GuiUp and obj.ViewObject.DisplayMode != 'Group':
+            return
+
+        import Part
+        import Drawing
+
+        section_plane = Part.makePlane(10000000.0, 10000000.0)
+        section_plane.Placement.Base.x = -5000000.0
+        section_plane.Placement.Base.y = -5000000.0
+        npl = section_plane.Placement.multiply(obj.getGlobalPlacement())
+        section_plane.Placement = npl
+
+        #shapes = Drawing.projectEx(obj.Objects[0].Shape, self.getNormal(obj))
+        shapes = []
+        for o in obj.Objects:
+            s = o.Shape.copy()
+            # s.Placement.multiply(o.getGlobalPlacement())
+            shapes.append(s)
+        shapes = Part.makeCompound(shapes)
+
+        shape = shapes.section(section_plane)
+
+        shape.Placement.multiply(obj.getGlobalPlacement().inverse())
+
+        obj.SectionGeometry.Shape = shape
+
+
+    # Other methods +++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
     def onDocumentRestored(self, obj):
         self.Object = obj

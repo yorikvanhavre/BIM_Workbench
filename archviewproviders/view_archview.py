@@ -101,24 +101,22 @@ class ViewProviderArchView(object):
 
         self.onChanged(vobj,"DisplayLength")
         self.onChanged(vobj,"LineColor")
-        self.onChanged(vobj,"Transparency")
         self.onChanged(vobj,"CutView")
+
+        vobj.Transparency = 85
 
         self.is_active = False
 
+
     def updateData(self, obj, prop):
-        """
-        This method is called when an Object property changes.
-        """
+        """This method is called when an Object property changes."""
         if prop in ["Placement"]:
             self.onChanged(obj.ViewObject,"DisplayLength")
             self.onChanged(obj.ViewObject,"CutView")
-        return
+
 
     def onChanged(self, vobj, prop):
-        """
-        This method is called when a ViewObject property changes.
-        """
+        """This method is called when a ViewObject property changes."""
         if prop == "LineColor":
             if hasattr(vobj,"LineColor"):
                 l = vobj.LineColor
@@ -139,18 +137,10 @@ class ViewProviderArchView(object):
                     self.remove_clipping_plane(vobj)
         return
 
+
     def onDelete(self, vobj, subelements): # subelements is a tuple of strings
-        """
-        Activated when object is deleted.
-
-        Before deleting:
-        Set CutView to False.
-        If subobjects are present, ask for deleting them.
-
-        Return
-        ------
-        bool : True the object will be deleted
-               False the object will not be deleted
+        """Activated before the object is deleted.
+        Returning True will delete it.
         """
         # ask if the user is sure and wants to delete contained objects
         if not vobj.Object.Group:
@@ -183,29 +173,33 @@ class ViewProviderArchView(object):
         # the object will be deleted
         return True
     
-    def getDisplayModes(self,vobj):
+
+    def getDisplayModes(self, vobj):
         return ["Default"]
+
 
     def getDefaultDisplayMode(self):
         return "Default"
 
-    def setDisplayMode(self,mode):
+
+    def setDisplayMode(self, mode):
         return mode
+
 
     def __getstate__(self):
         return None
 
+
     def __setstate__(self, _state):
         return None
 
-    def doubleClicked(self,vobj):
+
+    def doubleClicked(self, vobj):
         self.toggle_activate(vobj)
-        '''if (not hasattr(vobj,"DoubleClickActivates")) or vobj.DoubleClickActivates:
-            FreeCADGui.Selection.clearSelection()''' # don't know what this is for
-        return True # why?
+
 
     def setupContextMenu(self, vobj, menu):
-        """CONTEXT MENU setup"""
+        """Context menu setup."""
         # toggle active
         action1 = QtGui.QAction(QtGui.QIcon(":/icons/Draft_Edit.svg"),"Toggle Activate", menu)
         action1.triggered.connect(lambda f=self.toggle_activate, arg=vobj:f(arg))
@@ -217,9 +211,97 @@ class ViewProviderArchView(object):
         menu.addAction(action2)
 
 
+    # Activate arch view methods ++++++++++++++++++++++++++++++++++++++++++++
+
+    def toggle_activate(self, vobj):
+        """Toggles the active status of the ArchView object."""
+        if self.is_active:
+            self.deactivate(vobj)
+        else:
+            self.activate(vobj)
+
+
+    def activate(self, vobj):
+        """Activate the ArchView."""
+        print("Activating View" + vobj.Object.Label)
+        Gui.ActiveDocument.ActiveView.setActiveObject('part', vobj.Object) # only Part objects are treated in autogroup with the placement correction
+        self.set_cutview(vobj, True)
+        self.alignWorkingPlane(vobj)
+        self.align_camera(vobj)
+        vobj.DisplayMode = "Group"
+
+        self.is_active = True
+        return
+
+
+    def deactivate(self,vobj):
+        """ Not implemented yet
+        """
+        print("Deactivating View" + vobj.Object.Name)
+        Gui.ActiveDocument.ActiveView.setActiveObject('part', None) # only Part objects are treated in autogroup with the placement correction
+        self.set_cutview(vobj, False)
+        self.restoreWorkingPlane()
+        vobj.DisplayMode = "Default"
+        self.is_active = False
+        return
+
+    
+    def alignWorkingPlane(self, vobj):
+        if hasattr(App, "DraftWorkingPlane") and hasattr(Gui, "Snapper"):
+            App.DraftWorkingPlane.save()
+            App.DraftWorkingPlane.alignToFace(vobj.Object.Shape.Faces[0])
+            Gui.Snapper.setGrid()
+
+
+    def restoreWorkingPlane(self):
+        if hasattr(App, "DraftWorkingPlane") and hasattr(Gui, "Snapper"):
+            App.DraftWorkingPlane.restore()
+            Gui.Snapper.setGrid()
+
+
+    def align_camera(self, vobj):
+        """Align camera to given ViewObject"""
+        dir = vobj.Object.Proxy.getNormal(vobj.Object)
+        cam = Gui.ActiveDocument.ActiveView.getCameraNode()
+
+        if dir.z == 1 :
+            rot = pointAt(dir, App.Vector(0.0,1.0,0.0))
+        elif dir.z == -1 :
+            rot = pointAt(dir, App.Vector(0.0,1.0,0.0))
+        else :
+            rot = pointAt(dir, App.Vector(0.0,0.0,1.0))
+
+        cam.orientation.setValue(rot.Q)
+
+
+    def writeCamera(self, vobj):
+        """ Not implemented yet
+        """
+        vobj.CutView = False
+        if not hasattr(self,"Object"):
+            return
+
+        n = Gui.ActiveDocument.ActiveView.getCameraNode()
+        App.Console.PrintMessage(QT_TRANSLATE_NOOP("Draft","Writing camera position")+"\n")
+        cdata = list(n.position.getValue().getValue())
+        cdata.extend(list(n.orientation.getValue().getValue()))
+        cdata.append(n.nearDistance.getValue())
+        cdata.append(n.farDistance.getValue())
+        cdata.append(n.aspectRatio.getValue())
+        cdata.append(n.focalDistance.getValue())
+        if isinstance(n,coin.SoOrthographicCamera):
+            cdata.append(n.height.getValue())
+            cdata.append(0.0) # orthograhic camera
+        elif isinstance(n,coin.SoPerspectiveCamera):
+            cdata.append(n.heightAngle.getValue())
+            cdata.append(1.0) # perspective camera
+        vobj.ViewData = cdata
+
+
     # Section plane marker methods ++++++++++++++++++++++++++++++++++++++++++
 
     def setup_default_display_mode(self, vobj):
+        """Setup the coin nodes of the placeholder representation of the Section Plane."""
         self.clip = None
         self.mat1 = coin.SoMaterial()
         self.mat2 = coin.SoMaterial()
@@ -246,7 +328,9 @@ class ViewProviderArchView(object):
         sep.addChild(psep)
         vobj.addDisplayMode(sep,"Default")
 
+
     def setup_sectionplane_marker(self, vobj):
+        """Setup the coin nodes of the placeholder representation of the Section Plane."""
         if hasattr(vobj,"DisplayLength") and hasattr(vobj,"DisplayHeight"):
             ld = vobj.DisplayLength.Value/2
             hd = vobj.DisplayHeight.Value/2
@@ -281,41 +365,35 @@ class ViewProviderArchView(object):
             self.fcoords.point.setValues(fverts)
 
 
-    # CutView methods +++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-    def set_cutview(self, vobj, mode=True):
-        """ set_cutview(vobj, mode=True)
-        
-        Setter for CutView Property.
-        """
-        if mode == True:
-            vobj.CutView = True
-        else: 
-            vobj.CutView = False        
+    # CutView Property handlers +++++++++++++++++++++++++++++++++++++++++++++++++
 
     def toggle_cutview(self, vobj):
-        """ toggle_cutview(vobj)
-        
-        Toggler for CutView Property.
-        """
+        """Toggler for CutView Property."""
         if vobj.CutView:
             self.set_cutview(vobj, False)
         else:
             self.set_cutview(vobj, True)
 
+
+    def set_cutview(self, vobj, mode=True):
+        """ Setter for CutView Property."""
+        if mode == True:
+            vobj.CutView = True
+        else: 
+            vobj.CutView = False
+
+
     def setup_clipping_plane(self, vobj):
-        """ setup_clipping_plane(vobj)
-        
-        Set-up the clipping plane of the scenegraph.
+        """Set-up the clipping plane of the 3dView.
         This method is called when the property CutView or the object Placement changes.
         """
         sg = Gui.ActiveDocument.ActiveView.getSceneGraph()
         if self.clip:
             sg.removeChild(self.clip)
             self.clip = None
-        for o in Draft.getGroupContents(vobj.Object.Objects,walls=True):
+        '''for o in Draft.getGroupContents(vobj.Object.Objects,walls=True):
             if hasattr(o.ViewObject,"Lighting"):
-                o.ViewObject.Lighting = "One side"
+                o.ViewObject.Lighting = "One side"''' # prefer keeping interior lighty
         self.clip = coin.SoClipPlane()
         self.clip.on.setValue(True)
         norm = vobj.Object.Proxy.getNormal(vobj.Object)
@@ -335,94 +413,13 @@ class ViewProviderArchView(object):
         self.clip.plane.setValue(plane)
         sg.insertChild(self.clip,0)
 
+
     def remove_clipping_plane(self, vobj):
-        """ setup_clipping_plane(vobj)
-        
-        Set-up the clipping plane of the scenegraph.
-        This method is called when the property CutView or the object Placement changes.
-        """
+        """Remove the clipping plane from the 3dView."""
         sg = Gui.ActiveDocument.ActiveView.getSceneGraph()
         if hasattr(self, "clip") and self.clip: # added guard when changed object type
             sg.removeChild(self.clip)
             self.clip = None
-
-
-    # Activate arch view methods ++++++++++++++++++++++++++++++++++++++++++++
-
-    def toggle_activate(self, vobj):
-        """ Not implemented yet
-        """
-        if self.is_active:
-            self.deactivate(vobj)
-        else:
-            self.activate(vobj)
-
-    def activate(self, vobj):
-        """ Not implemented yet
-        """
-        print("Activating View" + vobj.Object.Name)
-        vobj.CutView = True
-        if hasattr(App, "DraftWorkingPlane") and hasattr(Gui, "Snapper"):
-            App.DraftWorkingPlane.alignToFace(vobj.Object.Shape.Faces[0])
-            Gui.Snapper.setGrid()
-        self.align_camera(vobj)
-        vobj.DisplayMode = "Group"
-        '''
-        if FreeCADGui.ActiveDocument.ActiveView.getActiveObject("Arch") == vobj.Object:
-            FreeCADGui.ActiveDocument.ActiveView.setActiveObject("Arch",None)
-            if vobj.SetWorkingPlane:
-                self.setWorkingPlane(restore=True)
-        else:
-            if (not hasattr(vobj,"DoubleClickActivates")) or vobj.DoubleClickActivates:
-                FreeCADGui.ActiveDocument.ActiveView.setActiveObject("Arch",vobj.Object)
-            if vobj.SetWorkingPlane:
-                self.setWorkingPlane()'''
-        self.is_active = True
-        return
-    
-    def deactivate(self,vobj):
-        """ Not implemented yet
-        """
-        print("Deactivating View" + vobj.Object.Name)
-        vobj.CutView = False
-        vobj.DisplayMode = "Default"
-        self.is_active = False
-        return
-    
-    def align_camera(self, vobj):
-        
-        dir = vobj.Object.Proxy.getNormal(vobj.Object)
-        cam = Gui.ActiveDocument.ActiveView.getCameraNode()
-
-        if dir.z == 1 :
-            rot = pointAt(dir, App.Vector(0.0,1.0,0.0))
-        elif dir.z == -1 :
-            rot = pointAt(dir, App.Vector(0.0,1.0,0.0))
-        else :
-            rot = pointAt(dir, App.Vector(0.0,0.0,1.0))
-
-        cam.orientation.setValue(rot.Q)
-
-    def writeCamera(self, vobj):
-        """ Not implemented yet
-        """
-        vobj.CutView = False
-        if hasattr(self,"Object"):
-            n = Gui.ActiveDocument.ActiveView.getCameraNode()
-            App.Console.PrintMessage(QT_TRANSLATE_NOOP("Draft","Writing camera position")+"\n")
-            cdata = list(n.position.getValue().getValue())
-            cdata.extend(list(n.orientation.getValue().getValue()))
-            cdata.append(n.nearDistance.getValue())
-            cdata.append(n.farDistance.getValue())
-            cdata.append(n.aspectRatio.getValue())
-            cdata.append(n.focalDistance.getValue())
-            if isinstance(n,coin.SoOrthographicCamera):
-                cdata.append(n.height.getValue())
-                cdata.append(0.0) # orthograhic camera
-            elif isinstance(n,coin.SoPerspectiveCamera):
-                cdata.append(n.heightAngle.getValue())
-                cdata.append(1.0) # perspective camera
-            self.Object.ViewObject.ViewData = cdata
 
 
 def pointAt(normal, up):
