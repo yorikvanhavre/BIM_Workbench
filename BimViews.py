@@ -130,6 +130,7 @@ class BIM_Views:
         "updates the view manager"
 
         from PySide import QtCore,QtGui
+        import FreeCADGui
         vm = findWidget()
         if vm and FreeCAD.ActiveDocument:
             if vm.isVisible() and (vm.tree.state() != vm.tree.EditingState):
