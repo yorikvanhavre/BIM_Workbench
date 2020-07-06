@@ -200,7 +200,7 @@ static char * IFC_xpm[] = {
 
         # experimental arch tools (for 0.19 only)
         try:
-            import ArchIFC
+            from ArchIFC import IfcProduct
         except:
             # this is 0.18
             self.experimentaltools = None
