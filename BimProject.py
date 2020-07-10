@@ -489,3 +489,17 @@ class BIM_Project:
             FreeCAD.Console.PrintMessage(translate("BIM","Template successfully loaded into current document")+"\n")
             self.reject()
 
+def getHuman(loc=None):
+
+    """Return a list of points defining a human figure,
+    optionally translated to a given location"""
+
+    import Part
+
+    humanshape = Part.Shape()
+    humanpath = os.path.join(os.path.dirname(__file__),"geometry","human figure.brep")
+    humanshape.importBrep(humanpath)
+    pts = [v.Point for v in humanshape.Vertexes]
+    if loc:
+        pts = [p.add(loc) for p in pts]
+    return pts

@@ -430,7 +430,7 @@ def getIfcOpenShell(force=False):
         from PySide import QtGui
         import zipfile
         import addonmanager_utilities
-        if force or (not FreeCAD.GuiUp):
+        if not FreeCAD.GuiUp:
             reply = QtGui.QMessageBox.Yes
         else:
             reply = QtGui.QMessageBox.question(None,

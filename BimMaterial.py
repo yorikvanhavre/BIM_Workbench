@@ -421,7 +421,10 @@ class BIM_Material:
                     name = c.toolTip()
                 elif len(self.dlg.objects) == 1:
                     if self.dlg.objects[0].Material:
-                        name = self.dlg.objects[0].Material.Name
+                        if hasattr(self.dlg.objects[0].Material,"Name"):
+                            name = self.dlg.objects[0].Material.Name
+                        else:
+                            name = "None"
                 self.dlg.matList.clear()
                 for o in self.dlg.materials:
                     i = QtGui.QListWidgetItem(self.createIcon(o),o.Label,self.dlg.matList)
