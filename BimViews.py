@@ -164,6 +164,7 @@ class BIM_Views:
 
         "selects a doc object corresponding to an item"
 
+        import FreeCADGui
         name = item.toolTip(0)
         obj = FreeCAD.ActiveDocument.getObject(name)
         if obj:
