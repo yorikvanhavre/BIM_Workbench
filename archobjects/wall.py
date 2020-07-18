@@ -477,6 +477,8 @@ class Wall(ShapeGroup, IfcProduct):
         outer_core.Placement.Base = App.Vector(first_point, - obj.Width/2)
         
         core_layer = inner_core.fuse(outer_core)
+
+        core_layer = core_layer.removeSplitter()
         
         # TODO: Add support for multiple wall layers.
         #       I was thinking to just 3 layers in the representation, cause it's usually enough
