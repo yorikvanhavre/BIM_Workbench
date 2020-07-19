@@ -257,6 +257,10 @@ class Wall(ShapeGroup, IfcProduct):
             if hasattr(obj, "BaseGeometry"):
                 pass
 
+        # AXIS properties: align wall to an external edge
+        if prop == "AxisLink" and hasattr(obj, "AxisLink"):
+            self.align_axis_to_edge(obj, obj.AxisLink)
+
         # Group property: an object is added or removed from the wall
         if prop == "Group":
             if hasattr(obj, "Group") and hasattr(obj, "BaseGeometry") and hasattr(obj, "Subtractions"):
@@ -760,6 +764,37 @@ class Wall(ShapeGroup, IfcProduct):
             wall.LastCoreInnerAngle = -w_angle
             wall.LastCoreOuterAngle = +w_angle
             wall.LastCoreOffset = 0.0
+
+
+    # Axis alignment handling methods +++++++++++++++++++++++++++++++++++++++
+
+
+    def align_axis_to_edge(self, wall, sub_link):
+        """Align the wall Placement in LCS xy plane to a given edge.
+        If the linked subobject changes, the wall is not notified, so 
+        I was thinking to modify the Axis system object to do that."""
+
+        if sub_link is None:
+            return
+        linked_object = sub_link[0]
+        linked_subobject_names = sub_link[1]
+        for name in linked_subobject_names:
+            subobject = linked_object.getSubObject(name)
+            if hasattr(subobject, "ShapeType") and subobject.ShapeType == 'Edge':
+                break
+        
+        import DraftVecUtils
+        v1 = subobject.Vertexes[0].Point
+        v2 = subobject.Vertexes[1].Point
+        p = wall.Placement.Base.sub(v1)
+        point_on_edge = DraftVecUtils.project(p, v2.sub(v1)) + v1
+
+        angle = Draft.DraftVecUtils.angle(v1, v2.sub(v1))
+
+        wall.Placement.Base.x = point_on_edge.x
+        wall.Placement.Base.y = point_on_edge.y
+
+        wall.Placement.Rotation.Angle = angle
 
 
     # Group objects handling methods ++++++++++++++++++++++++++++++++++++++++
