@@ -266,8 +266,20 @@ class Wall(ShapeGroup, IfcProduct):
             self.group_changed(obj)
 
 
+    def mustExecute(self, obj):
+        """Return True if the object must be executed.
+        """
+        if hasattr(obj, 'AxisLink') and obj.AxisLink is not None:
+            linkedObj = obj.AxisLink[0]
+            if linkedObj.State == ['Touched']: #isTouched():
+                print("Source has been touched")
+                #self.align_axis_to_edge(obj, obj.AxisLink)
+                return True
+
+
     def execute(self, obj):
         """ Compute the wall shape as boolean operations among the component objects """
+        self.align_axis_to_edge(obj, obj.AxisLink)
         # print("running " + obj.Name + " execute() method\n")
         import Part
 
