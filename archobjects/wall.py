@@ -272,14 +272,13 @@ class Wall(ShapeGroup, IfcProduct):
         if hasattr(obj, 'AxisLink') and obj.AxisLink is not None:
             linkedObj = obj.AxisLink[0]
             if linkedObj.State == ['Touched']:
+                self.align_axis_to_edge(obj, obj.AxisLink)
                 return True
 
 
     def execute(self, obj):
         """ Compute the wall shape as boolean operations among the component objects """
 
-        # before recomputing the shape, re-align the object to the AxisLink edge:
-        self.align_axis_to_edge(obj, obj.AxisLink)
 
         # print("running " + obj.Name + " execute() method\n")
         import Part
@@ -747,7 +746,9 @@ class Wall(ShapeGroup, IfcProduct):
     def align_axis_to_edge(self, wall, sub_link):
         """Align the wall Placement in LCS xy plane to a given edge.
         If the linked subobject changes, the wall is not notified, so 
-        I was thinking to modify the Axis system object to do that."""
+        I was thinking to modify the Axis system object to do that.
+        TODO: Take into account global placement.
+        """
 
         if sub_link is None:
             return
@@ -764,7 +765,8 @@ class Wall(ShapeGroup, IfcProduct):
         p = wall.Placement.Base.sub(v1)
         point_on_edge = DraftVecUtils.project(p, v2.sub(v1)) + v1
 
-        angle = Draft.DraftVecUtils.angle(v1, v2.sub(v1))
+        angle = Draft.DraftVecUtils.angle(App.Vector(1,0,0), v2.sub(v1))
+        print(angle)
 
         wall.Placement.Base.x = point_on_edge.x
         wall.Placement.Base.y = point_on_edge.y
