@@ -217,15 +217,15 @@ class Wall(ShapeGroup, IfcProduct):
         """
         super(Wall, self).onChanged(obj, prop)
 
-        if prop == "Placement":
-            if hasattr(obj, "Placement"): # TODO: recompute only if end is set
-                # Recompute wall joinings
-                self.recompute_ends(obj)
-                for t_name in obj.IncomingTJoins:
-                    t = App.ActiveDocument.getObject(t_name)
-                    t.Proxy.recompute_ends(t)
+        if prop == "Placement" and hasattr(obj, "Placement"):
+            # TODO: recompute only if end is set
+            # Recompute wall joinings
+            self.recompute_ends(obj)
+            for t_name in obj.IncomingTJoins:
+                t = App.ActiveDocument.getObject(t_name)
+                t.Proxy.recompute_ends(t)
 
-        if hasattr(obj, "Width") and prop == "Width" and hasattr(obj, "IncomingTJoins") and hasattr(obj, "Openings"):
+        if prop == "Width" and hasattr(obj, "Width") and hasattr(obj, "IncomingTJoins") and hasattr(obj, "Openings"):
             obj.Proxy.recompute_ends(obj)
             for t_name in obj.IncomingTJoins:
                 t = App.ActiveDocument.getObject(t_name)
@@ -237,7 +237,7 @@ class Wall(ShapeGroup, IfcProduct):
 
         # WALL JOIN ENDS properties
         if (hasattr(obj, "JoinFirstEndTo") and hasattr(obj, "JoinLastEndTo") and
-            hasattr(obj, "JoinFirstEnd")and hasattr(obj, "JoinLastEnd")):
+            hasattr(obj, "JoinFirstEnd") and hasattr(obj, "JoinLastEnd")):
 
             if prop == "JoinFirstEndTo" and obj.JoinFirstEnd:
                 self.recompute_end(obj, 0)
@@ -245,62 +245,25 @@ class Wall(ShapeGroup, IfcProduct):
             elif prop == "JoinLastEndTo" and obj.JoinLastEnd:
                 self.recompute_end(obj, 1)
 
-        if prop == "AxisFirstPointX" or prop == "AxisLastPointX":
-            if hasattr(obj, "AxisFirstPointX") and hasattr(obj, "AxisLastPointX"):
-                #if obj.AxisFirstPointX.x > obj.AxisLastPointX.x:   circular
-                #    obj.AxisFirstPointX, obj.AxisLastPointX = obj.AxisLastPointX, obj.AxisFirstPointX
-                if hasattr(obj, "Length"):
-                    obj.Length = abs(obj.AxisLastPointX - obj.AxisFirstPointX)
+        if (prop == "AxisFirstPointX" or prop == "AxisLastPointX") and (
+                hasattr(obj, "AxisFirstPointX") and hasattr(obj, "AxisLastPointX")):
+            #if obj.AxisFirstPointX.x > obj.AxisLastPointX.x:   circular
+            #    obj.AxisFirstPointX, obj.AxisLastPointX = obj.AxisLastPointX, obj.AxisFirstPointX
+            if hasattr(obj, "Length"):
+                obj.Length = abs(obj.AxisLastPointX - obj.AxisFirstPointX)
 
         # CHILDREN properties: remember to first assign basegeometry and then add the object to the group
-        if prop == "BaseGeometry":
-            if hasattr(obj, "BaseGeometry"):
-                pass
+        if prop == "BaseGeometry" and hasattr(obj, "BaseGeometry"):
+            pass
 
         # AXIS properties: align wall to an external edge
         if prop == "AxisLink" and hasattr(obj, "AxisLink"):
             self.align_axis_to_edge(obj, obj.AxisLink)
 
         # Group property: an object is added or removed from the wall
-        if prop == "Group":
-            if hasattr(obj, "Group") and hasattr(obj, "BaseGeometry") and hasattr(obj, "Subtractions"):
-                if hasattr(self, "oldGroup"):
-                    # understand if the object was added or removed
-                    added_objs = [x for x in obj.Group if x not in self.oldGroup]
-                    removed_objs = [x for x in self.oldGroup if x not in obj.Group]
-                    del self.oldGroup
-                for o in removed_objs:
-                    # if it was removed, remove it from wall children linking
-                    print("Removing " + o.Label + " from " + obj.Label)
-                    if o in obj.BaseGeometry:
-                        BaseGeometry = obj.BaseGeometry
-                        BaseGeometry.remove(o)
-                        obj.BaseGeometry = BaseGeometry
-
-                    elif o in obj.Subtractions:
-                        Subtractions = obj.Subtractions
-                        Subtractions.remove(o)
-                        obj.Subtractions = Subtractions
-
-                    elif o in obj.Openings:
-                        Openings = obj.Openings
-                        Openings.remove(o)
-                        obj.Openings = Openings
-
-                for o in added_objs:
-                    # if it was added, check if it is an opening or ask if it has to be treated as a 
-                    print("Adding " + o.Name + " to " + obj.Label)
-                    if o == obj.BaseGeometry:
-                        continue # check if this is necessary
-
-                    if hasattr(o, "IfcType"):
-                        if o.IfcType == 'Opening Element':
-                            self.add_opening(obj, o)
-                            continue
-
-                    if not o in obj.Subtractions: # subtracting objects can be wherever in the document
-                        print("added a new object to the wall")
-                        self.add_as_base_shape(obj, o)
+        if prop == "Group" and hasattr(obj, "Group") and hasattr(obj, 
+                "BaseGeometry") and hasattr(obj, "Subtractions"):
+            self.group_changed(obj)
 
 
     def execute(self, obj):
@@ -768,7 +731,6 @@ class Wall(ShapeGroup, IfcProduct):
 
     # Axis alignment handling methods +++++++++++++++++++++++++++++++++++++++
 
-
     def align_axis_to_edge(self, wall, sub_link):
         """Align the wall Placement in LCS xy plane to a given edge.
         If the linked subobject changes, the wall is not notified, so 
@@ -798,6 +760,49 @@ class Wall(ShapeGroup, IfcProduct):
 
 
     # Group objects handling methods ++++++++++++++++++++++++++++++++++++++++
+
+    def group_changed(self, obj):
+        """This method is called by onChanged when property Group changes.
+        Understand if object was added or removed from wall, and performs 
+        consequent operations.
+        """
+        if hasattr(self, "oldGroup"):
+            # understand if the object was added or removed
+            added_objs = [x for x in obj.Group if x not in self.oldGroup]
+            removed_objs = [x for x in self.oldGroup if x not in obj.Group]
+            del self.oldGroup
+        for o in removed_objs:
+            # if it was removed, remove it from wall children linking
+            print("Removing " + o.Label + " from " + obj.Label)
+            if o in obj.BaseGeometry:
+                BaseGeometry = obj.BaseGeometry
+                BaseGeometry.remove(o)
+                obj.BaseGeometry = BaseGeometry
+
+            elif o in obj.Subtractions:
+                Subtractions = obj.Subtractions
+                Subtractions.remove(o)
+                obj.Subtractions = Subtractions
+
+            elif o in obj.Openings:
+                Openings = obj.Openings
+                Openings.remove(o)
+                obj.Openings = Openings
+
+        for o in added_objs:
+            # if it was added, check if it is an opening or ask if it has to be treated as a 
+            print("Adding " + o.Name + " to " + obj.Label)
+            if o == obj.BaseGeometry:
+                continue # check if this is necessary
+
+            if hasattr(o, "IfcType"):
+                if o.IfcType == 'Opening Element':
+                    self.add_opening(obj, o)
+                    continue
+
+            if not o in obj.Subtractions: # subtracting objects can be wherever in the document
+                print("added a new object to the wall")
+                self.add_as_base_shape(obj, o)
 
 
     def add_opening(self, obj, child):
