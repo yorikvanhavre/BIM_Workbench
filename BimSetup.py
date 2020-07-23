@@ -196,13 +196,13 @@ class BIM_Setup:
         # set the working plane
         if hasattr(FreeCAD,"DraftWorkingPlane") and hasattr(FreeCADGui,"draftToolBar"):
             if wp == 1:
-                FreeCAD.DraftWorkingPlane.alignToPointAndAxis(Vector(0,0,0), Vector(0,0,1), 0)
+                FreeCAD.DraftWorkingPlane.alignToPointAndAxis(FreeCAD.Vector(0,0,0), FreeCAD.Vector(0,0,1), 0)
                 FreeCADGui.draftToolBar.wplabel.setText("Top(XY)")
             elif wp == 2:
-                FreeCAD.DraftWorkingPlane.alignToPointAndAxis(Vector(0,0,0), Vector(0,1,0), 0)
+                FreeCAD.DraftWorkingPlane.alignToPointAndAxis(FreeCAD.Vector(0,0,0), FreeCAD.Vector(0,1,0), 0)
                 FreeCADGui.draftToolBar.wplabel.setText("Front(XZ)")
             elif wp == 3:
-                FreeCAD.DraftWorkingPlane.alignToPointAndAxis(Vector(0,0,0), Vector(1,0,0), 0)
+                FreeCAD.DraftWorkingPlane.alignToPointAndAxis(FreeCAD.Vector(0,0,0), FreeCAD.Vector(1,0,0), 0)
                 FreeCADGui.draftToolBar.wplabel.setText("Side(YZ)")
             else:
                 FreeCADGui.draftToolBar.wplabel.setText("Auto")
