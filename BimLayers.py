@@ -23,7 +23,10 @@
 """Layers manager for FreeCAD"""
 
 import os
+
 import FreeCAD
+import Draft
+
 from BimTranslateUtils import *
 
 
@@ -62,7 +65,7 @@ class BIM_Layers:
         self.dialog = FreeCADGui.PySideUic.loadUi(os.path.join(os.path.dirname(__file__),"dialogLayers.ui"))
 
         # set nice icons
-        self.dialog.setWindowIcon(QtGui.QIcon(":/icons/Draft_VisGroup.svg"))
+        self.dialog.setWindowIcon(QtGui.QIcon(":/icons/Draft_Layer.svg"))
         self.dialog.buttonNew.setIcon(QtGui.QIcon(":/icons/document-new.svg"))
         self.dialog.buttonDelete.setIcon(QtGui.QIcon(":/icons/delete.svg"))
         self.dialog.buttonSelectAll.setIcon(QtGui.QIcon(":/icons/edit-select-all.svg"))
@@ -218,7 +221,6 @@ class BIM_Layers:
 
         "rebuild the model from document contents"
 
-        import Draft
         self.model.clear()
 
         # set header
