@@ -652,7 +652,7 @@ class Wall(ShapeGroup, IfcProduct):
         t1 = target.Proxy.get_first_point(target)
         t2 = target.Proxy.get_last_point(target)
 
-        angle = math.degrees(Draft.DraftVecUtils.angle(w2-w1,t2-t1))
+        angle = math.degrees(DraftVecUtils.angle(w2-w1,t2-t1))
         # print(angle)
 
         # identify if the function have to join the first or the end of the wall
@@ -709,7 +709,7 @@ class Wall(ShapeGroup, IfcProduct):
             t1 = target.Proxy.get_last_point(target)
             t2 = target.Proxy.get_first_point(target)
 
-        angle = Draft.DraftVecUtils.angle(w2-w1,t2-t1)
+        angle = DraftVecUtils.angle(w2-w1,t2-t1)
 
         # print("angle between walls: " + str(math.degrees(angle)) + "\n")
 
@@ -765,7 +765,7 @@ class Wall(ShapeGroup, IfcProduct):
         p = wall.Placement.Base.sub(v1)
         point_on_edge = DraftVecUtils.project(p, v2.sub(v1)) + v1
 
-        angle = Draft.DraftVecUtils.angle(App.Vector(1,0,0), v2.sub(v1))
+        angle = DraftVecUtils.angle(App.Vector(1,0,0), v2.sub(v1))
         print(angle)
 
         wall.Placement.Base.x = point_on_edge.x
