@@ -67,6 +67,9 @@ static char * IFC_xpm[] = {
         def QT_TRANSLATE_NOOP(scope, text):
             return text
 
+        if not hasattr(Gui, "listCommands"):
+            Gui.listCommands = Gui.Command.listAll
+
         import DraftTools
         import Arch
 
