@@ -543,11 +543,11 @@ class Wall(ShapeGroup, IfcProduct):
         """
         print("running reset_end() "+obj.Name+"_"+str(idx)+"\n")
         if idx == 0:
-            obj.FirstCoreInnerAngle = 90
-            obj.FirstCoreOuterAngle = 90
+            obj.FirstCoreInnerAngle = '90 deg'
+            obj.FirstCoreOuterAngle = '90 deg'
         elif idx == 1:
-            obj.LastCoreInnerAngle = 90
-            obj.LastCoreOuterAngle = 90
+            obj.LastCoreInnerAngle = '90 deg'
+            obj.LastCoreOuterAngle = '90 deg'
 
 
     def remove_linked_walls_references(self, obj):
@@ -762,6 +762,9 @@ class Wall(ShapeGroup, IfcProduct):
         import DraftVecUtils
         v1 = subobject.Vertexes[0].Point
         v2 = subobject.Vertexes[1].Point
+        self.align_axis_to_points(wall, v1, v2)
+
+    def align_axis_to_points(self, wall, v1, v2, exact=False):
         p = wall.Placement.Base.sub(v1)
         point_on_edge = DraftVecUtils.project(p, v2.sub(v1)) + v1
 
@@ -871,19 +874,19 @@ class Wall(ShapeGroup, IfcProduct):
             return core_axis
 
 
-    def get_first_point(self, obj):
+    def get_first_point(self, obj, local=False):
         """return a part line representing the core axis of the wall"""
-        p1 = obj.getGlobalPlacement().multVec(App.Vector(obj.AxisFirstPointX,
-                                                         0,
-                                                         0))
+        p1 = App.Vector(obj.AxisFirstPointX, 0, 0)
+        if not local:
+            p1 = obj.getGlobalPlacement().multVec(p1)
         return p1
 
 
-    def get_last_point(self, obj):
+    def get_last_point(self, obj, local=False):
         """return a part line representing the core axis of the wall"""
-        p2 = obj.getGlobalPlacement().multVec(App.Vector(obj.AxisLastPointX,
-                                                         0,
-                                                         0))
+        p2 = App.Vector(obj.AxisLastPointX, 0, 0)
+        if not local:
+            p2 = obj.getGlobalPlacement().multVec(p2)
         return p2
 
 
@@ -947,3 +950,69 @@ class Wall(ShapeGroup, IfcProduct):
         self.Object = obj
         # obj.Proxy.Type needs to be re-setted every time the document is opened.
         obj.Proxy.Type = "Arch_Wall"
+
+
+    # Draft Edit support ++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+    def get_edit_points(self, obj):
+        """Return to Draft_Edit a list of edipoints for the given object.
+        Remember to use object local coordinates system.
+        """
+        editpoints = []
+        editpoints.append(obj.Proxy.get_first_point(obj, local=True))
+        editpoints.append(obj.Proxy.get_last_point(obj, local=True))
+        return editpoints
+
+
+    def update_object_from_edit_points(self, obj, node_idx, v, alt_edit_mode=0):
+        """Update the object from modified Draft_Edit point.
+        No need to recompute at the end.
+
+        Parameters:
+        obj: the object
+        node_idx: number of the edited node
+        v: target vector of the node in object local coordinates system
+        alt_edit_mode: alternative edit mode to perform different operations
+                       (usually can be selected from the Draft_Edit context menu)
+        """
+        if alt_edit_mode == 0:
+            # trim/extend endpoint
+            if node_idx == 0:
+                obj.Proxy.set_first_point(obj, v, local=True)
+            elif node_idx == 1:
+                obj.Proxy.set_last_point(obj, v, local=True)
+
+        elif alt_edit_mode == 1:
+            # rotate wall on the opposite endpoint (context menu "align")
+            import Draft
+            global_v = obj.getGlobalPlacement().multVec(v)
+            p1 = obj.Proxy.get_first_point(obj)
+            p2 = obj.Proxy.get_last_point(obj)
+            if node_idx == 0:
+                current_angle = DraftVecUtils.angle(App.Vector(1,0,0), p1.sub(p2))
+                new_angle = DraftVecUtils.angle(App.Vector(1,0,0), global_v.sub(p2))
+                Draft.rotate(obj, math.degrees(new_angle - current_angle), p2)
+                # obj.Proxy.set_first_point(obj, global_v) # this causes frequent hard crashes, probably to delay
+            elif node_idx == 1:
+                current_angle = DraftVecUtils.angle(App.Vector(1,0,0), p2.sub(p1))
+                new_angle = DraftVecUtils.angle(App.Vector(1,0,0), global_v.sub(p1))
+                Draft.rotate(obj, math.degrees(new_angle - current_angle), p1)
+                #obj.Proxy.set_last_point(obj, global_v) # this causes frequent hard crashes, probably to delay
+
+
+    def get_edit_point_context_menu(self, obj, node_idx):
+        """ Return a list of Draft_Edit context menu actions.
+        """
+        return ["reset end", "align"]
+    
+
+    def evaluate_context_menu_action(self, edit_command, obj, node_idx, action):
+        """ Do something when a Draft_Edit context menu action is triggered over a node.
+        """
+        if action == "reset end":
+            obj.Proxy.reset_end(obj, node_idx)
+            obj.recompute()
+        elif action == "align":
+            edit_command.alt_edit_mode = 1
+            edit_command.startEditing(edit_command.event)
+
