@@ -55,6 +55,8 @@ class Wall(ShapeGroup, IfcProduct):
             self.execute(obj)
 
         self.Type = 'Arch_Wall'
+
+        self.obj_gui_tools = None
         if App.GuiUp:
             self.obj_gui_tools = WallGuiTools()
 
@@ -952,11 +954,16 @@ class Wall(ShapeGroup, IfcProduct):
         self.Object = obj
         # obj.Proxy.Type needs to be re-setted every time the document is opened.
         obj.Proxy.Type = "Arch_Wall"
+        
+        self.obj_gui_tools = None
         if App.GuiUp:
             self.obj_gui_tools = WallGuiTools()
 
 
-class WallGuiTools:
+
+from draftguitools.gui_edit_base_object import GuiTools
+
+class WallGuiTools(GuiTools):
     """ This object contains the tools to provide editpoints, 
     update the object according their movement,
     custom context menu for every editpoint,
