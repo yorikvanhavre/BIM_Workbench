@@ -55,6 +55,8 @@ class Wall(ShapeGroup, IfcProduct):
             self.execute(obj)
 
         self.Type = 'Arch_Wall'
+        if App.GuiUp:
+            self.obj_gui_tools = WallGuiTools()
 
 
     def attach(self, obj):
@@ -950,13 +952,28 @@ class Wall(ShapeGroup, IfcProduct):
         self.Object = obj
         # obj.Proxy.Type needs to be re-setted every time the document is opened.
         obj.Proxy.Type = "Arch_Wall"
+        if App.GuiUp:
+            self.obj_gui_tools = WallGuiTools()
 
 
-    # Draft Edit support ++++++++++++++++++++++++++++++++++++++++++++++++++++
+class WallGuiTools:
+    """ This object contains the tools to provide editpoints, 
+    update the object according their movement,
+    custom context menu for every editpoint,
+    function to evaluate the context menu action, 
+    the code for the preview of the modification (TODO).
+    This tools are currently used by Draft Edit command.
+    """
+
+    def __init__(self):
+        pass
 
     def get_edit_points(self, obj):
         """Return to Draft_Edit a list of edipoints for the given object.
         Remember to use object local coordinates system.
+
+        Parameters:
+        obj: the object
         """
         editpoints = []
         editpoints.append(obj.Proxy.get_first_point(obj, local=True))
@@ -974,6 +991,7 @@ class Wall(ShapeGroup, IfcProduct):
         v: target vector of the node in object local coordinates system
         alt_edit_mode: alternative edit mode to perform different operations
                        (usually can be selected from the Draft_Edit context menu)
+                       default = 0
         """
         if alt_edit_mode == 0:
             # trim/extend endpoint
