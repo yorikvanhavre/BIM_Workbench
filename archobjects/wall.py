@@ -30,6 +30,7 @@ import FreeCAD as App
 import Draft
 import DraftVecUtils
 import DraftGeomUtils
+import draftutils.utils as utils
 
 from archobjects.base import ShapeGroup
 from ArchIFC import IfcProduct
@@ -73,6 +74,11 @@ class Wall(ShapeGroup, IfcProduct):
         IfcProduct.setProperties(self, obj)
         obj.IfcType = "Wall"
         obj.PredefinedType = "STANDARD"
+
+        # BASE Properties ---------------------------------------------------
+        _tip = 'Link to the material object.'
+        obj.addProperty('App::PropertyLink', 'Material',
+                        'Base', _tip)
 
         # COMPONENTS Properties (partially implemented at the moment) ---------
         _tip = 'Optional objects to use as base geometry for the wall shape'
@@ -220,6 +226,10 @@ class Wall(ShapeGroup, IfcProduct):
         """This method is activated when a property changes.
         """
         super(Wall, self).onChanged(obj, prop)
+
+        if prop == "Material" and hasattr(obj, "Material"):
+            if obj.Material and utils.get_type(obj.Material) == 'MultiMaterial':
+                obj.Width = App.Units.Quantity(str(sum(obj.Material.Thicknesses))+"mm")
 
         if prop == "Placement" and hasattr(obj, "Placement"):
             # TODO: recompute only if end is set
@@ -391,6 +401,13 @@ class Wall(ShapeGroup, IfcProduct):
         if obj.AxisFirstPointX == obj.AxisLastPointX or length < Draft.tolerance():
             return
 
+        if hasattr(obj, "Material") and obj.Material and utils.get_type(obj.Material) == 'MultiMaterial':
+            # if MultiMaterial assigned, ignore Width property.
+            thickness = App.Units.Quantity(str(sum(obj.Material.Thicknesses))+"mm") # TODO: Multimaterial should have a readonly Thickness Property
+            # self.onChanged(obj, "Material") # to update the Width property
+        else:
+            thickness = obj.Width
+
         # swap first point and last point to have them in the right order
         # TODO: Swap the points phisically and change end constraints!
         if obj.AxisFirstPointX < obj.AxisLastPointX:
@@ -398,8 +415,8 @@ class Wall(ShapeGroup, IfcProduct):
         elif obj.AxisFirstPointX > obj.AxisLastPointX:
             first_point = obj.AxisLastPointX
         
-        first_splay = obj.Width/2 * math.tan(math.pi/2-math.radians(obj.FirstCoreInnerAngle))
-        last_splay = obj.Width/2 * math.tan(math.pi/2-math.radians(obj.LastCoreInnerAngle))
+        first_splay = thickness/2 * math.tan(math.pi/2-math.radians(obj.FirstCoreInnerAngle))
+        last_splay = thickness/2 * math.tan(math.pi/2-math.radians(obj.LastCoreInnerAngle))
         
         Xmin = -obj.FirstCoreOffset
         Ymin = 0
@@ -407,7 +424,7 @@ class Wall(ShapeGroup, IfcProduct):
         Z2min = 0
         X2min = first_splay - obj.FirstCoreOffset
         Xmax = length + obj.LastCoreOffset
-        Ymax = obj.Width/2
+        Ymax = thickness/2
         Zmax = obj.Height
         Z2max = obj.Height
         X2max = length - last_splay + obj.LastCoreOffset
@@ -424,12 +441,12 @@ class Wall(ShapeGroup, IfcProduct):
             X2min = 0
             X2max = length
 
-        inner_core = Part.makeWedge( Xmin, Ymin, Zmin, Z2min, X2min,
+        inner_half = Part.makeWedge( Xmin, Ymin, Zmin, Z2min, X2min,
                                         Xmax, Ymax, Zmax, Z2max, X2max)#, obj.AxisFirstPointX, obj.AxisLastPointX )
-        inner_core.Placement.Base.x = first_point
+        inner_half.Placement.Base.x = first_point
 
-        first_splay = obj.Width/2 * math.tan(math.pi/2-math.radians(obj.FirstCoreOuterAngle))
-        last_splay = obj.Width/2 * math.tan(math.pi/2-math.radians(obj.LastCoreOuterAngle))          
+        first_splay = thickness/2 * math.tan(math.pi/2-math.radians(obj.FirstCoreOuterAngle))
+        last_splay = thickness/2 * math.tan(math.pi/2-math.radians(obj.LastCoreOuterAngle))          
         
         Xmin = first_splay - obj.FirstCoreOffset
         Ymin = 0
@@ -437,7 +454,7 @@ class Wall(ShapeGroup, IfcProduct):
         Z2min = 0
         X2min = -obj.FirstCoreOffset
         Xmax = length - last_splay + obj.LastCoreOffset
-        Ymax = obj.Width/2
+        Ymax = thickness/2
         Zmax = obj.Height
         Z2max = obj.Height
         X2max = length + obj.LastCoreOffset
@@ -454,19 +471,39 @@ class Wall(ShapeGroup, IfcProduct):
             Xmin = 0
             Xmax = length
 
-        outer_core = Part.makeWedge( Xmin, Ymin, Zmin, Z2min, X2min,
+        outer_half = Part.makeWedge( Xmin, Ymin, Zmin, Z2min, X2min,
                                         Xmax, Ymax, Zmax, Z2max, X2max)#, obj.Start, obj.End)
                 
-        outer_core.Placement.Base = App.Vector(first_point, - obj.Width/2)
+        outer_half.Placement.Base = App.Vector(first_point, - thickness/2)
         
-        core_layer = inner_core.fuse(outer_core)
+        mono_layer = inner_half.fuse(outer_half)
 
-        core_layer = core_layer.removeSplitter()
+        mono_layer = mono_layer.removeSplitter()
         
-        # TODO: Add support for multiple wall layers.
-        #       I was thinking to just 3 layers in the representation, cause it's usually enough
 
-        return core_layer
+        if hasattr(obj, "Material") and obj.Material and utils.get_type(obj.Material) == 'MultiMaterial':
+            pass
+        else:
+            return mono_layer
+
+        layer_thicknesses = obj.Material.Thicknesses
+
+        slicing_plane = Part.makePlane(500000.0, 500000.0, App.Vector(-250000.0, -250000.0, 0.0))
+        slicing_plane.rotate(App.Vector(0 ,0 , 0), App.Vector(1, 0, 0), 90.0)
+
+        slicing_planes = []
+        offset = 0.0
+        for lt in layer_thicknesses[:-1]:
+            offset += lt
+            plane = slicing_plane.copy()
+            plane.translate(App.Vector(0, offset-thickness.Value/2, 0))
+            slicing_planes.append(plane)
+
+        compound = mono_layer.generalFuse(slicing_planes)[0] # generalFuse output also a list of list of shape (map)
+
+        for shape in compound.SubShapes:
+            if shape.ShapeType == "Compound":
+                return shape
 
 
     # Wall joinings methods +++++++++++++++++++++++++++++++++++++++++++++++++
