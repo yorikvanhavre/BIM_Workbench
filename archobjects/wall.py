@@ -998,7 +998,10 @@ class Wall(ShapeGroup, IfcProduct):
 
 
 
-from draftguitools.gui_edit_base_object import GuiTools
+try:
+    from draftguitools.gui_edit_base_object import GuiTools
+except:
+    GuiTools = object
 
 class WallGuiTools(GuiTools):
     """ This object contains the tools to provide editpoints, 
