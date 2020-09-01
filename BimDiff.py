@@ -24,6 +24,7 @@
 
 import os
 import FreeCAD
+import Draft
 from BimTranslateUtils import *
 
 def QT_TRANSLATE_NOOP(ctx,txt): return txt # dummy function for the QT translator
