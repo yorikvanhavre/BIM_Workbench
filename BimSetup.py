@@ -40,6 +40,7 @@ class BIM_Setup:
 
         import FreeCADGui
 
+        TARGETVERSION = 0.19
         TECHDRAWDIMFACTOR = 0.16 # How many times TechDraw dim arrows are smaller than Draft
 
         # load dialog
@@ -61,6 +62,7 @@ class BIM_Setup:
         self.form.labelMissingWorkbenches.hide()
         self.form.labelIfcOpenShell.hide()
         self.form.labelSnapTip.hide()
+        self.form.labelVersion.hide()
         m = []
         try:
             import RebarTools
@@ -114,6 +116,11 @@ class BIM_Setup:
             self.form.labelIfcOpenShell.show()
         if FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").GetString("snapModes","111111111101111") == "111111111101111":
             self.form.labelSnapTip.show()
+        version = float(str(FreeCAD.Version()[0])+"."+str(FreeCAD.Version()[1]))
+        if version < TARGETVERSION:
+            t = self.labelVersion.text
+            self.labelVersion.text = t.replace("%1",str(version)).replace("%2",str(TARGETVERSION))
+            self.labelVersion.show()
 
         # show dialog and exit if cancelled
         FreeCADGui.BIMSetupDialog = True # this is there to be easily detected by the BIM tutorial
