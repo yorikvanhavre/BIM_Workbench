@@ -297,6 +297,7 @@ class BIM_Rewire:
 
         import FreeCADGui
         import Part
+        import Draft
         import DraftGeomUtils
         
         objs = FreeCADGui.Selection.getSelection()
