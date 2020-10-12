@@ -26,6 +26,7 @@
 
 import os
 import FreeCAD
+import FreeCADGui
 from BimTranslateUtils import *
 
 class BIM_IfcElements:
@@ -49,7 +50,7 @@ class BIM_IfcElements:
 
     def Activated(self):
 
-        import FreeCADGui
+        import Draft
         from PySide import QtCore,QtGui
         # build objects list
         self.objectslist = {}
@@ -61,9 +62,15 @@ class BIM_IfcElements:
             self.ifctypes = ArchComponent.IfcRoles
         for obj in FreeCAD.ActiveDocument.Objects:
             mat = ""
-            if hasattr(obj,"Material") and obj.Material:
-                mat = obj.Material.Name
-            self.objectslist[obj.Name] = [obj.IfcRole,mat]
+            if hasattr(obj,"Material"):
+                try:
+                    mat = obj.Material.Name
+                except AttributeError:
+                    mat=""
+                if hasattr(obj,"IfcType"):
+                    self.objectslist[obj.Name] = [obj.IfcType,mat]
+                elif hasattr(obj,"IfcRole"):
+                    self.objectslist[obj.Name] = [obj.IfcRole,mat]
 
         # load the form and set the tree model up
         self.form = FreeCADGui.PySideUic.loadUi(os.path.join(os.path.dirname(__file__),"dialogIfcElements.ui"))
@@ -434,7 +441,6 @@ class BIM_IfcElements:
 
     def checkMatChanged(self):
         
-        import FreeCADGui
         import Draft
         from PySide import QtCore,QtGui
         if FreeCADGui.Control.activeDialog():
