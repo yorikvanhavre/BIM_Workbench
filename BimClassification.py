@@ -314,6 +314,7 @@ class BIM_Classification:
 
     def updateClasses(self,search=""):
 
+        from PySide import QtCore,QtGui
         self.form.treeClass.clear()
 
         # save as default
