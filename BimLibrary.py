@@ -36,7 +36,9 @@ LIBRARYURL = "https://github.com/FreeCAD/FreeCAD-library/tree/master"
 USE_API = True # True to use github API instead of web fetching... Way faster
 REFRESH_INTERVAL = 3600 # Min seconds between allowing a new API calls (3600 = one hour)
 
+
 class BIM_Library:
+
 
     def GetResources(self):
 
@@ -47,7 +49,7 @@ class BIM_Library:
     def Activated(self):
 
         import FreeCADGui
-        # setting up a min reload interval of one hour
+        # trying to locate the parts library
         libok = False
         self.librarypath = FreeCAD.ParamGet('User parameter:Plugins/parts_library').GetString('destination','')
         if self.librarypath:
@@ -60,16 +62,14 @@ class BIM_Library:
                 # save file paths with forward slashes even on windows
                 FreeCAD.ParamGet('User parameter:Plugins/parts_library').SetString('destination',addondir.replace("\\","/"))
                 libok = True
-        if libok:
-            FreeCADGui.Control.showDialog(BIM_Library_TaskPanel())
-        else:
-            FreeCAD.Console.PrintError(translate("BIM","The Parts Library could not be found.")+"\n")
+        FreeCADGui.Control.showDialog(BIM_Library_TaskPanel(offlinemode=libok))
 
 
 class BIM_Library_TaskPanel:
 
 
-    def __init__(self):
+    def __init__(self,offlinemode=False):
+
         from PySide import QtCore,QtGui
         import FreeCADGui
         self.librarypath = FreeCAD.ParamGet('User parameter:Plugins/parts_library').GetString('destination','')
@@ -106,7 +106,7 @@ class BIM_Library_TaskPanel:
         self.form.buttonBimTool.setIcon(QtGui.QIcon(os.path.join(os.path.dirname(__file__),"icons","bimtool.png")))
         self.form.buttonBimTool.clicked.connect(self.onBimTool)
         self.form.checkOnline.toggled.connect(self.onCheckOnline)
-        self.form.checkOnline.setChecked(FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM").GetBool("LibraryOnline",False))
+        self.form.checkOnline.setChecked(FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM").GetBool("LibraryOnline",not offlinemode))
         self.form.checkFCStdOnly.toggled.connect(self.onCheckFCStdOnly)
         self.form.checkFCStdOnly.setChecked(FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM").GetBool("LibraryFCStdOnly",False))
         self.form.checkWebSearch.toggled.connect(self.onCheckWebSearch)
