@@ -134,22 +134,25 @@ class BIM_IfcProperties:
             objects = FreeCAD.ActiveDocument.Objects
         for obj in objects:
             if hasattr(obj,"IfcProperties") and isinstance(obj.IfcProperties,dict):
-                if hasattr(obj,"IfcType"):
-                    objectslist[obj.Name] = [obj.IfcType,obj.IfcProperties]
-                if hasattr(obj,"IfcRole"):
-                    objectslist[obj.Name] = [obj.IfcRole,obj.IfcProperties]
-                for key,val in obj.IfcProperties.items():
-                    val = val.split(";;")
-                    if ";;" in key:
-                        # 0.19 format
-                        key = key.split(";;")
-                        val = [key[1]]+val
-                        key = key[0]
-                    if not key in searchterms:
-                        searchterms.append(key)
-                    if len(val) == 3:
-                        if not val[0] in searchterms:
-                            searchterms.append(val[0])
+                props = obj.IfcProperties
+            else:
+                props = {}
+            if hasattr(obj,"IfcType"):
+                objectslist[obj.Name] = [obj.IfcType,props]
+            if hasattr(obj,"IfcRole"):
+                objectslist[obj.Name] = [obj.IfcRole,props]
+            for key,val in props.items():
+                val = val.split(";;")
+                if ";;" in key:
+                    # 0.19 format
+                    key = key.split(";;")
+                    val = [key[1]]+val
+                    key = key[0]
+                if not key in searchterms:
+                    searchterms.append(key)
+                if len(val) == 3:
+                    if not val[0] in searchterms:
+                        searchterms.append(val[0])
         return objectslist,searchterms
 
     def update(self,index=None):
@@ -330,10 +333,19 @@ class BIM_IfcProperties:
         for key,values in self.objectslist.items():
             obj = FreeCAD.ActiveDocument.getObject(key)
             if obj:
-                if values[1] != obj.IfcProperties:
+                if hasattr(obj,"IfcProperties"):
+                    if not isinstance(obj.IfcProperties,dict):
+                        FreeCAD.Console.PrintWarning(translate("BIM","Warning: object %1 has old-styled IfcProperties and cannot be updated").replace("%1",obj.Label)+"\n")
+                        continue
+                    props = obj.IfcProperties
+                else:
+                    props = {}
+                if values[1] != props:
                     if not changed:
                         FreeCAD.ActiveDocument.openTransaction("Change properties")
                         changed = True
+                    if not hasattr(obj,"IfcProperties"):
+                        obj.addProperty("App::PropertyMap","IfcPRoperties","IFC",QT_TRANSLATE_NOOP("App::Property","IFC properties of this object"))
                     obj.IfcProperties = values[1]
         if changed:
             FreeCAD.ActiveDocument.commitTransaction()
@@ -638,17 +650,17 @@ if FreeCAD.GuiUp:
     from PySide import QtCore,QtGui
 
     class propertiesDelegate(QtGui.QStyledItemDelegate):
-    
-    
+
+
         def __init__(self, parent=None, container=None, ptypes=[], plabels=[], *args):
-    
+
             self.container = container
             QtGui.QStyledItemDelegate.__init__(self, parent, *args)
             self.ptypes = ptypes
             self.plabels = plabels
-    
+
         def createEditor(self,parent,option,index):
-    
+
             if index.column() == 0: # property name
                 editor = QtGui.QLineEdit(parent)
             elif index.column() == 1: # property type
@@ -670,9 +682,9 @@ if FreeCAD.GuiUp:
                     editor = QtGui.QLineEdit(parent)
                 editor.setObjectName("editor_"+ptype)
             return editor
-    
+
         def setEditorData(self, editor, index):
-    
+
             if index.column() == 0:
                 editor.setText(index.data())
             elif index.column() == 1:
@@ -703,9 +715,9 @@ if FreeCAD.GuiUp:
                         editor.setValue(0)
                 else:
                     editor.setText(index.data())
-    
+
         def setModelData(self, editor, model, index):
-    
+
             remove = []
             if index.column() == 0:
                 oldtext = index.data()
@@ -742,4 +754,4 @@ if FreeCAD.GuiUp:
                 else:
                     model.setData(index,editor.text())
             self.container.updateDicts(remove)
-    
+
