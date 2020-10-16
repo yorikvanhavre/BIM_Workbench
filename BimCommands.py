@@ -105,11 +105,17 @@ class BIM_Sketch:
     def Activated(self):
 
         import FreeCADGui
+        issnap = False
         if hasattr(FreeCAD,"DraftWorkingPlane"):
             FreeCAD.DraftWorkingPlane.setup()
         if hasattr(FreeCADGui,"Snapper"):
             FreeCADGui.Snapper.setGrid()
+            issnap = FreeCADGui.Snapper.isEnabled("Grid")
         sk = FreeCAD.ActiveDocument.addObject('Sketcher::SketchObject','Sketch')
+        if issnap:
+            s = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").GetInt("gridSize", 100))
+            sk.ViewObject.GridSize = s
+            sk.ViewObject.GridSnap = True
         sk.MapMode = "Deactivated"
         p = FreeCAD.DraftWorkingPlane.getPlacement()
         p.Base = FreeCAD.DraftWorkingPlane.position
