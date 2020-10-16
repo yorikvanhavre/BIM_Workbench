@@ -113,7 +113,7 @@ class BIM_Sketch:
             issnap = FreeCADGui.Snapper.isEnabled("Grid")
         sk = FreeCAD.ActiveDocument.addObject('Sketcher::SketchObject','Sketch')
         if issnap:
-            s = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").GetInt("gridSize", 100))
+            s = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").GetInt("gridSize", 100)
             sk.ViewObject.GridSize = s
             sk.ViewObject.GridSnap = True
         sk.MapMode = "Deactivated"
