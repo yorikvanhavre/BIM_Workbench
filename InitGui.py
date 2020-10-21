@@ -157,6 +157,8 @@ static char * IFC_xpm[] = {
         FreeCADGui.addCommand('BIM_IfcExplorer',BimIfcExplorer.BIM_IfcExplorer())
         FreeCADGui.addCommand('BIM_Layers',BimLayers.BIM_Layers())
         FreeCADGui.addCommand('BIM_Reextrude',BimReextrude.BIM_Reextrude())
+        FreeCADGui.addCommand('BIM_TDPage',BimCommands.BIM_TDPage())
+        FreeCADGui.addCommand('BIM_TDArchView',BimCommands.BIM_TDArchView())
         
         # wrapped Part tools
         FreeCADGui.addCommand('BIM_Builder',BimPartTools.BIM_Builder())
@@ -175,7 +177,7 @@ static char * IFC_xpm[] = {
 
         self.annotationtools = ["Draft_Text", "Draft_ShapeString", "Draft_Dimension",
                                 "Draft_Label","Arch_Axis","Arch_AxisSystem","Arch_Grid",
-                                "Arch_SectionPlane"]
+                                "Arch_SectionPlane","BIM_TDPage","BIM_TDArchView"]
 
         self.bimtools = ["Arch_Site","Arch_Building","Arch_Floor","Arch_Space","Separator",
                          "Arch_Wall","BIM_Column","BIM_Beam","BIM_Slab","Arch_Rebar","BIM_Door","Arch_Window","Arch_Pipe",

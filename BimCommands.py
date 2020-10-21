@@ -276,6 +276,7 @@ class BIM_Ungroup:
 
 class BIM_Door(ArchWindow._CommandWindow):
 
+
     def __init__(self):
         if hasattr(ArchWindow._CommandWindow,"__init__"):
             ArchWindow._CommandWindow.__init__(self)
@@ -332,5 +333,89 @@ class BIM_Rewire:
         FreeCAD.ActiveDocument.recompute()
 
 
+class BIM_TDPage:
+
+
+    def GetResources(self):
+
+        return {'Pixmap'  : os.path.join(os.path.dirname(__file__),"icons","techdraw-PageDefault.svg"),
+                'MenuText': QT_TRANSLATE_NOOP("BIM_TDPage", "Page"),
+                'ToolTip' : QT_TRANSLATE_NOOP("BIM_TDPage", "Creates a new TechDraw page from a template")}
+
+    def IsActive(self):
+
+        if FreeCAD.ActiveDocument:
+            return True
+        else:
+            return False
+
+    def Activated(self):
+        
+        from PySide import QtCore,QtGui
+        import TechDraw
+
+        templatedir = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM").GetString("TDTemplateDir","")
+        if not templatedir:
+            templatedir = None
+        filename = QtGui.QFileDialog.getOpenFileName(QtGui.QApplication.activeWindow(), translate("BIM","Select page template"), templatedir, "SVG file (*.svg)");
+        if filename:
+            filename = filename[0]
+            name = os.path.splitext(os.path.basename(filename))[0]
+            FreeCAD.ActiveDocument.openTransaction("Create page")
+            page = FreeCAD.ActiveDocument.addObject('TechDraw::DrawPage',"Page")
+            page.Label = name
+            template = FreeCAD.ActiveDocument.addObject('TechDraw::DrawSVGTemplate','Template')
+            template.Template = filename
+            template.Label = translate("BIM","Template")
+            page.Template = template
+            FreeCAD.ActiveDocument.commitTransaction()
+            FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM").SetString("TDTemplateDir",filename.replace("\\","/"))
+            FreeCAD.ActiveDocument.recompute()
+
+
+class BIM_TDArchView:
+
+
+    def GetResources(self):
+
+        return {'Pixmap'  : os.path.join(os.path.dirname(__file__),"icons","techdraw-ArchView.svg"),
+                'MenuText': QT_TRANSLATE_NOOP("BIM_TDArchView", "View"),
+                'ToolTip' : QT_TRANSLATE_NOOP("BIM_TDArchView", "Creates a TechDraw view from a section plane")}
+
+    def IsActive(self):
+
+        if FreeCAD.ActiveDocument:
+            return True
+        else:
+            return False
+
+    def Activated(self):
+        
+        import FreeCADGui
+        import Draft
+        
+        sections = []
+        page = None
+        for obj in FreeCADGui.Selection.getSelection():
+            t = Draft.getType(obj)
+            if t == "SectionPlane":
+                sections.append(obj)
+            elif t == "TechDraw::DrawPage":
+                page = obj
+        if not page:
+            pages = FreeCAD.ActiveDocument.findObjects(Type='TechDraw::DrawPage')
+            if pages:
+                page = pages[0]
+        if (not page) or (not sections):
+            FreeCAD.Console.PrintError(translate("BIM","No section view selected, or no page selected, or no page found in document")+"\n")
+            return
+        FreeCAD.ActiveDocument.openTransaction("Create view")
+        for section in sections:
+            view = FreeCAD.ActiveDocument.addObject('TechDraw::DrawViewArch','ArchView')
+            view.Label = section.Label
+            view.Source = section
+            page.addView(view)
+        FreeCAD.ActiveDocument.commitTransaction()
+        FreeCAD.ActiveDocument.recompute()
 
 
