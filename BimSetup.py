@@ -130,7 +130,6 @@ class BIM_Setup:
             return
 
         # set preference values
-        FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM").SetBool("FirstTime",False)
         unit = self.form.settingUnits.currentIndex()
         unit = [0,4,1,3,7,5][unit] # less choices in our simplified dialog
         FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Units").SetInt("UserSchema",unit)
@@ -194,12 +193,6 @@ class BIM_Setup:
         height = self.form.settingCameraHeight.value()
         FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").SetInt("defaultCameraHeight",height)
 
-
-        # set the orbit mode to turntable
-        FreeCAD.ParamGet("User parameter:BaseApp/Preferences/View").SetInt("OrbitStyle",0)
-        # turn thumbnails on
-        FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Document").SetBool("SaveThumbnail",True)
-
         # set the working plane
         if hasattr(FreeCAD,"DraftWorkingPlane") and hasattr(FreeCADGui,"draftToolBar"):
             if wp == 1:
@@ -240,6 +233,19 @@ class BIM_Setup:
                     nudgeactions[i].setText(nudgelabels[i])
                 if not "auto" in statuswidget.nudge.text().replace("&","").lower():
                     statuswidget.nudge.setText(FreeCAD.Units.Quantity(statuswidget.nudge.text().replace("&","")).UserString)
+
+        # Set different default values
+        if FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM").GetBool("FirstTime",True):
+            FreeCAD.ParamGet("User parameter:BaseApp/Preferences/View").SetInt("OrbitStyle",0)
+            FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Document").SetBool("SaveThumbnail",True)
+            FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").SetString("svgDashedLine","3,1")
+            FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").SetString("svgDashdotLine","3,1,0.2,1")
+            FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").SetString("svgDottedLine","0.5,1")
+            FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").SetFloat("HatchPatternSize",0.025)
+            FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Arch").SetFloat("WallSketches",False)
+
+        # finish
+        FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM").SetBool("FirstTime",False)
 
     def setPreset(self,preset=None):
 
@@ -353,7 +359,7 @@ class BIM_Setup:
             colHelp = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Arch").GetUnsigned("ColorHelpers",674321151)
             colConst = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").GetUnsigned("constructioncolor",746455039)
             height = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").GetInt("defaultCameraHeight",5)
-            
+
         if unit != None:
             self.form.settingUnits.setCurrentIndex(unit)
         if decimals != None:
@@ -401,7 +407,7 @@ class BIM_Setup:
         # TODO - antialiasing?
 
     def handleLink(self,link):
-        
+
         if hasattr(self,"form"):
             if "#install" in link:
                 getIfcOpenShell()
@@ -418,6 +424,7 @@ def getPrefColor(color):
     b = ((color>>8)&0xFF)/255.0
     from PySide import QtGui
     return QtGui.QColor.fromRgbF(r,g,b)
+
 
 def getIfcOpenShell(force=False):
     """downloads and installs IfcOpenShell"""
@@ -443,7 +450,7 @@ def getIfcOpenShell(force=False):
             reply = QtGui.QMessageBox.question(None,
                                                translate("BIM","IfcOpenShell not found"),
                                                translate("BIM","IfcOpenShell is needed to import and export IFC files. It appears to be missing on your system. Would you like to download and install it now? It will be installed in FreeCAD's Macros directory."),
-                                               QtGui.QMessageBox.Yes | QtGui.QMessageBox.No, 
+                                               QtGui.QMessageBox.Yes | QtGui.QMessageBox.No,
                                                QtGui.QMessageBox.No)
         if reply == QtGui.QMessageBox.Yes:
             print("Loading list of latest IfcOpenBot builds from https://github.com/IfcOpenBot/IfcOpenShell...")
