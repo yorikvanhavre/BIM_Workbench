@@ -380,7 +380,7 @@ class BIM_TDArchView:
 
         return {'Pixmap'  : os.path.join(os.path.dirname(__file__),"icons","techdraw-ArchView.svg"),
                 'MenuText': QT_TRANSLATE_NOOP("BIM_TDArchView", "View"),
-                'ToolTip' : QT_TRANSLATE_NOOP("BIM_TDArchView", "Creates a TechDraw view from a section plane")}
+                'ToolTip' : QT_TRANSLATE_NOOP("BIM_TDArchView", "Creates a TechDraw view from a section plane or 2D objects")}
 
     def IsActive(self):
 
@@ -396,18 +396,21 @@ class BIM_TDArchView:
         
         sections = []
         page = None
+        drafts = []
         for obj in FreeCADGui.Selection.getSelection():
             t = Draft.getType(obj)
             if t == "SectionPlane":
                 sections.append(obj)
             elif t == "TechDraw::DrawPage":
                 page = obj
+            else:
+                drafts.append(obj)
         if not page:
             pages = FreeCAD.ActiveDocument.findObjects(Type='TechDraw::DrawPage')
             if pages:
                 page = pages[0]
-        if (not page) or (not sections):
-            FreeCAD.Console.PrintError(translate("BIM","No section view selected, or no page selected, or no page found in document")+"\n")
+        if (not page) or ((not sections) and (not drafts)):
+            FreeCAD.Console.PrintError(translate("BIM","No section view or draft objects selected, or no page selected, or no page found in document")+"\n")
             return
         FreeCAD.ActiveDocument.openTransaction("Create view")
         for section in sections:
@@ -415,6 +418,15 @@ class BIM_TDArchView:
             view.Label = section.Label
             view.Source = section
             page.addView(view)
+            if page.Scale:
+                view.Scale = page.Scale
+        for draft in drafts:
+            view = FreeCAD.ActiveDocument.addObject('TechDraw::DrawViewDraft','DraftView')
+            view.Label = draft.Label
+            view.Source = draft
+            page.addView(view)
+            if page.Scale:
+                view.Scale = page.Scale
         FreeCAD.ActiveDocument.commitTransaction()
         FreeCAD.ActiveDocument.recompute()
 
