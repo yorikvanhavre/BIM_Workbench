@@ -64,10 +64,9 @@ class BIM_IfcQuantities:
         # build objects list
         self.objectslist = {}
         for obj in FreeCAD.ActiveDocument.Objects:
-            if hasattr(obj,"IfcType"):
-                self.objectslist[obj.Name] = obj.IfcType
-            elif hasattr(obj,"IfcRole"):
-                self.objectslist[obj.Name] = obj.IfcRole
+            role = self.getRole(obj)
+            if role:
+                self.objectslist[obj.Name] = role
         try:
             import ArchIFC
             self.ifcroles = ArchIFC.IfcTypes
@@ -165,6 +164,14 @@ class BIM_IfcQuantities:
                                 self.qmodel.appendRow([it1]+props)
             self.quantitiesDrawn = True
 
+    def getRole(self,obj):
+        if hasattr(obj,"IfcType"):
+            return obj.IfcType
+        elif hasattr(obj,"IfcRole"):
+            return obj.IfcRole
+        else:
+            return None
+
     def accept(self):
 
         self.form.hide()
@@ -219,6 +226,7 @@ class BIM_IfcQuantities:
 
     def quantHeaderClicked(self,col):
 
+        from PySide import QtCore
         sel = self.form.quantities.selectedIndexes()
         state = None
         if len(sel) > 7:

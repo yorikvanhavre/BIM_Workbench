@@ -62,15 +62,13 @@ class BIM_IfcElements:
             self.ifctypes = ArchComponent.IfcRoles
         for obj in FreeCAD.ActiveDocument.Objects:
             mat = ""
-            if hasattr(obj,"Material"):
+            role = self.getRole(obj)
+            if role:
                 try:
                     mat = obj.Material.Name
                 except AttributeError:
                     mat=""
-                if hasattr(obj,"IfcType"):
-                    self.objectslist[obj.Name] = [obj.IfcType,mat]
-                elif hasattr(obj,"IfcRole"):
-                    self.objectslist[obj.Name] = [obj.IfcRole,mat]
+                self.objectslist[obj.Name] = [role,mat]
 
         # load the form and set the tree model up
         self.form = FreeCADGui.PySideUic.loadUi(os.path.join(os.path.dirname(__file__),"dialogIfcElements.ui"))
@@ -149,7 +147,6 @@ class BIM_IfcElements:
             if obj:
                 if (not self.form.onlyVisible.isChecked()) or obj.ViewObject.isVisible():
                     groups.setdefault(role,[]).append([name,mat])
-
         for group in groups.keys():
             s1 = group + " ("+str(len(groups[group]))+")"
             top = QtGui.QStandardItem(s1)
@@ -165,7 +162,7 @@ class BIM_IfcElements:
                     it1.setIcon(icon)
                     it1.setToolTip(obj.Name)
                     it2 = QtGui.QStandardItem(group)
-                    if group != obj.IfcRole:
+                    if group != self.getRole(obj):
                         it2.setIcon(QtGui.QIcon(":/icons/edit-edit.svg"))
                     matlabel = ""
                     if mat:
@@ -217,7 +214,7 @@ class BIM_IfcElements:
                     it1.setIcon(icon)
                     it1.setToolTip(obj.Name)
                     it2 = QtGui.QStandardItem(role)
-                    if role != obj.IfcRole:
+                    if role != self.getRole(obj):
                         it2.setIcon(QtGui.QIcon(":/icons/edit-edit.svg"))
                     mat = ""
                     matlabel = ""
@@ -242,7 +239,7 @@ class BIM_IfcElements:
 
         # order by hierarchy
         def istop(obj):
-            for parent in obj.InList:
+            for parent in obj.InListRecursive:
                 if parent.Name in self.objectslist.keys():
                     return False
             return True
@@ -285,7 +282,7 @@ class BIM_IfcElements:
                 it1.setIcon(icon)
                 it1.setToolTip(obj.Name)
                 it2 = QtGui.QStandardItem(role)
-                if role != obj.IfcRole:
+                if role != self.getRole(obj):
                     it2.setIcon(QtGui.QIcon(":/icons/edit-edit.svg"))
                 matlabel = ""
                 if mat:
@@ -329,11 +326,7 @@ class BIM_IfcElements:
                     it1.setIcon(icon)
                     it1.setToolTip(obj.Name)
                     it2 = QtGui.QStandardItem(role)
-                    if hasattr(obj,"IfcType"):
-                        r = obj.IfcType
-                    else:
-                        r = obj.IfcRole
-                    if role != r:
+                    if role != self.getRole(obj):
                         it2.setIcon(QtGui.QIcon(":/icons/edit-edit.svg"))
                     matlabel = ""
                     if mat:
@@ -358,6 +351,14 @@ class BIM_IfcElements:
             for i in range(self.model.rowCount()):
                 if self.model.item(i,0).hasChildren():
                     self.form.tree.setFirstColumnSpanned(i, idx, True)
+
+    def getRole(self,obj):
+        if hasattr(obj,"IfcType"):
+            return obj.IfcType
+        elif hasattr(obj,"IfcRole"):
+            return obj.IfcRole
+        else:
+            return None
 
     def onClickTree(self,index=None):
 
@@ -395,7 +396,7 @@ class BIM_IfcElements:
         else:
             self.form.globalMode.setCurrentIndex(0)
         if mat:
-            self.form.globalMaterial.setCurrentIndex(self.materials.index(mat.Name)+1)
+            self.form.globalMaterial.setCurrentIndex(self.materials.index(mat.Name)+3)
         else:
             self.form.globalMaterial.setCurrentIndex(0)
 
@@ -421,7 +422,7 @@ class BIM_IfcElements:
             FreeCADGui.runCommand("Arch_Material")
             QtCore.QTimer.singleShot(1000, self.checkMatChanged)
         elif index == 2:
-            FreeCADGui.runCommand("Arch_Material_Multi")
+            FreeCADGui.runCommand("Arch_MultiMaterial")
             QtCore.QTimer.singleShot(1000, self.checkMatChanged)
         elif index >= 3:
             mat = self.materials[index-3]

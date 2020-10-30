@@ -133,26 +133,25 @@ class BIM_IfcProperties:
         else:
             objects = FreeCAD.ActiveDocument.Objects
         for obj in objects:
-            if hasattr(obj,"IfcProperties") and isinstance(obj.IfcProperties,dict):
-                props = obj.IfcProperties
-            else:
-                props = {}
-            if hasattr(obj,"IfcType"):
-                objectslist[obj.Name] = [obj.IfcType,props]
-            if hasattr(obj,"IfcRole"):
-                objectslist[obj.Name] = [obj.IfcRole,props]
-            for key,val in props.items():
-                val = val.split(";;")
-                if ";;" in key:
-                    # 0.19 format
-                    key = key.split(";;")
-                    val = [key[1]]+val
-                    key = key[0]
-                if not key in searchterms:
-                    searchterms.append(key)
-                if len(val) == 3:
-                    if not val[0] in searchterms:
-                        searchterms.append(val[0])
+            role = self.getRole(obj)
+            if role:
+                if hasattr(obj,"IfcProperties") and isinstance(obj.IfcProperties,dict):
+                    props = obj.IfcProperties
+                else:
+                    props = {}
+                objectslist[obj.Name] = [role,props]
+                for key,val in props.items():
+                    val = val.split(";;")
+                    if ";;" in key:
+                        # 0.19 format
+                        key = key.split(";;")
+                        val = [key[1]]+val
+                        key = key[0]
+                    if not key in searchterms:
+                        searchterms.append(key)
+                    if len(val) == 3:
+                        if not val[0] in searchterms:
+                            searchterms.append(val[0])
         return objectslist,searchterms
 
     def update(self,index=None):
@@ -174,6 +173,14 @@ class BIM_IfcProperties:
             self.updateDefault()
         self.model.sort(0)
         self.form.tree.setColumnWidth(0,300)
+
+    def getRole(self,obj):
+        if hasattr(obj,"IfcType"):
+            return obj.IfcType
+        elif hasattr(obj,"IfcRole"):
+            return obj.IfcRole
+        else:
+            return None
 
     def readFromCSV(self,csvfile):
         """reads a csv file and returns a dict"""
@@ -213,11 +220,7 @@ class BIM_IfcProperties:
                     it1.setIcon(icon)
                     it1.setToolTip(obj.Name)
                     it2 = QtGui.QStandardItem(group)
-                    if hasattr(obj,"IfcType"):
-                        r = obj.IfcType
-                    else:
-                        r = obj.IfcRole
-                    if group != r:
+                    if group != self.getRole(obj):
                         it2.setIcon(QtGui.QIcon(":/icons/edit-edit.svg"))
                     it3 = self.getSearchResults(obj)
                     if it3:
@@ -231,7 +234,7 @@ class BIM_IfcProperties:
         from PySide import QtCore,QtGui
         # order by hierarchy
         def istop(obj):
-            for parent in obj.InList:
+            for parent in obj.InListRecursive:
                 if parent.Name in self.objectslist.keys():
                     return False
             return True
@@ -269,11 +272,7 @@ class BIM_IfcProperties:
                 it1.setIcon(icon)
                 it1.setToolTip(obj.Name)
                 it2 = QtGui.QStandardItem(role)
-                if hasattr(obj,"IfcType"):
-                    r = obj.IfcType
-                else:
-                    r = obj.IfcRole
-                if role != r:
+                if role != self.getRole(obj):
                     it2.setIcon(QtGui.QIcon(":/icons/edit-edit.svg"))
                 it3 = self.getSearchResults(obj)
                 ok = False
@@ -306,11 +305,7 @@ class BIM_IfcProperties:
                     it1.setIcon(icon)
                     it1.setToolTip(obj.Name)
                     it2 = QtGui.QStandardItem(role)
-                    if hasattr(obj,"IfcType"):
-                        r = obj.IfcType
-                    else:
-                        r = obj.IfcRole
-                    if role != r:
+                    if role != self.getRole(obj):
                         it2.setIcon(QtGui.QIcon(":/icons/edit-edit.svg"))
                     it3 = self.getSearchResults(obj)
                     if it3:
