@@ -26,6 +26,8 @@
 import os
 import FreeCAD
 from BimTranslateUtils import *
+import importlib
+import inspect
 
 
 tests = ["testAll",
