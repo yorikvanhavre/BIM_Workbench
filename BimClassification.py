@@ -28,8 +28,6 @@ import os
 import FreeCAD
 from BimTranslateUtils import *
 
-USE_EXPAT = True # Change this to False if you get Expat-related errors...
-
 class BIM_Classification:
 
 
@@ -173,6 +171,7 @@ class BIM_Classification:
     def updateByType(self):
 
         from PySide import QtCore,QtGui
+        import Draft
         groups = {}
         for name in self.objectslist.keys():
             obj = FreeCAD.ActiveDocument.getObject(name)
@@ -194,7 +193,7 @@ class BIM_Classification:
                 if obj:
                     if (not self.form.onlyVisible.isChecked()) or obj.ViewObject.isVisible() or (Draft.getType(obj) in ["Material","MultiMaterial"]):
                         it = QtGui.QTreeWidgetItem([self.labellist[name],d[name]])
-                        it.setIcon(0,QtGui.QIcon(obj.ViewObject.Proxy.getIcon()))
+                        it.setIcon(0,self.getIcon(obj))
                         it.setToolTip(0,name)
                         mit.addChild(it)
             mit.sortChildren(0,QtCore.Qt.AscendingOrder)
@@ -218,7 +217,7 @@ class BIM_Classification:
             matobj = FreeCAD.ActiveDocument.getObject(group)
             if matobj:
                 mit = QtGui.QTreeWidgetItem([self.labellist[group],self.matlist[group]])
-                mit.setIcon(0,QtGui.QIcon(matobj.ViewObject.Proxy.getIcon()))
+                mit.setIcon(0,self.getIcon(matobj))
                 mit.setToolTip(0,group)
             else:
                 mit = QtGui.QTreeWidgetItem(["Undefined",""])
@@ -228,7 +227,7 @@ class BIM_Classification:
                 if obj:
                     if (not self.form.onlyVisible.isChecked()) or obj.ViewObject.isVisible():
                         it = QtGui.QTreeWidgetItem([self.labellist[name],self.objectslist[name]])
-                        it.setIcon(0,QtGui.QIcon(obj.ViewObject.Proxy.getIcon()))
+                        it.setIcon(0,self.getIcon(obj))
                         it.setToolTip(0,name)
                         mit.addChild(it)
             mit.sortChildren(0,QtCore.Qt.AscendingOrder)
@@ -274,7 +273,7 @@ class BIM_Classification:
             obj = FreeCAD.ActiveDocument.getObject(name)
             if obj:
                 it = QtGui.QTreeWidgetItem([self.labellist[name],code])
-                it.setIcon(0,QtGui.QIcon(obj.ViewObject.Proxy.getIcon()))
+                it.setIcon(0,self.getIcon(obj))
                 it.setToolTip(0,name)
                 mit.addChild(it)
         # objects next
@@ -282,7 +281,7 @@ class BIM_Classification:
             code = self.objectslist[obj.Name]
             if (not self.form.onlyVisible.isChecked()) or obj.ViewObject.isVisible():
                 it = QtGui.QTreeWidgetItem([self.labellist[obj.Name],code])
-                it.setIcon(0,QtGui.QIcon(obj.ViewObject.Proxy.getIcon()))
+                it.setIcon(0,self.getIcon(obj))
                 it.setToolTip(0,name)
                 ok = False
                 for par in obj.InList:
@@ -298,6 +297,7 @@ class BIM_Classification:
 
     def updateDefault(self):
 
+        import FreeCADGui,Draft
         from PySide import QtCore,QtGui
         d = self.objectslist.copy()
         d.update(self.matlist)
@@ -306,11 +306,23 @@ class BIM_Classification:
             if obj:
                 if (not self.form.onlyVisible.isChecked()) or obj.ViewObject.isVisible() or (Draft.getType(obj) in ["Material","MultiMaterial"]):
                     it = QtGui.QTreeWidgetItem([self.labellist[name],code])
-                    it.setIcon(0,QtGui.QIcon(obj.ViewObject.Proxy.getIcon()))
+                    it.setIcon(0,self.getIcon(obj))
                     it.setToolTip(0,name)
                     self.form.treeObjects.addTopLevelItem(it)
                     if obj in FreeCADGui.Selection.getSelection():
                         self.form.treeObjects.setCurrentItem(it)
+
+    def getIcon(self,obj):
+
+        from PySide import QtCore,QtGui
+        if hasattr(obj.ViewObject,"Icon"):
+            return obj.ViewObject.Icon
+        elif hasattr(obj.ViewObject,"Proxy") and hasattr(obj.ViewObject.Proxy,"getIcon"):
+            icon = obj.ViewObject.Proxy.getIcon()
+            if icon.startswith("/*"):
+                return QtGui.QIcon(QtGui.QPixmap(icon))
+            else:
+                return QtGui.QIcon(icon)
 
     def updateClasses(self,search=""):
 
@@ -385,10 +397,11 @@ class BIM_Classification:
             return self.build_ifc(system)
         else:
             preset = os.path.join(FreeCAD.getUserAppDataDir(),"BIM","Classification",system+".xml")
-            if USE_EXPAT:
-                return self.build_xmldom(system)
+            if os.path.exists(preset):
+                return self.build_xml(system)
             else:
-                return self.build_xmlre(system)
+                FreeCAD.Console.PrintError("Unable to find classification file:"+system+"\n")
+                return []
 
     def build_ifc(self,system):
         
@@ -426,9 +439,7 @@ class BIM_Classification:
                 classdict[cl.id()] = currentItem
         return [self.listize(c) for c in root.children]
 
-    def build_xmlre(self,system):
-
-        # a replacement function to parse xml that doesn't depend on expat
+    def build_xml(self,system):
 
         class Item:
             def __init__(self,parent=None):
@@ -458,39 +469,10 @@ class BIM_Classification:
                     currentItem.Name = re.findall("<Description>(.*?)</Description>",l)[0]
         return [self.listize(c) for c in d.children]
 
-    def build_xmldom(self,system):
-
-        # currently not working for me because of the infamous expat/coin bug in debian...
-
-        preset = os.path.join(FreeCAD.getUserAppDataDir(),"BIM","Classification",system+".xml")
-        if not os.path.exists(preset):
-            return None
-        import xml.dom.minidom
-        d = xml.dom.minidom.parse(preset)
-        return self.getChildren(d.getElementsByTagName("Items")[0])
 
     def listize(self,item):
 
         return [item.ID, item.Name, [self.listize(it) for it in item.children]]
-
-    def getChildren(self,node):
-
-        children = []
-        for child in node.childNodes:
-            if child.hasChildNodes():
-                ID = None
-                name = None
-                children = []
-                for tag in child.childNodes:
-                    if tag.hasChildNodes():
-                        if tag.tagName == "ID":
-                            ID = tag.childNodes[0].wholeText
-                        elif tag.tagName == "Name":
-                            name = tag.childNodes[0].wholeText
-                        elif tag.tagName == "Children":
-                            children = self.getChildren(tag.childNodes)
-                if ID and Name:
-                    children.append([ID,name,children])
 
     def apply(self,item=None,col=None):
 
