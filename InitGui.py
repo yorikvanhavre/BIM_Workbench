@@ -99,7 +99,7 @@ static char * IFC_xpm[] = {
         import BimStructure
         import BimStatusBar
         import BimWorkingPlaneTools
-        import BimPartTools
+        import BimWrappedTools
 
         # add translations path
         FreeCADGui.addLanguagePath(BimStatusBar.getLanguagePath())
@@ -157,25 +157,26 @@ static char * IFC_xpm[] = {
         FreeCADGui.addCommand('BIM_IfcExplorer',BimIfcExplorer.BIM_IfcExplorer())
         FreeCADGui.addCommand('BIM_Layers',BimLayers.BIM_Layers())
         FreeCADGui.addCommand('BIM_Reextrude',BimReextrude.BIM_Reextrude())
-        FreeCADGui.addCommand('BIM_TDPage',BimCommands.BIM_TDPage())
-        FreeCADGui.addCommand('BIM_TDArchView',BimCommands.BIM_TDArchView())
         
-        # wrapped Part tools
-        FreeCADGui.addCommand('BIM_Builder',BimPartTools.BIM_Builder())
-        FreeCADGui.addCommand('BIM_Offset2D',BimPartTools.BIM_Offset2D())
-        FreeCADGui.addCommand('BIM_Extrude',BimPartTools.BIM_Extrude())
-        FreeCADGui.addCommand('BIM_Cut',BimPartTools.BIM_Cut())
-        FreeCADGui.addCommand('BIM_Fuse',BimPartTools.BIM_Fuse())
-        FreeCADGui.addCommand('BIM_Common',BimPartTools.BIM_Common())
-        FreeCADGui.addCommand('BIM_Compound',BimPartTools.BIM_Compound())
-        FreeCADGui.addCommand('BIM_SimpleCopy',BimPartTools.BIM_SimpleCopy())
+        # wrapped tools from other workbenches
+        FreeCADGui.addCommand('BIM_Builder',BimWrappedTools.BIM_Builder())
+        FreeCADGui.addCommand('BIM_Offset2D',BimWrappedTools.BIM_Offset2D())
+        FreeCADGui.addCommand('BIM_Extrude',BimWrappedTools.BIM_Extrude())
+        FreeCADGui.addCommand('BIM_Cut',BimWrappedTools.BIM_Cut())
+        FreeCADGui.addCommand('BIM_Fuse',BimWrappedTools.BIM_Fuse())
+        FreeCADGui.addCommand('BIM_Common',BimWrappedTools.BIM_Common())
+        FreeCADGui.addCommand('BIM_Compound',BimWrappedTools.BIM_Compound())
+        FreeCADGui.addCommand('BIM_SimpleCopy',BimWrappedTools.BIM_SimpleCopy())
+        FreeCADGui.addCommand('BIM_TDPage',BimWrappedTools.BIM_TDPage())
+        FreeCADGui.addCommand('BIM_TDArchView',BimWrappedTools.BIM_TDArchView())
+        FreeCADGui.addCommand('BIM_ImagePlane',BimWrappedTools.BIM_ImagePlane())
 
         self.draftingtools = ["BIM_Sketch","Draft_Line","Draft_Wire","Draft_Circle",
                               "Draft_Arc","Draft_Arc_3Points","Draft_Ellipse",
                               "Draft_Polygon","Draft_Rectangle", "Draft_BSpline", "Draft_BezCurve",
                               "Draft_Point"]
 
-        self.annotationtools = ["Draft_Text", "Draft_ShapeString", "Draft_Dimension",
+        self.annotationtools = ["BIM_ImagePlane", "Draft_Text", "Draft_ShapeString", "Draft_Dimension",
                                 "Draft_Label","Arch_Axis","Arch_AxisSystem","Arch_Grid",
                                 "Arch_SectionPlane","BIM_TDPage","BIM_TDArchView"]
 
