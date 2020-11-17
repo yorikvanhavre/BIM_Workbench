@@ -24,7 +24,7 @@
 
 """This module contains FreeCAD commands for the BIM workbench"""
 
-import os
+import os,sys
 import FreeCAD
 from BimTranslateUtils import *
 
@@ -67,8 +67,12 @@ class BIM_IfcProperties:
         self.form.tree.setUniformRowHeights(True)
 
         # restore saved values
-        self.form.onlySelected.setChecked(FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM").GetInt("IfcPropertiesSelectedState",0))
-        self.form.onlyVisible.setChecked(FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM").GetInt("IfcPropertiesVisibleState",0))
+        p = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM")
+        self.form.onlySelected.setChecked(p.GetInt("IfcPropertiesSelectedState",0))
+        self.form.onlyVisible.setChecked(p.GetInt("IfcPropertiesVisibleState",0))
+        w = p.GetInt("BimIfcPropertiesDialogWidth",567)
+        h = p.GetInt("BimIfcPropertiesDialogHeight",608)
+        self.form.resize(w,h)
 
         # build objects list and fill search terms
         self.objectslist,searchterms = self.rebuildObjectsList()
@@ -276,13 +280,14 @@ class BIM_IfcProperties:
                     it2.setIcon(QtGui.QIcon(":/icons/edit-edit.svg"))
                 it3 = self.getSearchResults(obj)
                 ok = False
-                for par in obj.InList:
+                for par in obj.InListRecursive:
                     if par.Name in done:
-                        if it3:
-                            done[par.Name].appendRow([it1,it2,it3])
-                        done[obj.Name] = it1
-                        ok = True
-                        break
+                        if (not hasattr(par,"Hosts")) or (obj not in par.Hosts):
+                            if it3:
+                                done[par.Name].appendRow([it1,it2,it3])
+                            done[obj.Name] = it1
+                            ok = True
+                            break
                 if not ok:
                     if it3:
                         self.model.appendRow([it1,it2,it3])
@@ -321,6 +326,9 @@ class BIM_IfcProperties:
 
     def accept(self):
 
+        p = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM")
+        p.SetInt("BimIfcPropertiesDialogWidth",self.form.width())
+        p.SetInt("BimIfcPropertiesDialogHeight",self.form.height())
         self.form.hide()
 
         #print(self.objectslist)
@@ -581,7 +589,6 @@ class BIM_IfcProperties:
         if idx == 1:
             name = QtGui.QApplication.translate("Arch", "New property set", None)
             res = QtGui.QInputDialog.getText(None, translate("BIM","New property set"),translate("BIM","Property set name:"), QtGui.QLineEdit.Normal,name)
-            res = QtGui.QInputDialog.getText(None, translate("BIM","New property set"),translate("BIM","Property set name:"), QtGui.QLineEdit.Normal,name)
             if res[1]:
                 name = res[0]
             top = QtGui.QStandardItem(name)
@@ -717,7 +724,8 @@ if FreeCAD.GuiUp:
             if index.column() == 0:
                 oldtext = index.data()
                 if oldtext != editor.text():
-                    remove.append(oldtext)
+                    pset = index.parent().data()
+                    remove.append(oldtext+";;"+pset)
                 basename = editor.text()
                 # check for duplicate name
                 names = []

@@ -27,6 +27,7 @@ from __future__ import print_function
 import os
 import FreeCAD
 from BimTranslateUtils import *
+import BimIfcElements
 
 class BIM_Classification:
 
@@ -57,6 +58,12 @@ class BIM_Classification:
         # load the form and set the tree model up
         self.form = FreeCADGui.PySideUic.loadUi(os.path.join(os.path.dirname(__file__),"dialogClassification.ui"))
         self.form.setWindowIcon(QtGui.QIcon(os.path.join(os.path.dirname(__file__),"icons","BIM_Classification.svg")))
+
+        # restore saved values
+        p = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM")
+        w = p.GetInt("BimClassificationDialogWidth",629)
+        h = p.GetInt("BimClassificationDialogHeight",516)
+        self.form.resize(w,h)
 
         # add modified search box from bimmaterial
         import BimMaterial
@@ -193,7 +200,7 @@ class BIM_Classification:
                 if obj:
                     if (not self.form.onlyVisible.isChecked()) or obj.ViewObject.isVisible() or (Draft.getType(obj) in ["Material","MultiMaterial"]):
                         it = QtGui.QTreeWidgetItem([self.labellist[name],d[name]])
-                        it.setIcon(0,self.getIcon(obj))
+                        it.setIcon(0,BimIfcElements.getIcon(obj))
                         it.setToolTip(0,name)
                         mit.addChild(it)
             mit.sortChildren(0,QtCore.Qt.AscendingOrder)
@@ -217,7 +224,7 @@ class BIM_Classification:
             matobj = FreeCAD.ActiveDocument.getObject(group)
             if matobj:
                 mit = QtGui.QTreeWidgetItem([self.labellist[group],self.matlist[group]])
-                mit.setIcon(0,self.getIcon(matobj))
+                mit.setIcon(0,BimIfcElements.getIcon(matobj))
                 mit.setToolTip(0,group)
             else:
                 mit = QtGui.QTreeWidgetItem(["Undefined",""])
@@ -227,7 +234,7 @@ class BIM_Classification:
                 if obj:
                     if (not self.form.onlyVisible.isChecked()) or obj.ViewObject.isVisible():
                         it = QtGui.QTreeWidgetItem([self.labellist[name],self.objectslist[name]])
-                        it.setIcon(0,self.getIcon(obj))
+                        it.setIcon(0,BimIfcElements.getIcon(obj))
                         it.setToolTip(0,name)
                         mit.addChild(it)
             mit.sortChildren(0,QtCore.Qt.AscendingOrder)
@@ -273,7 +280,7 @@ class BIM_Classification:
             obj = FreeCAD.ActiveDocument.getObject(name)
             if obj:
                 it = QtGui.QTreeWidgetItem([self.labellist[name],code])
-                it.setIcon(0,self.getIcon(obj))
+                it.setIcon(0,BimIfcElements.getIcon(obj))
                 it.setToolTip(0,name)
                 mit.addChild(it)
         # objects next
@@ -281,15 +288,16 @@ class BIM_Classification:
             code = self.objectslist[obj.Name]
             if (not self.form.onlyVisible.isChecked()) or obj.ViewObject.isVisible():
                 it = QtGui.QTreeWidgetItem([self.labellist[obj.Name],code])
-                it.setIcon(0,self.getIcon(obj))
+                it.setIcon(0,BimIfcElements.getIcon(obj))
                 it.setToolTip(0,name)
                 ok = False
-                for par in obj.InList:
+                for par in obj.InListRecursive:
                     if par.Name in done:
-                        done[par.Name].addChild(it)
-                        done[obj.Name] = it
-                        ok = True
-                        break
+                        if (not hasattr(par,"Hosts")) or (obj not in par.Hosts):
+                            done[par.Name].addChild(it)
+                            done[obj.Name] = it
+                            ok = True
+                            break
                 if not ok:
                     self.form.treeObjects.addTopLevelItem(it)
                     done[obj.Name] = it
@@ -306,23 +314,11 @@ class BIM_Classification:
             if obj:
                 if (not self.form.onlyVisible.isChecked()) or obj.ViewObject.isVisible() or (Draft.getType(obj) in ["Material","MultiMaterial"]):
                     it = QtGui.QTreeWidgetItem([self.labellist[name],code])
-                    it.setIcon(0,self.getIcon(obj))
+                    it.setIcon(0,BimIfcElements.getIcon(obj))
                     it.setToolTip(0,name)
                     self.form.treeObjects.addTopLevelItem(it)
                     if obj in FreeCADGui.Selection.getSelection():
                         self.form.treeObjects.setCurrentItem(it)
-
-    def getIcon(self,obj):
-
-        from PySide import QtCore,QtGui
-        if hasattr(obj.ViewObject,"Icon"):
-            return obj.ViewObject.Icon
-        elif hasattr(obj.ViewObject,"Proxy") and hasattr(obj.ViewObject.Proxy,"getIcon"):
-            icon = obj.ViewObject.Proxy.getIcon()
-            if icon.startswith("/*"):
-                return QtGui.QIcon(QtGui.QPixmap(icon))
-            else:
-                return QtGui.QIcon(icon)
 
     def updateClasses(self,search=""):
 
@@ -500,11 +496,9 @@ class BIM_Classification:
                 child = self.form.treeObjects.topLevelItem(row)
                 items = [child]
                 items.extend([child.child(childrow) for childrow in range(child.childCount())])
-                print("items:",items)
                 for item in items:
                     code = item.text(1)
                     label = item.text(0)
-                    print("setting ",label)
                     if item.toolTip(0):
                         obj = FreeCAD.ActiveDocument.getObject(item.toolTip(0))
                         if obj:
@@ -532,6 +526,9 @@ class BIM_Classification:
                     self.isEditing.ViewObject.Proxy.setTaskValue("FieldCode",code)
                 FreeCAD.ActiveDocument.commitTransaction()
                 FreeCAD.ActiveDocument.recompute()
+        p = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM")
+        p.SetInt("BimClassificationDialogWidth",self.form.width())
+        p.SetInt("BimClassificationDialogHeight",self.form.height())
         self.form.hide()
         return True
 

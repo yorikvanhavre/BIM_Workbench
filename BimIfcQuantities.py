@@ -154,8 +154,14 @@ class BIM_IfcQuantities:
                                             it.setText(val.getUserPreferred()[0].replace(u"^2",u"²"))
                                             it.setCheckable(True)
                                     if val != None:
-                                        if hasattr(obj,"IfcAttributes") and ("Export"+prop in obj.IfcAttributes) and (obj.IfcAttributes["Export"+prop] == "True"):
-                                            it.setCheckState(QtCore.Qt.Checked)
+                                        d = None
+                                        if hasattr(obj,"IfcAttributes"):
+                                            d = obj.IfcAttributes
+                                        elif hasattr(obj,"IfcData"):
+                                            d = obj.IfcData
+                                        if d:
+                                            if ("Export"+prop in d) and (d["Export"+prop] == "True"):
+                                                it.setCheckState(QtCore.Qt.Checked)
                                         if val == 0:
                                             it.setIcon(QtGui.QIcon(os.path.join(os.path.dirname(__file__),"icons","warning.svg")))
                                     if prop in ["Area","HorizontalArea","VerticalArea","Volume"]:
@@ -165,6 +171,7 @@ class BIM_IfcQuantities:
             self.quantitiesDrawn = True
 
     def getRole(self,obj):
+
         if hasattr(obj,"IfcType"):
             return obj.IfcType
         elif hasattr(obj,"IfcRole"):
@@ -191,12 +198,18 @@ class BIM_IfcQuantities:
                                 if not changed:
                                     FreeCAD.ActiveDocument.openTransaction("Change quantities")
                                 changed = True
+                    d = None
                     if hasattr(obj,"IfcAttributes"):
                         d = obj.IfcAttributes
+                        att = "IfcAttributes"
+                    elif hasattr(obj,"IfcData"):
+                        d = obj.IfcData
+                        att = "IfcData"
+                    if d:
                         if sav:
                             if (not "Export"+qprops[i] in d) or (d["Export"+qprops[i]] == "False"):
                                 d["Export"+qprops[i]] = "True"
-                                obj.IfcAttributes = d
+                                setattr(obj,att,d)
                                 if not changed:
                                     FreeCAD.ActiveDocument.openTransaction("Change quantities")
                                 changed = True
@@ -204,10 +217,12 @@ class BIM_IfcQuantities:
                             if ("Export"+qprops[i] in d):
                                 if d["Export"+qprops[i]] == "True":
                                     d["Export"+qprops[i]] = "False"
-                                    obj.IfcAttributes = d
+                                    setattr(obj,att,d)
                                     if not changed:
                                         FreeCAD.ActiveDocument.openTransaction("Change quantities")
                                     changed = True
+                    else:
+                        FreeCAD.Console.PrintError(translate("BIM","Cannot save quantities settings for object %1").replace("%1",obj.Label)+"\n")
 
         if changed:
             FreeCAD.ActiveDocument.commitTransaction()

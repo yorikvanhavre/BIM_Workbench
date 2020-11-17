@@ -155,11 +155,7 @@ class BIM_IfcElements:
                 obj = FreeCAD.ActiveDocument.getObject(name)
                 if obj:
                     it1 = QtGui.QStandardItem(obj.Label)
-                    if QtCore.QFileInfo(":/icons/Arch_"+obj.Proxy.Type+"_Tree.svg").exists():
-                        icon = QtGui.QIcon(":/icons/Arch_"+obj.Proxy.Type+"_Tree.svg")
-                    else:
-                        icon = QtGui.QIcon(":/icons/Arch_Component.svg")
-                    it1.setIcon(icon)
+                    it1.setIcon(getIcon(obj))
                     it1.setToolTip(obj.Name)
                     it2 = QtGui.QStandardItem(group)
                     if group != self.getRole(obj):
@@ -207,11 +203,7 @@ class BIM_IfcElements:
                 obj = FreeCAD.ActiveDocument.getObject(name)
                 if obj:
                     it1 = QtGui.QStandardItem(obj.Label)
-                    if QtCore.QFileInfo(":/icons/Arch_"+obj.Proxy.Type+"_Tree.svg").exists():
-                        icon = QtGui.QIcon(":/icons/Arch_"+obj.Proxy.Type+"_Tree.svg")
-                    else:
-                        icon = QtGui.QIcon(":/icons/Arch_Component.svg")
-                    it1.setIcon(icon)
+                    it1.setIcon(getIcon(obj))
                     it1.setToolTip(obj.Name)
                     it2 = QtGui.QStandardItem(role)
                     if role != self.getRole(obj):
@@ -275,11 +267,7 @@ class BIM_IfcElements:
 
             if (not self.form.onlyVisible.isChecked()) or obj.ViewObject.isVisible():
                 it1 = QtGui.QStandardItem(obj.Label)
-                if QtCore.QFileInfo(":/icons/Arch_"+obj.Proxy.Type+"_Tree.svg").exists():
-                    icon = QtGui.QIcon(":/icons/Arch_"+obj.Proxy.Type+"_Tree.svg")
-                else:
-                    icon = QtGui.QIcon(":/icons/Arch_Component.svg")
-                it1.setIcon(icon)
+                it1.setIcon(getIcon(obj))
                 it1.setToolTip(obj.Name)
                 it2 = QtGui.QStandardItem(role)
                 if role != self.getRole(obj):
@@ -299,12 +287,13 @@ class BIM_IfcElements:
                     if omat != mat:
                         it3.setIcon(QtGui.QIcon(":/icons/edit-edit.svg"))
                 ok = False
-                for par in obj.InList:
+                for par in obj.InListRecursive:
                     if par.Name in done:
-                        done[par.Name].appendRow([it1,it2,it3])
-                        done[obj.Name] = it1
-                        ok = True
-                        break
+                        if (not hasattr(par,"Hosts")) or (obj not in par.Hosts):
+                            done[par.Name].appendRow([it1,it2,it3])
+                            done[obj.Name] = it1
+                            ok = True
+                            break
                 if not ok:
                     self.model.appendRow([it1,it2,it3])
                     done[obj.Name] = it1
@@ -319,11 +308,7 @@ class BIM_IfcElements:
             if obj:
                 if (not self.form.onlyVisible.isChecked()) or obj.ViewObject.isVisible():
                     it1 = QtGui.QStandardItem(obj.Label)
-                    if QtCore.QFileInfo(":/icons/Arch_"+obj.Proxy.Type+"_Tree.svg").exists():
-                        icon = QtGui.QIcon(":/icons/Arch_"+obj.Proxy.Type+"_Tree.svg")
-                    else:
-                        icon = QtGui.QIcon(":/icons/Arch_Component.svg")
-                    it1.setIcon(icon)
+                    it1.setIcon(getIcon(obj))
                     it1.setToolTip(obj.Name)
                     it2 = QtGui.QStandardItem(role)
                     if role != self.getRole(obj):
@@ -613,4 +598,19 @@ if FreeCAD.GuiUp:
             self.dialog.update()
 
 
+def getIcon(obj):
 
+    """returns a QIcon for an object"""
+
+    from PySide import QtCore,QtGui
+    import Arch_rc
+    if hasattr(obj.ViewObject,"Icon"):
+        return obj.ViewObject.Icon
+    elif hasattr(obj.ViewObject,"Proxy") and hasattr(obj.ViewObject.Proxy,"getIcon"):
+        icon = obj.ViewObject.Proxy.getIcon()
+        if icon.startswith("/*"):
+            return QtGui.QIcon(QtGui.QPixmap(icon))
+        else:
+            return QtGui.QIcon(icon)
+    else:
+        return QtGui.QIcon(":/icons/Arch_Component.svg")
