@@ -209,8 +209,12 @@ class BIM_Setup:
 
         # set Draft toolbar
         if hasattr(FreeCADGui,"draftToolBar"):
-            FreeCADGui.draftToolBar.widthButton.setValue(linewidth)
-            FreeCADGui.draftToolBar.fontsizeButton.setValue(tsize)
+            if hasattr(FreeCADGui.draftToolBar,"setstyle"):
+                FreeCADGui.draftToolBar.setstyle()
+            else:
+                # pre-v0.19
+                FreeCADGui.draftToolBar.widthButton.setValue(linewidth)
+                FreeCADGui.draftToolBar.fontsizeButton.setValue(tsize)
 
         # set the grid
         if hasattr(FreeCADGui,"Snapper"):
