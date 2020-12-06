@@ -287,12 +287,12 @@ class BIM_ImagePlane:
         self.tracker = DraftTrackers.rectangleTracker()
         self.basepoint = None
         self.opposite = None
-        self.filename = QtGui.QFileDialog.getOpenFileName(QtGui.QApplication.activeWindow(), 
+        (filename, _filter) = QtGui.QFileDialog.getOpenFileName(QtGui.QApplication.activeWindow(),
                                                           translate("BIM","Select image"), 
                                                           None, 
                                                           translate("BIM","Image file (*.png *.jpg *.bmp)"))
-        if self.filename:
-            self.filename = self.filename[0]
+        if filename:
+            self.filename = filename
             im = QtGui.QImage(self.filename)
             self.proportion = float(im.height())/float(im.width())
             if hasattr(FreeCADGui,"Snapper"):
