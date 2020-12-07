@@ -278,14 +278,14 @@
             <item row="4" column="0">
              <widget class="QLabel" name="label_24">
               <property name="text">
-               <string>Gross building length</string>
+               <string>Gross building length [mm]</string>
               </property>
              </widget>
             </item>
             <item row="5" column="0">
              <widget class="QLabel" name="label_25">
               <property name="text">
-               <string>Gross building width</string>
+               <string>Gross building width [mm]</string>
               </property>
              </widget>
             </item>
@@ -313,7 +313,7 @@
             <item row="10" column="0">
              <widget class="QLabel" name="label_26">
               <property name="text">
-               <string>Distance between H axes</string>
+               <string>Distance between H axes [mm]</string>
               </property>
              </widget>
             </item>
@@ -343,7 +343,7 @@
             <item row="8" column="0">
              <widget class="QLabel" name="label_28">
               <property name="text">
-               <string>Distance between V axes</string>
+               <string>Distance between V axes [mm]</string>
               </property>
               <property name="wordWrap">
                <bool>false</bool>
