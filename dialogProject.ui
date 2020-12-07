@@ -157,7 +157,10 @@
                <number>4</number>
               </property>
               <property name="maximum">
-               <double>9999.989999999999782</double>
+                <double>180.0</double>
+                </property>
+                <property name="minimum">
+                <double>-180.0</double>
               </property>
              </widget>
             </item>
@@ -239,7 +242,10 @@
                <number>4</number>
               </property>
               <property name="maximum">
-               <double>9999.989999999999782</double>
+               <double>90.0</double>
+              </property>
+              <property name="minimum">
+               <double>-90.0</double>
               </property>
              </widget>
             </item>
