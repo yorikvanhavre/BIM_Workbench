@@ -215,6 +215,8 @@ class BIM_Preflight_TaskPanel:
         "selects target objects"
 
         import FreeCADGui
+        import Draft
+        import Arch
         objs = []
         if self.form.getAll.isChecked():
             objs = FreeCAD.ActiveDocument.Objects
@@ -223,7 +225,7 @@ class BIM_Preflight_TaskPanel:
         else:
             objs = FreeCADGui.Selection.getSelection()
         # clean objects list of unwanted types
-        objs = Draft.getGroupContents(objs,walls=True,addgroups=True)
+        objs = Draft.get_group_contents(objs,walls=True,addgroups=True)
         objs = [obj for obj in objs if not obj.isDerivedFrom("Part::Part2DObject")]
         objs = [obj for obj in objs if not obj.isDerivedFrom("App::Annotation")]
         objs = [obj for obj in objs if (hasattr(obj,"Shape") and obj.Shape and not (obj.Shape.Edges and (not obj.Shape.Faces)))]
@@ -237,6 +239,7 @@ class BIM_Preflight_TaskPanel:
 
         "gets the toolTip text from the ui file"
 
+        import re
         label = test.replace("test","label")
         tooltip = getattr(self.form,label).toolTip()
         tooltip = tooltip.replace("</p>","</p>\n\n")
@@ -248,6 +251,7 @@ class BIM_Preflight_TaskPanel:
 
         "runs all tests"
 
+        import FreeCADGui
         from PySide import QtCore,QtGui
         from DraftGui import todo
         for test in tests:
@@ -258,7 +262,6 @@ class BIM_Preflight_TaskPanel:
                     todo.delay(getattr(self,test),None)
         for customTest in self.customTests.keys():
             todo.delay(self.testCustom,customTest)
-            
         FreeCADGui.BIMPreflightDone = True
 
 
@@ -280,12 +283,17 @@ class BIM_Preflight_TaskPanel:
                 msg = translate("BIM","ifcopenshell is not installed on your system or not available to FreeCAD. This library is responsible for IFC support in FreeCAD, and therefore IFC support is currently disabled. Check https://www.freecadweb.org/wiki/Extra_python_modules#IfcOpenShell to obtain more information.")+" "
                 self.failed(test)
             else:
-                if ifcopenshell.schema_identifier.startswith("IFC4"):
+                if hasattr(ifcopenshell,"schema_identifier") and ifcopenshell.schema_identifier.startswith("IFC4"):
+                    self.passed(test)
+                elif hasattr(ifcopenshell, "version") and (float(ifcopenshell.version[:3]) >= 0.6):
                     self.passed(test)
                 else:
                     msg = self.getToolTip(test)
                     msg += translate("BIM","The version of ifcopenshell installed on your system will produce files with this schema version:")+"\n\n"
-                    msg += ifcopenshell.schema_identifier + "\n\n"
+                    if hasattr(ifcopenshell,"schema_identifier"):
+                        msg += ifcopenshell.schema_identifier + "\n\n"
+                    else:
+                        msg += "Unable to retrieve schemas information from ifcopenshell\n\n"
                     self.failed(test)
             self.results[test] = msg
 
@@ -566,6 +574,7 @@ class BIM_Preflight_TaskPanel:
         "tests for common property sets"
 
         from PySide import QtCore,QtGui
+        import csv
         test = "testCommonPsets"
         if getattr(self.form,test).text() == "Failed":
             self.show(test)
@@ -621,6 +630,7 @@ class BIM_Preflight_TaskPanel:
         "tests for property sets integrity"
 
         from PySide import QtCore,QtGui
+        import csv
         test = "testPsets"
         if getattr(self.form,test).text() == "Failed":
             self.show(test)
@@ -754,6 +764,7 @@ class BIM_Preflight_TaskPanel:
         "tests is all objects are extrusions"
 
         from PySide import QtCore,QtGui
+        import Draft
         test = "testExtrusions"
         if getattr(self.form,test).text() == "Failed":
             self.show(test)
