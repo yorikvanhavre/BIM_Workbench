@@ -198,6 +198,19 @@ class BIM_Layers:
                         changed = True
                     obj.ViewObject.Transparency = transparency
 
+            # line print color
+            color = self.model.item(row,7).data(QtCore.Qt.UserRole)
+            if color:
+                if not "LinePrintColor" in obj.ViewObject.PropertiesList:
+                    if hasattr(obj.ViewObject.Proxy,"set_properties"):
+                        obj.ViewObject.Proxy.set_properties(obj.ViewObject)
+                if "LinePrintColor" in obj.ViewObject.PropertiesList:
+                    if obj.ViewObject.LinePrintColor[3:] != color:
+                        if not changed:
+                            FreeCAD.ActiveDocument.openTransaction("Layers change")
+                            changed = True
+                        obj.ViewObject.LinePrintColor = color
+
         # recompute
         if changed:
             FreeCAD.ActiveDocument.commitTransaction()
@@ -230,7 +243,8 @@ class BIM_Layers:
                                               translate("BIM","Draw style"),
                                               translate("BIM","Line color"),
                                               translate("BIM","Face color"),
-                                              translate("BIM","Transparency")])
+                                              translate("BIM","Transparency"),
+                                              translate("BIM","Line print color")])
         self.dialog.tree.header().setDefaultSectionSize(72)
         self.dialog.tree.setColumnWidth(0,32) # on/off column
         self.dialog.tree.setColumnWidth(1,128) # name column
@@ -260,6 +274,8 @@ class BIM_Layers:
         shapeColorItem.setData(self.getPref("DefaultShapeColor",3435973887),QtCore.Qt.UserRole)
         transparencyItem = QtGui.QStandardItem()
         transparencyItem.setData(0,QtCore.Qt.DisplayRole)
+        linePrintColorItem = QtGui.QStandardItem()
+        linePrintColorItem.setData(self.getPref("DefaultPrintColor",0),QtCore.Qt.UserRole)
 
         # populate with object data
         if obj:
@@ -271,8 +287,11 @@ class BIM_Layers:
             lineColorItem.setData(obj.ViewObject.LineColor[:3],QtCore.Qt.UserRole)
             shapeColorItem.setData(obj.ViewObject.ShapeColor[:3],QtCore.Qt.UserRole)
             transparencyItem.setData(obj.ViewObject.Transparency,QtCore.Qt.DisplayRole)
+            if hasattr(obj.ViewObject,"LinePrintColor"):
+                linePrintColorItem.setData(obj.ViewObject.LinePrintColor[:3],QtCore.Qt.UserRole)
         lineColorItem.setIcon(getColorIcon(lineColorItem.data(QtCore.Qt.UserRole)))
         shapeColorItem.setIcon(getColorIcon(shapeColorItem.data(QtCore.Qt.UserRole)))
+        linePrintColorItem.setIcon(getColorIcon(linePrintColorItem.data(QtCore.Qt.UserRole)))
 
         # append row
         self.model.appendRow([onItem,
@@ -281,7 +300,8 @@ class BIM_Layers:
                               styleItem,
                               lineColorItem,
                               shapeColorItem,
-                              transparencyItem])
+                              transparencyItem,
+                              linePrintColorItem])
 
     def getPref(self,value,default,valuetype="Unsigned"):
 
@@ -385,6 +405,9 @@ if FreeCAD.GuiUp:
             elif index.column() == 6: # Transparency
                 editor = QtGui.QSpinBox(parent)
                 editor.setMaximum(100)
+            elif index.column() == 7: # Line print color
+                editor = QtGui.QLineEdit(parent)
+                self.first = True
             return editor
 
         def setEditorData(self, editor, index):
@@ -413,6 +436,13 @@ if FreeCAD.GuiUp:
                     self.first = False
             elif index.column() == 6: # Transparency
                 editor.setValue(index.data())
+            elif index.column() == 7:  # Line print color
+                editor.setText(str(index.data(QtCore.Qt.UserRole)))
+                if self.first:
+                    c = index.data(QtCore.Qt.UserRole)
+                    color = QtGui.QColorDialog.getColor(QtGui.QColor(int(c[0]*255),int(c[1]*255),int(c[2]*255)))
+                    editor.setText(str(color.getRgbF()))
+                    self.first = False
 
         def setModelData(self, editor, model, index):
 
@@ -432,3 +462,6 @@ if FreeCAD.GuiUp:
                 model.itemFromIndex(index).setIcon(getColorIcon(eval(editor.text())))
             elif index.column() == 6: # Transparency
                 model.setData(index,editor.value())
+            elif index.column() == 7: # Line prin color
+                model.setData(index,eval(editor.text()),QtCore.Qt.UserRole)
+                model.itemFromIndex(index).setIcon(getColorIcon(eval(editor.text())))
