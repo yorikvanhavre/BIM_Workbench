@@ -519,7 +519,7 @@ static char * IFC_xpm[] = {
         if FreeCADGui.Selection.getSelection():
             if (FreeCADGui.Selection.getSelection()[0].Name != "Trash"):
                 self.appendContextMenu("",["BIM_Trash"])
-            self.appendContextMenu("",["Draft_AddConstruction"])
+            self.appendContextMenu("",["Draft_AddConstruction","Draft_AddToGroup"])
             allclones = False
             for obj in FreeCADGui.Selection.getSelection():
                 if hasattr(obj,"CloneOf") and obj.CloneOf:
