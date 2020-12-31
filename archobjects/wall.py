@@ -300,12 +300,7 @@ class Wall(ShapeGroup, IfcProduct):
         # gather base wall_shape (from obj.BaseGeometry or from default shape)
         wall_shape = None
         if hasattr(obj, "BaseGeometry") and obj.BaseGeometry:
-            # get wall base shape from BaseGeometry objects
-            shape_collection = []
-            for o in obj.BaseGeometry:
-                if hasattr(o, "Shape") and not o.Shape.isNull():
-                    shape_collection.append(o.Shape)
-            wall_shape = Part.makeCompound(shape_collection)
+            wall_shape = self.get_shape_from_base_geometry(obj)
         else:
             wall_shape = self.get_default_shape(obj)
         
@@ -371,6 +366,8 @@ class Wall(ShapeGroup, IfcProduct):
 
         obj.Shape = wall_shape
 
+
+    # Wall default shape methods +++++++++++++++++++++++++++++++++++++++++++++++
 
     def get_default_shape(self, obj):
         """
@@ -480,6 +477,7 @@ class Wall(ShapeGroup, IfcProduct):
 
         mono_layer = mono_layer.removeSplitter()
         
+        # split according to material layers
 
         if hasattr(obj, "Material") and obj.Material and utils.get_type(obj.Material) == 'MultiMaterial':
             pass
@@ -506,7 +504,7 @@ class Wall(ShapeGroup, IfcProduct):
                 return shape
 
 
-    # Wall joinings methods +++++++++++++++++++++++++++++++++++++++++++++++++
+    # Wall default shape joining methods ++++++++++++++++++++++++++++++++++++++++
 
     def recompute_ends(self, obj):
         self.recompute_end(obj, 0)
@@ -780,6 +778,67 @@ class Wall(ShapeGroup, IfcProduct):
             wall.LastCoreInnerAngle = -w_angle
             wall.LastCoreOuterAngle = +w_angle
             wall.LastCoreOffset = 0.0
+
+
+    # Compute shape from base geometry +++++++++++++++++++++++++++++++++++++
+
+    def get_shape_from_base_geometry(self, obj):
+        if not self.is_basegeometry_usable(obj.BaseGeometry):
+            return
+
+        if len(obj.BaseGeometry) == 1:
+            tp = utils.get_type(obj.BaseGeometry)
+            if tp == 'Sketcher::SketchObject':
+                return self.compute_shape_from_sketch(obj)
+            elif tp == 'Wire':
+                return self.compute_shape_from_sketch(obj)
+            elif obj.BaseGeometry[0].Shape.Solids:
+                return self.get_shape_from_object(obj.BaseGeometry[0])
+            # TODO: Cover usecase when the basegeometry is a mesh feature
+        else:
+            return self.get_shape_from_objects(obj.BaseGeometry)
+        return None
+
+
+    def is_basegeometry_usable(self, basegeometry):
+        for o in basegeometry:
+            if not hasattr(o, "Shape") or not o.Shape.isValid() or o.Shape.isNull():
+                return False
+        return True
+
+
+    def compute_shape_from_sketch(self, obj):
+        sketch_object = obj.BaseGeometry[0]
+        return None
+
+
+    def compute_shape_from_wire(self, obj):
+        wire_object = obj.BaseGeometry[0]
+        return None
+
+
+    def compute_shape_from_face(self, obj):
+        face_object = obj.BaseGeometry[0]
+        return None
+
+
+    def get_shape_from_object(self, obj):
+        """Returns the shape of the given object after applying the object 
+        placement straight to the geometry."""
+        shape = obj.Shape.copy()
+        shape = shape.transformGeometry(obj.Placement.toMatrix())
+        return shape
+
+
+    def get_shape_from_objects(self, objects):
+        import Part
+        shape_collection = []
+        for o in objects:
+            if hasattr(o, "Shape") and not o.Shape.isNull():
+                # TODO: Check if the object shape is a solid, 
+                # TODO: check if the placement is correctly taken into account
+                shape_collection.append(o.Shape.copy())
+        return Part.makeCompound(shape_collection)
 
 
     # Axis alignment handling methods +++++++++++++++++++++++++++++++++++++++
