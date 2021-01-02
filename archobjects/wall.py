@@ -95,7 +95,7 @@ class Wall(ShapeGroup, IfcProduct):
 
         _tip = 'List of Openings inserted into the wall.\n'\
                'Openings have to be grouped into the wall object.'
-        obj.addProperty('App::PropertyLinkListChild', 'Openings',
+        obj.addProperty('App::PropertyLinkListGlobal', 'Openings',
                         'Components', _tip)
 
         # GEOMETRY Properties -----------------------------------------------
@@ -331,38 +331,43 @@ class Wall(ShapeGroup, IfcProduct):
         # subtract Subtractions
         if hasattr(obj, "Subtractions") and obj.Subtractions:
             for o in obj.Subtractions:
+                cut_shape = None
                 if o in obj.Group and hasattr(o, "Shape"):
                     # subtraction object is inside the wall
                     relative_placement = o.Placement
-                    if hasattr(o, "InList"):
-                        if o.InList[0] != obj:
-                            relative_placement = o.InList[0].Placement.multiply(o.Placement)
+                    if hasattr(o, "InList") and o.InList[0] != obj:
+                        # dont' remember why this is necessary...
+                        relative_placement = o.InList[0].Placement.multiply(o.Placement)
                     cut_shape = o.Shape.copy()
                     cut_shape.Placement = relative_placement
-                    wall_shape = wall_shape.cut(cut_shape)
                 elif hasattr(o, "Shape"):
                     # subtraction object is not inside the wall, compute it's correct relative placement
                     global_placement = o.getGlobalPlacement()
                     relative_placement = obj.getGlobalPlacement().inverse().multiply(global_placement)
                     cut_shape = o.Shape.copy()
                     cut_shape.Placement = relative_placement
+
+                if cut_shape is not None:
                     wall_shape = wall_shape.cut(cut_shape)
 
-        if hasattr(obj,"Openings") and obj.Openings:
+        if hasattr(obj, "Openings") and obj.Openings:
             # objects marked as Openings must be appropriate Opening objects to cut the wall
             # TODO: Add a flag to also subtract window positive shapes from wall
-            for opening in obj.Openings:
+            for o in obj.Openings:
                 # cut opening void
                 void = None
-                if hasattr(opening, "VoidShape"):
-                    void = opening.VoidShape
-                    if void is not None:
-                        wall_shape = wall_shape.cut(void)
-                '''elif hasattr(opening, "Proxy") and hasattr(opening.Proxy, "get_void_shape"):
-                    void = opening.Proxy.get_void_shape(opening)
-                    if void is not None:
-                        # void.Placement = container_placement.multiply(cut_shape.Placement) # this is not necessary anymore because Opening object provide a correct shape to cut the wall
-                        wall_shape = wall_shape.cut(void)''' # to be deleted because we now have a VoidShape Property in opening
+                if o in obj.Group and hasattr(o, "VoidShape"):
+                    void = o.VoidShape.copy()
+                elif hasattr(o, "VoidShape"):
+                    # opening object is not inside the wall, compute it's correct relative placement
+                    global_placement = o.getGlobalPlacement()
+                    relative_placement = obj.getGlobalPlacement().inverse().multiply(global_placement)
+                    void = o.VoidShape.copy()
+                    # void placement can be different from opening placement:
+                    void.Placement = relative_placement.multiply(o.Placement.inverse().multiply(void.Placement))
+
+                if void is not None:
+                    wall_shape = wall_shape.cut(void)
 
         obj.Shape = wall_shape
 
