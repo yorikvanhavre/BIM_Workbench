@@ -68,6 +68,22 @@ class ViewProviderWall(ViewProviderShapeGroup):
         action2 = QtGui.QAction("Recompute wall ends", menu)
         QtCore.QObject.connect(action2,QtCore.SIGNAL("triggered()"),lambda f=vobj.Object.Proxy.recompute_ends, arg=vobj.Object:f(arg))
         menu.addAction(action2)
+        action3 = QtGui.QAction("Toggle display components", menu)
+        QtCore.QObject.connect(action3,QtCore.SIGNAL("triggered()"),lambda f=vobj.Proxy.toggle_display_components, arg=vobj:f(arg))
+        menu.addAction(action3)
+
+    def toggle_display_components(self, vobj):
+        """ Context menu command. 
+        Toggle the display of BaseGeometry objects when present.
+        """
+        if vobj.DisplayMode == "Group":
+            vobj.DisplayMode = "Flat Lines"
+            for o in vobj.Object.BaseGeometry:
+                o.ViewObject.Visibility = False
+        else:
+            vobj.DisplayMode = "Group"
+            for o in vobj.Object.BaseGeometry:
+                o.ViewObject.Visibility = True
 
     def onDelete(self, vobj, subelements): # subelements is a tuple of strings
         delete_ok = super(ViewProviderWall, self).onDelete(vobj, subelements)

@@ -24,6 +24,7 @@
 
 
 import os
+import sys
 import FreeCAD
 from BimTranslateUtils import *
 
@@ -127,7 +128,11 @@ class BIM_Project:
                 building.addObject(grp)
                 grp.addObject(outline)
                 if self.form.buildingName.text():
-                    outtext = Draft.makeText([self.form.buildingName.text()],point=FreeCAD.Vector(Draft.getParam("textheight",0.20)*0.3,-Draft.getParam("textheight",0.20)*1.43,0))
+                    buildingname = self.form.buildingName.text()
+                    if sys.version_info.major == 2:
+                        buildingname = unicode(buildingname)
+                    outtext = Draft.makeText([buildingname], point=FreeCAD.Vector(Draft.getParam(
+                        "textheight", 0.20)*0.3, -Draft.getParam("textheight", 0.20)*1.43, 0))
                     outtext.Label = translate("BIM","Building Label")
                     outtext.ViewObject.TextColor = color
                     grp.addObject(outtext)
