@@ -22,7 +22,7 @@
 #*                                                                         *
 #***************************************************************************
 
-"""This module contains BIM wrappers for commands from other wotkbenches"""
+"""This module contains BIM wrappers for commands from other workbenches"""
 
 import os
 import FreeCAD
@@ -198,6 +198,28 @@ class BIM_TDPage:
             page.Template = template
             FreeCAD.ActiveDocument.commitTransaction()
             FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM").SetString("TDTemplateDir",filename.replace("\\","/"))
+            for txt in ["scale","Scale","SCALE","scaling","Scaling","SCALING"]:
+                if txt in page.Template.EditableTexts:
+                    val = page.Template.EditableTexts[txt]
+                    if val:
+                        if ":" in val:
+                            val.replace(":","/")
+                        if "/" in val:
+                            try:
+                                page.Scale = eval(val)
+                            except:
+                                pass
+                            else:
+                                break
+                        else:
+                            try:
+                                page.Scale = float(val)
+                            except:
+                                pass
+                            else:
+                                break
+            else:
+                page.Scale = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM").GetFloat("DefaultPageScale",0.01)
             FreeCAD.ActiveDocument.recompute()
 
 
