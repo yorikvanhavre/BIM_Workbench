@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>254</width>
-    <height>476</height>
+    <width>252</width>
+    <height>560</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -128,25 +128,78 @@
     </layout>
    </item>
    <item>
-    <widget class="QPushButton" name="buttonBimObject">
-     <property name="text">
-      <string>Search BimObjects.com</string>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QPushButton" name="buttonNBSLibrary">
-     <property name="text">
-      <string>Search NationalBimLibrary.com</string>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QPushButton" name="buttonBimTool">
-     <property name="text">
-      <string>Search BimTool.com</string>
-     </property>
-    </widget>
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <item>
+      <widget class="QPushButton" name="buttonBimObject">
+       <property name="minimumSize">
+        <size>
+         <width>16</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="toolTip">
+        <string>Search BimObject website</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="buttonNBSLibrary">
+       <property name="minimumSize">
+        <size>
+         <width>16</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="toolTip">
+        <string>Search National Building Library website</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="buttonBimTool">
+       <property name="minimumSize">
+        <size>
+         <width>16</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="toolTip">
+        <string>Search BimTool website</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="button3DFindIt">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>16</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="toolTip">
+        <string>Search 3DFindIt website</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
   </layout>
  </widget>

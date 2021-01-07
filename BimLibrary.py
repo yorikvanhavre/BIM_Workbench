@@ -105,6 +105,8 @@ class BIM_Library_TaskPanel:
         self.form.buttonNBSLibrary.clicked.connect(self.onNBSLibrary)
         self.form.buttonBimTool.setIcon(QtGui.QIcon(os.path.join(os.path.dirname(__file__),"icons","bimtool.png")))
         self.form.buttonBimTool.clicked.connect(self.onBimTool)
+        self.form.button3DFindIt.setIcon(QtGui.QIcon(os.path.join(os.path.dirname(__file__),"icons","3dfindit.svg")))
+        self.form.button3DFindIt.clicked.connect(self.on3DFindIt)
         self.form.checkOnline.toggled.connect(self.onCheckOnline)
         self.form.checkOnline.setChecked(FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM").GetBool("LibraryOnline",not offlinemode))
         self.form.checkFCStdOnly.toggled.connect(self.onCheckFCStdOnly)
@@ -260,6 +262,12 @@ class BIM_Library_TaskPanel:
         term = self.form.searchBox.text()
         if term:
             self.openUrl("https://www.bimtool.com/Catalog.aspx?criterio="+self.urlencode(term))
+
+    def on3DFindIt(self):
+
+        term = self.form.searchBox.text()
+        if term:
+            self.openUrl("https://www.3dfindit.com/textsearch?q="+self.urlencode(term))
 
     def needsFullSpace(self):
 
