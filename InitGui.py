@@ -66,6 +66,12 @@ static char * IFC_xpm[] = {
         
         def QT_TRANSLATE_NOOP(scope, text):
             return text
+        
+        if hasattr(FreeCAD,"Qt"):
+            translate = FreeCAD.Qt.translate
+        else:
+            def translate(scope,text):
+                return text
 
         if not hasattr(Gui, "listCommands"):
             Gui.listCommands = Gui.Command.listAll
@@ -363,20 +369,20 @@ static char * IFC_xpm[] = {
         if "Arch_RebarTools" in self.bimtools_menu:
             self.bimtools_menu.remove("Arch_RebarTools")
 
-        self.appendMenu(QT_TRANSLATE_NOOP("BIM","&2D Drafting"),self.draftingtools)
-        self.appendMenu(QT_TRANSLATE_NOOP("BIM","&3D/BIM"),self.bimtools_menu)
+        self.appendMenu(translate("BIM","&2D Drafting"),self.draftingtools)
+        self.appendMenu(translate("BIM","&3D/BIM"),self.bimtools_menu)
         if self.rebar:
-            self.appendMenu([QT_TRANSLATE_NOOP("BIM","&3D/BIM"),QT_TRANSLATE_NOOP("Arch_RebarTools","Reinforcement tools")],self.rebar)
-        self.appendMenu(QT_TRANSLATE_NOOP("BIM","&Annotation"),self.annotationtools)
-        self.appendMenu(QT_TRANSLATE_NOOP("BIM","&Snapping"),self.snap)
-        self.appendMenu(QT_TRANSLATE_NOOP("BIM","&Modify"),self.modify)
-        self.appendMenu(QT_TRANSLATE_NOOP("BIM","&Manage"),self.manage)
+            self.appendMenu([translate("BIM","&3D/BIM"),QT_TRANSLATE_NOOP("Arch_RebarTools","Reinforcement tools")],self.rebar)
+        self.appendMenu(translate("BIM","&Annotation"),self.annotationtools)
+        self.appendMenu(translate("BIM","&Snapping"),self.snap)
+        self.appendMenu(translate("BIM","&Modify"),self.modify)
+        self.appendMenu(translate("BIM","&Manage"),self.manage)
         if flamingo:
-            self.appendMenu(QT_TRANSLATE_NOOP("BIM","&Flamingo"),flamingo)
+            self.appendMenu(translate("BIM","&Flamingo"),flamingo)
         if fasteners:
-            self.appendMenu(QT_TRANSLATE_NOOP("BIM","&Fasteners"),fasteners)
-        self.appendMenu(QT_TRANSLATE_NOOP("BIM","&Utils"),self.utils)
-        self.appendMenu([QT_TRANSLATE_NOOP("BIM","&Utils"),QT_TRANSLATE_NOOP("BIM","Nudge")],nudge)
+            self.appendMenu(translate("BIM","&Fasteners"),fasteners)
+        self.appendMenu(translate("BIM","&Utils"),self.utils)
+        self.appendMenu([translate("BIM","&Utils"),QT_TRANSLATE_NOOP("BIM","Nudge")],nudge)
         self.appendMenu("&Help",["BIM_Welcome","BIM_Help","BIM_Tutorial"])
 
 
