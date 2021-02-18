@@ -46,9 +46,9 @@ class Wall(ShapeGroup, IfcProduct):
     """
     def __init__(self, obj=None):
         super(Wall, self).__init__(obj)
-        # print("runing wall object init method\n")
+        # print("running wall object init method\n")
         if obj:
-            # print("runing obj init method")
+            # print("running obj init method")
 
             obj.Proxy = self
             self.Object = obj
@@ -336,7 +336,7 @@ class Wall(ShapeGroup, IfcProduct):
                     # subtraction object is inside the wall
                     relative_placement = o.Placement
                     if hasattr(o, "InList") and o.InList[0] != obj:
-                        # dont' remember why this is necessary...
+                        # don't remember why this is necessary...
                         relative_placement = o.InList[0].Placement.multiply(o.Placement)
                     cut_shape = o.Shape.copy()
                     cut_shape.Placement = relative_placement
