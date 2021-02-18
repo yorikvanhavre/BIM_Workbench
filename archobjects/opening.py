@@ -273,7 +273,7 @@ class Opening(ShapeGroup, IfcProduct):
                         f_shape = None
 
         if f_shape:
-            # set the correct placement of filling shape according to alignement and displacement
+            # set the correct placement of filling shape according to alignment and displacement
             if obj.FillAlignment == "Left":
                 f_shape.Placement.Base.y = obj.HostThickness.Value/2
             elif obj.FillAlignment == "Center":

@@ -34,9 +34,9 @@ class ArchView(object):
     A prototype for a new wall object for the Arch Workbench
     """
     def __init__(self, obj=None):
-        # print("runing wall object init method\n")
+        # print("running wall object init method\n")
         if obj:
-            # print("runing obj init method")
+            # print("running obj init method")
 
             obj.Proxy = self
             self.Object = obj
