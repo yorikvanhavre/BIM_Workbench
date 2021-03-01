@@ -118,9 +118,9 @@ class BIM_Setup:
             self.form.labelSnapTip.show()
         version = float(str(FreeCAD.Version()[0])+"."+str(FreeCAD.Version()[1]))
         if version < TARGETVERSION:
-            t = self.labelVersion.text
-            self.labelVersion.text = t.replace("%1",str(version)).replace("%2",str(TARGETVERSION))
-            self.labelVersion.show()
+            t = self.form.labelVersion.text
+            self.form.labelVersion.text = t.replace("%1",str(version)).replace("%2",str(TARGETVERSION))
+            self.form.labelVersion.show()
 
         # show dialog and exit if cancelled
         FreeCADGui.BIMSetupDialog = True # this is there to be easily detected by the BIM tutorial
