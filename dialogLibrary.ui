@@ -199,6 +199,19 @@
        </property>
       </widget>
      </item>
+     <item>
+      <widget class="QPushButton" name="buttonGrabCad">
+       <property name="minimumSize">
+        <size>
+         <width>16</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
     </layout>
    </item>
   </layout>
