@@ -122,6 +122,7 @@ static char * IFC_xpm[] = {
         FreeCADGui.addCommand('BIM_Ungroup',BimCommands.BIM_Ungroup())
         FreeCADGui.addCommand('BIM_Rewire',BimCommands.BIM_Rewire())
         FreeCADGui.addCommand('BIM_Door',BimCommands.BIM_Door())
+        FreeCADGui.addCommand('BIM_Leader',BimCommands.BIM_Leader())
 
         FreeCADGui.addCommand('BIM_SetWPTop',BimWorkingPlaneTools.BIM_SetWPTop())
         FreeCADGui.addCommand('BIM_SetWPFront',BimWorkingPlaneTools.BIM_SetWPFront())
@@ -183,7 +184,7 @@ static char * IFC_xpm[] = {
                               "Draft_Point"]
 
         self.annotationtools = ["BIM_ImagePlane", "Draft_Text", "Draft_ShapeString", "Draft_Dimension",
-                                "Draft_Label","Arch_Axis","Arch_AxisSystem","Arch_Grid",
+                                "BIM_Leader","Draft_Label","Arch_Axis","Arch_AxisSystem","Arch_Grid",
                                 "Arch_SectionPlane","BIM_TDPage","BIM_TDArchView"]
 
         self.bimtools = ["Arch_Site","Arch_Building","Arch_Floor","Arch_Space","Separator",
