@@ -28,6 +28,7 @@ import os
 import FreeCAD
 import DraftVecUtils
 from BimTranslateUtils import *
+from draftguitools import gui_dimensions
 
 #Part_Builder
 
@@ -40,9 +41,9 @@ class BIM_Builder:
                 'MenuText': QT_TRANSLATE_NOOP("Part_Builder", "Shape builder..."),
                 'ToolTip' : QT_TRANSLATE_NOOP("Part_Builder", "Advanced utility to create shapes"),
                 }
-    
+
     def Activated(self):
-        
+
         import FreeCADGui
         import PartGui
         FreeCADGui.runCommand("Part_Builder")
@@ -57,9 +58,9 @@ class BIM_Offset2D:
                 'MenuText': QT_TRANSLATE_NOOP("Part_Offset2D", "2D Offset..."),
                 'ToolTip' : QT_TRANSLATE_NOOP("Part_Offset2D", "Utility to offset planar shapes"),
                 }
-    
+
     def Activated(self):
-        
+
         import FreeCADGui
         import PartGui
         FreeCADGui.runCommand("Part_Offset2D")
@@ -73,9 +74,9 @@ class BIM_Extrude:
                 'MenuText': QT_TRANSLATE_NOOP("Part_Extrude", "Extrude..."),
                 'ToolTip' : QT_TRANSLATE_NOOP("Part_Extrude", "Extrude a selected sketch"),
                 }
-    
+
     def Activated(self):
-        
+
         import FreeCADGui
         import PartGui
         FreeCADGui.runCommand("Part_Extrude")
@@ -89,9 +90,9 @@ class BIM_Cut:
                 'MenuText': QT_TRANSLATE_NOOP("BIM_Cut", "Difference"),
                 'ToolTip' : QT_TRANSLATE_NOOP("BIM_Cut", "Make a difference between two shapes"),
                 }
-    
+
     def Activated(self):
-        
+
         import FreeCADGui
         import PartGui
         FreeCADGui.runCommand("Part_Cut")
@@ -105,9 +106,9 @@ class BIM_Fuse:
                 'MenuText': QT_TRANSLATE_NOOP("Part_Fuse", "Union"),
                 'ToolTip' : QT_TRANSLATE_NOOP("Part_Fuse", "Make a union of several shapes"),
                 }
-    
+
     def Activated(self):
-        
+
         import FreeCADGui
         import PartGui
         FreeCADGui.runCommand("Part_Fuse")
@@ -121,9 +122,9 @@ class BIM_Common:
                 'MenuText': QT_TRANSLATE_NOOP("Part_Common", "Intersection"),
                 'ToolTip' : QT_TRANSLATE_NOOP("Part_Common", "Make an intersection of two shapes"),
                 }
-    
+
     def Activated(self):
-        
+
         import FreeCADGui
         import PartGui
         FreeCADGui.runCommand("Part_Common")
@@ -137,9 +138,9 @@ class BIM_Compound:
                 'MenuText': QT_TRANSLATE_NOOP("Part_Compound", "Make compound"),
                 'ToolTip' : QT_TRANSLATE_NOOP("Part_Compound", "Make a compound of several shapes"),
                 }
-    
+
     def Activated(self):
-        
+
         import FreeCADGui
         import PartGui
         FreeCADGui.runCommand("Part_Compound")
@@ -153,13 +154,13 @@ class BIM_SimpleCopy:
                 'MenuText': QT_TRANSLATE_NOOP("Part_SimpleCopy", "Create simple copy"),
                 'ToolTip' : QT_TRANSLATE_NOOP("Part_SimpleCopy", "Create a simple non-parametric copy"),
                 }
-    
+
     def Activated(self):
-        
+
         import FreeCADGui
         import PartGui
         FreeCADGui.runCommand("Part_SimpleCopy")
-        
+
 
 class BIM_TDPage:
 
@@ -310,8 +311,8 @@ class BIM_ImagePlane:
         self.basepoint = None
         self.opposite = None
         (filename, _filter) = QtGui.QFileDialog.getOpenFileName(QtGui.QApplication.activeWindow(),
-                                                          translate("BIM","Select image"), 
-                                                          None, 
+                                                          translate("BIM","Select image"),
+                                                          None,
                                                           translate("BIM","Image file (*.png *.jpg *.bmp)"))
         if filename:
             self.filename = filename
@@ -362,3 +363,65 @@ class BIM_ImagePlane:
             image.YSize = height
             FreeCAD.ActiveDocument.commitTransaction()
             FreeCAD.ActiveDocument.recompute()
+
+
+class BIM_DimensionAligned(gui_dimensions.Dimension):
+
+
+    def __init__(self):
+
+        super(BIM_DimensionAligned,self).__init__()
+
+    def GetResources(self):
+
+        return {'Pixmap'  : os.path.join(os.path.dirname(__file__),"icons","BIM_DimensionAligned.svg"),
+                'MenuText': QT_TRANSLATE_NOOP("BIM_DimensionAligned", "Aligned dimension"),
+                'ToolTip' : QT_TRANSLATE_NOOP("BIM_DimensionAligned", "Create an aligned dimension"),
+                'Accel': "D, I",
+                }
+
+
+class BIM_DimensionHorizontal(gui_dimensions.Dimension):
+
+
+    def __init__(self):
+
+        super(BIM_DimensionHorizontal,self).__init__()
+
+
+    def GetResources(self):
+
+        return {'Pixmap'  : os.path.join(os.path.dirname(__file__),"icons","BIM_DimensionHorizontal.svg"),
+                'MenuText': QT_TRANSLATE_NOOP("BIM_DimensionHorizontal", "Horizontal dimension"),
+                'ToolTip' : QT_TRANSLATE_NOOP("BIM_DimensionHorizontal", "Create an horizontal dimension"),
+                'Accel': "D, H",
+                }
+
+    def Activated(self):
+
+        self.dir = FreeCAD.DraftWorkingPlane.u
+        super(BIM_DimensionHorizontal,self).Activated()
+
+
+
+class BIM_DimensionVertical(gui_dimensions.Dimension):
+
+
+    def __init__(self):
+
+        super(BIM_DimensionVertical,self).__init__()
+
+    def GetResources(self):
+
+        return {'Pixmap'  : os.path.join(os.path.dirname(__file__),"icons","BIM_DimensionVertical.svg"),
+                'MenuText': QT_TRANSLATE_NOOP("BIM_DimensionVertical", "Vertical dimension"),
+                'ToolTip' : QT_TRANSLATE_NOOP("BIM_DimensionVertical", "Create a vertical dimension"),
+                'Accel': "D, V",
+                }
+
+    def Activated(self):
+
+        self.dir = FreeCAD.DraftWorkingPlane.v
+        super(BIM_DimensionVertical,self).Activated()
+
+
