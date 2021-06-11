@@ -66,6 +66,10 @@ def setStatusIcons(show=True):
 
         FreeCADGui.runCommand("BIM_Views")
 
+    def toggleBackground(state):
+
+        FreeCADGui.runCommand("BIM_Background")
+
     def addonMgr():
 
         mw = FreeCADGui.getMainWindow()
@@ -272,6 +276,18 @@ def setStatusIcons(show=True):
                 statuswidget.bimviewsbutton = bimviewsbutton
                 QtCore.QObject.connect(bimviewsbutton,QtCore.SIGNAL("clicked(bool)"),toggleBimViews)
                 statuswidget.addWidget(bimviewsbutton)
+
+                # background toggle button
+                bgbutton = QtGui.QPushButton()
+                bwidth = bgbutton.fontMetrics().boundingRect("AAAA").width()
+                bgbutton.setMaximumWidth(bwidth)
+                bgbutton.setIcon(QtGui.QIcon(os.path.join(os.path.dirname(__file__),"icons","BIM_Background.svg")))
+                bgbutton.setText("")
+                bgbutton.setToolTip(translate("BIM","Toggle 3D view background between simple and gradient"))
+                bgbutton.setFlat(True)
+                statuswidget.bgbutton = bgbutton
+                QtCore.QObject.connect(bgbutton,QtCore.SIGNAL("clicked(bool)"),toggleBackground)
+                statuswidget.addWidget(bgbutton)
 
                 # update notifier button (starts hidden)
                 updatebutton = QtGui.QPushButton()

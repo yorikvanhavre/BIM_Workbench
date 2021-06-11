@@ -338,10 +338,10 @@ class BIM_Rewire:
 
 
 class BIM_Leader(gui_lines.Line):
-    
-    
+
+
     def __init__(self):
-        
+
         super(BIM_Leader, self).__init__(wiremode=True)
 
     def GetResources(self):
@@ -366,7 +366,10 @@ class BIM_Leader(gui_lines.Line):
                 FreeCADGui.Snapper.restack()
             self.oldWP = None
         rot, sup, pts, fil = self.getStrings()
-        base = DraftVecUtils.toString(self.node[0])
+        if self.node:
+            base = DraftVecUtils.toString(self.node[0])
+        else:
+            base = DraftVecUtils.toString(FreeCAD.Vector())
         color = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").GetUnsigned("DefaultTextColor",255)
         r = ((color>>24)&0xFF)/255.0
         g = ((color>>16)&0xFF)/255.0
@@ -387,3 +390,23 @@ class BIM_Leader(gui_lines.Line):
             self.Activated()
 
 
+class BIM_Background:
+
+
+    def GetResources(self):
+
+        return {'Pixmap': os.path.join(os.path.dirname(__file__),"icons","BIM_Background.svg"),
+                'MenuText': QT_TRANSLATE_NOOP("BIM_Background", "Toggle background"),
+                'ToolTip': QT_TRANSLATE_NOOP("BIM_Background", "Toggles the background of the 3D view between simple and gradient")}
+
+    def Activated(self):
+
+        import FreeCADGui
+        param = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/View")
+        if param.GetBool("Simple",True):
+            param.SetBool("Simple",False)
+            param.SetBool("Gradient",True)
+        else:
+            param.SetBool("Simple",True)
+            param.SetBool("Gradient",False)
+        FreeCADGui.updateGui()

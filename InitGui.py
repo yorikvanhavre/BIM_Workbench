@@ -123,6 +123,7 @@ static char * IFC_xpm[] = {
         FreeCADGui.addCommand('BIM_Rewire',BimCommands.BIM_Rewire())
         FreeCADGui.addCommand('BIM_Door',BimCommands.BIM_Door())
         FreeCADGui.addCommand('BIM_Leader',BimCommands.BIM_Leader())
+        FreeCADGui.addCommand('BIM_Background',BimCommands.BIM_Background())
 
         FreeCADGui.addCommand('BIM_SetWPTop',BimWorkingPlaneTools.BIM_SetWPTop())
         FreeCADGui.addCommand('BIM_SetWPFront',BimWorkingPlaneTools.BIM_SetWPFront())
@@ -180,13 +181,14 @@ static char * IFC_xpm[] = {
         FreeCADGui.addCommand('BIM_DimensionAligned',BimWrappedTools.BIM_DimensionAligned())
         FreeCADGui.addCommand('BIM_DimensionHorizontal',BimWrappedTools.BIM_DimensionHorizontal())
         FreeCADGui.addCommand('BIM_DimensionVertical',BimWrappedTools.BIM_DimensionVertical())
+        FreeCADGui.addCommand('BIM_Text',BimWrappedTools.BIM_Text())
 
         self.draftingtools = ["BIM_Sketch","Draft_Line","Draft_Wire","Draft_Circle",
                               "Draft_Arc","Draft_Arc_3Points","Draft_Ellipse",
                               "Draft_Polygon","Draft_Rectangle", "Draft_BSpline", "Draft_BezCurve",
                               "Draft_Point"]
 
-        self.annotationtools = ["BIM_ImagePlane", "Draft_Text", "Draft_ShapeString", "BIM_DimensionAligned",
+        self.annotationtools = ["BIM_ImagePlane", "BIM_Text", "Draft_ShapeString", "BIM_DimensionAligned",
                                 "BIM_DimensionHorizontal", "BIM_DimensionVertical",
                                 "BIM_Leader","Draft_Label","Arch_Axis","Arch_AxisSystem","Arch_Grid",
                                 "Arch_SectionPlane","BIM_TDPage","BIM_TDArchView"]

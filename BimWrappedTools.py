@@ -425,3 +425,56 @@ class BIM_DimensionVertical(gui_dimensions.Dimension):
         super(BIM_DimensionVertical,self).Activated()
 
 
+class BIM_Text:
+
+
+    def GetResources(self):
+
+        import Draft_rc
+        return {'Pixmap'  : "Draft_Text",
+                'MenuText': QT_TRANSLATE_NOOP("BIM_Text", "Text"),
+                'ToolTip' : QT_TRANSLATE_NOOP("BIM_Text", "Create a text in the current 3D view or TechDraw page"),
+                'Accel': "T, E",
+                }
+
+    def Activated(self):
+
+        import FreeCADGui
+        import draftutils.utils as utils
+
+        self.view = FreeCADGui.ActiveDocument.ActiveView
+        if hasattr(self.view,"getPage") and self.view.getPage():
+            self.text = ""
+            FreeCADGui.draftToolBar.sourceCmd = self
+            FreeCADGui.draftToolBar.taskUi()
+            FreeCADGui.draftToolBar.textUi()
+        else:
+            FreeCADGui.runCommand("Draft_Text")
+
+    def createObject(self):
+
+        import TechDraw
+
+        if self.text:
+            page = self.view.getPage()
+            pagescale = page.Scale
+            if not pagescale:
+                pagescale = 1
+            anno = FreeCAD.ActiveDocument.addObject('TechDraw::DrawViewAnnotation','Annotation')
+            anno.Text = self.text
+            page.addView(anno)
+            param = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft")
+            anno.TextSize = param.GetFloat("textheight",10)*pagescale
+            anno.Font = param.GetString("textfont","Sans")
+            c = param.GetUnsigned("DefaultTextColor",255)
+            r = ((c>>24)&0xFF)/255.0
+            g = ((c>>16)&0xFF)/255.0
+            b = ((c>>8)&0xFF)/255.0
+            anno.TextColor = (r,g,b)
+            self.finish()
+
+    def finish(self,arg=False):
+
+        import FreeCADGui
+        FreeCADGui.draftToolBar.sourceCmd = None
+        FreeCADGui.draftToolBar.offUi()

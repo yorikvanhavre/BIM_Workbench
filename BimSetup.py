@@ -192,6 +192,8 @@ class BIM_Setup:
         FreeCAD.ParamGet("User parameter:BaseApp/Preferences/View").SetUnsigned("ConstructionColor",self.form.colorButtonConstruction.property("color").rgb()<<8)
         height = self.form.settingCameraHeight.value()
         FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").SetInt("defaultCameraHeight",height)
+        FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").SetUnsigned("DefaultTextColor",self.form.colorButtonText.property("color").rgb()<<8)
+        FreeCAD.ParamGet("User parameter:BaseApp/Preferences/View").SetUnsigned("BackgroundColor",self.form.colorButtonSimple.property("color").rgb()<<8)
 
         # set the working plane
         if hasattr(FreeCAD,"DraftWorkingPlane") and hasattr(FreeCADGui,"draftToolBar"):
@@ -363,6 +365,8 @@ class BIM_Setup:
             colHelp = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Arch").GetUnsigned("ColorHelpers",674321151)
             colConst = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").GetUnsigned("constructioncolor",746455039)
             height = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").GetInt("defaultCameraHeight",5)
+            colSimple = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/View").GetUnsigned("BackgroundColor",4294967295)
+            colText = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").GetUnsigned("DefaultTextColor",255)
 
         if unit != None:
             self.form.settingUnits.setCurrentIndex(unit)
@@ -406,6 +410,10 @@ class BIM_Setup:
             self.form.colorButtonHelpers.setProperty("color",getPrefColor(colHelp))
         if colConst != None:
             self.form.colorButtonConstruction.setProperty("color",getPrefColor(colConst))
+        if colSimple != None:
+            self.form.colorButtonSimple.setProperty("color",getPrefColor(colSimple))
+        if colText != None:
+            self.form.colorButtonText.setProperty("color",getPrefColor(colText))
         if height:
             self.form.settingCameraHeight.setValue(height)
         # TODO - antialiasing?
