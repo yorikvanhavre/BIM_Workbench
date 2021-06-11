@@ -1128,20 +1128,21 @@ class WallGuiTools(GuiTools):
                 Draft.rotate(obj, math.degrees(new_angle - current_angle), p1)
                 #obj.Proxy.set_last_point(obj, global_v) # this causes frequent hard crashes, probably to delay
 
+    def get_edit_point_context_menu(self, edit_command, obj, node_idx):
+        return [
+            ("reset end", lambda: self.handle_reset_end(edit_command, obj, node_idx)),
+            ("align", lambda: self.handle_align(edit_command, obj, node_idx)),
+        ]
 
-    def get_edit_point_context_menu(self, obj, node_idx):
-        """ Return a list of Draft_Edit context menu actions.
-        """
-        return ["reset end", "align"]
-    
+    def handle_reset_end(self, edit_command, obj, node_idx):
+        obj.Proxy.reset_end(obj, node_idx)
+        obj.recompute()
 
-    def evaluate_context_menu_action(self, edit_command, obj, node_idx, action):
-        """ Do something when a Draft_Edit context menu action is triggered over a node.
-        """
-        if action == "reset end":
-            obj.Proxy.reset_end(obj, node_idx)
-            obj.recompute()
-        elif action == "align":
-            edit_command.alt_edit_mode = 1
-            edit_command.startEditing(edit_command.event)
+    def handle_align(self, edit_command, obj, node_idx):
+        edit_command.alt_edit_mode = 1
+        edit_command.startEditing(obj, node_idx)
 
+    def get_edit_obj_context_menu(self, edit_command, obj, position):
+        # not supported yet
+        return [
+        ]
