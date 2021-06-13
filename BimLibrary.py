@@ -95,6 +95,7 @@ class BIM_Library_TaskPanel:
         self.form.tree.clicked[QtCore.QModelIndex].connect(self.clicked)
         self.form.buttonInsert.clicked.connect(self.insert)
         self.form.buttonLink.clicked.connect(self.linkfile)
+        self.form.buttonSave.clicked.connect(self.addtolibrary)
         self.modelmode = 1 # 0 = File search, 1 = Dir mode
 
         # Don't show columns for size, file type, and last modified
@@ -208,6 +209,31 @@ class BIM_Library_TaskPanel:
                     return self.linked
         except:
             print("It is not possible to link because the main document is closed.")
+
+    def addtolibrary(self):
+        import Part, Mesh, os
+        self.fileDialog = QtGui.QFileDialog.getSaveFileName(None,u"Save As", self.librarypath)
+        print(self.fileDialog[0])
+        # check if file saving has been canceled and save .fcstd, .step and .stl copies
+        if self.fileDialog[0] != "":
+            # remove the file extension from the file path
+            fileName = os.path.splitext(self.fileDialog[0])[0]
+            FCfilename = fileName + ".fcstd"
+            FreeCAD.ActiveDocument.saveAs(FCfilename)
+            if self.stepCB.isChecked() or self.stlCB.isChecked():
+                toexport = []
+                objs = FreeCAD.ActiveDocument.Objects
+                for obj in objs :
+                    if obj.ViewObject.Visibility == True :
+                        toexport.append(obj)
+                if self.stepCB.isChecked() and self.linked == False:
+                    STEPfilename = fileName + ".step"
+                    Part.export(toexport,STEPfilename)
+                if self.stlCB.isChecked() and self.linked == False:
+                    STLfilename = fileName + ".stl"
+                    Mesh.export(toexport,STLfilename)
+        return self.fileDialog[0]
+
     def onSearch(self,text):
 
         if text:

@@ -115,8 +115,12 @@
        </property>
       </widget>
      </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QPushButton" name="buttonSave">
      <property name="text">
-      <string>Insert &gt;&gt;</string>
+      <string>Save</string>
      </property>
     </widget>
    </item>
