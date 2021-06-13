@@ -49,6 +49,7 @@ class BIM_Library:
     def Activated(self):
 
         import FreeCADGui
+
         # trying to locate the parts library
         libok = False
         self.librarypath = FreeCAD.ParamGet('User parameter:Plugins/parts_library').GetString('destination','')
@@ -144,6 +145,7 @@ class BIM_Library_TaskPanel:
         self.stlCB = QtGui.QCheckBox('STL')
         self.stlCB.setCheckState(QtCore.Qt.Checked)
         self.stlCB.hide()
+
     def clicked(self, index, previewDocName = "Viewer"):
         import Part, FreeCADGui, zipfile, tempfile, os
         self.previewOn = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM").GetBool("3DPreview",False)
@@ -366,7 +368,7 @@ class BIM_Library_TaskPanel:
 
 
     def urlencode(self,text):
-        
+
         import sys
         print(text,type(text))
         if sys.version_info.major < 3:
@@ -436,6 +438,13 @@ class BIM_Library_TaskPanel:
 
     def insert(self, index=None):
         import FreeCADGui
+        # check if the main document is open
+        try:
+            FreeCAD.setActiveDocument(self.mainDocName)
+        except:
+            print("It is not possible to insert because the main document is closed.")
+            return
+        FreeCAD.closeDocument(self.previewDocName)
         if not index:
             index = self.form.tree.selectedIndexes()
             if not index:
@@ -760,6 +769,15 @@ class BIM_Library_TaskPanel:
             self.doc = FreeCAD.newDocument(self.previewDocName)
             FreeCADGui.ActiveDocument.ActiveView.viewIsometric()
             return self.previewDocName
+
+    def onCheckThumbnail(self,state):
+
+        """if the thumbnail checkbox is clicked"""
+
+        # save state
+        p = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM")
+        p.SetBool("SaveThumbnails",state)
+
     def onButtonOptions(self):
 
         """hides/shows the options"""
