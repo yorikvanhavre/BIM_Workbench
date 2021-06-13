@@ -149,6 +149,16 @@
        </widget>
       </item>
       <item>
+       <widget class="QCheckBox" name="checkThumbnail">
+        <property name="toolTip">
+         <string>Saves a thumbnail image when a .fcstd document is selected.</string>
+        </property>
+        <property name="text">
+         <string>Save thumbnails</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QCheckBox" name="checkFCStdOnly">
         <property name="enabled">
          <bool>false</bool>
@@ -165,7 +175,14 @@
     </widget>
    </item>
    <item>
-    <widget class="QPushButton" name="buttonInsert">
+    <layout class="QHBoxLayout" name="horizontalLayout_4" stretch="0,0">
+     <item>
+      <widget class="QPushButton" name="buttonInsert">
+       <property name="text">
+        <string>Insert &gt;&gt;</string>
+       </property>
+      </widget>
+     </item>
      <item>
       <widget class="QPushButton" name="buttonLink">
        <property name="text">
