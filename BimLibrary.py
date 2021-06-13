@@ -125,9 +125,15 @@ class BIM_Library_TaskPanel:
         self.form.checkWebSearch.setChecked(FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM").GetBool("LibraryWebSearch",False))
         self.form.check3DPreview.toggled.connect(self.onCheck3DPreview)
         self.form.check3DPreview.setChecked(FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM").GetBool("3DPreview",False))
+        self.form.checkThumbnail.toggled.connect(self.onCheckThumbnail)
+        self.form.checkThumbnail.setChecked(FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM").GetBool("SaveThumbnails",False))
         self.form.frameOptions.hide()
         self.form.buttonOptions.clicked.connect(self.onButtonOptions)
         self.form.buttonOptions.setText(translate("BIM","Options")+" ▼")
+        self.form.framePreview.hide()
+        self.form.buttonPreview.clicked.connect(self.onButtonPreview)
+        self.form.buttonPreview.setText(translate("BIM","Preview")+" ▼")
+
         self.fcstdCB = QtGui.QCheckBox('FCStd')
         self.fcstdCB.setCheckState(QtCore.Qt.Checked)
         self.fcstdCB.setEnabled(False)
@@ -172,6 +178,25 @@ class BIM_Library_TaskPanel:
                         FreeCAD.ActiveDocument.save()
         if self.linked == False:
             self.previousIndex = self.path
+
+        # create a 2D image preview
+        if self.path.lower().endswith(".fcstd"):
+            zfile=zipfile.ZipFile(self.path)
+            files=zfile.namelist()
+            # check for meta-file if it's really a FreeCAD document
+            if files[0] == "Document.xml":
+                image="thumbnails/Thumbnail.png"
+                if image in files:
+                    image=zfile.read(image)
+                    thumbfile = tempfile.mkstemp(suffix='.png')[1]
+                    thumb = open(thumbfile,"wb")
+                    thumb.write(image)
+                    thumb.close()
+                    im = QtGui.QPixmap(thumbfile)
+                    self.form.framePreview.setPixmap(im)
+                    return self.previewDocName, self.previousIndex, self.linked
+        self.form.framePreview.clear()
+        return self.previewDocName, self.previousIndex, self.linked
 
     def linkfile(self, index):
         import FreeCAD, FreeCADGui
@@ -745,6 +770,17 @@ class BIM_Library_TaskPanel:
         else:
             self.form.frameOptions.show()
             self.form.buttonOptions.setText(translate("BIM","Options")+" ▲")
+
+    def onButtonPreview(self):
+
+        """hides/shows the preview"""
+
+        if self.form.framePreview.isVisible():
+            self.form.framePreview.hide()
+            self.form.buttonPreview.setText(translate("BIM","Preview")+" ▼")
+        else:
+            self.form.framePreview.show()
+            self.form.buttonPreview.setText(translate("BIM","Preview")+" ▲")
 
 
 if FreeCAD.GuiUp:
