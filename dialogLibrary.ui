@@ -108,6 +108,13 @@
    </item>
    <item>
     <widget class="QPushButton" name="buttonInsert">
+     <item>
+      <widget class="QPushButton" name="buttonLink">
+       <property name="text">
+        <string>Link</string>
+       </property>
+      </widget>
+     </item>
      <property name="text">
       <string>Insert &gt;&gt;</string>
      </property>
