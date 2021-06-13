@@ -72,6 +72,12 @@ class BIM_Library_TaskPanel:
 
         from PySide import QtCore,QtGui
         import FreeCADGui
+
+        self.mainDocName = FreeCAD.Gui.ActiveDocument.Document.Name
+        self.previewDocName = "Viewer"
+
+        self.linked = False
+
         self.librarypath = FreeCAD.ParamGet('User parameter:Plugins/parts_library').GetString('destination','')
         self.form = FreeCADGui.PySideUic.loadUi(os.path.join(os.path.dirname(__file__),"dialogLibrary.ui"))
         self.form.setWindowIcon(QtGui.QIcon(os.path.join(os.path.dirname(__file__),"icons","BIM_Library.svg")))
@@ -86,7 +92,7 @@ class BIM_Library_TaskPanel:
         self.dirmodel.setNameFilters(FILTERS)
         self.dirmodel.setNameFilterDisables(False)
         self.form.tree.setModel(self.dirmodel)
-        self.form.tree.doubleClicked[QtCore.QModelIndex].connect(self.insert)
+        self.form.tree.clicked[QtCore.QModelIndex].connect(self.clicked)
         self.form.buttonInsert.clicked.connect(self.insert)
         self.modelmode = 1 # 0 = File search, 1 = Dir mode
 
@@ -115,9 +121,55 @@ class BIM_Library_TaskPanel:
         self.form.checkFCStdOnly.setChecked(FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM").GetBool("LibraryFCStdOnly",False))
         self.form.checkWebSearch.toggled.connect(self.onCheckWebSearch)
         self.form.checkWebSearch.setChecked(FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM").GetBool("LibraryWebSearch",False))
+        self.form.check3DPreview.toggled.connect(self.onCheck3DPreview)
+        self.form.check3DPreview.setChecked(FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM").GetBool("3DPreview",False))
         self.form.frameOptions.hide()
         self.form.buttonOptions.clicked.connect(self.onButtonOptions)
         self.form.buttonOptions.setText(translate("BIM","Options")+" ▼")
+        self.fcstdCB = QtGui.QCheckBox('FCStd')
+        self.fcstdCB.setCheckState(QtCore.Qt.Checked)
+        self.fcstdCB.setEnabled(False)
+        self.fcstdCB.hide()
+        self.stepCB = QtGui.QCheckBox('STEP')
+        self.stepCB.setCheckState(QtCore.Qt.Checked)
+        self.stepCB.hide()
+        self.stlCB = QtGui.QCheckBox('STL')
+        self.stlCB.setCheckState(QtCore.Qt.Checked)
+        self.stlCB.hide()
+    def clicked(self, index, previewDocName = "Viewer"):
+        import Part, FreeCADGui, zipfile, tempfile, os
+        self.previewOn = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM").GetBool("3DPreview",False)
+        try:
+            self.path = self.dirmodel.filePath(index)
+        except:
+            self.path = self.previousIndex
+            print(self.path)
+        self.isFile = os.path.isfile(self.path)
+        # if the 3D preview checkbox is on ticked, show the preview
+        if self.previewOn == True or self.linked == True:
+            if self.isFile == True:
+                # close a non linked preview document
+                if self.linked == False:
+                    try:
+                        FreeCAD.closeDocument(self.previewDocName)
+                    except:
+                        pass
+                # create different kinds of previews based on file type
+                if self.path.lower().endswith(".stp") or self.path.lower().endswith(".step") or self.path.lower().endswith(".brp") or self.path.lower().endswith(".brep"):
+                    self.previewDocName = "Viewer"
+                    FreeCAD.newDocument(self.previewDocName)
+                    FreeCAD.setActiveDocument(self.previewDocName)
+                    Part.show(Part.read(self.path))
+                    FreeCADGui.SendMsgToActiveView("ViewFit")
+                elif self.path.lower().endswith(".fcstd"):
+                    openedDoc = FreeCAD.openDocument(self.path)
+                    FreeCADGui.SendMsgToActiveView("ViewFit")
+                    self.previewDocName = FreeCAD.ActiveDocument.Name
+                    thumbnailSave = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM").GetBool("SaveThumbnails",False)
+                    if thumbnailSave == True:
+                        FreeCAD.ActiveDocument.save()
+        if self.linked == False:
+            self.previousIndex = self.path
 
     def onSearch(self,text):
 
@@ -602,6 +654,24 @@ class BIM_Library_TaskPanel:
         p = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM")
         p.SetBool("LibraryWebSearch",state)
 
+    def onCheck3DPreview(self,state):
+
+        """if the 3D preview checkbox is clicked"""
+
+        import FreeCADGui
+        # save state
+        p = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM")
+        p.SetBool("3DPreview",state)
+        self.previewOn = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM").GetBool("3DPreview",False)
+        try:
+            FreeCAD.closeDocument(self.previewDocName)
+        except:
+            pass
+        if self.previewOn == True:
+            self.previewDocName = "Viewer"
+            self.doc = FreeCAD.newDocument(self.previewDocName)
+            FreeCADGui.ActiveDocument.ActiveView.viewIsometric()
+            return self.previewDocName
     def onButtonOptions(self):
 
         """hides/shows the options"""

@@ -81,6 +81,16 @@
        </widget>
       </item>
       <item>
+       <widget class="QCheckBox" name="check3DPreview">
+        <property name="toolTip">
+         <string>Opens a 3D preview of the selected file.</string>
+        </property>
+        <property name="text">
+         <string>Preview model in 3D view</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QCheckBox" name="checkFCStdOnly">
         <property name="enabled">
          <bool>false</bool>
