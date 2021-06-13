@@ -94,6 +94,7 @@ class BIM_Library_TaskPanel:
         self.form.tree.setModel(self.dirmodel)
         self.form.tree.clicked[QtCore.QModelIndex].connect(self.clicked)
         self.form.buttonInsert.clicked.connect(self.insert)
+        self.form.buttonLink.clicked.connect(self.linkfile)
         self.modelmode = 1 # 0 = File search, 1 = Dir mode
 
         # Don't show columns for size, file type, and last modified
@@ -171,6 +172,42 @@ class BIM_Library_TaskPanel:
         if self.linked == False:
             self.previousIndex = self.path
 
+    def linkfile(self, index):
+        import FreeCAD, FreeCADGui
+        # check if the main document is open
+        try:
+            # check if the working document is saved
+            if FreeCAD.getDocument(self.mainDocName).FileName == "":
+                print("Please save the working file before linking.")
+            else:
+                self.previewOn = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM").GetBool("3DPreview",False)
+                self.linked = True
+                if self.previewOn != True:
+                    BIM_Library_TaskPanel.clicked(self, index, previewDocName = "Viewer")
+                self.librarypath = ""
+                # save the file prior to linking
+                BIM_Library_TaskPanel.addtolibrary(self)
+                # link a document if it has been previously saved
+                if self.fileDialog[0] != "":
+                    FreeCADGui.Selection.clearSelection()
+                    # link only root objects
+                    for obj in FreeCAD.ActiveDocument.RootObjects:
+                        FreeCADGui.Selection.addSelection(obj)
+                    objects = FreeCADGui.Selection.getSelection()
+                    # tries to create a link for each object in the selection
+                    for obj in objects:
+                        try:
+                            link = FreeCAD.getDocument(self.mainDocName).addObject('App::Link','Link').setLink(obj)
+                            #FreeCAD.getDocument(self.mainDocName).getObject('Link').Label=FreeCAD.ActiveDocument.ActiveObject.Label
+                            FreeCAD.getDocument(self.mainDocName).getObject(link).Label=FreeCAD.ActiveDocument.ActiveObject.Label
+                        except:
+                            pass
+                    FreeCAD.setActiveDocument(self.mainDocName)
+                    self.librarypath = FreeCAD.ParamGet('User parameter:Plugins/parts_library').GetString('destination','')
+                    self.linked = False
+                    return self.linked
+        except:
+            print("It is not possible to link because the main document is closed.")
     def onSearch(self,text):
 
         if text:
