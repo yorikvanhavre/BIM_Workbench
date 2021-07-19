@@ -279,6 +279,7 @@ class BIM_Setup:
         colHelp = None
         colConst = None
         height = None
+        colSimple = None
 
         if preset == 0:
             # the "Choose..." item from the presets box. Do nothing
