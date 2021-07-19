@@ -531,7 +531,7 @@ class Wall(ShapeGroup, IfcProduct):
                     1 for last end
                     2 for both ends
         """
-        if obj == None:
+        if obj is None:
             print("Cannot recompute ends of a None object")
             return
         if obj.JoinFirstEndTo == obj.JoinLastEndTo and obj.JoinFirstEndTo != "":
@@ -539,7 +539,7 @@ class Wall(ShapeGroup, IfcProduct):
             return
         if end_idx == 0:
             target = App.ActiveDocument.getObject(obj.JoinFirstEndTo)
-            if target == obj or target == None:
+            if target == obj or target is None:
                 return
             if self.is_wall_joinable(obj):
                 if self.is_wall_joinable(target):
@@ -549,7 +549,7 @@ class Wall(ShapeGroup, IfcProduct):
 
         if end_idx == 1:
             target = App.ActiveDocument.getObject(obj.JoinLastEndTo)
-            if target == obj or target == None:
+            if target == obj or target is None:
                 return
             if self.is_wall_joinable(obj):
                 if self.is_wall_joinable(target):
