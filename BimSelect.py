@@ -87,7 +87,7 @@ class Setup():
 
         from pivy import coin
         cos = CyclicObjectSelector()
-        if doc and doc.ActiveView:
+        if doc and doc.ActiveView and hasattr(doc.ActiveView,"getSceneGraph"):
             self.callback = doc.ActiveView.addEventCallbackPivy(coin.SoMouseButtonEvent.getClassTypeId(), cos.selectObject)
             self.callback = doc.ActiveView.addEventCallbackPivy(coin.SoKeyboardEvent.getClassTypeId(), cos.cycleSelectableObjects)
     
