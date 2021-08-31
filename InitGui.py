@@ -106,6 +106,7 @@ static char * IFC_xpm[] = {
         import BimStatusBar
         import BimWorkingPlaneTools
         import BimWrappedTools
+        import BimReorder
 
         # add translations path
         FreeCADGui.addLanguagePath(BimStatusBar.getLanguagePath())
@@ -124,6 +125,7 @@ static char * IFC_xpm[] = {
         FreeCADGui.addCommand('BIM_Door',BimCommands.BIM_Door())
         FreeCADGui.addCommand('BIM_Leader',BimCommands.BIM_Leader())
         FreeCADGui.addCommand('BIM_Background',BimCommands.BIM_Background())
+        FreeCADGui.addCommand('BIM_MoveView',BimCommands.BIM_MoveView())
 
         FreeCADGui.addCommand('BIM_SetWPTop',BimWorkingPlaneTools.BIM_SetWPTop())
         FreeCADGui.addCommand('BIM_SetWPFront',BimWorkingPlaneTools.BIM_SetWPFront())
@@ -165,6 +167,7 @@ static char * IFC_xpm[] = {
         FreeCADGui.addCommand('BIM_IfcExplorer',BimIfcExplorer.BIM_IfcExplorer())
         FreeCADGui.addCommand('BIM_Layers',BimLayers.BIM_Layers())
         FreeCADGui.addCommand('BIM_Reextrude',BimReextrude.BIM_Reextrude())
+        FreeCADGui.addCommand('BIM_Reorder',BimReorder.BIM_Reorder())
         
         # wrapped tools from other workbenches
         FreeCADGui.addCommand('BIM_Builder',BimWrappedTools.BIM_Builder())
@@ -182,6 +185,7 @@ static char * IFC_xpm[] = {
         FreeCADGui.addCommand('BIM_DimensionHorizontal',BimWrappedTools.BIM_DimensionHorizontal())
         FreeCADGui.addCommand('BIM_DimensionVertical',BimWrappedTools.BIM_DimensionVertical())
         FreeCADGui.addCommand('BIM_Text',BimWrappedTools.BIM_Text())
+        FreeCADGui.addCommand('BIM_Shape2DView',BimWrappedTools.BIM_Shape2DView())
 
         self.draftingtools = ["BIM_Sketch","Draft_Line","Draft_Wire","Draft_Circle",
                               "Draft_Arc","Draft_Arc_3Points","Draft_Ellipse",
@@ -191,7 +195,7 @@ static char * IFC_xpm[] = {
         self.annotationtools = ["BIM_ImagePlane", "BIM_Text", "Draft_ShapeString", "BIM_DimensionAligned",
                                 "BIM_DimensionHorizontal", "BIM_DimensionVertical",
                                 "BIM_Leader","Draft_Label","Arch_Axis","Arch_AxisSystem","Arch_Grid",
-                                "Arch_SectionPlane","BIM_TDPage","BIM_TDArchView"]
+                                "Arch_SectionPlane","BIM_TDPage","BIM_TDArchView","BIM_Shape2DView"]
 
         self.bimtools = ["Arch_Site","Arch_Building","Arch_Floor","Arch_Space","Separator",
                          "Arch_Wall","BIM_Column","BIM_Beam","BIM_Slab","Arch_Rebar","BIM_Door","Arch_Window","Arch_Pipe",
@@ -204,7 +208,7 @@ static char * IFC_xpm[] = {
                        "Draft_Draft2Sketch","Arch_CutPlane","Arch_Add","Arch_Remove","BIM_Reextrude",
                        "Draft_Array","Draft_PathArray","Draft_PointArray",
                        "Draft_Mirror","BIM_Extrude","BIM_Cut","BIM_Fuse","BIM_Common","BIM_Compound",
-                       "BIM_SimpleCopy","Draft_Shape2DView"]
+                       "BIM_SimpleCopy"]
 
         self.snap = ['Draft_ToggleGrid','Draft_Snap_Lock','Draft_Snap_Midpoint','Draft_Snap_Perpendicular',
                      'Draft_Snap_Grid','Draft_Snap_Intersection','Draft_Snap_Parallel',
@@ -542,6 +546,13 @@ static char * IFC_xpm[] = {
                     break
             if allclones:
                 self.appendContextMenu("",["BIM_ResetCloneColors"])
+            if len(FreeCADGui.Selection.getSelection()) == 1:
+                obj = FreeCADGui.Selection.getSelection()[0]
+                if hasattr(obj,"Group"):
+                    if obj.getTypeIdOfProperty("Group") == "App::PropertyLinkList":
+                        self.appendContextMenu("",["BIM_Reorder"])
+                if obj.isDerivedFrom("TechDraw::DrawView"):
+                    self.appendContextMenu("",["BIM_MoveView"])
 
 
 
