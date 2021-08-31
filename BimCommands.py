@@ -410,3 +410,39 @@ class BIM_Background:
             param.SetBool("Simple",True)
             param.SetBool("Gradient",False)
         FreeCADGui.updateGui()
+
+
+class BIM_MoveView:
+
+
+    def GetResources(self):
+
+        return {'Pixmap': os.path.join(os.path.dirname(__file__),"icons","BIM_MoveView.svg"),
+                'MenuText': QT_TRANSLATE_NOOP("BIM_MoveView", "Move view..."),
+                'ToolTip': QT_TRANSLATE_NOOP("BIM_MoveView", "Moves this view to an existing page")}
+
+    def Activated(self):
+
+        import FreeCADGui
+        self.selection = FreeCADGui.Selection.getSelection()
+        self.pages = FreeCAD.ActiveDocument.findObjects(Type="TechDraw::DrawPage")
+        self.labels = [obj.Label for obj in self.pages]
+        FreeCADGui.draftToolBar.sourceCmd = self
+        FreeCADGui.draftToolBar.popupMenu(self.labels)
+
+    def proceed(self, labelname):
+
+        import FreeCADGui
+        FreeCADGui.draftToolBar.sourceCmd = None
+        if labelname in self.labels:
+            page = self.pages[self.labels.index(labelname)]
+            for view in self.selection:
+                for p in view.InList:
+                    if hasattr(p,"Views") and view in p.Views:
+                        p.removeView(view)
+                x = view.X
+                y = view.Y
+                page.addView(view)
+                FreeCAD.ActiveDocument.recompute()
+                view.X = x
+                view.Y = y
