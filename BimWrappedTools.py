@@ -29,6 +29,7 @@ import FreeCAD
 import DraftVecUtils
 from BimTranslateUtils import *
 from draftguitools import gui_dimensions
+from draftguitools import gui_shape2dview
 
 #Part_Builder
 
@@ -478,3 +479,13 @@ class BIM_Text:
         import FreeCADGui
         FreeCADGui.draftToolBar.sourceCmd = None
         FreeCADGui.draftToolBar.offUi()
+
+
+class BIM_Shape2DView(gui_shape2dview.Shape2DView):
+
+    def GetResources(self):
+
+        d = super(BIM_Shape2DView,self).GetResources()
+        d["Pixmap"] = "Arch_BuildingPart_Tree"
+        d["MenuText"] = QT_TRANSLATE_NOOP("BIM_Shape2DView", "Shape-based view")
+        return d
