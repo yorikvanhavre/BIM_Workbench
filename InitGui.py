@@ -276,6 +276,8 @@ static char * IFC_xpm[] = {
             self.bimtools.insert(self.bimtools.index("Arch_Wall")+1,"Arch_CurtainWall")
         if "Arch_Profile" in Gui.listCommands():
             self.bimtools.insert(self.bimtools.index("BIM_Box"),"Arch_Profile")
+        if "Draft_Hatch" in Gui.listCommands():
+            self.draftingtools.append("Draft_Hatch")
 
         # load rebar tools (Reinforcement addon)
 
