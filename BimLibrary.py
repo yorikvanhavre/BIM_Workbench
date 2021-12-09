@@ -37,6 +37,18 @@ USE_API = True # True to use github API instead of web fetching... Way faster
 REFRESH_INTERVAL = 3600 # Min seconds between allowing a new API calls (3600 = one hour)
 
 
+# TODO as https://github.com/yorikvanhavre/BIM_Workbench/pull/77
+
+# Tooltips on the "Link" and "Save" buttons
+# I think the save button should be renamed a s"Save as..." (or maybe "Add to library...") so the user knows a new dialog will open
+# Either "Insert >>" should become "Insert", or "Link" should become "Link >>"
+# All the print() statements in your code should be replaced by FreeCAD.Console.PrintMessage() or FreeCAD.Console.PrintWarning() or FreeCAD.Console.PrintError() and the text should be placed in a translate() function and "\n" should be added to it. Example
+#    FreeCAD.Console.PrintError(translate("BIM","Please save the document first")+"\n")
+# I think the save button should go all the way to the bottom, below the search buttons, because it's a different kind of functionality than just "using" the library.
+# It would be cool if the preview image would have a max width of the available column width, so if the task column is smaller than the image, it gets smaller to fit the space. I don't remember exactly how to do that, but it should be findable in QDesigner
+# The open/closed state of the preview section should be remembered across sessions so when you use the tool again it is open if you left it open last time
+
+
 class BIM_Library:
 
 
