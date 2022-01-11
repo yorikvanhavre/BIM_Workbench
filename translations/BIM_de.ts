@@ -384,12 +384,12 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="BimLayers.py" line="241"/>
       <source>Name</source>
-      <translation type="unfinished">Name</translation>
+      <translation>Name</translation>
     </message>
     <message>
       <location filename="BimLayers.py" line="242"/>
       <source>Line width</source>
-      <translation type="unfinished">Line width</translation>
+      <translation>Linienbreite</translation>
     </message>
     <message>
       <location filename="BimLayers.py" line="243"/>
@@ -399,7 +399,7 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="BimLayers.py" line="244"/>
       <source>Line color</source>
-      <translation type="unfinished">Line color</translation>
+      <translation>Linienfarbe</translation>
     </message>
     <message>
       <location filename="BimLayers.py" line="245"/>
@@ -409,7 +409,7 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="BimLayers.py" line="246"/>
       <source>Transparency</source>
-      <translation type="unfinished">Transparency</translation>
+      <translation>Transparenz</translation>
     </message>
     <message>
       <location filename="BimLayers.py" line="247"/>
@@ -439,7 +439,7 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="BimIfcExplorer.py" line="98"/>
       <source>Value</source>
-      <translation type="unfinished">Value</translation>
+      <translation>Wert</translation>
     </message>
     <message>
       <location filename="BimIfcExplorer.py" line="97"/>

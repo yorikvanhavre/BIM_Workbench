@@ -2566,7 +2566,7 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="dialogProject.ui" line="130"/>
       <source>Create Site</source>
-      <translation>Vytvor terén</translation>
+      <translation>Vytvoriť terén</translation>
     </message>
     <message>
       <location filename="dialogProject.ui" line="142"/>
@@ -2761,7 +2761,7 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="dialogClassification.ui" line="122"/>
       <source>Object / Material</source>
-      <translation>Objekt / Materiál</translation>
+      <translation>Objekt / materiál</translation>
     </message>
     <message>
       <location filename="dialogClassification.ui" line="127"/>

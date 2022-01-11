@@ -269,7 +269,7 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="BimIfcProperties.py" line="580"/>
       <source>Please select or create a property set first in which the new property should be placed.</source>
-      <translation>Por favor, seleccione o cree un conjunto de propiedades en el que la nueva propiedad debe ser ubicada.</translation>
+      <translation>Primero seleccione o cree un conjunto de propiedades en el que se debe colocar la nueva propiedad.</translation>
     </message>
     <message>
       <location filename="BimIfcProperties.py" line="591"/>
@@ -319,7 +319,7 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="BimMaterial.py" line="129"/>
       <source>Merge duplicates</source>
-      <translation>Combinar duplicados</translation>
+      <translation>Fusionar duplicados</translation>
     </message>
     <message>
       <location filename="BimMaterial.py" line="135"/>
@@ -339,7 +339,7 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="BimMaterial.py" line="155"/>
       <source>Merge to...</source>
-      <translation>Combinar...</translation>
+      <translation>Fusionar a...</translation>
     </message>
     <message>
       <location filename="BimMaterial.py" line="157"/>
@@ -349,7 +349,7 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="BimMaterial.py" line="214"/>
       <source>Merging duplicate material</source>
-      <translation>Combinando material duplicado</translation>
+      <translation>Fusionar material duplicado</translation>
     </message>
     <message>
       <location filename="BimMaterial.py" line="220"/>
@@ -369,7 +369,7 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="BimMaterial.py" line="293"/>
       <source>Select material to merge to</source>
-      <translation>Seleccione el material a unir</translation>
+      <translation>Seleccionar material para fusionar</translation>
     </message>
     <message>
       <location filename="BimMaterial.py" line="327"/>
@@ -564,22 +564,22 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="BimLibrary.py" line="395"/>
       <source>Top right</source>
-      <translation>Parte superior derecha</translation>
+      <translation>Arriba a la derecha</translation>
     </message>
     <message>
       <location filename="BimLibrary.py" line="395"/>
       <source>Middle left</source>
-      <translation>En el centro a la izquierda</translation>
+      <translation>En el medio a la izquierda</translation>
     </message>
     <message>
       <location filename="BimLibrary.py" line="395"/>
       <source>Middle center</source>
-      <translation>En medio Centro</translation>
+      <translation>En medio al centro</translation>
     </message>
     <message>
       <location filename="BimLibrary.py" line="396"/>
       <source>Middle right</source>
-      <translation>En el centro a la derecha</translation>
+      <translation>En el medio a la derecha</translation>
     </message>
     <message>
       <location filename="BimLibrary.py" line="396"/>
@@ -644,7 +644,7 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="BimProject.py" line="123"/>
       <source>Building Outline</source>
-      <translation>Contorno del edificio</translation>
+      <translation>Perímetro del edificio</translation>
     </message>
     <message>
       <location filename="BimProject.py" line="128"/>
@@ -689,17 +689,17 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="BimProject.py" line="238"/>
       <source>Save preset</source>
-      <translation>Guardar preestablecido</translation>
+      <translation>Guardar preajuste</translation>
     </message>
     <message>
       <location filename="BimProject.py" line="238"/>
       <source>Preset name:</source>
-      <translation>Nombre de preselección:</translation>
+      <translation>Nombre de preajuste:</translation>
     </message>
     <message>
       <location filename="BimProject.py" line="289"/>
       <source>User preset...</source>
-      <translation>Preselección de usuario...</translation>
+      <translation>Preajuste de usuario...</translation>
     </message>
     <message>
       <location filename="BimProject.py" line="398"/>
@@ -724,7 +724,7 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="BimDiff.py" line="67"/>
       <source>The document currently viewed must be your main one. The other contains newer objects that you wish to merge into this one. Make sure only the objects you wish to compare are visible in both. Proceed?</source>
-      <translation>El documento que se ve actualmente debe ser su principal. El otro contiene objetos más recientes que desea fusionar en este. Asegúrese de que sólo los objetos que desea comparar son visibles en ambos. ¿Proceder?</translation>
+      <translation>El documento que se ve actualmente debe ser su principal. El otro contiene objetos más recientes que desea fusionar en éste. Asegúrese de que sólo los objetos que desea comparar son visibles en ambos. ¿Proceder?</translation>
     </message>
     <message>
       <location filename="BimDiff.py" line="248"/>
@@ -764,7 +764,7 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="BimDiff.py" line="335"/>
       <source>objects don&apos;t exist anymore in the new document. Move them to a &apos;To Delete&apos; group?</source>
-      <translation>los objetos ya no existen en el nuevo documento. ¿Moverlos al grupo &apos;Para eliminar&apos;?</translation>
+      <translation>los objetos ya no existen&apos; en el nuevo documento. ¿Moverlos al grupo &apos;Para eliminar&apos;?</translation>
     </message>
     <message>
       <location filename="BimDiff.py" line="341"/>
@@ -779,7 +779,7 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="BimDiff.py" line="363"/>
       <source>You need two documents open to run this tool. One which is your main document, and one that contains new objects that you wish to compare against the existing one. Make sure only the objects you wish to compare in both documents are visible.</source>
-      <translation>Necesitas dos documentos abiertos para ejecutar esta herramienta. Uno que es tu documento principal, y uno que contiene nuevos objetos que quieres comparar con el existente. Asegúrate de que sólo los objetos que deseas comparar en ambos documentos son visibles.</translation>
+      <translation>Necesitas dos documentos abiertos para ejecutar esta herramienta. Uno que es tu documento principal, y otro que contiene nuevos objetos que quieres comparar con el existente. Asegúrate de que sólo los objetos que deseas comparar en ambos documentos son visibles.</translation>
     </message>
     <message>
       <location filename="BimSetup.py" line="112"/>
@@ -819,7 +819,7 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="BimPreflight.py" line="149"/>
       <source>Passed</source>
-      <translation>Superado</translation>
+      <translation>Aprobado</translation>
     </message>
     <message>
       <location filename="BimPreflight.py" line="150"/>

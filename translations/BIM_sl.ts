@@ -6,42 +6,42 @@
     <message>
       <location filename="view_archview.py" line="63"/>
       <source>The display length of this section plane</source>
-      <translation type="unfinished">The display length of this section plane</translation>
+      <translation>Dolžina prikaza te prerezne ravnine</translation>
     </message>
     <message>
       <location filename="view_archview.py" line="69"/>
       <source>The display height of this section plane</source>
-      <translation type="unfinished">The display height of this section plane</translation>
+      <translation>Prikazana višina te prerezne ravnine</translation>
     </message>
     <message>
       <location filename="view_archview.py" line="75"/>
       <source>The size of the arrows of this section plane</source>
-      <translation type="unfinished">The size of the arrows of this section plane</translation>
+      <translation>Velikost puščic te prerezne ravnine</translation>
     </message>
     <message>
       <location filename="view_archview.py" line="78"/>
       <source>The transparency of this object</source>
-      <translation type="unfinished">The transparency of this object</translation>
+      <translation>Prozornost tega predmeta</translation>
     </message>
     <message>
       <location filename="view_archview.py" line="81"/>
       <source>The line width of this object</source>
-      <translation type="unfinished">The line width of this object</translation>
+      <translation>Debelina črt tega predmeta</translation>
     </message>
     <message>
       <location filename="view_archview.py" line="89"/>
       <source>Show the cut in the 3D view</source>
-      <translation type="unfinished">Show the cut in the 3D view</translation>
+      <translation>Prikaži prerez v pogledu 3D</translation>
     </message>
     <message>
       <location filename="view_archview.py" line="86"/>
       <source>The color of this object</source>
-      <translation type="unfinished">The color of this object</translation>
+      <translation>Barva tega predmeta</translation>
     </message>
     <message>
       <location filename="view_archview.py" line="91"/>
       <source>The distance between the cut plane and the actual view cut (keep this a very small value but not zero)</source>
-      <translation type="unfinished">The distance between the cut plane and the actual view cut (keep this a very small value but not zero)</translation>
+      <translation>Razdalja med rezalno ravnino in ravnino vidnega polja (razdalja naj bo majhna, vendar ne nič)</translation>
     </message>
     <message>
       <location filename="BimIfcProperties.py" line="351"/>
@@ -51,32 +51,32 @@
     <message>
       <location filename="archview.py" line="58"/>
       <source>The shape of this object</source>
-      <translation type="unfinished">The shape of this object</translation>
+      <translation>Oblika tega predmeta</translation>
     </message>
     <message>
       <location filename="archview.py" line="62"/>
       <source>The objects that must be considered by this section plane. Empty means the whole document.</source>
-      <translation type="unfinished">The objects that must be considered by this section plane. Empty means the whole document.</translation>
+      <translation>Predmeti, ki morajo biti v tej prerezni ravnini zajeti. Prazno pomeni celoten dokument.</translation>
     </message>
     <message>
       <location filename="archview.py" line="66"/>
       <source>If false, non-solids will be cut too, with possible wrong results.</source>
-      <translation type="unfinished">If false, non-solids will be cut too, with possible wrong results.</translation>
+      <translation>Če je Napak, bodo prerezani tudi netelesni predmeti z možnostjo napačnih rezultatov.</translation>
     </message>
     <message>
       <location filename="archview.py" line="71"/>
       <source>If True, resulting views will be clipped to the section plane area.</source>
-      <translation type="unfinished">If True, resulting views will be clipped to the section plane area.</translation>
+      <translation>Če drži, bodo dobljeni pogledi zamejeni s površino prerezne ravnine.</translation>
     </message>
     <message>
       <location filename="archview.py" line="75"/>
       <source>If true, the color of the objects material will be used to fill cut areas.</source>
-      <translation type="unfinished">If true, the color of the objects material will be used to fill cut areas.</translation>
+      <translation>Če drži, bo za zapolnitev prerezanih ploskev uporabljena barva predmetove snovi.</translation>
     </message>
     <message>
       <location filename="archview.py" line="85"/>
       <source>If true, a new object is generated to display the section cut shape.</source>
-      <translation type="unfinished">If true, a new object is generated to display the section cut shape.</translation>
+      <translation>Če drži, bo za prikaz prerezane oblike ustvarjen nov predmet.</translation>
     </message>
   </context>
   <context>
@@ -109,12 +109,12 @@
     <message>
       <location filename="gui_openings.py" line="134"/>
       <source>Opening options</source>
-      <translation type="unfinished">Opening options</translation>
+      <translation>Možnosti odpiranja</translation>
     </message>
     <message>
       <location filename="make_blockslayer.py" line="98"/>
       <source>Walls can only be based on Part or Mesh objects</source>
-      <translation type="unfinished">Walls can only be based on Part or Mesh objects</translation>
+      <translation>Stene so lahko osnovane le na delih ali ploskovjih</translation>
     </message>
   </context>
   <context>
@@ -177,14 +177,14 @@ CTRL+. to rotate right
 CTRL+PgUp to extend extrusion
 CTRL+PgDown to shrink extrusion
 CTRL+/ to switch between auto and manual mode</source>
-      <translation type="unfinished">The value of the nudge movement (rotation is always 45&#xc2;&#xb0;).
+      <translation>Vrednost dregljaja pri premikanju (pri sukanju je vedno 45&#xc2;&#xb0;).
 
-CTRL+arrows to move
-CTRL+, to rotate left
-CTRL+. to rotate right
-CTRL+PgUp to extend extrusion
-CTRL+PgDown to shrink extrusion
-CTRL+/ to switch between auto and manual mode</translation>
+Krmilka+puščica za premikanje
+Krmilka+, za sukanje v levo
+Krmilka+. za sukanje v desno
+Krmilka+Stran ↑ za podaljšanje izriva
+Krmilka+Stran ↓ za skranjšanje izriva
+Krmilka+/ za preklapljanje med samodejnim in ročnim načinom</translation>
     </message>
     <message>
       <location filename="BimStatusBar.py" line="237"/>
@@ -974,7 +974,7 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="InitGui.py" line="353"/>
       <source>Drafting tools</source>
-      <translation type="unfinished">Drafting tools</translation>
+      <translation>Snovalna orodja</translation>
     </message>
     <message>
       <location filename="InitGui.py" line="354"/>
@@ -1004,47 +1004,47 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="InitGui.py" line="372"/>
       <source>&amp;2D Drafting</source>
-      <translation type="unfinished">&amp;2D Drafting</translation>
+      <translation>&amp;2D Risanje</translation>
     </message>
     <message>
       <location filename="InitGui.py" line="375"/>
       <source>&amp;3D/BIM</source>
-      <translation type="unfinished">&amp;3D/BIM</translation>
+      <translation>&amp;3D/BIM</translation>
     </message>
     <message>
       <location filename="InitGui.py" line="376"/>
       <source>&amp;Annotation</source>
-      <translation type="unfinished">&amp;Annotation</translation>
+      <translation>&amp;Pripisi</translation>
     </message>
     <message>
       <location filename="InitGui.py" line="377"/>
       <source>&amp;Snapping</source>
-      <translation type="unfinished">&amp;Snapping</translation>
+      <translation>&amp;Pripenjanje</translation>
     </message>
     <message>
       <location filename="InitGui.py" line="378"/>
       <source>&amp;Modify</source>
-      <translation type="unfinished">&amp;Modify</translation>
+      <translation>&amp;Spremeni</translation>
     </message>
     <message>
       <location filename="InitGui.py" line="379"/>
       <source>&amp;Manage</source>
-      <translation type="unfinished">&amp;Manage</translation>
+      <translation>&amp;Upravljaj</translation>
     </message>
     <message>
       <location filename="InitGui.py" line="381"/>
       <source>&amp;Flamingo</source>
-      <translation type="unfinished">&amp;Flamingo</translation>
+      <translation>&amp;Flamingo</translation>
     </message>
     <message>
       <location filename="InitGui.py" line="383"/>
       <source>&amp;Fasteners</source>
-      <translation type="unfinished">&amp;Fasteners</translation>
+      <translation>P&amp;ritrdila</translation>
     </message>
     <message>
       <location filename="InitGui.py" line="385"/>
       <source>&amp;Utils</source>
-      <translation type="unfinished">&amp;Utils</translation>
+      <translation>Pripo&amp;močki</translation>
     </message>
     <message>
       <location filename="InitGui.py" line="385"/>
@@ -2087,12 +2087,12 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="BimTogglePanels.py" line="36"/>
       <source>Toggle bottom panels</source>
-      <translation type="unfinished">Toggle bottom panels</translation>
+      <translation>Preklapljaj med spodnjimi ploščami</translation>
     </message>
     <message>
       <location filename="BimTogglePanels.py" line="37"/>
       <source>Toggle bottom dock panels on/off</source>
-      <translation type="unfinished">Toggle bottom dock panels on/off</translation>
+      <translation>Preklapljaj med vključenostjo in izključenostjo spodnjih zasidranih plošč</translation>
     </message>
   </context>
   <context>
@@ -2864,7 +2864,7 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="view_archview.py" line="285"/>
       <source>Writing camera position</source>
-      <translation type="unfinished">Writing camera position</translation>
+      <translation>Zapis položaja kamere</translation>
     </message>
   </context>
   <context>
@@ -3108,7 +3108,7 @@ p, li { white-space: pre-wrap; }
     <message>
       <location filename="dialogPreflight.ui" line="299"/>
       <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Although there is no requirement for IFC objects to have a material defined, in the real world, it is an important layer of information to be added to you model. This test will find BIM objects without a material defined.&lt;/p&gt;&lt;p&gt;If a BIM object is exported without a material, it will nevertheless be assigned an IfcSurfaceStyle, which will be created from the object color. Some BIM applications actually disregard materials, and only consider the surface style of an object. No IfcMaterial will be attributed to that object.&lt;/p&gt;&lt;p&gt;If a BIM object has a material defined, a surface style will still be created (an IfcMaterial too) but its surface style will take the same name and properties as the material, thus giving more consistency to your file, no matter what other BIM consider, surface style, material, or both.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-      <translation type="unfinished">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Although there is no requirement for IFC objects to have a material defined, in the real world, it is an important layer of information to be added to you model. This test will find BIM objects without a material defined.&lt;/p&gt;&lt;p&gt;If a BIM object is exported without a material, it will nevertheless be assigned an IfcSurfaceStyle, which will be created from the object color. Some BIM applications actually disregard materials, and only consider the surface style of an object. No IfcMaterial will be attributed to that object.&lt;/p&gt;&lt;p&gt;If a BIM object has a material defined, a surface style will still be created (an IfcMaterial too) but its surface style will take the same name and properties as the material, thus giving more consistency to your file, no matter what other BIM consider, surface style, material, or both.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+      <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Čeprav ni zahtevano, da da bi morali imeti IFC predmeti dodeljeno snov, je to v stvarnosti pomembna plast, ki jo je dobro dodati oblikovancu. S tem preizkusom boste našli predmete, ki jim snov ni določena.&lt;/p&gt;&lt;p&gt;Ne glede na to, ali je BIM predmet izvožen brez dodeljene snovi, mu bo dododeljen IfcSurfaceStyle (IfcSlogPovršja), ki bo določen na podlagi barve predmeta. Nekateri BIM programi podatek o snovi celo zanemarijo in upoštevajo le predmetov slog površja. Takšnim predmetom ne bo dodeljena značilnost IfcMaterial (IfcSnov).&lt;/p&gt;&lt;p&gt;Tudi če je predmetu določena snov, bo ustvarjen slog površja (poleg IfcSnovi), ki pa bo imel enake lastnosti in ime, kot snov. S tem se zagotovi v datoteki doslednost, neglede na to ali BIM upošteva slog površja, snov ali oboje.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
       <location filename="dialogPreflight.ui" line="302"/>
@@ -3338,7 +3338,7 @@ p, li { white-space: pre-wrap; }
     <message>
       <location filename="dialogLibrary.ui" line="157"/>
       <source>Search National Building Library website</source>
-      <translation type="unfinished">Search National Building Library website</translation>
+      <translation>Išči po spletni strani Narodne gradbene knjižnice</translation>
     </message>
     <message>
       <location filename="dialogLibrary.ui" line="173"/>
@@ -3348,7 +3348,7 @@ p, li { white-space: pre-wrap; }
     <message>
       <location filename="dialogLibrary.ui" line="195"/>
       <source>Search 3DFindIt website</source>
-      <translation type="unfinished">Search 3DFindIt website</translation>
+      <translation>Išči po spletni strani 3DFindlt</translation>
     </message>
     <message>
       <location filename="dialogWindows.ui" line="14"/>

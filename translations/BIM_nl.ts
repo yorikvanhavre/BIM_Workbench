@@ -6,67 +6,67 @@
     <message>
       <location filename="view_archview.py" line="63"/>
       <source>The display length of this section plane</source>
-      <translation type="unfinished">The display length of this section plane</translation>
+      <translation>De weergavelengte van dit sectievlak</translation>
     </message>
     <message>
       <location filename="view_archview.py" line="69"/>
       <source>The display height of this section plane</source>
-      <translation type="unfinished">The display height of this section plane</translation>
+      <translation>De weergavehoogte van dit sectievlak</translation>
     </message>
     <message>
       <location filename="view_archview.py" line="75"/>
       <source>The size of the arrows of this section plane</source>
-      <translation type="unfinished">The size of the arrows of this section plane</translation>
+      <translation>De grootte van de pijlen van dit sectievlak</translation>
     </message>
     <message>
       <location filename="view_archview.py" line="78"/>
       <source>The transparency of this object</source>
-      <translation type="unfinished">The transparency of this object</translation>
+      <translation>De transparantie van dit objec</translation>
     </message>
     <message>
       <location filename="view_archview.py" line="81"/>
       <source>The line width of this object</source>
-      <translation type="unfinished">The line width of this object</translation>
+      <translation>De lijnbreedte van dit object</translation>
     </message>
     <message>
       <location filename="view_archview.py" line="89"/>
       <source>Show the cut in the 3D view</source>
-      <translation type="unfinished">Show the cut in the 3D view</translation>
+      <translation>Toon de snede in 3D-weergave</translation>
     </message>
     <message>
       <location filename="view_archview.py" line="86"/>
       <source>The color of this object</source>
-      <translation type="unfinished">The color of this object</translation>
+      <translation>De kleur van dit object</translation>
     </message>
     <message>
       <location filename="view_archview.py" line="91"/>
       <source>The distance between the cut plane and the actual view cut (keep this a very small value but not zero)</source>
-      <translation type="unfinished">The distance between the cut plane and the actual view cut (keep this a very small value but not zero)</translation>
+      <translation>De afstand tussen te knippen vlak en de werkelijke weergegeven knip (Houd dit een zeer lage waarde maar niet nul)</translation>
     </message>
     <message>
       <location filename="BimIfcProperties.py" line="351"/>
       <source>IFC properties of this object</source>
-      <translation type="unfinished">IFC properties of this object</translation>
+      <translation>IFC eigenschappen van dit object</translation>
     </message>
     <message>
       <location filename="archview.py" line="58"/>
       <source>The shape of this object</source>
-      <translation type="unfinished">The shape of this object</translation>
+      <translation>De vorm van dit object</translation>
     </message>
     <message>
       <location filename="archview.py" line="62"/>
       <source>The objects that must be considered by this section plane. Empty means the whole document.</source>
-      <translation type="unfinished">The objects that must be considered by this section plane. Empty means the whole document.</translation>
+      <translation>De objecten die door dit sectievlak moeten worden overwogen. Leeg betekent het hele document.</translation>
     </message>
     <message>
       <location filename="archview.py" line="66"/>
       <source>If false, non-solids will be cut too, with possible wrong results.</source>
-      <translation type="unfinished">If false, non-solids will be cut too, with possible wrong results.</translation>
+      <translation>Wanneer onwaar, dan zullen de niet-massieven ook geknipt worden met mogelijke onjuiste resultaten.</translation>
     </message>
     <message>
       <location filename="archview.py" line="71"/>
       <source>If True, resulting views will be clipped to the section plane area.</source>
-      <translation type="unfinished">If True, resulting views will be clipped to the section plane area.</translation>
+      <translation>Indien waar, zullen de resulterende weergaven worden afgeknipt naar het gebied van de sectievlak.</translation>
     </message>
     <message>
       <location filename="archview.py" line="75"/>
