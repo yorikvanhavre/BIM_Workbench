@@ -65,6 +65,9 @@ import zipfile
 # the name of your workench, and also the .ts file. Ex: "BIM" means the ts file is BIM.ts
 MODULENAME = "BIM"
 
+# the account name on crowdin
+USERNAME = "yorik"
+
 # The base path of your module, relative to this file
 BASEPATH = ".."
 
@@ -158,7 +161,7 @@ if __name__ == "__main__":
         sys.exit()
     f = open(configfile)
     url = "https://api.crowdin.com/api/project/freecad-addons/"
-    key = "?key="+f.read().strip()
+    key = "?login="+USERNAME+"&account-key="+f.read().strip()
     f.close()
 
     basepath = os.path.abspath(BASEPATH)
