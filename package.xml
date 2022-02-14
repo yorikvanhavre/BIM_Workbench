@@ -3,10 +3,10 @@
   <name>BIM</name>
   <description>This is a workbench for FreeCAD that implements a complete set of Building Information Modeling (BIM) tools and allows a proper BIM workflow similar to professional BIM applications like Revit, ArchiCAD, Tekla, AllPlan or BricsCAD.</description>
   <version>2021.12</version>
-  <maintainer email="your_address@null.com">Yorik van Havre</maintainer>
+  <maintainer email="yorik@uncreated.net">Yorik van Havre</maintainer>
   <license file="LICENSE">LGPLv2.1</license>
   <url type="repository" branch="master">https://github.com/yorikvanhavre/BIM_Workbench</url>
-  <url type="website">https://github.com/yorikvanhavre/BIM_Workbench/wiki</url>
+  <url type="website">https://wiki.freecadweb.org/BIM_Workbench</url>
   <icon>icons/IFC.svg</icon>
 
   <content>
