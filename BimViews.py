@@ -116,7 +116,7 @@ class BIM_Views:
             # restore saved settings
             pref = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM")
             vm.tree.setColumnWidth(0,pref.GetInt("ViewManagerColumnWidth",100))
-            vm.setFloating(pref.GetFloat("ViewManagerFloating",False))
+            vm.setFloating(pref.GetBool("ViewManagerFloating",False))
 
             # check the status bar button
             if bimviewsbutton:
@@ -158,7 +158,7 @@ class BIM_Views:
         # save state
         pref = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM")
         pref.SetInt("ViewManagerColumnWidth",vm.tree.columnWidth(0))
-        pref.SetFloat("ViewManagerFloating",vm.isFloating())
+        pref.SetBool("ViewManagerFloating",vm.isFloating())
 
     def select(self,item,column=None):
 
