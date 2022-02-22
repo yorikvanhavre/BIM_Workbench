@@ -44,8 +44,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>532</width>
-        <height>686</height>
+        <width>608</width>
+        <height>702</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -668,7 +668,7 @@
       <bool>true</bool>
      </property>
      <property name="openExternalLinks">
-      <bool>true</bool>
+      <bool>false</bool>
      </property>
     </widget>
    </item>
