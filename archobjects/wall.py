@@ -411,7 +411,7 @@ class Wall(ShapeGroup, IfcProduct):
             thickness = obj.Width
 
         # swap first point and last point to have them in the right order
-        # TODO: Swap the points phisically and change end constraints!
+        # TODO: Swap the points physically and change end constraints!
         if obj.AxisFirstPointX < obj.AxisLastPointX:
             first_point = obj.AxisFirstPointX
         elif obj.AxisFirstPointX > obj.AxisLastPointX:

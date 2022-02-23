@@ -50,6 +50,6 @@ The development reports I write monthly are available at https://github.com/yori
 
 If you are interested in contributing to the development of this workbench, there is a dedicated [section](https://forum.freecadweb.org/viewforum.php?f=23) on the [FreeCAD forum](https://forum.freecadweb.org/), where everybody is welcome to give ideas, feedback, report problems, and other users can help you to learn about using FreeCAD or writing code.
 
-You can also help the development of this workbench by sponsoring me on [Patreon](https://www.patreon.com/yorikvanhavre), [LiberaPay](https://liberapay.com/yorik) or [paypal](mailto:yorik@uncreated.net). All the development is fuly open-source, everything I produce is available to everybody, there is no content "for subscribers only", only an increasing portion of my working hours each month is paid by this sponsoring.
+You can also help the development of this workbench by sponsoring me on [Patreon](https://www.patreon.com/yorikvanhavre), [LiberaPay](https://liberapay.com/yorik) or [paypal](mailto:yorik@uncreated.net). All the development is fully open-source, everything I produce is available to everybody, there is no content "for subscribers only", only an increasing portion of my working hours each month is paid by this sponsoring.
 
 
