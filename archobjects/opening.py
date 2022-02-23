@@ -180,7 +180,7 @@ class Opening(ShapeGroup, IfcProduct):
             self.setup_filling_properties(obj)
 
         if prop == 'FillType' and 'FillType' in obj.PropertiesList:
-            # this is used to mathch filling preset properties
+            # this is used to match filling preset properties
             self.sync_filling_preset_subproperties(obj)
 
         if 'Void' in obj.PropertiesList and prop == 'Void':
