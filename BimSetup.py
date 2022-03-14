@@ -211,8 +211,8 @@ class BIM_Setup:
 
         # set Draft toolbar
         if hasattr(FreeCADGui,"draftToolBar"):
-            if hasattr(FreeCADGui.draftToolBar,"setstyle"):
-                FreeCADGui.draftToolBar.setstyle()
+            if hasattr(FreeCADGui.draftToolBar,"setStyleButton"):
+                FreeCADGui.draftToolBar.setStyleButton()
             else:
                 # pre-v0.19
                 FreeCADGui.draftToolBar.widthButton.setValue(linewidth)
@@ -237,8 +237,12 @@ class BIM_Setup:
                     nudgelabels = statuswidget.nudgeLabelsM
                 for i in range(len(nudgelabels)):
                     nudgeactions[i].setText(nudgelabels[i])
-                if not "auto" in statuswidget.nudge.text().replace("&","").lower():
-                    statuswidget.nudge.setText(FreeCAD.Units.Quantity(statuswidget.nudge.text().replace("&","")).UserString)
+                try:
+                    t = FreeCAD.Units.Quantity(statuswidget.nudge.text().replace("&","")).UserString
+                except:
+                    pass # auto mode
+                else:
+                    statuswidget.nudge.setText(t)
 
         # Set different default values
         if FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM").GetBool("FirstTime",True):
