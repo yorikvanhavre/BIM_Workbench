@@ -101,8 +101,10 @@ def setStatusIcons(show=True):
             nudgelabels = nudgeLabelsM
         for i in range(len(nudgelabels)):
             nudgeactions[i].setText(nudgelabels[i])
-        if not "auto" in nudge.text().replace("&","").lower():
+        try:
             nudge.setText(FreeCAD.Units.Quantity(nudge.text().replace("&","")).UserString)
+        except:
+            pass
 
     def setNudge(action):
 
