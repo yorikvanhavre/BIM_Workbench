@@ -243,6 +243,7 @@ static char * IFC_xpm[] = {
             _tool = "Draft_SetWorkingPlaneProxy"
 
         self.utils = ["BIM_TogglePanels","BIM_Trash","BIM_WPView",
+                      "Draft_SelectGroup",
                       "Draft_Slope", _tool, "Draft_AddConstruction",
                       "Arch_SplitMesh","Arch_MeshToShape",
                       "Arch_SelectNonSolidMeshes","Arch_RemoveShape",
