@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>278</width>
-    <height>817</height>
+    <width>290</width>
+    <height>798</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -20,6 +20,72 @@
       <bool>true</bool>
      </property>
     </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_4" stretch="0,0,0">
+     <item>
+      <widget class="QPushButton" name="buttonInsert">
+       <property name="toolTip">
+        <string>Inserts the selected object in the current document</string>
+       </property>
+       <property name="text">
+        <string>Insert</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="label_3">
+       <property name="text">
+        <string>or</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="buttonLink">
+       <property name="toolTip">
+        <string>Links the selected object in the current document. Only works in Offline mode</string>
+       </property>
+       <property name="text">
+        <string>Link</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QLabel" name="label_2">
+       <property name="text">
+        <string>Search:</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="searchBox"/>
+     </item>
+     <item>
+      <widget class="QComboBox" name="comboSearch">
+       <property name="maximumSize">
+        <size>
+         <width>60</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="toolTip">
+        <string>Search external websites</string>
+       </property>
+       <item>
+        <property name="text">
+         <string>...</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+    </layout>
    </item>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout_5">
@@ -111,6 +177,9 @@
    </item>
    <item>
     <widget class="QFrame" name="frameOptions">
+     <property name="toolTip">
+      <string>Save thumbnails when saving a file</string>
+     </property>
      <property name="frameShape">
       <enum>QFrame::StyledPanel</enum>
      </property>
@@ -125,6 +194,9 @@
         </property>
         <property name="text">
          <string>Online mode</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
         </property>
        </widget>
       </item>
@@ -149,25 +221,35 @@
        </widget>
       </item>
       <item>
-       <widget class="QCheckBox" name="checkThumbnail">
+       <widget class="QCheckBox" name="checkFCStdOnly">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
         <property name="toolTip">
-         <string>Saves a thumbnail image when a .fcstd document is selected.</string>
+         <string>Show available alternative file formats for library items (STEP, IFC, etc...)</string>
         </property>
         <property name="text">
-         <string>Save thumbnails</string>
+         <string>Display alternative formats</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QCheckBox" name="checkFCStdOnly">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="toolTip">
-         <string>If the FCStd format is available for a certain file, do not display other file formats (STEP, IFC, etc...)</string>
-        </property>
+       <widget class="QLabel" name="label">
         <property name="text">
-         <string>Display only FCStd if available</string>
+         <string>Note: STEP and BREP files can be placed at custom location. FCStd and IFC files will be placed where objects are defined in the file.</string>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
+        </property>
+        <property name="indent">
+         <number>24</number>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="checkThumbnail">
+        <property name="text">
+         <string>Save thumbnails</string>
         </property>
        </widget>
       </item>
@@ -175,140 +257,11 @@
     </widget>
    </item>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_4" stretch="0,0">
-     <item>
-      <widget class="QPushButton" name="buttonInsert">
-       <property name="text">
-        <string>Insert &gt;&gt;</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="buttonLink">
-       <property name="text">
-        <string>Link</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item>
     <widget class="QPushButton" name="buttonSave">
      <property name="text">
-      <string>Save</string>
+      <string>Save as...</string>
      </property>
     </widget>
-   </item>
-   <item>
-    <widget class="QLabel" name="label">
-     <property name="text">
-      <string>Note: STEP and BREP files can be placed at custom location. FCStd and IFC files will be placed where objects are defined in the file.</string>
-     </property>
-     <property name="wordWrap">
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <layout class="QHBoxLayout" name="horizontalLayout">
-     <item>
-      <widget class="QLabel" name="label_2">
-       <property name="text">
-        <string>Search:</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLineEdit" name="searchBox"/>
-     </item>
-    </layout>
-   </item>
-   <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_2">
-     <item>
-      <widget class="QPushButton" name="buttonBimObject">
-       <property name="minimumSize">
-        <size>
-         <width>16</width>
-         <height>0</height>
-        </size>
-       </property>
-       <property name="toolTip">
-        <string>Search BimObject website</string>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="buttonNBSLibrary">
-       <property name="minimumSize">
-        <size>
-         <width>16</width>
-         <height>0</height>
-        </size>
-       </property>
-       <property name="toolTip">
-        <string>Search National Building Library website</string>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="buttonBimTool">
-       <property name="minimumSize">
-        <size>
-         <width>16</width>
-         <height>0</height>
-        </size>
-       </property>
-       <property name="toolTip">
-        <string>Search BimTool website</string>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="button3DFindIt">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="minimumSize">
-        <size>
-         <width>16</width>
-         <height>0</height>
-        </size>
-       </property>
-       <property name="toolTip">
-        <string>Search 3DFindIt website</string>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="buttonGrabCad">
-       <property name="minimumSize">
-        <size>
-         <width>16</width>
-         <height>0</height>
-        </size>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-      </widget>
-     </item>
-    </layout>
    </item>
   </layout>
  </widget>

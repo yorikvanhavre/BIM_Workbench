@@ -28,25 +28,39 @@ from __future__ import print_function
 
 import os
 import FreeCAD
+import urllib.request
+import urllib.parse
+import zipfile
+import hashlib
+import io
+import datetime
+import datetime
+
 from BimTranslateUtils import *
 
-FILTERS = ["*.fcstd","*.FCStd","*.FCSTD","*.stp","*.STP","*.step","*.STEP", "*.brp", "*.BRP", "*.brep", "*.BREP", "*.ifc", "*.IFC", "*.sat", "*.SAT"]
+FILTERS = ["*.fcstd","*.FCStd","*.FCSTD","*.stp","*.STP","*.step","*.STEP", 
+           "*.brp", "*.BRP", "*.brep", "*.BREP", "*.ifc", "*.IFC", "*.sat", 
+           "*.SAT"]
 TEMPLIBPATH = os.path.join(FreeCAD.getUserAppDataDir(),"BIM","OfflineLibrary")
+THUMBNAILSPATH = os.path.join(TEMPLIBPATH,"__thumbcache__")
 LIBRARYURL = "https://github.com/FreeCAD/FreeCAD-library/tree/master"
+RAWURL = LIBRARYURL.replace("/tree","/raw")
 USE_API = True # True to use github API instead of web fetching... Way faster
 REFRESH_INTERVAL = 3600 # Min seconds between allowing a new API calls (3600 = one hour)
 
 
 # TODO as https://github.com/yorikvanhavre/BIM_Workbench/pull/77
 
-# Tooltips on the "Link" and "Save" buttons
-# I think the save button should be renamed a s"Save as..." (or maybe "Add to library...") so the user knows a new dialog will open
-# Either "Insert >>" should become "Insert", or "Link" should become "Link >>"
-# All the print() statements in your code should be replaced by FreeCAD.Console.PrintMessage() or FreeCAD.Console.PrintWarning() or FreeCAD.Console.PrintError() and the text should be placed in a translate() function and "\n" should be added to it. Example
-#    FreeCAD.Console.PrintError(translate("BIM","Please save the document first")+"\n")
-# I think the save button should go all the way to the bottom, below the search buttons, because it's a different kind of functionality than just "using" the library.
-# It would be cool if the preview image would have a max width of the available column width, so if the task column is smaller than the image, it gets smaller to fit the space. I don't remember exactly how to do that, but it should be findable in QDesigner
-# The open/closed state of the preview section should be remembered across sessions so when you use the tool again it is open if you left it open last time
+# All the print() statements in your code should be replaced by 
+# FreeCAD.Console.PrintMessage() or FreeCAD.Console.PrintWarning() or 
+# FreeCAD.Console.PrintError() and the text should be placed in a translate() 
+# function and "\n" should be added to it. 
+# Example FreeCAD.Console.PrintError(translate("BIM","Please save the document first")+"\n")
+
+# It would be cool if the preview image would have a max width of the available 
+# column width, so if the task column is smaller than the image, it gets smaller 
+# to fit the space. I don't remember exactly how to do that, but it should be 
+# findable in QDesigner
 
 
 class BIM_Library:
@@ -63,8 +77,9 @@ class BIM_Library:
         import FreeCADGui
 
         # trying to locate the parts library
+        pr = FreeCAD.ParamGet('User parameter:Plugins/parts_library')
         libok = False
-        self.librarypath = FreeCAD.ParamGet('User parameter:Plugins/parts_library').GetString('destination','')
+        self.librarypath = pr.GetString('destination','')
         if self.librarypath:
             if os.path.exists(self.librarypath):
                 libok = True
@@ -73,9 +88,10 @@ class BIM_Library:
             addondir = os.path.join(FreeCAD.getUserAppDataDir(),"Mod","parts_library")
             if os.path.exists(addondir):
                 # save file paths with forward slashes even on windows
-                FreeCAD.ParamGet('User parameter:Plugins/parts_library').SetString('destination',addondir.replace("\\","/"))
+                pr.SetString('destination',addondir.replace("\\","/"))
                 libok = True
         FreeCADGui.Control.showDialog(BIM_Library_TaskPanel(offlinemode=libok))
+
 
 
 class BIM_Library_TaskPanel:
@@ -102,13 +118,12 @@ class BIM_Library_TaskPanel:
         # setting up a directory model that shows only fcstd, step and brep
         self.dirmodel = LibraryModel()
         self.dirmodel.setRootPath(self.librarypath)
-        self.dirmodel.setNameFilters(FILTERS)
+        self.dirmodel.setNameFilters(self.getFilters())
         self.dirmodel.setNameFilterDisables(False)
         self.form.tree.setModel(self.dirmodel)
-        self.form.tree.clicked[QtCore.QModelIndex].connect(self.clicked)
         self.form.buttonInsert.clicked.connect(self.insert)
-        self.form.buttonLink.clicked.connect(self.linkfile)
-        self.form.buttonSave.clicked.connect(self.addtolibrary)
+        self.form.buttonLink.clicked.connect(self.link)
+
         self.modelmode = 1 # 0 = File search, 1 = Dir mode
 
         # Don't show columns for size, file type, and last modified
@@ -119,108 +134,152 @@ class BIM_Library_TaskPanel:
         self.form.tree.setRootIndex(self.dirmodel.index(self.librarypath))
         self.form.searchBox.textChanged.connect(self.onSearch)
 
-        # setup UI
-        self.form.buttonBimObject.setIcon(QtGui.QIcon(os.path.join(os.path.dirname(__file__),"icons","bimobject.png")))
-        self.form.buttonBimObject.clicked.connect(self.onBimObject)
-        self.form.buttonNBSLibrary.setIcon(QtGui.QIcon(os.path.join(os.path.dirname(__file__),"icons","nbslibrary.png")))
-        self.form.buttonNBSLibrary.clicked.connect(self.onNBSLibrary)
-        self.form.buttonBimTool.setIcon(QtGui.QIcon(os.path.join(os.path.dirname(__file__),"icons","bimtool.png")))
-        self.form.buttonBimTool.clicked.connect(self.onBimTool)
-        self.form.button3DFindIt.setIcon(QtGui.QIcon(os.path.join(os.path.dirname(__file__),"icons","3dfindit.svg")))
-        self.form.button3DFindIt.clicked.connect(self.on3DFindIt)
-        self.form.buttonGrabCad.setIcon(QtGui.QIcon(os.path.join(os.path.dirname(__file__),"icons","grabcad.svg")))
-        self.form.buttonGrabCad.clicked.connect(self.onGrabCad)
+        # external search 
+        d = os.path.join(os.path.dirname(__file__),"icons")
+        sites = {"BimObject":  ["bimobject.png", "https://www.bimobject.com/en/product?filetype=8&freetext="],
+                 "NBS Library":["nbslibrary.png","https://www.nationalbimlibrary.com/en/search/?facet=Xo-P0w&searchTerm="],
+                 "BIMTool":    ["bimtool.png",   "https://www.bimtool.com/Catalog.aspx?criterio="],
+                 "3DFindIt":   ["3dfindit.svg","https://www.3dfindit.com/textsearch?q="],
+                 "GrabCAD":    ["grabcad.svg","https://grabcad.com/library?softwares=step-slash-iges&query="],
+                }
+        for k,v in sites.items():
+            self.form.comboSearch.addItem(QtGui.QIcon(os.path.join(d,v[0])),k,v[1])
+        self.form.comboSearch.currentIndexChanged.connect(self.onExternalSearch)
+
+        # retrieve preferences
+        self.p = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM")
         self.form.checkOnline.toggled.connect(self.onCheckOnline)
-        self.form.checkOnline.setChecked(FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM").GetBool("LibraryOnline",not offlinemode))
+        self.form.checkOnline.setChecked(self.p.GetBool("LibraryOnline",not offlinemode))
         self.form.checkFCStdOnly.toggled.connect(self.onCheckFCStdOnly)
-        self.form.checkFCStdOnly.setChecked(FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM").GetBool("LibraryFCStdOnly",False))
+        self.form.checkFCStdOnly.setChecked(self.p.GetBool("LibraryFCStdOnly",False))
         self.form.checkWebSearch.toggled.connect(self.onCheckWebSearch)
-        self.form.checkWebSearch.setChecked(FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM").GetBool("LibraryWebSearch",False))
+        self.form.checkWebSearch.setChecked(self.p.GetBool("LibraryWebSearch",False))
         self.form.check3DPreview.toggled.connect(self.onCheck3DPreview)
-        self.form.check3DPreview.setChecked(FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM").GetBool("3DPreview",False))
-        self.form.checkThumbnail.toggled.connect(self.onCheckThumbnail)
-        self.form.checkThumbnail.setChecked(FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM").GetBool("SaveThumbnails",False))
-        self.form.frameOptions.hide()
-        self.form.buttonOptions.clicked.connect(self.onButtonOptions)
-        self.form.buttonOptions.setText(translate("BIM","Options")+" ▼")
-        self.form.framePreview.hide()
+        self.form.check3DPreview.setChecked(self.p.GetBool("3DPreview",False))
+        
+        # collapsables        
+        if self.p.GetBool("LibraryPreview",False):
+            self.form.framePreview.show()
+            self.form.buttonPreview.setText(translate("BIM","Preview")+" ▼")
+        else:
+            self.form.framePreview.hide()
+            self.form.buttonPreview.setText(translate("BIM","Preview")+" ▸")
         self.form.buttonPreview.clicked.connect(self.onButtonPreview)
-        self.form.buttonPreview.setText(translate("BIM","Preview")+" ▼")
+        self.form.frameOptions.hide()
+        self.form.buttonOptions.setText(translate("BIM","Options")+" ▸")
+        self.form.buttonOptions.clicked.connect(self.onButtonOptions)
 
-        self.fcstdCB = QtGui.QCheckBox('FCStd')
-        self.fcstdCB.setCheckState(QtCore.Qt.Checked)
-        self.fcstdCB.setEnabled(False)
-        self.fcstdCB.hide()
-        self.stepCB = QtGui.QCheckBox('STEP')
-        self.stepCB.setCheckState(QtCore.Qt.Checked)
-        self.stepCB.hide()
-        self.stlCB = QtGui.QCheckBox('STL')
-        self.stlCB.setCheckState(QtCore.Qt.Checked)
-        self.stlCB.hide()
+        # saving functionality, is disabled for now
+        self.form.buttonSave.hide()
+        self.form.checkThumbnail.hide()
+        #self.form.buttonSave.clicked.connect(self.addtolibrary)
+        #self.form.checkThumbnail.toggled.connect(self.onCheckThumbnail)
+        #self.form.checkThumbnail.setChecked(self.p.GetBool("SaveThumbnails",False))
+        #self.fcstdCB = QtGui.QCheckBox('FCStd')
+        #self.fcstdCB.setCheckState(QtCore.Qt.Checked)
+        #self.fcstdCB.setEnabled(False)
+        #self.fcstdCB.hide()
+        #self.stepCB = QtGui.QCheckBox('STEP')
+        #self.stepCB.setCheckState(QtCore.Qt.Checked)
+        #self.stepCB.hide()
+        #self.stlCB = QtGui.QCheckBox('STL')
+        #self.stlCB.setCheckState(QtCore.Qt.Checked)
+        #self.stlCB.hide()
+        
+        # update the tree
+        self.onCheckOnline()
 
-    def clicked(self, index, previewDocName = "Viewer"):
-        import Part, FreeCADGui, zipfile, tempfile, os
-        self.previewOn = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM").GetBool("3DPreview",False)
-        try:
-            self.path = self.dirmodel.filePath(index)
-        except:
-            self.path = self.previousIndex
-            print(self.path)
-        self.isFile = os.path.isfile(self.path)
-        # if the 3D preview checkbox is on ticked, show the preview
-        if self.previewOn == True or self.linked == True:
-            if self.isFile == True:
-                # close a non linked preview document
-                if self.linked == False:
-                    try:
-                        FreeCAD.closeDocument(self.previewDocName)
-                    except:
-                        pass
-                # create different kinds of previews based on file type
-                if self.path.lower().endswith(".stp") or self.path.lower().endswith(".step") or self.path.lower().endswith(".brp") or self.path.lower().endswith(".brep"):
-                    self.previewDocName = "Viewer"
-                    FreeCAD.newDocument(self.previewDocName)
-                    FreeCAD.setActiveDocument(self.previewDocName)
-                    Part.show(Part.read(self.path))
-                    FreeCADGui.SendMsgToActiveView("ViewFit")
-                elif self.path.lower().endswith(".fcstd"):
-                    openedDoc = FreeCAD.openDocument(self.path)
-                    FreeCADGui.SendMsgToActiveView("ViewFit")
-                    self.previewDocName = FreeCAD.ActiveDocument.Name
-                    thumbnailSave = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM").GetBool("SaveThumbnails",False)
-                    if thumbnailSave == True:
-                        FreeCAD.ActiveDocument.save()
-        if self.linked == False:
-            self.previousIndex = self.path
 
-        # create a 2D image preview
-        if self.path.lower().endswith(".fcstd"):
-            zfile=zipfile.ZipFile(self.path)
-            files=zfile.namelist()
-            # check for meta-file if it's really a FreeCAD document
-            if files[0] == "Document.xml":
-                image="thumbnails/Thumbnail.png"
-                if image in files:
-                    image=zfile.read(image)
-                    thumbfile = tempfile.mkstemp(suffix='.png')[1]
-                    thumb = open(thumbfile,"wb")
-                    thumb.write(image)
-                    thumb.close()
-                    im = QtGui.QPixmap(thumbfile)
-                    self.form.framePreview.setPixmap(im)
-                    return self.previewDocName, self.previousIndex, self.linked
-        self.form.framePreview.clear()
-        return self.previewDocName, self.previousIndex, self.linked
+    def onItemSelected(self, selected, deselected):
 
-    def linkfile(self, index):
-        import FreeCAD, FreeCADGui
+        """Generates and displays needed previews"""
+
+        from PySide import QtGui
+
+        if not selected:
+            return
+        index = selected[0].indexes()[0]
+        if self.modelmode == 1:
+            path = self.dirmodel.filePath(index)
+        else:
+            path = self.filemodel.itemFromIndex(index).toolTip()
+        if path.startswith(":github"):
+            path = RAWURL + "/" + path[7:]
+        thumb = self.getThumbnail(path)
+        if thumb:
+            px = QtGui.QPixmap(thumb)
+        else:
+            px = QtGui.QPixmap()
+        self.form.framePreview.setPixmap(px) 
+            
+            
+        if False:
+            # TO BE REFACTORED
+            
+            import Part, FreeCADGui
+
+            self.previewOn = self.p.GetBool("3DPreview",False)
+            try:
+                self.path = self.dirmodel.filePath(index)
+            except:
+                self.path = self.previousIndex
+                print(self.path)
+            self.isFile = os.path.isfile(self.path)
+            # if the 3D preview checkbox is on ticked, show the preview
+            if self.previewOn == True or self.linked == True:
+                if self.isFile == True:
+                    # close a non linked preview document
+                    if self.linked == False:
+                        try:
+                            FreeCAD.closeDocument(self.previewDocName)
+                        except:
+                            pass
+                    # create different kinds of previews based on file type
+                    if self.path.lower().endswith(".stp") or self.path.lower().endswith(".step") or self.path.lower().endswith(".brp") or self.path.lower().endswith(".brep"):
+                        self.previewDocName = "Viewer"
+                        FreeCAD.newDocument(self.previewDocName)
+                        FreeCAD.setActiveDocument(self.previewDocName)
+                        Part.show(Part.read(self.path))
+                        FreeCADGui.SendMsgToActiveView("ViewFit")
+                    elif self.path.lower().endswith(".fcstd"):
+                        openedDoc = FreeCAD.openDocument(self.path)
+                        FreeCADGui.SendMsgToActiveView("ViewFit")
+                        self.previewDocName = FreeCAD.ActiveDocument.Name
+                        thumbnailSave = self.p.GetBool("SaveThumbnails",False)
+                        if thumbnailSave == True:
+                            FreeCAD.ActiveDocument.save()
+            if self.linked == False:
+                self.previousIndex = self.path
+    
+            # create a 2D image preview
+            if self.path.lower().endswith(".fcstd"):
+                zfile=zipfile.ZipFile(self.path)
+                files=zfile.namelist()
+                # check for meta-file if it's really a FreeCAD document
+                if files[0] == "Document.xml":
+                    image="thumbnails/Thumbnail.png"
+                    if image in files:
+                        image=zfile.read(image)
+                        thumbfile = tempfile.mkstemp(suffix='.png')[1]
+                        thumb = open(thumbfile,"wb")
+                        thumb.write(image)
+                        thumb.close()
+                        im = QtGui.QPixmap(thumbfile)
+                        self.form.framePreview.setPixmap(im)
+                        return self.previewDocName, self.previousIndex, self.linked
+            self.form.framePreview.clear()
+            return self.previewDocName, self.previousIndex, self.linked
+
+    def link(self, index):
+
+        import FreeCADGui
         # check if the main document is open
         try:
             # check if the working document is saved
             if FreeCAD.getDocument(self.mainDocName).FileName == "":
                 print("Please save the working file before linking.")
             else:
-                self.previewOn = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM").GetBool("3DPreview",False)
+                self.previewOn = self.p.GetBool("3DPreview",False)
                 self.linked = True
                 if self.previewOn != True:
                     BIM_Library_TaskPanel.clicked(self, index, previewDocName = "Viewer")
@@ -250,8 +309,11 @@ class BIM_Library_TaskPanel:
             print("It is not possible to link because the main document is closed.")
 
     def addtolibrary(self):
+
+        # DISABLED
+
         import Part, Mesh, os
-        self.fileDialog = QtGui.QFileDialog.getSaveFileName(None,u"Save As", self.librarypath)
+        self.fileDialog = QtGui.QFileDialog.getSaveFileName(None, "Save As", self.librarypath)
         print(self.fileDialog[0])
         # check if file saving has been canceled and save .fcstd, .step and .stl copies
         if self.fileDialog[0] != "":
@@ -292,7 +354,7 @@ class BIM_Library_TaskPanel:
             res = os.walk(self.librarypath)
         for dp,dn,fn in res:
             for f in fn:
-                if text.lower() in f.lower():
+                if self.isAllowed(f) and (text.lower() in f.lower()):
                     if not os.path.isdir(os.path.join(dp,f)):
                         it = QtGui.QStandardItem(f)
                         it.setToolTip(os.path.join(dp,f))
@@ -302,15 +364,35 @@ class BIM_Library_TaskPanel:
                         elif f.endswith('.ifc'):
                             it.setIcon(QtGui.QIcon(os.path.join(os.path.dirname(__file__),"icons","IFC.svg")))
                         else:
-                            it.setIcon(QtGui.QIcon(':icons/Tree_Part.svg'))
+                            it.setIcon(QtGui.QIcon(os.path.join(os.path.dirname(__file__),"icons","Part_document.svg")))
         self.modelmode = 0
 
+
+    def getFilters(self):
+        
+        if self.form.checkFCStdOnly.isChecked():
+            return FILTERS
+        else:
+            return FILTERS[:3]
+        
+
+    def isAllowed(self,filename):
+        
+        e = os.path.splitext(filename)[1]
+        if e in [f[1:] for f in FILTERS]:
+            if e in [f[1:] for f in self.getFilters()]:
+                return True
+            else:
+                return False
+        else:
+            return True
+            
     def setFileModel(self):
 
         #self.form.tree.clear()
         self.form.tree.setModel(self.dirmodel)
         self.dirmodel.setRootPath(self.librarypath)
-        self.dirmodel.setNameFilters(FILTERS)
+        self.dirmodel.setNameFilters(self.getFilters())
         self.dirmodel.setNameFilterDisables(False)
         self.form.tree.setRootIndex(self.dirmodel.index(self.librarypath))
         self.modelmode = 1
@@ -318,33 +400,37 @@ class BIM_Library_TaskPanel:
         self.form.tree.hideColumn(1)
         self.form.tree.hideColumn(2)
         self.form.tree.hideColumn(3)
+        self.form.tree.selectionModel().selectionChanged.connect(self.onItemSelected)
 
     def setOnlineModel(self):
 
         from PySide import QtGui
+        import PartGui
 
         def addItems(root,d,path):
 
             for k,v in d.items():
-                it = QtGui.QStandardItem(k)
-                root.appendRow(it)
-                it.setToolTip(path+"/"+k)
-                if isinstance(v,dict):
-                    it.setIcon(QtGui.QIcon.fromTheme("folder",QtGui.QIcon(":/icons/Group.svg")))
-                    addItems(it,v,path+"/"+k)
-                    it.setToolTip("")
-                elif k.lower().endswith('.fcstd'):
-                    it.setIcon(QtGui.QIcon(':icons/freecad-doc.png'))
-                elif k.lower().endswith('.ifc'):
-                    it.setIcon(QtGui.QIcon(os.path.join(os.path.dirname(__file__),"icons","IFC.svg")))
-                else:
-                    it.setIcon(QtGui.QIcon(':icons/Tree_Part.svg'))
+                if self.isAllowed(k):
+                    it = QtGui.QStandardItem(k)
+                    root.appendRow(it)
+                    it.setToolTip(path+"/"+k)
+                    if isinstance(v,dict):
+                        it.setIcon(QtGui.QIcon.fromTheme("folder",QtGui.QIcon(":/icons/Group.svg")))
+                        addItems(it,v,path+"/"+k)
+                        it.setToolTip("")
+                    elif k.lower().endswith('.fcstd'):
+                        it.setIcon(QtGui.QIcon(':icons/freecad-doc.png'))
+                    elif k.lower().endswith('.ifc'):
+                        it.setIcon(QtGui.QIcon(os.path.join(os.path.dirname(__file__),"icons","IFC.svg")))
+                    else:
+                        it.setIcon(QtGui.QIcon(os.path.join(os.path.dirname(__file__),"icons","Part_document.svg")))
 
         self.form.tree.setModel(self.filemodel)
         self.filemodel.clear()
         d = self.getOfflineLib()
         addItems(self.filemodel,d,":github")
         self.modelmode = 0
+        self.form.tree.selectionModel().selectionChanged.connect(self.onItemSelected)
 
     def getOfflineLib(self,structured=False):
 
@@ -378,7 +464,6 @@ class BIM_Library_TaskPanel:
         else:
             return d
 
-
     def urlencode(self,text):
 
         import sys
@@ -393,43 +478,12 @@ class BIM_Library_TaskPanel:
     def openUrl(self,url):
 
         from PySide import QtGui
-        p = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM")
-        s = p.GetBool("LibraryWebSearch",False)
+        s = self.p.GetBool("LibraryWebSearch",False)
         if s:
             import WebGui
             WebGui.openBrowser(url)
         else:
             QtGui.QDesktopServices.openUrl(url)
-
-    def onBimObject(self):
-
-        term = self.form.searchBox.text()
-        if term:
-            self.openUrl("https://www.bimobject.com/en/product?filetype=8&freetext="+self.urlencode(term))
-
-    def onNBSLibrary(self):
-
-        term = self.form.searchBox.text()
-        if term:
-            self.openUrl("https://www.nationalbimlibrary.com/en/search/?facet=Xo-P0w&searchTerm="+self.urlencode(term))
-
-    def onBimTool(self):
-
-        term = self.form.searchBox.text()
-        if term:
-            self.openUrl("https://www.bimtool.com/Catalog.aspx?criterio="+self.urlencode(term))
-
-    def on3DFindIt(self):
-
-        term = self.form.searchBox.text()
-        if term:
-            self.openUrl("https://www.3dfindit.com/textsearch?q="+self.urlencode(term))
-
-    def onGrabCad(self):
-
-        term = self.form.searchBox.text()
-        if term:
-            self.openUrl("https://grabcad.com/library?softwares=step-slash-iges&query="+self.urlencode(term))
 
     def needsFullSpace(self):
 
@@ -449,14 +503,16 @@ class BIM_Library_TaskPanel:
         FreeCAD.ActiveDocument.recompute()
 
     def insert(self, index=None):
+
         import FreeCADGui
         # check if the main document is open
         try:
             FreeCAD.setActiveDocument(self.mainDocName)
         except:
-            print("It is not possible to insert because the main document is closed.")
+            FreeCAD.Console.PrintError(translate("BIM","It is not possible to insert this object because the document has been closed.")+"\n")
             return
-        FreeCAD.closeDocument(self.previewDocName)
+        if self.previewDocName in FreeCAD.listDocuments().keys():
+            FreeCAD.closeDocument(self.previewDocName)
         if not index:
             index = self.form.tree.selectedIndexes()
             if not index:
@@ -467,22 +523,23 @@ class BIM_Library_TaskPanel:
         else:
             path = self.filemodel.itemFromIndex(index).toolTip()
         if path.startswith(":github"):
-            path = self.download(LIBRARYURL.replace("/tree","/raw") + "/" + path[7:])
+            path = self.download(RAWURL + "/" + path[7:])
         before = FreeCAD.ActiveDocument.Objects
         self.name = os.path.splitext(os.path.basename(path))[0]
-        if path.lower().endswith(".stp") or path.lower().endswith(".step") or path.lower().endswith(".brp") or path.lower().endswith(".brep"):
+        ext = os.path.splitext(path.lower())[1]
+        if ext in [".stp",".step",".brp",".brep"]:
             self.place(path)
-        elif path.lower().endswith(".fcstd"):
+        elif ext == ".fcstd":
             FreeCADGui.ActiveDocument.mergeProject(path)
             from DraftGui import todo
             todo.delay(self.reject,None)
-        elif path.lower().endswith(".ifc"):
+        elif ext == ".ifc":
             import importIFC
             importIFC.ZOOMOUT = False
             importIFC.insert(path,FreeCAD.ActiveDocument.Name)
             from DraftGui import todo
             todo.delay(self.reject,None)
-        elif path.lower().endswith(".sat") or path.lower().endswith(".sab"):
+        elif ext in [".sat",".sab"]:
             try:
                 # InventorLoader addon
                 import importerIL
@@ -491,7 +548,7 @@ class BIM_Library_TaskPanel:
                     # CADExchanger addon
                     import CadExchangerIO
                 except ImportError:
-                    FreeCAD.Console.PrintError(translate("BIM","Error: Unable to import SAT files - CadExchanger addon must be installed"))
+                    FreeCAD.Console.PrintError(translate("BIM","Error: Unable to import SAT files - InventorLoader or CadExchanger addon must be installed")+"\n")
                 else:
                     path = CadExchangerIO.insert(path,FreeCAD.ActiveDocument.Name,returnpath = True)
                     self.place(path)
@@ -510,9 +567,9 @@ class BIM_Library_TaskPanel:
         if not os.path.exists(filepath):
             from PySide import QtCore,QtGui
             QtGui.QApplication.setOverrideCursor(QtCore.Qt.WaitCursor)
-            u = addonmanager_utilities.urlopen(url)
+            u = urllib.request.urlopen(url)
             if not u:
-                FreeCAD.Console.PrintError(translate("BIM", "Error: Unable to download")+ " "+url+"\n")
+                FreeCAD.Console.PrintError(translate("BIM", "Error: Unable to download")+" "+url+"\n")
             b = u.read()
             f = open(filepath,"wb")
             f.write(b)
@@ -556,15 +613,14 @@ class BIM_Library_TaskPanel:
                     translate("BIM","Top right"),translate("BIM","Middle left"),translate("BIM","Middle center"),
                     translate("BIM","Middle right"),translate("BIM","Bottom left"),translate("BIM","Bottom center"),
                     translate("BIM","Bottom right")])
-        p = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM").GetInt("LibraryDefaultInsert",0)
-        c.setCurrentIndex(p)
+        c.setCurrentIndex(self.p.GetInt("LibraryDefaultInsert",0))
         c.currentIndexChanged.connect(self.storeInsert)
         l.addWidget(c)
         return w
 
     def storeInsert(self,index):
 
-        FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM").SetInt("LibraryDefaultInsert",index)
+        self.p.SetInt("LibraryDefaultInsert",index)
 
     def mouseMove(self,point,info):
 
@@ -612,9 +668,8 @@ class BIM_Library_TaskPanel:
 
         # obsolete code - now using getOnlineContentsAPI
 
-        import addonmanager_utilities
         result = {}
-        u = addonmanager_utilities.urlopen(url)
+        u = urllib.request.urlopen(url)
         if u:
             p = u.read()
             if sys.version_info.major >= 3:
@@ -623,7 +678,7 @@ class BIM_Library_TaskPanel:
             files = re.findall("<.*?octicon-file\".*?href.*?>(.*?)</a>",p)
             nfiles = []
             for f in files:
-                for ft in FILTERS:
+                for ft in self.getFilters():
                     if f.endswith(ft[1:]):
                         nfiles.append(f)
                         break
@@ -672,7 +727,7 @@ class BIM_Library_TaskPanel:
                         host[fp] = {}
                         host = host[fp]
                 if name:
-                    for ft in FILTERS:
+                    for ft in self.getFilters():
                         if name.endswith(ft[1:]):
                             break
                     else:
@@ -689,32 +744,34 @@ class BIM_Library_TaskPanel:
         return result
 
 
-    def onCheckOnline(self,state):
+    def onCheckOnline(self,state=None):
 
         """if the Online checkbox is clicked"""
 
-        import datetime
+        if state == None:
+            state = self.form.checkOnline.isChecked()
         # save state
-        p = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM")
-        p.SetBool("LibraryOnline",state)
+        self.p.SetBool("LibraryOnline",state)
         if state:
             # online
             if USE_API:
                 timestamp = datetime.datetime.now()
-                stored = p.GetUnsigned("LibraryTimeStamp",0)
+                stored = self.p.GetUnsigned("LibraryTimeStamp",0)
                 if stored:
                     stored = datetime.datetime.fromordinal(stored)
                     if(timestamp - stored).total_seconds() > REFRESH_INTERVAL:
-                        p.SetUnsigned("LibraryTimeStamp",timestamp.toordinal())
+                        self.p.SetUnsigned("LibraryTimeStamp",timestamp.toordinal())
                         self.onRefresh()
                     else:
                         FreeCAD.Console.PrintLog("BIM Library: Using cached library\n")
                 else:
                     FreeCAD.Console.PrintLog("BIM Library: Using cached library\n")
             self.setOnlineModel()
+            self.form.buttonLink.setEnabled(False)
         else:
             # offline
             self.setFileModel()
+            self.form.buttonLink.setEnabled(True)
 
     def onRefresh(self):
 
@@ -733,11 +790,11 @@ class BIM_Library_TaskPanel:
                 tf.close()
 
         from PySide import QtCore,QtGui
-        reply = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM").GetBool("LibraryWarning",False)
+        reply = self.p.GetBool("LibraryWarning",False)
         if not reply:
             reply = QtGui.QMessageBox.information(None,"",translate("BIM","Warning, this can take several minutes!"))
         if reply:
-            FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM").SetBool("LibraryWarning",True)
+            self.p.SetBool("LibraryWarning",True)
             self.form.setEnabled(False)
             QtGui.QApplication.setOverrideCursor(QtCore.Qt.WaitCursor)
             self.form.repaint()
@@ -752,16 +809,16 @@ class BIM_Library_TaskPanel:
         """if the FCStd only checkbox is clicked"""
 
         # save state
-        p = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM")
-        p.SetBool("LibraryFCStdOnly",state)
+        self.p.SetBool("LibraryFCStdOnly",state)
+        self.dirmodel.setNameFilters(self.getFilters())
+        self.onCheckOnline(self.form.checkOnline.isChecked())
 
     def onCheckWebSearch(self,state):
 
         """if the web search checkbox is clicked"""
 
         # save state
-        p = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM")
-        p.SetBool("LibraryWebSearch",state)
+        self.p.SetBool("LibraryWebSearch",state)
 
     def onCheck3DPreview(self,state):
 
@@ -769,9 +826,8 @@ class BIM_Library_TaskPanel:
 
         import FreeCADGui
         # save state
-        p = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM")
-        p.SetBool("3DPreview",state)
-        self.previewOn = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM").GetBool("3DPreview",False)
+        self.p.SetBool("3DPreview",state)
+        self.previewOn = self.p.GetBool("3DPreview",False)
         try:
             FreeCAD.closeDocument(self.previewDocName)
         except:
@@ -787,8 +843,7 @@ class BIM_Library_TaskPanel:
         """if the thumbnail checkbox is clicked"""
 
         # save state
-        p = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM")
-        p.SetBool("SaveThumbnails",state)
+        self.p.SetBool("SaveThumbnails",state)
 
     def onButtonOptions(self):
 
@@ -796,10 +851,10 @@ class BIM_Library_TaskPanel:
 
         if self.form.frameOptions.isVisible():
             self.form.frameOptions.hide()
-            self.form.buttonOptions.setText(translate("BIM","Options")+" ▼")
+            self.form.buttonOptions.setText(translate("BIM","Options")+" ▸")
         else:
             self.form.frameOptions.show()
-            self.form.buttonOptions.setText(translate("BIM","Options")+" ▲")
+            self.form.buttonOptions.setText(translate("BIM","Options")+" ▼")
 
     def onButtonPreview(self):
 
@@ -807,10 +862,74 @@ class BIM_Library_TaskPanel:
 
         if self.form.framePreview.isVisible():
             self.form.framePreview.hide()
-            self.form.buttonPreview.setText(translate("BIM","Preview")+" ▼")
+            self.form.buttonPreview.setText(translate("BIM","Preview")+" ▸")
+            self.p.SetBool("LibraryPreview",False)
         else:
             self.form.framePreview.show()
-            self.form.buttonPreview.setText(translate("BIM","Preview")+" ▲")
+            self.form.buttonPreview.setText(translate("BIM","Preview")+" ▼")
+            self.p.SetBool("LibraryPreview",True)
+
+    def getThumbnail(self,filepath):
+    
+        """returns a thumbnail image path for a given file path"""
+    
+        if not filepath.lower().endswith(".fcstd"):
+            return None
+        iconname = self.getHashname(filepath)
+        iconfile = os.path.join(THUMBNAILSPATH, iconname)
+        if os.path.exists(iconfile):
+            return iconfile
+        else:
+            if self.form.checkOnline.isChecked():
+                # download file
+                u = urllib.request.urlopen(urllib.parse.quote(filepath,safe=":/."))
+                fdata = u.read()
+                u.close()
+                f = io.BytesIO(fdata)
+            else:
+                f = filepath
+            zfile = zipfile.ZipFile(f)
+            if "thumbnails/Thumbnail.png" in zfile.namelist():
+                data = zfile.read("thumbnails/Thumbnail.png")
+                os.makedirs(os.path.dirname(iconfile),exist_ok=True)
+                thumb = open(iconfile, "wb")
+                thumb.write(data)
+                thumb.close()
+                return iconfile
+            else:
+                return None
+
+    def getHashname(self,filepath):
+    
+        """creates a png filename for a given file path"""
+    
+        filepath = self.cleanPath(filepath)
+        return hashlib.md5(filepath.encode()).hexdigest()+".png"
+
+    def cleanPath(self,filepath):
+    
+        """cleans a file path into subfolder/subfolder/file form"""
+    
+        if filepath.startswith(self.librarypath):
+            # strip local part od the path
+            filepath = filepath[len(self.librarypath):]
+        if filepath.startswith(RAWURL):
+            filepath = filepath[len(RAWURL):]
+        filepath = filepath.replace("\\", "/")
+        if filepath.startswith("/"):
+            filepath = filepath[1:]
+        filepath = urllib.parse.quote(filepath)
+        return filepath
+
+    def onExternalSearch(self,index):
+
+        """searches on external websites"""
+
+        if index > 0:
+            baseurl = self.form.comboSearch.itemData(index)
+            term = self.form.searchBox.text()
+            if term:
+                self.openUrl(baseurl+self.urlencode(term))
 
 
 if FreeCAD.GuiUp:
