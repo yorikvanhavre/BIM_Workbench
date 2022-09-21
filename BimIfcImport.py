@@ -39,7 +39,7 @@ import ArchIFC
 
 IFCINCLUDE = "link" # full, link or none
 EXCLUDELIST = [ "IfcOpeningElement" ] # temporary
-PROPERTYMODE = "new" # new = IFC properties become FreeCAD properties, old is 0.20
+PROPERTYMODE = "new" # new = IFC properties become FreeCAD properties, old is 0.20, hybrid is: Pset* are old-style, others are new-style
 
 # global dicts to store ifc object/freecad object relationships
 
@@ -213,6 +213,9 @@ def createProduct(ifcproduct,brep):
     shape.scale(1000.0) # IfcOpenShell outputs in meters
     if ifcproduct.is_a("IfcSpace"):
         obj = Arch.makeSpace()
+        # TODO Temp workaround against layer causing appearance change
+        if obj.ViewObject:
+            obj.ViewObject.DisplayMode = "Wireframe"
     else:
         obj = Arch.makeComponent()
     obj.Shape = shape
@@ -269,7 +272,7 @@ def setProperties(obj,ifcproduct):
                         propgroup = cleanName(pset.Name)
                         proptype, propvalue, ifctype = getPropertyValue(prop.NominalValue)
                         #if pset.Name.startswith("Ifc"):
-                        if PROPERTYMODE == "new":
+                        if (PROPERTYMODE == "new") or ((PROPERTYMODE == "hybrid") and not (propgroup.lower().startswith("pset"))):
                             # creating FreeCAD property
                             while propname in obj.PropertiesList:
                                 propname = propname + "_"
@@ -300,7 +303,7 @@ def getPropertyValue(value):
     values = [p.strip("'") for p in str(value).strip(")").split("(")]
     ifctype = values[0]
     propvalue = values[1]
-    proptype = "App::PropertyString"
+    proptype = "App::PropertyString" # default
     if ifctype == "IfcInteger":
         proptype = "App::PropertyInteger"
         propvalue = int(propvalue)
