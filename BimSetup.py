@@ -461,7 +461,7 @@ def getIfcOpenShell(force=False):
         import re,json
         from PySide import QtGui
         import zipfile
-        import addonmanager_utilities
+        import urllib import request
         if not FreeCAD.GuiUp:
             reply = QtGui.QMessageBox.Yes
         else:
@@ -473,7 +473,7 @@ def getIfcOpenShell(force=False):
         if reply == QtGui.QMessageBox.Yes:
             print("Loading list of latest IfcOpenBot builds from https://github.com/IfcOpenBot/IfcOpenShell...")
             url1 = "https://api.github.com/repos/IfcOpenBot/IfcOpenShell/comments?per_page=100"
-            u = addonmanager_utilities.urlopen(url1)
+            u = urllib.request.urlopen(url1)
             if u:
                 r = u.read()
                 u.close()
@@ -500,7 +500,7 @@ def getIfcOpenShell(force=False):
                         print("Downloading "+link+"...")
                         p = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Macro")
                         fp = p.GetString("MacroPath",os.path.join(FreeCAD.getUserAppDataDir(),"Macros"))
-                        u = addonmanager_utilities.urlopen(link)
+                        u = urllib.request.urlopen(link)
                         if u:
                             if sys.version_info.major < 3:
                                 import StringIO as io
