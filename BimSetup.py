@@ -461,7 +461,7 @@ def getIfcOpenShell(force=False):
         import re,json
         from PySide import QtGui
         import zipfile
-        import urllib import request
+        from urllib import request
         if not FreeCAD.GuiUp:
             reply = QtGui.QMessageBox.Yes
         else:
