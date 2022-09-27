@@ -34,15 +34,16 @@ import importIFCHelper
 from FreeCAD import Base
 import ArchIFC
 
+# to resolve later...
+import importIFC
+getPreferences = importIFC.getPreferences
 
 # temp constants (to be turned into FreeCAD parameters later)
-
 IFCINCLUDE = "link" # full, link or none
 EXCLUDELIST = [ "IfcOpeningElement" ] # temporary
 PROPERTYMODE = "new" # new = IFC properties become FreeCAD properties, old is 0.20, hybrid is: Pset* are old-style, others are new-style
 
 # global dicts to store ifc object/freecad object relationships
-
 layers = {} # ifcid : Draft_Layer
 materials = {} #ifcid : Arch_Material
 objects = {} #ifcid : Arch_Component
@@ -88,9 +89,7 @@ def insert(filename,docname=None,preferences=None):
 
     # setup ifcopenshell
     if not preferences:
-        # TODO: switch to importIFCHelper.getPreferences
-        import importIFC
-        preferences = importIFC.getPreferences()
+        preferences = getPreferences()
     settings = ifcopenshell.geom.settings()
     settings.set(settings.USE_BREP_DATA,True)
     settings.set(settings.SEW_SHELLS,True)
@@ -111,7 +110,7 @@ def insert(filename,docname=None,preferences=None):
         doc = FreeCAD.newDocument(docname)
         doc.Label = docname
         FreeCAD.setActiveDocument(doc.Name)
-        
+
     # store IFC data
     if IFCINCLUDE == "full":
         fobj = doc.addObject("App::TextDocument","IfcFileData")
@@ -250,11 +249,11 @@ def setAttributes(obj,ifcproduct):
 
     # register IFC data
     obj.addProperty("App::PropertyInteger","IfcID","IfcLink")
-    obj.addProperty("App::PropertyBool","IfcModified","IfcLink")
+    obj.addProperty("App::PropertyBool","Modified","IfcLink")
     obj.IfcID = ifcproduct.id()
     obj.IfcModified = False
     obj.setEditorMode("IfcID",2)
-    obj.setEditorMode("IfcModified",2)
+    obj.setEditorMode("Modified",2)
 
 
 def setProperties(obj,ifcproduct):
@@ -287,9 +286,9 @@ def setProperties(obj,ifcproduct):
 
 
 def cleanName(txt):
-    
+
     """removes anything non alpha and non ascii from a string"""
-    
+
     txt = "".join([c for c in txt if c.isalnum() and c.isascii()])
     if txt[0].isdigit():
         txt = "_" + txt
@@ -297,9 +296,9 @@ def cleanName(txt):
 
 
 def getPropertyValue(value):
-    
+
     """returns a FreeCAD property type and value form an IfcNominalProperty"""
-    
+
     values = [p.strip("'") for p in str(value).strip(")").split("(")]
     ifctype = values[0]
     propvalue = values[1]
