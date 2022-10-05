@@ -251,7 +251,7 @@ def setAttributes(obj,ifcproduct):
     obj.addProperty("App::PropertyInteger","IfcID","IfcLink")
     obj.addProperty("App::PropertyBool","Modified","IfcLink")
     obj.IfcID = ifcproduct.id()
-    obj.IfcModified = False
+    obj.Modified = False
     obj.setEditorMode("IfcID",2)
     obj.setEditorMode("Modified",2)
 
