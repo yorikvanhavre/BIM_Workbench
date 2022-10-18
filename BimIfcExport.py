@@ -164,6 +164,17 @@ def setupProject(objectslist, ifcfile):
     # include project?
 
 
+def getIfcDocument(text):
+    
+    """returns an IFC file object from IFC text"""
+    
+    tmp = tempfile.NamedTemporaryFile()
+    with open(tmp.name, 'w') as f:
+        f.write(text)
+    ifcfile = ifcopenshell.open(tmp.name)
+    return ifcfile
+
+
 def setUnits(ifcfile):
     
     """sets the units of the IFC file (meters or feet)""" 
@@ -231,8 +242,6 @@ def writeObject(obj, ifcbin):
     description = getattr(obj,"Description","")
     uid = getUID(obj, ifcbin)
     ifctype = getIfcType(obj)
-    
-    return ifcobj
 
 
 def writeProperties(obj, ifcfile):
