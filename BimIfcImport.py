@@ -36,12 +36,13 @@ import ArchIFC
 
 # to resolve later...
 import importIFC
-getPreferences = importIFC.getPreferences
 
 # temp constants (to be turned into FreeCAD parameters later)
 IFCINCLUDE = "link" # full, link or none
 EXCLUDELIST = [ "IfcOpeningElement" ] # temporary
-PROPERTYMODE = "new" # new = IFC properties become FreeCAD properties, old is 0.20, hybrid is: Pset* are old-style, others are new-style
+PROPERTYMODE = "new" # new = IFC properties become FreeCAD properties, 
+                     # old is 0.20, hybrid is: Pset* are old-style, 
+                     # others are new-style
 
 # global dicts to store ifc object/freecad object relationships
 layers = {} # ifcid : Draft_Layer
@@ -59,7 +60,7 @@ def open(filename):
     return insert(filename)
 
 
-def insert(filename,docname=None,preferences=None):
+def insert(filename,docname=None):
 
     """imports the contents of an IFC file in the given document"""
 
@@ -88,8 +89,7 @@ def insert(filename,docname=None,preferences=None):
     print("Opening",filename+",",round(filesize,2),"Mb")
 
     # setup ifcopenshell
-    if not preferences:
-        preferences = getPreferences()
+    params = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Arch")
     settings = ifcopenshell.geom.settings()
     settings.set(settings.USE_BREP_DATA,True)
     settings.set(settings.SEW_SHELLS,True)
@@ -98,8 +98,9 @@ def insert(filename,docname=None,preferences=None):
     #if preferences['SEPARATE_OPENINGS']:
     #    settings.set(settings.DISABLE_OPENING_SUBTRACTIONS,True)
     settings.set(settings.DISABLE_OPENING_SUBTRACTIONS,False)
-    if preferences['SPLIT_LAYERS'] and hasattr(settings,"APPLY_LAYERSETS"):
-        settings.set(settings.APPLY_LAYERSETS,True)
+    # TODO: Treat layers
+    #if preferences['SPLIT_LAYERS'] and hasattr(settings,"APPLY_LAYERSETS"):
+    settings.set(settings.APPLY_LAYERSETS,True)
 
     # setup document
     if FreeCAD.ActiveDocument:
@@ -135,7 +136,7 @@ def insert(filename,docname=None,preferences=None):
     progressbar = Base.ProgressIndicator()
     productscount = len(ifcfile.by_type("IfcProduct"))
     progressbar.start("Importing "+str(productscount)+" products...",productscount)
-    cores = preferences["MULTICORE"]
+    cores = params.GetInt("ifcMulticore", 0)
     iterator = ifcopenshell.geom.iterator(settings,ifcfile,cores)
     iterator.initialize()
     count = 0
@@ -160,8 +161,9 @@ def insert(filename,docname=None,preferences=None):
         print("Processing",str(len(annotations)),"annotations...")
         gr = doc.addObject("App::DocumentObjectGroup","Annotations")
         ifcscale = importIFCHelper.getScaling(ifcfile)
+        p = {'PREFIX_NUMBERS':False}
         for annotation in annotations:
-            anno = importIFCHelper.createAnnotation(annotation,doc,ifcscale,preferences)
+            anno = importIFCHelper.createAnnotation(annotation,doc,ifcscale,p)
             if anno:
                 gr.addObject(anno)
 
@@ -251,7 +253,7 @@ def setAttributes(obj,ifcproduct):
     obj.addProperty("App::PropertyInteger","IfcID","IfcLink")
     obj.addProperty("App::PropertyBool","Modified","IfcLink")
     obj.IfcID = ifcproduct.id()
-    obj.IfcModified = False
+    obj.Modified = False
     obj.setEditorMode("IfcID",2)
     obj.setEditorMode("Modified",2)
 
