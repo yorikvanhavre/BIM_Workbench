@@ -304,12 +304,11 @@ def setStatusIcons(show=True):
                 statuswidget.addWidget(updatebutton)
                 QtCore.QTimer.singleShot(2500, checkUpdates) # delay a bit the check for BIM WB update...
         else:
-            if statuswidget:
-                statuswidget.hide()
-            else:
+            if statuswidget is None:
                 # when switching workbenches, the toolbar sometimes "jumps"
                 # out of the status bar to any other dock area...
                 statuswidget = mw.findChild(QtGui.QToolBar,"BIMStatusWidget")
-                if statuswidget:
-                    statuswidget.hide()
+            if statuswidget:
+                statuswidget.hide()
+                statuswidget.toggleViewAction().setVisible(False)
 
