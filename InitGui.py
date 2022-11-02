@@ -470,6 +470,7 @@ static char * IFC_xpm[] = {
                 FreeCADGui.runCommand("BIM_Views")
             else:
                 w.show()
+                w.toggleViewAction().setVisible(True)
 
         self.setupMultipleObjectSelection()
 
