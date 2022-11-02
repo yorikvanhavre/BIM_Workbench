@@ -504,6 +504,7 @@ static char * IFC_xpm[] = {
         if w:
             FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM").SetInt("BimViewsSize",w.height())
             w.hide()
+            w.toggleViewAction().setVisible(False)
 
         Log("BIM workbench deactivated\n")
 
