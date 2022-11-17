@@ -80,6 +80,7 @@ class BIM_Slab:
     def Activated(self):
 
         import FreeCADGui
+        import DraftTools
         self.removeCallback()
         sel = FreeCADGui.Selection.getSelection()
         if sel:
