@@ -86,7 +86,7 @@ def export(exportList, filename):
     ifcfile.write(filename)
 
 
-def buildTemplate(doc, filename)
+def buildTemplate(doc, filename):
 
     """builds a template IFC file for the given document"""
 
