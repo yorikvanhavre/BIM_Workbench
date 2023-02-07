@@ -107,7 +107,7 @@ class BIM_Setup:
                 FreeCAD.ParamGet('User parameter:Plugins/parts_library').SetString('destination',librarypath)
                 libok = True
         if not libok:
-            m.append("Parts Library")
+            m.append("parts_library")
         if m:
             t = translate("BIM","Some additional workbenches are not installed, that extend BIM functionality:")+" <b>"+",".join(m)+"</b>. "+translate("BIM","You can install them from menu Tools -> Addon manager.")
             self.form.labelMissingWorkbenches.setText(t)
