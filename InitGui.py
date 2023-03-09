@@ -258,7 +258,10 @@ static char * IFC_xpm[] = {
         # post-0.18 tools
 
         if "Draft_Layer" in Gui.listCommands():
-            self.manage.insert(8,"BIM_Layers")
+            if "Draft_LayerManager" in Gui.listCommands():
+                self.manage.insert(8,"Draft_LayerManager")
+            else:
+                self.manage.insert(8,"BIM_Layers")
         if "Arch_Project" in Gui.listCommands():
             self.bimtools.insert(0,"Arch_Project")
         if "Arch_Reference" in Gui.listCommands():
