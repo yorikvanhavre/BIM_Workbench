@@ -21,8 +21,8 @@
 #***************************************************************************
 
 # add import/export types
-FreeCAD.addImportType("Industry Foundation Classes BIMWB (*.ifc)","BimIfcImport")
-FreeCAD.addExportType("Industry Foundation Classes BIMWB (*.ifc)","BimIfcExport")
+#FreeCAD.addImportType("Industry Foundation Classes BIMWB (*.ifc)","BimIfcImport")
+#FreeCAD.addExportType("Industry Foundation Classes BIMWB (*.ifc)","BimIfcExport")
 
 
 
