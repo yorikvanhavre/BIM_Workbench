@@ -31,7 +31,42 @@ from BimTranslateUtils import *
 from draftguitools import gui_dimensions
 from draftguitools import gui_shape2dview
 
-#Part_Builder
+
+
+class BIM_Project:
+    
+    def __init__(self):
+        
+        try:
+            import ifc_tools
+        except:
+            self.NativeIFC = False
+        else:
+            self.NativeIFC = True
+
+    def GetResources(self):
+
+        if self.NativeIFC:
+            icon = os.path.join(os.path.dirname(__file__),"icons","Arch_Project_IFC.svg")
+            descr = QT_TRANSLATE_NOOP("BIM_Project", "Create an empty NativeIFC project")
+        else:
+            icon = os.path.join(os.path.dirname(__file__),"icons","Arch_Project.svg")
+            descr = QT_TRANSLATE_NOOP("BIM_Project", "Create an empty BIM project")
+        return {'Pixmap'  : icon,
+                'MenuText': QT_TRANSLATE_NOOP("BIM_Project", "Project"),
+                'ToolTip' : descr,
+                }
+
+    def Activated(self):
+
+        if self.NativeIFC:
+            import ifc_tools
+            project = ifc_tools.create_document(FreeCAD.ActiveDocument)
+            project.Modified = True
+            FreeCAD.ActiveDocument.recompute()
+        else:
+            import FreeCADGui
+            FreeCADGui.runCommand("Arch_Project")
 
 
 class BIM_Builder:

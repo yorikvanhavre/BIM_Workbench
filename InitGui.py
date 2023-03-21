@@ -184,6 +184,7 @@ static char * IFC_xpm[] = {
         FreeCADGui.addCommand('BIM_DimensionVertical',BimWrappedTools.BIM_DimensionVertical())
         FreeCADGui.addCommand('BIM_Text',BimWrappedTools.BIM_Text())
         FreeCADGui.addCommand('BIM_Shape2DView',BimWrappedTools.BIM_Shape2DView())
+        FreeCADGui.addCommand('BIM_Project',BimWrappedTools.BIM_Project())
 
         self.draftingtools = ["BIM_Sketch","Draft_Line","Draft_Wire","Draft_Circle",
                               "Draft_Arc","Draft_Arc_3Points","Draft_Ellipse",
@@ -195,7 +196,7 @@ static char * IFC_xpm[] = {
                                 "BIM_Leader","Draft_Label","Arch_Axis","Arch_AxisSystem","Arch_Grid",
                                 "Arch_SectionPlane","BIM_TDPage","BIM_TDArchView","BIM_Shape2DView"]
 
-        self.bimtools = ["Arch_Project","Arch_Site","Arch_Building","Arch_Floor","Arch_Space","Separator",
+        self.bimtools = ["BIM_Project","Arch_Site","Arch_Building","Arch_Floor","Arch_Space","Separator",
                          "Arch_Wall","BIM_Column","BIM_Beam","BIM_Slab","Arch_Rebar","BIM_Door","Arch_Window","Arch_Pipe",
                          "Arch_PipeConnector","Arch_Stairs","Arch_Roof","Arch_Panel","Arch_Frame",
                          "Separator","BIM_Box","BIM_Builder","Draft_Facebinder","BIM_Library","Arch_Component"]
