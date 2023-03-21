@@ -82,7 +82,6 @@ static char * IFC_xpm[] = {
         import BimCommands
         import BimWelcome
         import BimSetup
-        import BimProject
         import BimWindows
         import BimIfcElements
         import BimViews
@@ -141,7 +140,6 @@ static char * IFC_xpm[] = {
         FreeCADGui.addCommand('BIM_ResetCloneColors',BimClone.BIM_ResetCloneColors())
         FreeCADGui.addCommand('BIM_Welcome',BimWelcome.BIM_Welcome())
         FreeCADGui.addCommand('BIM_Setup',BimSetup.BIM_Setup())
-        FreeCADGui.addCommand('BIM_Project',BimProject.BIM_Project())
         FreeCADGui.addCommand('BIM_Windows',BimWindows.BIM_Windows())
         FreeCADGui.addCommand('BIM_IfcElements',BimIfcElements.BIM_IfcElements())
         FreeCADGui.addCommand('BIM_Views',BimViews.BIM_Views())
@@ -197,7 +195,7 @@ static char * IFC_xpm[] = {
                                 "BIM_Leader","Draft_Label","Arch_Axis","Arch_AxisSystem","Arch_Grid",
                                 "Arch_SectionPlane","BIM_TDPage","BIM_TDArchView","BIM_Shape2DView"]
 
-        self.bimtools = ["Arch_Site","Arch_Building","Arch_Floor","Arch_Space","Separator",
+        self.bimtools = ["Arch_Project","Arch_Site","Arch_Building","Arch_Floor","Arch_Space","Separator",
                          "Arch_Wall","BIM_Column","BIM_Beam","BIM_Slab","Arch_Rebar","BIM_Door","Arch_Window","Arch_Pipe",
                          "Arch_PipeConnector","Arch_Stairs","Arch_Roof","Arch_Panel","Arch_Frame",
                          "Separator","BIM_Box","BIM_Builder","Draft_Facebinder","BIM_Library","Arch_Component"]
@@ -217,7 +215,7 @@ static char * IFC_xpm[] = {
                      'Draft_Snap_Special','Draft_Snap_Dimensions','Draft_Snap_WorkingPlane',
                      'BIM_SetWPTop','BIM_SetWPFront','BIM_SetWPSide']
 
-        self.manage = ["BIM_Setup","BIM_Project","BIM_Views","BIM_Windows","BIM_IfcElements",
+        self.manage = ["BIM_Setup","BIM_Views","BIM_Windows","BIM_IfcElements",
                        "BIM_IfcQuantities","BIM_IfcProperties","BIM_Classification",
                        "BIM_Material","Arch_Schedule","BIM_Preflight"]
 
@@ -262,8 +260,6 @@ static char * IFC_xpm[] = {
                 self.manage.insert(8,"Draft_LayerManager")
             else:
                 self.manage.insert(8,"BIM_Layers")
-        if "Arch_Project" in Gui.listCommands():
-            self.bimtools.insert(0,"Arch_Project")
         if "Arch_Reference" in Gui.listCommands():
             self.bimtools.insert(-5,"Arch_Reference")
         if "Arch_Fence" in Gui.listCommands():
