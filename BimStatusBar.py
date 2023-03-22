@@ -45,15 +45,6 @@ def setStatusIcons(show=True):
     import FreeCADGui
     from PySide import QtCore, QtGui
 
-    unitsList = [
-        translate("BIM", "Millimeters"),
-        translate("BIM", "Centimeters"),
-        translate("BIM", "Meters"),
-        translate("BIM", "Inches"),
-        translate("BIM", "Feet"),
-        translate("BIM", "Architectural"),
-    ]
-
     nudgeLabelsM = [
         translate("BIM", "Custom..."),
         '1/16"',
@@ -94,33 +85,6 @@ def setStatusIcons(show=True):
                 if updatebutton:
                     statuswidget.actions()[-1].setVisible(False)
         FreeCADGui.runCommand("Std_AddonMgr")
-
-    def setUnit(action):
-        # set the label of the unit button
-        utext = action.text().replace("&", "")
-        unit = [0, 4, 1, 3, 7, 5][unitsList.index(utext)]
-        FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Units").SetInt(
-            "UserSchema", unit
-        )
-        if hasattr(FreeCAD.Units, "setSchema"):
-            FreeCAD.Units.setSchema(unit)
-        action.parent().parent().parent().setText(utext)
-
-        # change the unit of the nudge button
-        nudge = action.parent().parent().parent().parent().nudge
-        nudgeactions = nudge.menu().actions()
-        if unit in [2, 3, 5, 7]:
-            nudgelabels = nudgeLabelsI
-        else:
-            nudgelabels = nudgeLabelsM
-        for i in range(len(nudgelabels)):
-            nudgeactions[i].setText(nudgelabels[i])
-        try:
-            nudge.setText(
-                FreeCAD.Units.Quantity(nudge.text().replace("&", "")).UserString
-            )
-        except:
-            pass
 
     def setNudge(action):
         utext = action.text().replace("&", "")
@@ -254,42 +218,6 @@ def setStatusIcons(show=True):
                 statuswidget.nudgeLabelsI = nudgeLabelsI
                 statuswidget.nudgeLabelsM = nudgeLabelsM
 
-                # units chooser
-                statuswidget.unitsList = unitsList
-                unitLabel = QtGui.QPushButton("Unit")
-                unitLabel.setObjectName("UnitLabel")
-                unitLabel.setFlat(True)
-                unit = FreeCAD.ParamGet(
-                    "User parameter:BaseApp/Preferences/Units"
-                ).GetInt("UserSchema", 0)
-                menu = QtGui.QMenu(unitLabel)
-                gUnits = QtGui.QActionGroup(menu)
-                for u in unitsList:
-                    a = QtGui.QAction(gUnits)
-                    a.setText(u)
-                    menu.addAction(a)
-                unitLabel.setMenu(menu)
-                gUnits.triggered.connect(setUnit)
-                unitLabel.setText(
-                    [
-                        unitsList[0],
-                        unitsList[2],
-                        unitsList[3],
-                        unitsList[3],
-                        unitsList[1],
-                        unitsList[5],
-                        unitsList[0],
-                        unitsList[4],
-                    ][unit]
-                )
-                unitLabel.setToolTip(
-                    translate(
-                        "BIM",
-                        "The preferred unit you are currently working with. You can still use any other unit anywhere in FreeCAD",
-                    )
-                )
-                statuswidget.addWidget(unitLabel)
-                statuswidget.unitLabel = unitLabel
                 st.addPermanentWidget(statuswidget)
 
                 # report panels toggle button
