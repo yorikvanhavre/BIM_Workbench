@@ -106,6 +106,7 @@ static char * IFC_xpm[] = {
         import BimWorkingPlaneTools
         import BimWrappedTools
         import BimReorder
+        import BimProjectManager
 
         # add translations path
         FreeCADGui.addLanguagePath(BimStatusBar.getLanguagePath())
@@ -125,7 +126,7 @@ static char * IFC_xpm[] = {
         FreeCADGui.addCommand('BIM_Leader',BimCommands.BIM_Leader())
         FreeCADGui.addCommand('BIM_Background',BimCommands.BIM_Background())
         FreeCADGui.addCommand('BIM_MoveView',BimCommands.BIM_MoveView())
-
+        FreeCADGui.addCommand('BIM_ProjectManager',BimProjectManager.BIM_ProjectManager())
         FreeCADGui.addCommand('BIM_SetWPTop',BimWorkingPlaneTools.BIM_SetWPTop())
         FreeCADGui.addCommand('BIM_SetWPFront',BimWorkingPlaneTools.BIM_SetWPFront())
         FreeCADGui.addCommand('BIM_SetWPSide',BimWorkingPlaneTools.BIM_SetWPSide())
@@ -216,7 +217,7 @@ static char * IFC_xpm[] = {
                      'Draft_Snap_Special','Draft_Snap_Dimensions','Draft_Snap_WorkingPlane',
                      'BIM_SetWPTop','BIM_SetWPFront','BIM_SetWPSide']
 
-        self.manage = ["BIM_Setup","BIM_Views","BIM_Windows","BIM_IfcElements",
+        self.manage = ["BIM_Setup","BIM_Views","BIM_ProjectManager","BIM_Windows","BIM_IfcElements",
                        "BIM_IfcQuantities","BIM_IfcProperties","BIM_Classification",
                        "BIM_Material","Arch_Schedule","BIM_Preflight"]
 

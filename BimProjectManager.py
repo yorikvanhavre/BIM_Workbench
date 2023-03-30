@@ -28,14 +28,14 @@ import sys
 import FreeCAD
 from BimTranslateUtils import *
 
-class BIM_Project:
+class BIM_ProjectManager:
 
 
     def GetResources(self):
 
         return {'Pixmap'  : os.path.join(os.path.dirname(__file__),"icons","BIM_Project.svg"),
-                'MenuText': QT_TRANSLATE_NOOP("BIM_Project", "Manage project..."),
-                'ToolTip' : QT_TRANSLATE_NOOP("BIM_Project", "Setup your BIM project")}
+                'MenuText': QT_TRANSLATE_NOOP("BIM_ProjectManager", "Manage project..."),
+                'ToolTip' : QT_TRANSLATE_NOOP("BIM_ProjectManager", "Setup your BIM project")}
 
     def Activated(self):
 
@@ -43,7 +43,7 @@ class BIM_Project:
 
         # load dialog
         from PySide import QtCore,QtGui
-        self.form = FreeCADGui.PySideUic.loadUi(os.path.join(os.path.dirname(__file__),"dialogProject.ui"))
+        self.form = FreeCADGui.PySideUic.loadUi(os.path.join(os.path.dirname(__file__),"dialogProjectManager.ui"))
 
         # center the dialog over FreeCAD window
         mw = FreeCADGui.getMainWindow()
