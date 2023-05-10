@@ -12,6 +12,8 @@ But one of the specific goals of this particular workbench, is to try to focus o
 
 **Warning**: This is experimental work. Although it is perfectly safe to use, and won't break anything, it is meant to be an place where we can try things and experiment, and not a production environment (yet). You are more than welcome to try, give us your feedback and help us to build a better BIM workflow, just remember that some features might change or disappear without notice over time.
 
+**Note**: The [NativeIFC](https://github.com/yorikvanhavre/FreeCAD-NativeIFC/tree/main) addon is being developed as an upgrade/extension of this add-on. If you are working with IFC files, give it a look!
+
 ### Features
 
 This is a rather short overview of what it can do, just to give you a taste of it. There is much more than that, refer to the  [full documentation](https://www.freecadweb.org/wiki/BIM_Workbench) to know more.
