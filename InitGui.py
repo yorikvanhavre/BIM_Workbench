@@ -206,7 +206,7 @@ static char * IFC_xpm[] = {
                        "BIM_Offset2D", "Draft_Trimex","Draft_Join","Draft_Split","Draft_Scale","Draft_Stretch",
                        "Draft_Edit", "BIM_Rewire","BIM_Glue","Draft_Upgrade", "Draft_Downgrade",
                        "Draft_Draft2Sketch","Arch_CutPlane","Arch_Add","Arch_Remove","BIM_Reextrude",
-                       "Draft_Array","Draft_PathArray","Draft_PointArray",
+                       "Draft_OrthoArray","Draft_PathArray","Draft_PointArray",
                        "Draft_Mirror","BIM_Extrude","BIM_Cut","BIM_Fuse","BIM_Common","BIM_Compound",
                        "BIM_SimpleCopy"]
 
