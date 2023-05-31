@@ -513,6 +513,8 @@ static char * IFC_xpm[] = {
 
     def ContextMenu(self, recipient):
 
+        translate = FreeCAD.Qt.translate
+
         import DraftTools
         if (recipient == "Tree"):
             groups = False
@@ -538,7 +540,7 @@ static char * IFC_xpm[] = {
             if (len(FreeCADGui.Selection.getSelection()) == 1) and (FreeCADGui.Selection.getSelection()[0].Name == "Trash"):
                 self.appendContextMenu("",["BIM_EmptyTrash"])
         elif (recipient == "View"):
-            self.appendContextMenu("Snapping",self.snap)
+            self.appendContextMenu(translate("BIM","Snapping"),self.snap)
         if FreeCADGui.Selection.getSelection():
             if (FreeCADGui.Selection.getSelection()[0].Name != "Trash"):
                 self.appendContextMenu("",["BIM_Trash"])
