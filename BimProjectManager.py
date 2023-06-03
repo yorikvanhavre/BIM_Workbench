@@ -184,12 +184,12 @@ class BIM_ProjectManager:
                     alabels.append(lev.Label)
                     lev.Height = levelHeight
                     lev.Placement.move(FreeCAD.Vector(0,0,h))
-                    h += levelHeight
                     building.addObject(lev)
                     if self.form.levelsWP.isChecked():
                         prx = Draft.makeWorkingPlaneProxy(FreeCAD.Placement())
                         prx.Placement.move(FreeCAD.Vector(0,0,h))
                         lev.addObject(prx)
+                    h += levelHeight
                 if self.form.levelsAxis.isChecked():
                     axisL = Arch.makeAxis(num = self.form.countLevels.value(), size = levelHeight, name="laxis")
                     axisL.Label = translate("BIM","Level Axes")
