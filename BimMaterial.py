@@ -64,7 +64,7 @@ class BIM_Material:
         import FreeCADGui
         self.dlg = None
         self.dlg = QtGui.QDialog()
-        self.dlg.objects = [obj for obj in FreeCADGui.Selection.getSelection() if hasattr(obj,"Material")]
+        self.dlg.objects = [obj for obj in FreeCADGui.Selection.getSelection() if hasattr(obj,"Material") or hasattr(obj,"StepId")]
         p = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM")
         w = p.GetInt("BimMaterialDialogWidth",230)
         h = p.GetInt("BimMaterialDialogHeight",350)
@@ -358,7 +358,11 @@ class BIM_Material:
                     if self.dlg.objects:
                         FreeCAD.ActiveDocument.openTransaction("Change material")
                         for obj in self.dlg.objects:
-                            obj.Material = mat
+                            if hasattr(obj,"StepId"):
+                                import ifc_tools
+                                ifc_tools.set_material(mat, obj)
+                            else:
+                                obj.Material = mat
                         FreeCAD.ActiveDocument.commitTransaction()
                         FreeCAD.ActiveDocument.recompute()
             p = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM")
@@ -420,7 +424,7 @@ class BIM_Material:
                 if c:
                     name = c.toolTip()
                 elif len(self.dlg.objects) == 1:
-                    if self.dlg.objects[0].Material:
+                    if getattr(self.dlg.objects[0],"Material",None):
                         if hasattr(self.dlg.objects[0].Material,"Name"):
                             name = self.dlg.objects[0].Material.Name
                         else:
@@ -438,6 +442,8 @@ class BIM_Material:
         from PySide import QtCore,QtGui
         if hasattr(obj,"Materials"):
             return QtGui.QIcon(":/icons/Arch_Material_Multi.svg")
+        elif obj.ViewObject.Icon:
+            return obj.ViewObject.Icon
         elif hasattr(obj,"Color"):
             c = obj.Color
             matcolor = QtGui.QColor(int(c[0]*255),int(c[1]*255),int(c[2]*255))
