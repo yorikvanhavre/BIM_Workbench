@@ -152,7 +152,8 @@ class BIM_Tutorial:
                 if not os.path.exists(store):
                     os.makedirs(store)
                 for path in imagepaths:
-                    name = re.findall("[\\w.-]+\\.(?i)(?:jpg|png|gif|bmp)",path)
+                    #name = re.findall("[\\w.-]+\\.(?i)(?:jpg|png|gif|bmp)",path)
+                    name = re.findall("(?i)[\\w.-]+\\.(?:jpg|png|gif|bmp)",path)
                     if name:
                         name = name[-1]
                         storename = os.path.join(store,name)
