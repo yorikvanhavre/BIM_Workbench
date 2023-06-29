@@ -1,24 +1,24 @@
-#***************************************************************************
-#*                                                                         *
-#*   Copyright (c) 2018 Yorik van Havre <yorik@uncreated.net>              *
-#*                                                                         *
-#*   This program is free software; you can redistribute it and/or modify  *
-#*   it under the terms of the GNU Lesser General Public License (LGPL)    *
-#*   as published by the Free Software Foundation; either version 2 of     *
-#*   the License, or (at your option) any later version.                   *
-#*   for detail see the LICENCE text file.                                 *
-#*                                                                         *
-#*   This program is distributed in the hope that it will be useful,       *
-#*   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
-#*   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
-#*   GNU Library General Public License for more details.                  *
-#*                                                                         *
-#*   You should have received a copy of the GNU Library General Public     *
-#*   License along with this program; if not, write to the Free Software   *
-#*   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  *
-#*   USA                                                                   *
-#*                                                                         *
-#***************************************************************************
+# ***************************************************************************
+# *                                                                         *
+# *   Copyright (c) 2018 Yorik van Havre <yorik@uncreated.net>              *
+# *                                                                         *
+# *   This program is free software; you can redistribute it and/or modify  *
+# *   it under the terms of the GNU Lesser General Public License (LGPL)    *
+# *   as published by the Free Software Foundation; either version 2 of     *
+# *   the License, or (at your option) any later version.                   *
+# *   for detail see the LICENCE text file.                                 *
+# *                                                                         *
+# *   This program is distributed in the hope that it will be useful,       *
+# *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+# *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+# *   GNU Library General Public License for more details.                  *
+# *                                                                         *
+# *   You should have received a copy of the GNU Library General Public     *
+# *   License along with this program; if not, write to the Free Software   *
+# *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  *
+# *   USA                                                                   *
+# *                                                                         *
+# ***************************************************************************
 
 from __future__ import print_function
 
@@ -29,61 +29,81 @@ import FreeCAD
 from BimTranslateUtils import *
 import BimIfcElements
 
+
 class BIM_Classification:
-
-
     def GetResources(self):
-
-        return {'Pixmap'  : os.path.join(os.path.dirname(__file__),"icons","BIM_Classification.svg"),
-                'MenuText': QT_TRANSLATE_NOOP("BIM_Classification", "Manage classification..."),
-                'ToolTip' : QT_TRANSLATE_NOOP("BIM_Classification", "Manage how the different materials of this documents use classification systems")}
+        return {
+            "Pixmap": os.path.join(
+                os.path.dirname(__file__), "icons", "BIM_Classification.svg"
+            ),
+            "MenuText": QT_TRANSLATE_NOOP(
+                "BIM_Classification", "Manage classification..."
+            ),
+            "ToolTip": QT_TRANSLATE_NOOP(
+                "BIM_Classification",
+                "Manage how the different materials of this documents use classification systems",
+            ),
+        }
 
     def IsActive(self):
-
         if FreeCAD.ActiveDocument:
             return True
         else:
             return False
 
     def Activated(self):
-
-        import FreeCADGui,Draft
-        from PySide import QtCore,QtGui
+        import FreeCADGui, Draft
+        from PySide import QtCore, QtGui
 
         # init checks
-        if not hasattr(self,"Classes"):
+        if not hasattr(self, "Classes"):
             self.Classes = {}
         self.isEditing = None
 
         # load the form and set the tree model up
-        self.form = FreeCADGui.PySideUic.loadUi(os.path.join(os.path.dirname(__file__),"dialogClassification.ui"))
-        self.form.setWindowIcon(QtGui.QIcon(os.path.join(os.path.dirname(__file__),"icons","BIM_Classification.svg")))
+        self.form = FreeCADGui.PySideUic.loadUi(
+            os.path.join(os.path.dirname(__file__), "dialogClassification.ui")
+        )
+        self.form.setWindowIcon(
+            QtGui.QIcon(
+                os.path.join(
+                    os.path.dirname(__file__), "icons", "BIM_Classification.svg"
+                )
+            )
+        )
 
         # restore saved values
         p = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM")
-        w = p.GetInt("BimClassificationDialogWidth",629)
-        h = p.GetInt("BimClassificationDialogHeight",516)
-        self.form.resize(w,h)
+        w = p.GetInt("BimClassificationDialogWidth", 629)
+        h = p.GetInt("BimClassificationDialogHeight", 516)
+        self.form.resize(w, h)
 
         # add modified search box from bimmaterial
         import BimMaterial
+
         searchBox = BimMaterial.MatLineEdit(self.form)
-        searchBox.setPlaceholderText(translate("BIM","Search..."))
-        searchBox.setToolTip(translate("BIM","Searches classes"))
+        searchBox.setPlaceholderText(translate("BIM", "Search..."))
+        searchBox.setToolTip(translate("BIM", "Searches classes"))
         self.form.search = searchBox
         self.form.horizontalLayout_2.addWidget(searchBox)
 
         # set help line
-        self.form.labelDownload.setText(self.form.labelDownload.text().replace("%s",os.path.join(FreeCAD.getUserAppDataDir(),"BIM","Classification")))
+        self.form.labelDownload.setText(
+            self.form.labelDownload.text().replace(
+                "%s", os.path.join(FreeCAD.getUserAppDataDir(), "BIM", "Classification")
+            )
+        )
 
         # hide materials list if we are editing a particular object
         if len(FreeCADGui.Selection.getSelection()) == 1:
             self.isEditing = FreeCADGui.Selection.getSelection()[0]
-            if hasattr(self.isEditing,"StandardCode"):
+            if hasattr(self.isEditing, "StandardCode"):
                 self.form.groupMaterials.hide()
                 self.form.buttonApply.hide()
                 self.form.buttonRename.hide()
-                self.form.setWindowTitle(translate("BIM","Editing")+" "+self.isEditing.Label)
+                self.form.setWindowTitle(
+                    translate("BIM", "Editing") + " " + self.isEditing.Label
+                )
 
         # fill materials list
         self.objectslist = {}
@@ -91,7 +111,7 @@ class BIM_Classification:
         self.labellist = {}
         for obj in FreeCAD.ActiveDocument.Objects:
             if "StandardCode" in obj.PropertiesList:
-                if Draft.getType(obj) in ["Material","MultiMaterial"]:
+                if Draft.getType(obj) in ["Material", "MultiMaterial"]:
                     self.matlist[obj.Name] = obj.StandardCode
                 else:
                     self.objectslist[obj.Name] = obj.StandardCode
@@ -102,8 +122,10 @@ class BIM_Classification:
             self.updateObjects()
 
         # fill available classifications
-        p = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Arch").GetString("DefaultClassificationSystem","")
-        presetdir = os.path.join(FreeCAD.getUserAppDataDir(),"BIM","Classification")
+        p = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Arch").GetString(
+            "DefaultClassificationSystem", ""
+        )
+        presetdir = os.path.join(FreeCAD.getUserAppDataDir(), "BIM", "Classification")
         if os.path.isdir(presetdir):
             presets = []
             for f in os.listdir(presetdir):
@@ -113,30 +135,57 @@ class BIM_Classification:
                         presets.append(n)
                         self.form.comboSystem.addItem(n)
                         if n == p:
-                            self.form.comboSystem.setCurrentIndex(self.form.comboSystem.count()-1)
+                            self.form.comboSystem.setCurrentIndex(
+                                self.form.comboSystem.count() - 1
+                            )
 
         # connect signals
-        QtCore.QObject.connect(self.form.comboSystem, QtCore.SIGNAL("currentIndexChanged(int)"), self.updateClasses)
-        QtCore.QObject.connect(self.form.buttonApply, QtCore.SIGNAL("clicked()"), self.apply)
-        QtCore.QObject.connect(self.form.buttonRename, QtCore.SIGNAL("clicked()"), self.rename)
-        QtCore.QObject.connect(self.form.search, QtCore.SIGNAL("textEdited(QString)"), self.updateClasses)
-        QtCore.QObject.connect(self.form.buttonBox, QtCore.SIGNAL("accepted()"), self.accept)
-        QtCore.QObject.connect(self.form.groupMode, QtCore.SIGNAL("currentIndexChanged(int)"), self.updateObjects)
-        QtCore.QObject.connect(self.form.treeClass, QtCore.SIGNAL("itemDoubleClicked(QTreeWidgetItem*,int)"), self.apply)
-        QtCore.QObject.connect(self.form.search,QtCore.SIGNAL("up()"),self.onUpArrow)
-        QtCore.QObject.connect(self.form.search,QtCore.SIGNAL("down()"),self.onDownArrow)
+        QtCore.QObject.connect(
+            self.form.comboSystem,
+            QtCore.SIGNAL("currentIndexChanged(int)"),
+            self.updateClasses,
+        )
+        QtCore.QObject.connect(
+            self.form.buttonApply, QtCore.SIGNAL("clicked()"), self.apply
+        )
+        QtCore.QObject.connect(
+            self.form.buttonRename, QtCore.SIGNAL("clicked()"), self.rename
+        )
+        QtCore.QObject.connect(
+            self.form.search, QtCore.SIGNAL("textEdited(QString)"), self.updateClasses
+        )
+        QtCore.QObject.connect(
+            self.form.buttonBox, QtCore.SIGNAL("accepted()"), self.accept
+        )
+        QtCore.QObject.connect(
+            self.form.groupMode,
+            QtCore.SIGNAL("currentIndexChanged(int)"),
+            self.updateObjects,
+        )
+        QtCore.QObject.connect(
+            self.form.treeClass,
+            QtCore.SIGNAL("itemDoubleClicked(QTreeWidgetItem*,int)"),
+            self.apply,
+        )
+        QtCore.QObject.connect(self.form.search, QtCore.SIGNAL("up()"), self.onUpArrow)
+        QtCore.QObject.connect(
+            self.form.search, QtCore.SIGNAL("down()"), self.onDownArrow
+        )
 
         # center the dialog over FreeCAD window
         mw = FreeCADGui.getMainWindow()
-        self.form.move(mw.frameGeometry().topLeft() + mw.rect().center() - self.form.rect().center())
+        self.form.move(
+            mw.frameGeometry().topLeft()
+            + mw.rect().center()
+            - self.form.rect().center()
+        )
 
         self.updateClasses()
         self.form.show()
 
         self.form.search.setFocus()
 
-    def updateObjects(self,idx=None):
-
+    def updateObjects(self, idx=None):
         # store current state of tree into self.objectslist before redrawing
 
         for row in range(self.form.treeObjects.topLevelItemCount()):
@@ -172,50 +221,58 @@ class BIM_Classification:
             self.updateDefault()
 
         # resize columns - no resizeSection in pyside2
-        #self.form.treeObjects.header().resizeSection(0,int(self.form.treeObjects.width()/2))
-        #self.form.treeObjects.header().resizeSection(1,int(self.form.treeObjects.width()/2))
+        # self.form.treeObjects.header().resizeSection(0,int(self.form.treeObjects.width()/2))
+        # self.form.treeObjects.header().resizeSection(1,int(self.form.treeObjects.width()/2))
 
     def updateByType(self):
-
-        from PySide import QtCore,QtGui
+        from PySide import QtCore, QtGui
         import Draft
+
         groups = {}
         for name in self.objectslist.keys():
             obj = FreeCAD.ActiveDocument.getObject(name)
-            if obj and hasattr(obj,"IfcType"):
-                groups.setdefault(obj.IfcType,[]).append(name)
-            elif obj and hasattr(obj,"IfcRole"):
-                groups.setdefault(obj.IfcRole,[]).append(name)
+            if obj and hasattr(obj, "IfcType"):
+                groups.setdefault(obj.IfcType, []).append(name)
+            elif obj and hasattr(obj, "IfcRole"):
+                groups.setdefault(obj.IfcRole, []).append(name)
             else:
-                groups.setdefault("Undefined",[]).append(name)
+                groups.setdefault("Undefined", []).append(name)
         groups["Materials"] = self.matlist.keys()
         d = self.objectslist.copy()
         d.update(self.matlist)
 
         for group in groups.keys():
-            mit = QtGui.QTreeWidgetItem([group,""])
+            mit = QtGui.QTreeWidgetItem([group, ""])
             self.form.treeObjects.addTopLevelItem(mit)
             for name in groups[group]:
                 obj = FreeCAD.ActiveDocument.getObject(name)
                 if obj:
-                    if (not self.form.onlyVisible.isChecked()) or obj.ViewObject.isVisible() or (Draft.getType(obj) in ["Material","MultiMaterial"]):
-                        it = QtGui.QTreeWidgetItem([self.labellist[name],d[name]])
-                        it.setIcon(0,BimIfcElements.getIcon(obj))
-                        it.setToolTip(0,name)
+                    if (
+                        (not self.form.onlyVisible.isChecked())
+                        or obj.ViewObject.isVisible()
+                        or (Draft.getType(obj) in ["Material", "MultiMaterial"])
+                    ):
+                        it = QtGui.QTreeWidgetItem([self.labellist[name], d[name]])
+                        it.setIcon(0, BimIfcElements.getIcon(obj))
+                        it.setToolTip(0, name)
                         mit.addChild(it)
-            mit.sortChildren(0,QtCore.Qt.AscendingOrder)
+            mit.sortChildren(0, QtCore.Qt.AscendingOrder)
         self.form.treeObjects.expandAll()
-        #self.spanTopLevels()
+        # self.spanTopLevels()
 
     def updateByMaterial(self):
+        from PySide import QtCore, QtGui
 
-        from PySide import QtCore,QtGui
         groups = {}
         claimed = []
         for name in self.matlist.keys():
             mat = FreeCAD.ActiveDocument.getObject(name)
             if mat:
-                children = [par.Name for par in mat.InList if par.Name in self.objectslist.keys()]
+                children = [
+                    par.Name
+                    for par in mat.InList
+                    if par.Name in self.objectslist.keys()
+                ]
                 groups[name] = children
                 claimed.extend(children)
         groups["Undefined"] = [o for o in self.objectslist.keys() if not o in claimed]
@@ -223,27 +280,33 @@ class BIM_Classification:
         for group in groups.keys():
             matobj = FreeCAD.ActiveDocument.getObject(group)
             if matobj:
-                mit = QtGui.QTreeWidgetItem([self.labellist[group],self.matlist[group]])
-                mit.setIcon(0,BimIfcElements.getIcon(matobj))
-                mit.setToolTip(0,group)
+                mit = QtGui.QTreeWidgetItem(
+                    [self.labellist[group], self.matlist[group]]
+                )
+                mit.setIcon(0, BimIfcElements.getIcon(matobj))
+                mit.setToolTip(0, group)
             else:
-                mit = QtGui.QTreeWidgetItem(["Undefined",""])
+                mit = QtGui.QTreeWidgetItem(["Undefined", ""])
             self.form.treeObjects.addTopLevelItem(mit)
             for name in groups[group]:
                 obj = FreeCAD.ActiveDocument.getObject(name)
                 if obj:
-                    if (not self.form.onlyVisible.isChecked()) or obj.ViewObject.isVisible():
-                        it = QtGui.QTreeWidgetItem([self.labellist[name],self.objectslist[name]])
-                        it.setIcon(0,BimIfcElements.getIcon(obj))
-                        it.setToolTip(0,name)
+                    if (
+                        not self.form.onlyVisible.isChecked()
+                    ) or obj.ViewObject.isVisible():
+                        it = QtGui.QTreeWidgetItem(
+                            [self.labellist[name], self.objectslist[name]]
+                        )
+                        it.setIcon(0, BimIfcElements.getIcon(obj))
+                        it.setToolTip(0, name)
                         mit.addChild(it)
-            mit.sortChildren(0,QtCore.Qt.AscendingOrder)
+            mit.sortChildren(0, QtCore.Qt.AscendingOrder)
         self.form.treeObjects.expandAll()
-        #self.spanTopLevels()
+        # self.spanTopLevels()
 
     def updateByTree(self):
+        from PySide import QtCore, QtGui
 
-        from PySide import QtCore,QtGui
         # order by hierarchy
         def istop(obj):
             for parent in obj.InList:
@@ -268,32 +331,32 @@ class BIM_Classification:
                         rel.append(child)
                         deps.remove(child)
             pa += 1
-            if pa == 10: # max 10 hierarchy levels, okay? Let's keep civilised
+            if pa == 10:  # max 10 hierarchy levels, okay? Let's keep civilised
                 rel.extend(deps)
                 break
 
         done = {}
         # materials first
-        mit = QtGui.QTreeWidgetItem(["Materials",""])
+        mit = QtGui.QTreeWidgetItem(["Materials", ""])
         self.form.treeObjects.addTopLevelItem(mit)
-        for name,code in self.matlist.items():
+        for name, code in self.matlist.items():
             obj = FreeCAD.ActiveDocument.getObject(name)
             if obj:
-                it = QtGui.QTreeWidgetItem([self.labellist[name],code])
-                it.setIcon(0,BimIfcElements.getIcon(obj))
-                it.setToolTip(0,name)
+                it = QtGui.QTreeWidgetItem([self.labellist[name], code])
+                it.setIcon(0, BimIfcElements.getIcon(obj))
+                it.setToolTip(0, name)
                 mit.addChild(it)
         # objects next
         for obj in rel:
             code = self.objectslist[obj.Name]
             if (not self.form.onlyVisible.isChecked()) or obj.ViewObject.isVisible():
-                it = QtGui.QTreeWidgetItem([self.labellist[obj.Name],code])
-                it.setIcon(0,BimIfcElements.getIcon(obj))
-                it.setToolTip(0,name)
+                it = QtGui.QTreeWidgetItem([self.labellist[obj.Name], code])
+                it.setIcon(0, BimIfcElements.getIcon(obj))
+                it.setToolTip(0, name)
                 ok = False
                 for par in obj.InListRecursive:
                     if par.Name in done:
-                        if (not hasattr(par,"Hosts")) or (obj not in par.Hosts):
+                        if (not hasattr(par, "Hosts")) or (obj not in par.Hosts):
                             done[par.Name].addChild(it)
                             done[obj.Name] = it
                             ok = True
@@ -304,31 +367,37 @@ class BIM_Classification:
         self.form.treeObjects.expandAll()
 
     def updateDefault(self):
+        import FreeCADGui, Draft
+        from PySide import QtCore, QtGui
 
-        import FreeCADGui,Draft
-        from PySide import QtCore,QtGui
         d = self.objectslist.copy()
         d.update(self.matlist)
-        for name,code in d.items():
+        for name, code in d.items():
             obj = FreeCAD.ActiveDocument.getObject(name)
             if obj:
-                if (not self.form.onlyVisible.isChecked()) or obj.ViewObject.isVisible() or (Draft.getType(obj) in ["Material","MultiMaterial"]):
-                    it = QtGui.QTreeWidgetItem([self.labellist[name],code])
-                    it.setIcon(0,BimIfcElements.getIcon(obj))
-                    it.setToolTip(0,name)
+                if (
+                    (not self.form.onlyVisible.isChecked())
+                    or obj.ViewObject.isVisible()
+                    or (Draft.getType(obj) in ["Material", "MultiMaterial"])
+                ):
+                    it = QtGui.QTreeWidgetItem([self.labellist[name], code])
+                    it.setIcon(0, BimIfcElements.getIcon(obj))
+                    it.setToolTip(0, name)
                     self.form.treeObjects.addTopLevelItem(it)
                     if obj in FreeCADGui.Selection.getSelection():
                         self.form.treeObjects.setCurrentItem(it)
 
-    def updateClasses(self,search=""):
+    def updateClasses(self, search=""):
+        from PySide import QtCore, QtGui
 
-        from PySide import QtCore,QtGui
         self.form.treeClass.clear()
 
         # save as default
-        FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Arch").SetString("DefaultClassificationSystem",self.form.comboSystem.currentText())
+        FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Arch").SetString(
+            "DefaultClassificationSystem", self.form.comboSystem.currentText()
+        )
 
-        if isinstance(search,int):
+        if isinstance(search, int):
             search = ""
         if self.form.search.text():
             search = self.form.search.text()
@@ -351,69 +420,77 @@ class BIM_Classification:
                 c[1] = ""
             if search:
                 if (search in c[0].lower()) or (search in c[1].lower()):
-                    it = QtGui.QTreeWidgetItem([c[0]+" "+c[1]])
-                    it.setToolTip(0,c[1])
+                    it = QtGui.QTreeWidgetItem([c[0] + " " + c[1]])
+                    it.setToolTip(0, c[1])
                     self.form.treeClass.addTopLevelItem(it)
             else:
-                it = QtGui.QTreeWidgetItem([c[0]+" "+c[1]])
-                it.setToolTip(0,c[1])
+                it = QtGui.QTreeWidgetItem([c[0] + " " + c[1]])
+                it.setToolTip(0, c[1])
                 self.form.treeClass.addTopLevelItem(it)
             if c[2]:
-                self.addChildren(c[2],it,search)
+                self.addChildren(c[2], it, search)
             if it and first:
                 # select first entry
                 self.form.treeClass.setCurrentItem(it)
                 first = False
 
-    def addChildren(self,children,parent,search=""):
+    def addChildren(self, children, parent, search=""):
+        from PySide import QtCore, QtGui
 
-        from PySide import QtCore,QtGui
         if children:
             for c in children:
                 it = None
-                if not c[1]: c[1] = ""
+                if not c[1]:
+                    c[1] = ""
                 if search:
                     if (search in c[0].lower()) or (search in c[1].lower()):
-                        it = QtGui.QTreeWidgetItem([c[0]+" "+c[1]])
-                        it.setToolTip(0,c[1])
+                        it = QtGui.QTreeWidgetItem([c[0] + " " + c[1]])
+                        it.setToolTip(0, c[1])
                         self.form.treeClass.addTopLevelItem(it)
                 else:
-                    it = QtGui.QTreeWidgetItem([c[0]+" "+c[1]])
-                    it.setToolTip(0,c[1])
+                    it = QtGui.QTreeWidgetItem([c[0] + " " + c[1]])
+                    it.setToolTip(0, c[1])
                     if parent:
                         parent.addChild(it)
                 if c[2]:
-                    self.addChildren(c[2],it,search)
+                    self.addChildren(c[2], it, search)
 
-    def build(self,system):
-        
+    def build(self, system):
         # try to load the IFC first
-        preset = os.path.join(FreeCAD.getUserAppDataDir(),"BIM","Classification",system+".ifc")
+        preset = os.path.join(
+            FreeCAD.getUserAppDataDir(), "BIM", "Classification", system + ".ifc"
+        )
         if os.path.exists(preset):
             return self.build_ifc(system)
         else:
-            preset = os.path.join(FreeCAD.getUserAppDataDir(),"BIM","Classification",system+".xml")
+            preset = os.path.join(
+                FreeCAD.getUserAppDataDir(), "BIM", "Classification", system + ".xml"
+            )
             if os.path.exists(preset):
                 return self.build_xml(system)
             else:
-                FreeCAD.Console.PrintError("Unable to find classification file:"+system+"\n")
+                FreeCAD.Console.PrintError(
+                    "Unable to find classification file:" + system + "\n"
+                )
                 return []
 
-    def build_ifc(self,system):
-        
+    def build_ifc(self, system):
         # builds from ifc instead of xml
 
         class Item:
-            def __init__(self,parent=None):
+            def __init__(self, parent=None):
                 self.parent = parent
                 self.ID = None
                 self.Name = None
                 self.children = []
 
-        preset = os.path.join(FreeCAD.getUserAppDataDir(),"BIM","Classification",system+".ifc")
+        preset = os.path.join(
+            FreeCAD.getUserAppDataDir(), "BIM", "Classification", system + ".ifc"
+        )
         if not os.path.exists(preset):
             return None
         import ifcopenshell
+
         f = ifcopenshell.open(preset)
         classes = f.by_type("IfcClassificationReference")
         rootclass = f.by_type("IfcClassification")
@@ -422,34 +499,36 @@ class BIM_Classification:
         else:
             return None
         root = Item()
-        classdict = {rootclass.id():root}
+        classdict = {rootclass.id(): root}
         for cl in classes:
-                currentItem = Item()
-                currentItem.Name = cl.Name
-                currentItem.Description = cl.Description
-                currentItem.ID = cl.Identification
-                if cl.ReferencedSource:
-                    if cl.ReferencedSource.id() in classdict:
-                        currentItem.parent = classdict[cl.ReferencedSource.id()]
-                        classdict[cl.ReferencedSource.id()].children.append(currentItem)
-                classdict[cl.id()] = currentItem
+            currentItem = Item()
+            currentItem.Name = cl.Name
+            currentItem.Description = cl.Description
+            currentItem.ID = cl.Identification
+            if cl.ReferencedSource:
+                if cl.ReferencedSource.id() in classdict:
+                    currentItem.parent = classdict[cl.ReferencedSource.id()]
+                    classdict[cl.ReferencedSource.id()].children.append(currentItem)
+            classdict[cl.id()] = currentItem
         return [self.listize(c) for c in root.children]
 
-    def build_xml(self,system):
-
+    def build_xml(self, system):
         class Item:
-            def __init__(self,parent=None):
+            def __init__(self, parent=None):
                 self.parent = parent
                 self.ID = None
                 self.Name = None
                 self.children = []
 
-        preset = os.path.join(FreeCAD.getUserAppDataDir(),"BIM","Classification",system+".xml")
+        preset = os.path.join(
+            FreeCAD.getUserAppDataDir(), "BIM", "Classification", system + ".xml"
+        )
         if not os.path.exists(preset):
             return None
-        import codecs,re
+        import codecs, re
+
         d = Item()
-        with codecs.open(preset,"r","utf-8") as f:
+        with codecs.open(preset, "r", "utf-8") as f:
             currentItem = d
             for l in f:
                 if "<Item>" in l:
@@ -457,45 +536,54 @@ class BIM_Classification:
                     currentItem.parent.children.append(currentItem)
                 if "</Item>" in l:
                     currentItem = currentItem.parent
-                elif currentItem and re.findall("<ID>(.*?)</ID>",l):
-                    currentItem.ID = re.findall("<ID>(.*?)</ID>",l)[0]
-                elif currentItem and re.findall("<Name>(.*?)</Name>",l):
-                    currentItem.Name = re.findall("<Name>(.*?)</Name>",l)[0]
-                elif currentItem and re.findall("<Description>(.*?)</Description>",l) and not currentItem.Name:
-                    currentItem.Name = re.findall("<Description>(.*?)</Description>",l)[0]
+                elif currentItem and re.findall("<ID>(.*?)</ID>", l):
+                    currentItem.ID = re.findall("<ID>(.*?)</ID>", l)[0]
+                elif currentItem and re.findall("<Name>(.*?)</Name>", l):
+                    currentItem.Name = re.findall("<Name>(.*?)</Name>", l)[0]
+                elif (
+                    currentItem
+                    and re.findall("<Description>(.*?)</Description>", l)
+                    and not currentItem.Name
+                ):
+                    currentItem.Name = re.findall(
+                        "<Description>(.*?)</Description>", l
+                    )[0]
         return [self.listize(c) for c in d.children]
 
-
-    def listize(self,item):
-
+    def listize(self, item):
         return [item.ID, item.Name, [self.listize(it) for it in item.children]]
 
-    def apply(self,item=None,col=None):
-
-        if self.form.treeObjects.selectedItems() and len(self.form.treeClass.selectedItems()) == 1:
+    def apply(self, item=None, col=None):
+        if (
+            self.form.treeObjects.selectedItems()
+            and len(self.form.treeClass.selectedItems()) == 1
+        ):
             c = self.form.treeClass.selectedItems()[0].text(0)
             if self.form.checkPrefix.isChecked():
                 c = self.form.comboSystem.currentText() + " " + c
             for m in self.form.treeObjects.selectedItems():
                 if m.toolTip(0):
-                    m.setText(1,c)
+                    m.setText(1, c)
 
     def rename(self):
-
-        if self.form.treeObjects.selectedItems() and len(self.form.treeClass.selectedItems()) == 1:
+        if (
+            self.form.treeObjects.selectedItems()
+            and len(self.form.treeClass.selectedItems()) == 1
+        ):
             c = self.form.treeClass.selectedItems()[0].toolTip(0)
             for m in self.form.treeObjects.selectedItems():
                 if m.toolTip(0):
-                    m.setText(0,c)
+                    m.setText(0, c)
 
     def accept(self):
-
         if not self.isEditing:
             changed = False
             for row in range(self.form.treeObjects.topLevelItemCount()):
                 child = self.form.treeObjects.topLevelItem(row)
                 items = [child]
-                items.extend([child.child(childrow) for childrow in range(child.childCount())])
+                items.extend(
+                    [child.child(childrow) for childrow in range(child.childCount())]
+                )
                 for item in items:
                     code = item.text(1)
                     label = item.text(0)
@@ -504,12 +592,16 @@ class BIM_Classification:
                         if obj:
                             if code != obj.StandardCode:
                                 if not changed:
-                                    FreeCAD.ActiveDocument.openTransaction("Change standard codes")
+                                    FreeCAD.ActiveDocument.openTransaction(
+                                        "Change standard codes"
+                                    )
                                     changed = True
                                 obj.StandardCode = code
                             if label != obj.Label:
                                 if not changed:
-                                    FreeCAD.ActiveDocument.openTransaction("Change standard codes")
+                                    FreeCAD.ActiveDocument.openTransaction(
+                                        "Change standard codes"
+                                    )
                                     changed = True
                                 obj.Label = label
             if changed:
@@ -522,27 +614,26 @@ class BIM_Classification:
                 if self.form.checkPrefix.isChecked():
                     code = self.form.comboSystem.currentText() + " " + code
                 self.isEditing.StandardCode = code
-                if hasattr(self.isEditing.ViewObject,"Proxy") and hasattr(self.isEditing.ViewObject.Proxy,"setTaskValue"):
-                    self.isEditing.ViewObject.Proxy.setTaskValue("FieldCode",code)
+                if hasattr(self.isEditing.ViewObject, "Proxy") and hasattr(
+                    self.isEditing.ViewObject.Proxy, "setTaskValue"
+                ):
+                    self.isEditing.ViewObject.Proxy.setTaskValue("FieldCode", code)
                 FreeCAD.ActiveDocument.commitTransaction()
                 FreeCAD.ActiveDocument.recompute()
         p = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM")
-        p.SetInt("BimClassificationDialogWidth",self.form.width())
-        p.SetInt("BimClassificationDialogHeight",self.form.height())
+        p.SetInt("BimClassificationDialogWidth", self.form.width())
+        p.SetInt("BimClassificationDialogHeight", self.form.height())
         self.form.hide()
         return True
 
     def onUpArrow(self):
-
         if self.form:
             i = self.form.treeClass.currentItem()
             if self.form.treeClass.itemAbove(i):
                 self.form.treeClass.setCurrentItem(self.form.treeClass.itemAbove(i))
 
     def onDownArrow(self):
-
         if self.form:
             i = self.form.treeClass.currentItem()
             if self.form.treeClass.itemBelow(i):
                 self.form.treeClass.setCurrentItem(self.form.treeClass.itemBelow(i))
-

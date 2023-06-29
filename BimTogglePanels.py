@@ -1,26 +1,26 @@
 # -*- coding: utf8 -*-
 
-#***************************************************************************
-#*                                                                         *
-#*   Copyright (c) 2017 Yorik van Havre <yorik@uncreated.net>              *
-#*                                                                         *
-#*   This program is free software; you can redistribute it and/or modify  *
-#*   it under the terms of the GNU Lesser General Public License (LGPL)    *
-#*   as published by the Free Software Foundation; either version 2 of     *
-#*   the License, or (at your option) any later version.                   *
-#*   for detail see the LICENCE text file.                                 *
-#*                                                                         *
-#*   This program is distributed in the hope that it will be useful,       *
-#*   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
-#*   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
-#*   GNU Library General Public License for more details.                  *
-#*                                                                         *
-#*   You should have received a copy of the GNU Library General Public     *
-#*   License along with this program; if not, write to the Free Software   *
-#*   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  *
-#*   USA                                                                   *
-#*                                                                         *
-#***************************************************************************
+# ***************************************************************************
+# *                                                                         *
+# *   Copyright (c) 2017 Yorik van Havre <yorik@uncreated.net>              *
+# *                                                                         *
+# *   This program is free software; you can redistribute it and/or modify  *
+# *   it under the terms of the GNU Lesser General Public License (LGPL)    *
+# *   as published by the Free Software Foundation; either version 2 of     *
+# *   the License, or (at your option) any later version.                   *
+# *   for detail see the LICENCE text file.                                 *
+# *                                                                         *
+# *   This program is distributed in the hope that it will be useful,       *
+# *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+# *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+# *   GNU Library General Public License for more details.                  *
+# *                                                                         *
+# *   You should have received a copy of the GNU Library General Public     *
+# *   License along with this program; if not, write to the Free Software   *
+# *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  *
+# *   USA                                                                   *
+# *                                                                         *
+# ***************************************************************************
 
 """This module contains FreeCAD commands for the BIM workbench"""
 
@@ -28,39 +28,57 @@ import os
 import FreeCAD
 from BimTranslateUtils import *
 
+
 class BIM_TogglePanels:
-
     def GetResources(self):
-
-        return {'Pixmap'  : os.path.join(os.path.dirname(__file__),"icons","BIM_TogglePanels.svg"),
-                'MenuText': QT_TRANSLATE_NOOP("BIM_TogglePanels", "Toggle bottom panels"),
-                'ToolTip' : QT_TRANSLATE_NOOP("BIM_TogglePanels", "Toggle bottom dock panels on/off"),
-                'Accel': 'Ctrl+0'}
+        return {
+            "Pixmap": os.path.join(
+                os.path.dirname(__file__), "icons", "BIM_TogglePanels.svg"
+            ),
+            "MenuText": QT_TRANSLATE_NOOP("BIM_TogglePanels", "Toggle bottom panels"),
+            "ToolTip": QT_TRANSLATE_NOOP(
+                "BIM_TogglePanels", "Toggle bottom dock panels on/off"
+            ),
+            "Accel": "Ctrl+0",
+        }
 
     def Activated(self):
-
         import FreeCADGui
-        from  PySide import QtCore,QtGui
+        from PySide import QtCore, QtGui
+
         mw = FreeCADGui.getMainWindow()
         togglebutton = None
         st = mw.statusBar()
-        statuswidget = st.findChild(QtGui.QToolBar,"BIMStatusWidget")
+        statuswidget = st.findChild(QtGui.QToolBar, "BIMStatusWidget")
         if statuswidget:
-            if hasattr(statuswidget,"togglebutton"):
+            if hasattr(statuswidget, "togglebutton"):
                 togglebutton = statuswidget.togglebutton
         dockwidgets = mw.findChildren(QtGui.QDockWidget)
-        bottomwidgets = [w for w in dockwidgets if ((mw.dockWidgetArea(w) == QtCore.Qt.BottomDockWidgetArea) and w.isVisible())]
+        bottomwidgets = [
+            w
+            for w in dockwidgets
+            if (
+                (mw.dockWidgetArea(w) == QtCore.Qt.BottomDockWidgetArea)
+                and w.isVisible()
+            )
+        ]
         if bottomwidgets:
             hidden = ""
             for w in bottomwidgets:
                 w.hide()
                 hidden += w.objectName() + ";;"
-                FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM").SetString("HiddenWidgets",hidden)
+                FreeCAD.ParamGet(
+                    "User parameter:BaseApp/Preferences/Mod/BIM"
+                ).SetString("HiddenWidgets", hidden)
             if togglebutton:
-                    togglebutton.setChecked(False)
+                togglebutton.setChecked(False)
         else:
-            widgets = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM").GetString("HiddenWidgets","Python console;;Report view;;Selection view;;")
-            widgets = [mw.findChild(QtGui.QWidget,w) for w in widgets.split(";;") if w]
+            widgets = FreeCAD.ParamGet(
+                "User parameter:BaseApp/Preferences/Mod/BIM"
+            ).GetString(
+                "HiddenWidgets", "Python console;;Report view;;Selection view;;"
+            )
+            widgets = [mw.findChild(QtGui.QWidget, w) for w in widgets.split(";;") if w]
             for w in widgets:
                 w.show()
             if togglebutton:

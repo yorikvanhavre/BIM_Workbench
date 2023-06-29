@@ -1,9 +1,8 @@
 import FreeCAD
 
+
 class CyclicSelectionObserver:
-
     def addSelection(self, document, object, element, position):
-
         import FreeCADGui
 
         if not FreeCAD.ActiveDocument:
@@ -16,29 +15,34 @@ class CyclicSelectionObserver:
         preselection = FreeCADGui.Selection.getPreselection()
         FreeCADGui.Selection.addSelection(
             FreeCAD.ActiveDocument.getObject(preselection.Object.Name),
-            preselection.SubElementNames[0])
+            preselection.SubElementNames[0],
+        )
         FreeCAD.ActiveDocument.recompute()
 
-class CyclicObjectSelector():
 
+class CyclicObjectSelector:
     def __init__(self):
-
         self.selectableObjects = []
         self.objectIndex = 0
 
     def selectObject(self, event_callback):
-
         import FreeCADGui
         from pivy import coin
+
         if not FreeCAD.ActiveDocument:
             return
         event = event_callback.getEvent()
 
-        if event.getState() != coin.SoMouseButtonEvent.DOWN or not self.selectableObjects:
+        if (
+            event.getState() != coin.SoMouseButtonEvent.DOWN
+            or not self.selectableObjects
+        ):
             return
 
         pos = event.getPosition().getValue()
-        element_list = FreeCADGui.ActiveDocument.ActiveView.getObjectsInfo((int(pos[0]), int(pos[1])))
+        element_list = FreeCADGui.ActiveDocument.ActiveView.getObjectsInfo(
+            (int(pos[0]), int(pos[1]))
+        )
 
         if not element_list:
             self.selectableObjects = []
@@ -51,8 +55,8 @@ class CyclicObjectSelector():
         FreeCADGui.Selection.addObserver(FreeCAD.CyclicSelectionObserver)
 
     def cycleSelectableObjects(self, event_callback):
-
         import FreeCADGui
+
         if not FreeCAD.ActiveDocument:
             return
         event = event_callback.getEvent()
@@ -61,7 +65,9 @@ class CyclicObjectSelector():
             return
 
         pos = event.getPosition().getValue()
-        selectableObjects = FreeCADGui.ActiveDocument.ActiveView.getObjectsInfo((int(pos[0]), int(pos[1])))
+        selectableObjects = FreeCADGui.ActiveDocument.ActiveView.getObjectsInfo(
+            (int(pos[0]), int(pos[1]))
+        )
 
         if not selectableObjects:
             return
@@ -75,19 +81,23 @@ class CyclicObjectSelector():
             self.objectIndex = 0
         object_name = self.selectableObjects[self.objectIndex]["Object"]
         subelement_name = self.selectableObjects[self.objectIndex]["Component"]
-        FreeCADGui.getMainWindow().showMessage("Cycle preselected (TAB): {} - {}".format(
-            object_name, subelement_name), 0)
-        FreeCADGui.Selection.setPreselection(FreeCAD.ActiveDocument.getObject(object_name),
-            subelement_name)
+        FreeCADGui.getMainWindow().showMessage(
+            "Cycle preselected (TAB): {} - {}".format(object_name, subelement_name), 0
+        )
+        FreeCADGui.Selection.setPreselection(
+            FreeCAD.ActiveDocument.getObject(object_name), subelement_name
+        )
 
 
-class Setup():
-
+class Setup:
     def slotActivateDocument(self, doc):
-
         from pivy import coin
+
         cos = CyclicObjectSelector()
-        if doc and doc.ActiveView and hasattr(doc.ActiveView,"getSceneGraph"):
-            self.callback = doc.ActiveView.addEventCallbackPivy(coin.SoMouseButtonEvent.getClassTypeId(), cos.selectObject)
-            self.callback = doc.ActiveView.addEventCallbackPivy(coin.SoKeyboardEvent.getClassTypeId(), cos.cycleSelectableObjects)
-    
+        if doc and doc.ActiveView and hasattr(doc.ActiveView, "getSceneGraph"):
+            self.callback = doc.ActiveView.addEventCallbackPivy(
+                coin.SoMouseButtonEvent.getClassTypeId(), cos.selectObject
+            )
+            self.callback = doc.ActiveView.addEventCallbackPivy(
+                coin.SoKeyboardEvent.getClassTypeId(), cos.cycleSelectableObjects
+            )

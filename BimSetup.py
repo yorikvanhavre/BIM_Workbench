@@ -1,55 +1,64 @@
-#***************************************************************************
-#*                                                                         *
-#*   Copyright (c) 2017 Yorik van Havre <yorik@uncreated.net>              *
-#*                                                                         *
-#*   This program is free software; you can redistribute it and/or modify  *
-#*   it under the terms of the GNU Lesser General Public License (LGPL)    *
-#*   as published by the Free Software Foundation; either version 2 of     *
-#*   the License, or (at your option) any later version.                   *
-#*   for detail see the LICENCE text file.                                 *
-#*                                                                         *
-#*   This program is distributed in the hope that it will be useful,       *
-#*   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
-#*   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
-#*   GNU Library General Public License for more details.                  *
-#*                                                                         *
-#*   You should have received a copy of the GNU Library General Public     *
-#*   License along with this program; if not, write to the Free Software   *
-#*   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  *
-#*   USA                                                                   *
-#*                                                                         *
-#***************************************************************************
+# ***************************************************************************
+# *                                                                         *
+# *   Copyright (c) 2017 Yorik van Havre <yorik@uncreated.net>              *
+# *                                                                         *
+# *   This program is free software; you can redistribute it and/or modify  *
+# *   it under the terms of the GNU Lesser General Public License (LGPL)    *
+# *   as published by the Free Software Foundation; either version 2 of     *
+# *   the License, or (at your option) any later version.                   *
+# *   for detail see the LICENCE text file.                                 *
+# *                                                                         *
+# *   This program is distributed in the hope that it will be useful,       *
+# *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+# *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+# *   GNU Library General Public License for more details.                  *
+# *                                                                         *
+# *   You should have received a copy of the GNU Library General Public     *
+# *   License along with this program; if not, write to the Free Software   *
+# *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  *
+# *   USA                                                                   *
+# *                                                                         *
+# ***************************************************************************
 
 """This module contains FreeCAD commands for the BIM workbench"""
 
-import os,sys
+import os, sys
 import FreeCAD
 from BimTranslateUtils import *
 
 
 class BIM_Setup:
-
-
     def GetResources(self):
-
-        return {'Pixmap'  : ":icons/preferences-system.svg",
-                'MenuText': QT_TRANSLATE_NOOP("BIM_Setup", "BIM Setup..."),
-                'ToolTip' : QT_TRANSLATE_NOOP("BIM_Setup", "Set some common FreeCAD preferences for BIM workflow")}
+        return {
+            "Pixmap": ":icons/preferences-system.svg",
+            "MenuText": QT_TRANSLATE_NOOP("BIM_Setup", "BIM Setup..."),
+            "ToolTip": QT_TRANSLATE_NOOP(
+                "BIM_Setup", "Set some common FreeCAD preferences for BIM workflow"
+            ),
+        }
 
     def Activated(self):
-
         import FreeCADGui
 
         TARGETVERSION = 0.19
-        TECHDRAWDIMFACTOR = 0.16 # How many times TechDraw dim arrows are smaller than Draft
+        TECHDRAWDIMFACTOR = (
+            0.16  # How many times TechDraw dim arrows are smaller than Draft
+        )
 
         # load dialog
         from PySide import QtGui
-        self.form = FreeCADGui.PySideUic.loadUi(os.path.join(os.path.dirname(__file__),"dialogSetup.ui"))
+
+        self.form = FreeCADGui.PySideUic.loadUi(
+            os.path.join(os.path.dirname(__file__), "dialogSetup.ui")
+        )
 
         # center the dialog over FreeCAD window
         mw = FreeCADGui.getMainWindow()
-        self.form.move(mw.frameGeometry().topLeft() + mw.rect().center() - self.form.rect().center())
+        self.form.move(
+            mw.frameGeometry().topLeft()
+            + mw.rect().center()
+            - self.form.rect().center()
+        )
 
         # connect signals / slots
         self.form.comboPresets.currentIndexChanged[int].connect(self.setPreset)
@@ -97,33 +106,59 @@ class BIM_Setup:
         else:
             ifcok = True
         libok = False
-        librarypath = FreeCAD.ParamGet('User parameter:Plugins/parts_library').GetString('destination','')
+        librarypath = FreeCAD.ParamGet(
+            "User parameter:Plugins/parts_library"
+        ).GetString("destination", "")
         if librarypath and os.path.exists(librarypath):
             libok = True
         else:
             # check if the library is at the standard addon location
-            librarypath = os.path.join(FreeCAD.getUserAppDataDir(),"Mod","parts_library")
+            librarypath = os.path.join(
+                FreeCAD.getUserAppDataDir(), "Mod", "parts_library"
+            )
             if os.path.exists(librarypath):
-                FreeCAD.ParamGet('User parameter:Plugins/parts_library').SetString('destination',librarypath)
+                FreeCAD.ParamGet("User parameter:Plugins/parts_library").SetString(
+                    "destination", librarypath
+                )
                 libok = True
         if not libok:
             m.append("parts_library")
         if m:
-            t = translate("BIM","Some additional workbenches are not installed, that extend BIM functionality:")+" <b>"+",".join(m)+"</b>. "+translate("BIM","You can install them from menu Tools -> Addon manager.")
+            t = (
+                translate(
+                    "BIM",
+                    "Some additional workbenches are not installed, that extend BIM functionality:",
+                )
+                + " <b>"
+                + ",".join(m)
+                + "</b>. "
+                + translate(
+                    "BIM", "You can install them from menu Tools -> Addon manager."
+                )
+            )
             self.form.labelMissingWorkbenches.setText(t)
             self.form.labelMissingWorkbenches.show()
         if not ifcok:
             self.form.labelIfcOpenShell.show()
-        if FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").GetString("snapModes","111111111101111") == "111111111101111":
+        if (
+            FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").GetString(
+                "snapModes", "111111111101111"
+            )
+            == "111111111101111"
+        ):
             self.form.labelSnapTip.show()
-        version = float(str(FreeCAD.Version()[0])+"."+str(FreeCAD.Version()[1]))
+        version = float(str(FreeCAD.Version()[0]) + "." + str(FreeCAD.Version()[1]))
         if version < TARGETVERSION:
             t = self.form.labelVersion.text
-            self.form.labelVersion.text = t.replace("%1",str(version)).replace("%2",str(TARGETVERSION))
+            self.form.labelVersion.text = t.replace("%1", str(version)).replace(
+                "%2", str(TARGETVERSION)
+            )
             self.form.labelVersion.show()
 
         # show dialog and exit if cancelled
-        FreeCADGui.BIMSetupDialog = True # this is there to be easily detected by the BIM tutorial
+        FreeCADGui.BIMSetupDialog = (
+            True  # this is there to be easily detected by the BIM tutorial
+        )
         result = self.form.exec_()
         del FreeCADGui.BIMSetupDialog
         if not result:
@@ -131,87 +166,174 @@ class BIM_Setup:
 
         # set preference values
         unit = self.form.settingUnits.currentIndex()
-        unit = [0,4,1,3,7,5][unit] # less choices in our simplified dialog
-        FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Units").SetInt("UserSchema",unit)
-        if hasattr(FreeCAD.Units,"setSchema"):
+        unit = [0, 4, 1, 3, 7, 5][unit]  # less choices in our simplified dialog
+        FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Units").SetInt(
+            "UserSchema", unit
+        )
+        if hasattr(FreeCAD.Units, "setSchema"):
             FreeCAD.Units.setSchema(unit)
         decimals = self.form.settingDecimals.value()
-        FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Units").SetInt("Decimals",decimals)
-        FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/TechDraw/Dimensions").SetBool("UseGlobalDecimals",True)
+        FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Units").SetInt(
+            "Decimals", decimals
+        )
+        FreeCAD.ParamGet(
+            "User parameter:BaseApp/Preferences/Mod/TechDraw/Dimensions"
+        ).SetBool("UseGlobalDecimals", True)
         grid = self.form.settingGrid.text()
-        FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Sketcher/General").SetString("GridSize",str(grid)) # Also set sketcher grid
+        FreeCAD.ParamGet(
+            "User parameter:BaseApp/Preferences/Mod/Sketcher/General"
+        ).SetString(
+            "GridSize", str(grid)
+        )  # Also set sketcher grid
         grid = FreeCAD.Units.Quantity(grid).Value
-        FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").SetFloat("gridSpacing",grid)
+        FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").SetFloat(
+            "gridSpacing", grid
+        )
         squares = self.form.settingSquares.value()
-        FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").SetInt("gridEvery",squares)
+        FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").SetInt(
+            "gridEvery", squares
+        )
         wp = self.form.settingWP.currentIndex()
-        FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").SetInt("defaultWP",wp)
+        FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").SetInt(
+            "defaultWP", wp
+        )
         tsize = self.form.settingText.text()
         tsize = FreeCAD.Units.Quantity(tsize).Value
-        FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").SetFloat("textheight",tsize)
-        FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/TechDraw/Dimensions").SetFloat("FontSize",tsize) # TODO - check if this needs a mult factor?
+        FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").SetFloat(
+            "textheight", tsize
+        )
+        FreeCAD.ParamGet(
+            "User parameter:BaseApp/Preferences/Mod/TechDraw/Dimensions"
+        ).SetFloat(
+            "FontSize", tsize
+        )  # TODO - check if this needs a mult factor?
         font = self.form.settingFont.currentFont().family()
-        FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").SetString("textfont",font)
-        FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/TechDraw/Labels").SetString("LabelFont",font)
+        FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").SetString(
+            "textfont", font
+        )
+        FreeCAD.ParamGet(
+            "User parameter:BaseApp/Preferences/Mod/TechDraw/Labels"
+        ).SetString("LabelFont", font)
         linewidth = self.form.settingLinewidth.value()
-        FreeCAD.ParamGet("User parameter:BaseApp/Preferences/View").SetInt("DefaultShapeLineWidth",linewidth)
-        FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").SetInt("linewidth",linewidth)
+        FreeCAD.ParamGet("User parameter:BaseApp/Preferences/View").SetInt(
+            "DefaultShapeLineWidth", linewidth
+        )
+        FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").SetInt(
+            "linewidth", linewidth
+        )
         # TODO - TechDraw default line styles
         dimstyle = self.form.settingDimstyle.currentIndex()
-        ddimstyle = [0,2,3,4][dimstyle] # less choices in our simplified dialog
-        FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").SetInt("dimsymbol",ddimstyle)
-        tdimstyle = [3,0,2,2][dimstyle] # TechDraw has different order than Draft
-        FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/TechDraw/Dimensions").SetInt("dimsymbol",tdimstyle)
+        ddimstyle = [0, 2, 3, 4][dimstyle]  # less choices in our simplified dialog
+        FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").SetInt(
+            "dimsymbol", ddimstyle
+        )
+        tdimstyle = [3, 0, 2, 2][dimstyle]  # TechDraw has different order than Draft
+        FreeCAD.ParamGet(
+            "User parameter:BaseApp/Preferences/Mod/TechDraw/Dimensions"
+        ).SetInt("dimsymbol", tdimstyle)
         asize = self.form.settingArrowsize.text()
         asize = FreeCAD.Units.Quantity(asize).Value
-        FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").SetFloat("arrowsize",asize)
-        FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/TechDraw/Dimensions").SetFloat("ArrowSize",asize*TECHDRAWDIMFACTOR)
+        FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").SetFloat(
+            "arrowsize", asize
+        )
+        FreeCAD.ParamGet(
+            "User parameter:BaseApp/Preferences/Mod/TechDraw/Dimensions"
+        ).SetFloat("ArrowSize", asize * TECHDRAWDIMFACTOR)
         author = self.form.settingAuthor.text()
-        FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Document").SetString("prefAuthor",author)
+        FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Document").SetString(
+            "prefAuthor", author
+        )
         lic = self.form.settingLicense.currentIndex()
-        lic = [0,1,2,4,5][lic] # less choices in our simplified dialog
-        FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Document").SetInt("prefLicenseType",lic)
-        FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Document").SetString("prefLicenseUrl","") # TODO - set correct license URL
+        lic = [0, 1, 2, 4, 5][lic]  # less choices in our simplified dialog
+        FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Document").SetInt(
+            "prefLicenseType", lic
+        )
+        FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Document").SetString(
+            "prefLicenseUrl", ""
+        )  # TODO - set correct license URL
         bimdefault = self.form.settingWorkbench.currentIndex()
         if bimdefault == 1:
-            FreeCAD.ParamGet("User parameter:BaseApp/Preferences/General").SetString("AutoloadModule","BIMWorkbench")
+            FreeCAD.ParamGet("User parameter:BaseApp/Preferences/General").SetString(
+                "AutoloadModule", "BIMWorkbench"
+            )
         elif bimdefault == 2:
-            FreeCAD.ParamGet("User parameter:BaseApp/Preferences/General").SetString("AutoloadModule","StartWorkbench")
-            FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Start").SetString("AutoloadModule","BIMWorkbench")
+            FreeCAD.ParamGet("User parameter:BaseApp/Preferences/General").SetString(
+                "AutoloadModule", "StartWorkbench"
+            )
+            FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Start").SetString(
+                "AutoloadModule", "BIMWorkbench"
+            )
         newdoc = self.form.settingNewdocument.isChecked()
-        FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Document").SetBool("CreateNewDoc",newdoc)
+        FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Document").SetBool(
+            "CreateNewDoc", newdoc
+        )
         bkp = self.form.settingBackupfiles.value()
-        FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Document").SetInt("CountBackupFiles",bkp)
-        FreeCAD.ParamGet("User parameter:BaseApp/Preferences/View").SetUnsigned("BackgroundColor2",self.form.colorButtonTop.property("color").rgb()<<8)
-        FreeCAD.ParamGet("User parameter:BaseApp/Preferences/View").SetUnsigned("BackgroundColor3",self.form.colorButtonBottom.property("color").rgb()<<8)
-        FreeCAD.ParamGet("User parameter:BaseApp/Preferences/View").SetUnsigned("DefaultShapeColor",self.form.colorButtonFaces.property("color").rgb()<<8)
-        FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").SetUnsigned("color",self.form.colorButtonFaces.property("color").rgb()<<8)
-        FreeCAD.ParamGet("User parameter:BaseApp/Preferences/View").SetUnsigned("DefaultShapeLineColor",self.form.colorButtonLines.property("color").rgb()<<8)
-        FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Arch").SetUnsigned("ColorHelpers",self.form.colorButtonHelpers.property("color").rgb()<<8)
-        FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").SetUnsigned("constructioncolor",self.form.colorButtonConstruction.property("color").rgb()<<8)
-        FreeCAD.ParamGet("User parameter:BaseApp/Preferences/View").SetUnsigned("ConstructionColor",self.form.colorButtonConstruction.property("color").rgb()<<8)
+        FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Document").SetInt(
+            "CountBackupFiles", bkp
+        )
+        FreeCAD.ParamGet("User parameter:BaseApp/Preferences/View").SetUnsigned(
+            "BackgroundColor2", self.form.colorButtonTop.property("color").rgb() << 8
+        )
+        FreeCAD.ParamGet("User parameter:BaseApp/Preferences/View").SetUnsigned(
+            "BackgroundColor3", self.form.colorButtonBottom.property("color").rgb() << 8
+        )
+        FreeCAD.ParamGet("User parameter:BaseApp/Preferences/View").SetUnsigned(
+            "DefaultShapeColor", self.form.colorButtonFaces.property("color").rgb() << 8
+        )
+        FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").SetUnsigned(
+            "color", self.form.colorButtonFaces.property("color").rgb() << 8
+        )
+        FreeCAD.ParamGet("User parameter:BaseApp/Preferences/View").SetUnsigned(
+            "DefaultShapeLineColor",
+            self.form.colorButtonLines.property("color").rgb() << 8,
+        )
+        FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Arch").SetUnsigned(
+            "ColorHelpers", self.form.colorButtonHelpers.property("color").rgb() << 8
+        )
+        FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").SetUnsigned(
+            "constructioncolor",
+            self.form.colorButtonConstruction.property("color").rgb() << 8,
+        )
+        FreeCAD.ParamGet("User parameter:BaseApp/Preferences/View").SetUnsigned(
+            "ConstructionColor",
+            self.form.colorButtonConstruction.property("color").rgb() << 8,
+        )
         height = self.form.settingCameraHeight.value()
-        FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").SetInt("defaultCameraHeight",height)
-        FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").SetUnsigned("DefaultTextColor",self.form.colorButtonText.property("color").rgb()<<8)
-        FreeCAD.ParamGet("User parameter:BaseApp/Preferences/View").SetUnsigned("BackgroundColor",self.form.colorButtonSimple.property("color").rgb()<<8)
+        FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").SetInt(
+            "defaultCameraHeight", height
+        )
+        FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").SetUnsigned(
+            "DefaultTextColor", self.form.colorButtonText.property("color").rgb() << 8
+        )
+        FreeCAD.ParamGet("User parameter:BaseApp/Preferences/View").SetUnsigned(
+            "BackgroundColor", self.form.colorButtonSimple.property("color").rgb() << 8
+        )
 
         # set the working plane
-        if hasattr(FreeCAD,"DraftWorkingPlane") and hasattr(FreeCADGui,"draftToolBar"):
+        if hasattr(FreeCAD, "DraftWorkingPlane") and hasattr(
+            FreeCADGui, "draftToolBar"
+        ):
             if wp == 1:
-                FreeCAD.DraftWorkingPlane.alignToPointAndAxis(FreeCAD.Vector(0,0,0), FreeCAD.Vector(0,0,1), 0)
+                FreeCAD.DraftWorkingPlane.alignToPointAndAxis(
+                    FreeCAD.Vector(0, 0, 0), FreeCAD.Vector(0, 0, 1), 0
+                )
                 FreeCADGui.draftToolBar.wplabel.setText("Top(XY)")
             elif wp == 2:
-                FreeCAD.DraftWorkingPlane.alignToPointAndAxis(FreeCAD.Vector(0,0,0), FreeCAD.Vector(0,1,0), 0)
+                FreeCAD.DraftWorkingPlane.alignToPointAndAxis(
+                    FreeCAD.Vector(0, 0, 0), FreeCAD.Vector(0, 1, 0), 0
+                )
                 FreeCADGui.draftToolBar.wplabel.setText("Front(XZ)")
             elif wp == 3:
-                FreeCAD.DraftWorkingPlane.alignToPointAndAxis(FreeCAD.Vector(0,0,0), FreeCAD.Vector(1,0,0), 0)
+                FreeCAD.DraftWorkingPlane.alignToPointAndAxis(
+                    FreeCAD.Vector(0, 0, 0), FreeCAD.Vector(1, 0, 0), 0
+                )
                 FreeCADGui.draftToolBar.wplabel.setText("Side(YZ)")
             else:
                 FreeCADGui.draftToolBar.wplabel.setText("Auto")
 
         # set Draft toolbar
-        if hasattr(FreeCADGui,"draftToolBar"):
-            if hasattr(FreeCADGui.draftToolBar,"setStyleButton"):
+        if hasattr(FreeCADGui, "draftToolBar"):
+            if hasattr(FreeCADGui.draftToolBar, "setStyleButton"):
                 FreeCADGui.draftToolBar.setStyleButton()
             else:
                 # pre-v0.19
@@ -219,47 +341,68 @@ class BIM_Setup:
                 FreeCADGui.draftToolBar.fontsizeButton.setValue(tsize)
 
         # set the grid
-        if hasattr(FreeCADGui,"Snapper"):
+        if hasattr(FreeCADGui, "Snapper"):
             FreeCADGui.Snapper.setGrid()
 
         # set the status bar widgets
         mw = FreeCADGui.getMainWindow()
         if mw:
             st = mw.statusBar()
-            statuswidget = st.findChild(QtGui.QToolBar,"BIMStatusWidget")
+            statuswidget = st.findChild(QtGui.QToolBar, "BIMStatusWidget")
             if statuswidget:
-                statuswidget.unitLabel.setText(statuswidget.unitsList[self.form.settingUnits.currentIndex()])
+                statuswidget.unitLabel.setText(
+                    statuswidget.unitsList[self.form.settingUnits.currentIndex()]
+                )
                 # change the unit of the nudge button
                 nudgeactions = statuswidget.nudge.menu().actions()
-                if unit in [2,3,5,7]:
+                if unit in [2, 3, 5, 7]:
                     nudgelabels = statuswidget.nudgeLabelsI
                 else:
                     nudgelabels = statuswidget.nudgeLabelsM
                 for i in range(len(nudgelabels)):
                     nudgeactions[i].setText(nudgelabels[i])
                 try:
-                    t = FreeCAD.Units.Quantity(statuswidget.nudge.text().replace("&","")).UserString
+                    t = FreeCAD.Units.Quantity(
+                        statuswidget.nudge.text().replace("&", "")
+                    ).UserString
                 except:
-                    pass # auto mode
+                    pass  # auto mode
                 else:
                     statuswidget.nudge.setText(t)
 
         # Set different default values
-        if FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM").GetBool("FirstTime",True):
-            FreeCAD.ParamGet("User parameter:BaseApp/Preferences/View").SetInt("OrbitStyle",0)
-            FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Document").SetBool("SaveThumbnail",True)
-            FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").SetString("svgDashedLine","3,1")
-            FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").SetString("svgDashdotLine","3,1,0.2,1")
-            FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").SetString("svgDottedLine","0.5,1")
-            FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").SetFloat("HatchPatternSize",0.025)
-            FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Arch").SetFloat("WallSketches",False)
+        if FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM").GetBool(
+            "FirstTime", True
+        ):
+            FreeCAD.ParamGet("User parameter:BaseApp/Preferences/View").SetInt(
+                "OrbitStyle", 0
+            )
+            FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Document").SetBool(
+                "SaveThumbnail", True
+            )
+            FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").SetString(
+                "svgDashedLine", "3,1"
+            )
+            FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").SetString(
+                "svgDashdotLine", "3,1,0.2,1"
+            )
+            FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").SetString(
+                "svgDottedLine", "0.5,1"
+            )
+            FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").SetFloat(
+                "HatchPatternSize", 0.025
+            )
+            FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Arch").SetFloat(
+                "WallSketches", False
+            )
 
         # finish
-        FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM").SetBool("FirstTime",False)
+        FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM").SetBool(
+            "FirstTime", False
+        )
 
-    def setPreset(self,preset=None):
-
-        from PySide import QtCore,QtGui
+    def setPreset(self, preset=None):
+        from PySide import QtCore, QtGui
 
         unit = None
         decimals = None
@@ -291,7 +434,7 @@ class BIM_Setup:
             return
 
         elif preset == 1:
-           # centimeters
+            # centimeters
             unit = 1
             decimals = 2
             grid = "10cm"
@@ -306,7 +449,7 @@ class BIM_Setup:
             height = 4500
 
         elif preset == 2:
-           # meters
+            # meters
             unit = 2
             decimals = 2
             grid = "0.1m"
@@ -321,7 +464,7 @@ class BIM_Setup:
             height = 4500
 
         elif preset == 3:
-           # US
+            # US
             unit = 5
             decimals = 2
             grid = "1in"
@@ -337,42 +480,102 @@ class BIM_Setup:
 
         elif preset is None:
             # get values from settings
-            unit = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Units").GetInt("UserSchema",0)
-            unit = [0,2,3,3,1,5,0,4][unit] # less choices in our simplified dialog
-            decimals = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Units").GetInt("Decimals",2)
-            grid = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").GetFloat("gridSpacing",10)
-            grid = FreeCAD.Units.Quantity(grid,FreeCAD.Units.Length).UserString
-            squares = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").GetInt("gridEvery",10)
-            wp = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").GetInt("defaultWP",0)
-            tsize = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").GetFloat("textheight",10)
-            tsize = FreeCAD.Units.Quantity(tsize,FreeCAD.Units.Length).UserString
-            font = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").GetString("textfont","Sans")
-            linewidth = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/View").GetInt("DefaultShapeLineWidth",2)
-            dimstyle = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").GetInt("dimsymbol",0)
-            dimstyle = [0,0,1,2,3][dimstyle] # less choices in our simplified dialog
-            asize = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").GetFloat("arrowsize",5)
-            asize = FreeCAD.Units.Quantity(asize,FreeCAD.Units.Length).UserString
-            author = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Document").GetString("prefAuthor","")
-            lic = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Document").GetInt("prefLicenseType",0)
-            lic = [0,1,2,1,3,4,1,0,0,0][lic] # less choices in our simplified dialog
-            bimdefault = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/General").GetString("AutoloadModule","")
+            unit = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Units").GetInt(
+                "UserSchema", 0
+            )
+            unit = [0, 2, 3, 3, 1, 5, 0, 4][
+                unit
+            ]  # less choices in our simplified dialog
+            decimals = FreeCAD.ParamGet(
+                "User parameter:BaseApp/Preferences/Units"
+            ).GetInt("Decimals", 2)
+            grid = FreeCAD.ParamGet(
+                "User parameter:BaseApp/Preferences/Mod/Draft"
+            ).GetFloat("gridSpacing", 10)
+            grid = FreeCAD.Units.Quantity(grid, FreeCAD.Units.Length).UserString
+            squares = FreeCAD.ParamGet(
+                "User parameter:BaseApp/Preferences/Mod/Draft"
+            ).GetInt("gridEvery", 10)
+            wp = FreeCAD.ParamGet(
+                "User parameter:BaseApp/Preferences/Mod/Draft"
+            ).GetInt("defaultWP", 0)
+            tsize = FreeCAD.ParamGet(
+                "User parameter:BaseApp/Preferences/Mod/Draft"
+            ).GetFloat("textheight", 10)
+            tsize = FreeCAD.Units.Quantity(tsize, FreeCAD.Units.Length).UserString
+            font = FreeCAD.ParamGet(
+                "User parameter:BaseApp/Preferences/Mod/Draft"
+            ).GetString("textfont", "Sans")
+            linewidth = FreeCAD.ParamGet(
+                "User parameter:BaseApp/Preferences/View"
+            ).GetInt("DefaultShapeLineWidth", 2)
+            dimstyle = FreeCAD.ParamGet(
+                "User parameter:BaseApp/Preferences/Mod/Draft"
+            ).GetInt("dimsymbol", 0)
+            dimstyle = [0, 0, 1, 2, 3][
+                dimstyle
+            ]  # less choices in our simplified dialog
+            asize = FreeCAD.ParamGet(
+                "User parameter:BaseApp/Preferences/Mod/Draft"
+            ).GetFloat("arrowsize", 5)
+            asize = FreeCAD.Units.Quantity(asize, FreeCAD.Units.Length).UserString
+            author = FreeCAD.ParamGet(
+                "User parameter:BaseApp/Preferences/Document"
+            ).GetString("prefAuthor", "")
+            lic = FreeCAD.ParamGet(
+                "User parameter:BaseApp/Preferences/Document"
+            ).GetInt("prefLicenseType", 0)
+            lic = [0, 1, 2, 1, 3, 4, 1, 0, 0, 0][
+                lic
+            ]  # less choices in our simplified dialog
+            bimdefault = FreeCAD.ParamGet(
+                "User parameter:BaseApp/Preferences/General"
+            ).GetString("AutoloadModule", "")
             if bimdefault == "BIMWorkbench":
                 bimdefault = 1
-            elif bimdefault == "StartWorkbench" and FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Start").GetString("AutoloadModule","") == "BIMWorkbench":
+            elif (
+                bimdefault == "StartWorkbench"
+                and FreeCAD.ParamGet(
+                    "User parameter:BaseApp/Preferences/Mod/Start"
+                ).GetString("AutoloadModule", "")
+                == "BIMWorkbench"
+            ):
                 bimdefault = 2
             else:
                 bimdefault = 0
-            newdoc = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Document").GetBool("CreateNewDoc",False)
-            bkp = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Document").GetInt("CountBackupFiles",2)
-            colTop = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/View").GetUnsigned("BackgroundColor2",775244287)
-            colBottom = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/View").GetUnsigned("BackgroundColor3",1905041919)
-            colFace = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/View").GetUnsigned("DefaultShapeColor",4294967295)
-            colLine = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/View").GetUnsigned("DefaultShapeLineColor",255)
-            colHelp = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Arch").GetUnsigned("ColorHelpers",674321151)
-            colConst = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").GetUnsigned("constructioncolor",746455039)
-            height = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").GetInt("defaultCameraHeight",5)
-            colSimple = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/View").GetUnsigned("BackgroundColor",4294967295)
-            colText = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Draft").GetUnsigned("DefaultTextColor",255)
+            newdoc = FreeCAD.ParamGet(
+                "User parameter:BaseApp/Preferences/Document"
+            ).GetBool("CreateNewDoc", False)
+            bkp = FreeCAD.ParamGet(
+                "User parameter:BaseApp/Preferences/Document"
+            ).GetInt("CountBackupFiles", 2)
+            colTop = FreeCAD.ParamGet(
+                "User parameter:BaseApp/Preferences/View"
+            ).GetUnsigned("BackgroundColor2", 775244287)
+            colBottom = FreeCAD.ParamGet(
+                "User parameter:BaseApp/Preferences/View"
+            ).GetUnsigned("BackgroundColor3", 1905041919)
+            colFace = FreeCAD.ParamGet(
+                "User parameter:BaseApp/Preferences/View"
+            ).GetUnsigned("DefaultShapeColor", 4294967295)
+            colLine = FreeCAD.ParamGet(
+                "User parameter:BaseApp/Preferences/View"
+            ).GetUnsigned("DefaultShapeLineColor", 255)
+            colHelp = FreeCAD.ParamGet(
+                "User parameter:BaseApp/Preferences/Mod/Arch"
+            ).GetUnsigned("ColorHelpers", 674321151)
+            colConst = FreeCAD.ParamGet(
+                "User parameter:BaseApp/Preferences/Mod/Draft"
+            ).GetUnsigned("constructioncolor", 746455039)
+            height = FreeCAD.ParamGet(
+                "User parameter:BaseApp/Preferences/Mod/Draft"
+            ).GetInt("defaultCameraHeight", 5)
+            colSimple = FreeCAD.ParamGet(
+                "User parameter:BaseApp/Preferences/View"
+            ).GetUnsigned("BackgroundColor", 4294967295)
+            colText = FreeCAD.ParamGet(
+                "User parameter:BaseApp/Preferences/Mod/Draft"
+            ).GetUnsigned("DefaultTextColor", 255)
 
         if unit != None:
             self.form.settingUnits.setCurrentIndex(unit)
@@ -405,43 +608,46 @@ class BIM_Setup:
         if bkp != None:
             self.form.settingBackupfiles.setValue(bkp)
         if colTop != None:
-            self.form.colorButtonTop.setProperty("color",getPrefColor(colTop))
+            self.form.colorButtonTop.setProperty("color", getPrefColor(colTop))
         if colBottom != None:
-            self.form.colorButtonBottom.setProperty("color",getPrefColor(colBottom))
+            self.form.colorButtonBottom.setProperty("color", getPrefColor(colBottom))
         if colFace != None:
-            self.form.colorButtonFaces.setProperty("color",getPrefColor(colFace))
+            self.form.colorButtonFaces.setProperty("color", getPrefColor(colFace))
         if colLine != None:
-            self.form.colorButtonLines.setProperty("color",getPrefColor(colLine))
+            self.form.colorButtonLines.setProperty("color", getPrefColor(colLine))
         if colHelp != None:
-            self.form.colorButtonHelpers.setProperty("color",getPrefColor(colHelp))
+            self.form.colorButtonHelpers.setProperty("color", getPrefColor(colHelp))
         if colConst != None:
-            self.form.colorButtonConstruction.setProperty("color",getPrefColor(colConst))
+            self.form.colorButtonConstruction.setProperty(
+                "color", getPrefColor(colConst)
+            )
         if colSimple != None:
-            self.form.colorButtonSimple.setProperty("color",getPrefColor(colSimple))
+            self.form.colorButtonSimple.setProperty("color", getPrefColor(colSimple))
         if colText != None:
-            self.form.colorButtonText.setProperty("color",getPrefColor(colText))
+            self.form.colorButtonText.setProperty("color", getPrefColor(colText))
         if height:
             self.form.settingCameraHeight.setValue(height)
         # TODO - antialiasing?
 
-    def handleLink(self,link):
-
-        if hasattr(self,"form"):
+    def handleLink(self, link):
+        if hasattr(self, "form"):
             if "#install" in link:
                 getIfcOpenShell()
             else:
-                #print("Opening link:",link)
-                from PySide import QtCore,QtGui
+                # print("Opening link:",link)
+                from PySide import QtCore, QtGui
+
                 url = QtCore.QUrl(link)
                 QtGui.QDesktopServices.openUrl(url)
 
 
 def getPrefColor(color):
-    r = ((color>>24)&0xFF)/255.0
-    g = ((color>>16)&0xFF)/255.0
-    b = ((color>>8)&0xFF)/255.0
+    r = ((color >> 24) & 0xFF) / 255.0
+    g = ((color >> 16) & 0xFF) / 255.0
+    b = ((color >> 8) & 0xFF) / 255.0
     from PySide import QtGui
-    return QtGui.QColor.fromRgbF(r,g,b)
+
+    return QtGui.QColor.fromRgbF(r, g, b)
 
 
 def getIfcOpenShell(force=False):
@@ -458,29 +664,41 @@ def getIfcOpenShell(force=False):
 
     if not ifcok:
         # ifcopenshell not installed
-        import re,json
+        import re, json
         from PySide import QtGui
         import zipfile
         from urllib import request
+
         if not FreeCAD.GuiUp:
             reply = QtGui.QMessageBox.Yes
         else:
-            reply = QtGui.QMessageBox.question(None,
-                                               translate("BIM","IfcOpenShell not found"),
-                                               translate("BIM","IfcOpenShell is needed to import and export IFC files. It appears to be missing on your system. Would you like to download and install it now? It will be installed in FreeCAD's Macros directory."),
-                                               QtGui.QMessageBox.Yes | QtGui.QMessageBox.No,
-                                               QtGui.QMessageBox.No)
+            reply = QtGui.QMessageBox.question(
+                None,
+                translate("BIM", "IfcOpenShell not found"),
+                translate(
+                    "BIM",
+                    "IfcOpenShell is needed to import and export IFC files. It appears to be missing on your system. Would you like to download and install it now? It will be installed in FreeCAD's Macros directory.",
+                ),
+                QtGui.QMessageBox.Yes | QtGui.QMessageBox.No,
+                QtGui.QMessageBox.No,
+            )
         if reply == QtGui.QMessageBox.Yes:
-            print("Loading list of latest IfcOpenBot builds from https://github.com/IfcOpenBot/IfcOpenShell...")
+            print(
+                "Loading list of latest IfcOpenBot builds from https://github.com/IfcOpenBot/IfcOpenShell..."
+            )
             url1 = "https://api.github.com/repos/IfcOpenBot/IfcOpenShell/comments?per_page=100"
             u = urllib.request.urlopen(url1)
             if u:
                 r = u.read()
                 u.close()
                 d = json.loads(r)
-                l = d[-1]['body']
-                links = re.findall("http.*?zip",l)
-                pyv = "python-"+str(sys.version_info.major)+str(sys.version_info.minor)
+                l = d[-1]["body"]
+                links = re.findall("http.*?zip", l)
+                pyv = (
+                    "python-"
+                    + str(sys.version_info.major)
+                    + str(sys.version_info.minor)
+                )
                 if sys.platform.startswith("linux"):
                     plat = "linux"
                 elif sys.platform.startswith("win"):
@@ -494,19 +712,24 @@ def getIfcOpenShell(force=False):
                     plat += "64"
                 else:
                     plat += "32"
-                print("Looking for",plat,pyv)
+                print("Looking for", plat, pyv)
                 for link in links:
-                    if ("ifcopenshell-"+pyv in link) and (plat in link):
-                        print("Downloading "+link+"...")
+                    if ("ifcopenshell-" + pyv in link) and (plat in link):
+                        print("Downloading " + link + "...")
                         p = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Macro")
-                        fp = p.GetString("MacroPath",os.path.join(FreeCAD.getUserAppDataDir(),"Macros"))
+                        fp = p.GetString(
+                            "MacroPath",
+                            os.path.join(FreeCAD.getUserAppDataDir(), "Macros"),
+                        )
                         u = urllib.request.urlopen(link)
                         if u:
                             if sys.version_info.major < 3:
                                 import StringIO as io
+
                                 _stringio = io.StringIO
                             else:
                                 import io
+
                                 _stringio = io.BytesIO
                             zfile = _stringio()
                             zfile.write(u.read())
@@ -514,7 +737,7 @@ def getIfcOpenShell(force=False):
                             zfile.extractall(fp)
                             u.close()
                             zfile.close()
-                            print("Successfully installed IfcOpenShell to",fp)
+                            print("Successfully installed IfcOpenShell to", fp)
                             break
                 else:
                     print("Unable to find a build for your version")

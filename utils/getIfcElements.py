@@ -3,8 +3,8 @@ of non-abstract children of IfcProduct"""
 
 import xml.sax, json, copy
 
-class IfcElementHandler(xml.sax.ContentHandler):
 
+class IfcElementHandler(xml.sax.ContentHandler):
     def __init__(self):
         super().__init__()
         self.elements = {}
@@ -14,28 +14,30 @@ class IfcElementHandler(xml.sax.ContentHandler):
         self.attribute_stack = []
 
     def startElement(self, name, attrs):
-        if name == "xs:element"  and "substitutionGroup" in attrs:
+        if name == "xs:element" and "substitutionGroup" in attrs:
             self.elements[attrs["name"]] = {
                 "is_abstract": True if "abstract" in attrs else False,
-                "parent": attrs["substitutionGroup"][len("ifc:"):],
-                "attributes": []
+                "parent": attrs["substitutionGroup"][len("ifc:") :],
+                "attributes": [],
             }
             self.current_element_name = attrs["name"]
-        elif name == "xs:simpleType" \
-            and "name" in attrs \
-            and "Enum" in attrs["name"]:
+        elif name == "xs:simpleType" and "name" in attrs and "Enum" in attrs["name"]:
             self.current_enum_name = attrs["name"]
             self.enums[self.current_enum_name] = []
         elif name == "xs:enumeration" and self.current_enum_name:
             self.enums[self.current_enum_name].append(attrs["value"].upper())
-        elif name == "xs:attribute" \
-            and self.current_element_name \
-            and "name" in attrs \
-            and "type" in attrs:
-            self.elements[self.current_element_name]["attributes"].append({
-                "name": attrs["name"],
-                "type": attrs["type"].replace("ifc:", ""),
-            })
+        elif (
+            name == "xs:attribute"
+            and self.current_element_name
+            and "name" in attrs
+            and "type" in attrs
+        ):
+            self.elements[self.current_element_name]["attributes"].append(
+                {
+                    "name": attrs["name"],
+                    "type": attrs["type"].replace("ifc:", ""),
+                }
+            )
 
     def endDocument(self):
         elements = {}
@@ -66,7 +68,9 @@ class IfcElementHandler(xml.sax.ContentHandler):
 
     def get_parent_attributes(self, data):
         self.attribute_stack.extend(data["attributes"])
-        if data["parent"] != "IfcProduct": # For now, we treat attributes above IfcProduct in a special way
+        if (
+            data["parent"] != "IfcProduct"
+        ):  # For now, we treat attributes above IfcProduct in a special way
             self.get_parent_attributes(self.elements[data["parent"]])
 
     def is_an_ifcproduct(self, data):
@@ -77,6 +81,7 @@ class IfcElementHandler(xml.sax.ContentHandler):
                 if name == data["parent"]:
                     return self.is_an_ifcproduct(parent_data)
         return False
+
 
 xsd_path = "IFC4_ADD2.xsd"
 handler = IfcElementHandler()

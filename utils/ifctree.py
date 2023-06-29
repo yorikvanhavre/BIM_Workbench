@@ -37,19 +37,20 @@ import ifcopenshell
 from PySide2 import QtCore, QtGui, QtWidgets
 import time
 
+
 class ViewProvider:
-    
+
     """A simple view provider to gather children"""
-    
+
     def __init__(self, vobj):
         vobj.Proxy = self
-    
+
     def attach(self, vobj):
         self.Object = vobj.Object
-    
+
     def claimChildren(self):
         children = []
-        relprops = ["Item","ForLayerSet"] # properties that actually store parents
+        relprops = ["Item", "ForLayerSet"]  # properties that actually store parents
         for prop in self.Object.PropertiesList:
             if prop.startswith("Relating") or (prop in relprops):
                 continue
@@ -68,12 +69,11 @@ class ViewProvider:
                     if value == self.Object:
                         children.append(parent)
         return children
-    
+
 
 def create(ifcentity):
-    
     """The main function that creates objects and fills properties"""
-    
+
     name = "Entity" + str(ifcentity.id())
     obj = FreeCAD.ActiveDocument.getObject(name)
     if obj:
@@ -83,7 +83,7 @@ def create(ifcentity):
         obj.Label = ifcentity.Name
     else:
         obj.Label = ifcentity.is_a()
-    for attr,value in ifcentity.get_info().items():
+    for attr, value in ifcentity.get_info().items():
         if attr not in obj.PropertiesList:
             if attr == "id":
                 attr = "StepId"
@@ -121,10 +121,11 @@ def create(ifcentity):
     return obj
 
 
-
 # main
 
-filepath = QtWidgets.QFileDialog.getOpenFileName(None, "Select IFC File", None, "IFC Files (*.ifc)")[0]
+filepath = QtWidgets.QFileDialog.getOpenFileName(
+    None, "Select IFC File", None, "IFC Files (*.ifc)"
+)[0]
 stime = time.time()
 ifcfile = ifcopenshell.open(filepath)
 project = ifcfile.by_type("IfcProject")[0]
@@ -134,4 +135,4 @@ create(project)
 FreeCAD.ActiveDocument.recompute()
 endtime = "%02d:%02d" % (divmod(round(time.time() - stime, 1), 60))
 lenobjects = str(len(FreeCAD.ActiveDocument.Objects)) + " objects"
-print ("Import done:", endtime, ",", lenobjects)
+print("Import done:", endtime, ",", lenobjects)

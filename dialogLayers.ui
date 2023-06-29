@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>667</width>
-    <height>320</height>
+    <width>795</width>
+    <height>455</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -27,6 +27,16 @@
       <widget class="QPushButton" name="buttonNew">
        <property name="text">
         <string>New</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="buttonIFC">
+       <property name="toolTip">
+        <string>Adds this layer to an IFC project</string>
+       </property>
+       <property name="text">
+        <string/>
        </property>
       </widget>
      </item>
@@ -55,6 +65,16 @@
       <widget class="QPushButton" name="buttonIsolate">
        <property name="text">
         <string>Isolate</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="buttonAssign">
+       <property name="toolTip">
+        <string>Assign selected objects to the selected layer</string>
+       </property>
+       <property name="text">
+        <string>Assign</string>
        </property>
       </widget>
      </item>
