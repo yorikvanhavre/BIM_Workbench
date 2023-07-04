@@ -544,17 +544,17 @@ static char * IFC_xpm[] = {
         # create toolbars
 
         self.appendToolbar(
-            QT_TRANSLATE_NOOP("BIM", "Drafting tools"), self.draftingtools
+            QT_TRANSLATE_NOOP("Workbench", "Drafting tools"), self.draftingtools
         )
-        self.appendToolbar(QT_TRANSLATE_NOOP("BIM", "3D/BIM tools"), self.bimtools)
+        self.appendToolbar(QT_TRANSLATE_NOOP("Workbench", "3D/BIM tools"), self.bimtools)
         self.appendToolbar(
-            QT_TRANSLATE_NOOP("BIM", "Annotation tools"), self.annotationtools
+            QT_TRANSLATE_NOOP("Workbench", "Annotation tools"), self.annotationtools
         )
-        self.appendToolbar(QT_TRANSLATE_NOOP("BIM", "Modification tools"), self.modify)
-        self.appendToolbar(QT_TRANSLATE_NOOP("BIM", "Manage tools"), self.manage)
+        self.appendToolbar(QT_TRANSLATE_NOOP("Workbench", "Modification tools"), self.modify)
+        self.appendToolbar(QT_TRANSLATE_NOOP("Workbench", "Manage tools"), self.manage)
         if self.experimentaltools:
             self.appendToolbar(
-                QT_TRANSLATE_NOOP("BIM", "Experimental tools"), self.experimentaltools
+                QT_TRANSLATE_NOOP("Workbench", "Experimental tools"), self.experimentaltools
             )
         # if flamingo:
         #    self.appendToolbar("Flamingo tools",flamingo)
@@ -568,27 +568,27 @@ static char * IFC_xpm[] = {
         if "Arch_RebarTools" in self.bimtools_menu:
             self.bimtools_menu.remove("Arch_RebarTools")
 
-        self.appendMenu(translate("BIM", "&2D Drafting"), self.draftingtools)
-        self.appendMenu(translate("BIM", "&3D/BIM"), self.bimtools_menu)
+        self.appendMenu(translate("Workbench", "&2D Drafting"), self.draftingtools)
+        self.appendMenu(translate("Workbench", "&3D/BIM"), self.bimtools_menu)
         if self.rebar:
             self.appendMenu(
                 [
-                    translate("BIM", "&3D/BIM"),
+                    translate("Workbench", "&3D/BIM"),
                     QT_TRANSLATE_NOOP("Arch_RebarTools", "Reinforcement tools"),
                 ],
                 self.rebar,
             )
-        self.appendMenu(translate("BIM", "&Annotation"), self.annotationtools)
-        self.appendMenu(translate("BIM", "&Snapping"), self.snap)
-        self.appendMenu(translate("BIM", "&Modify"), self.modify)
-        self.appendMenu(translate("BIM", "&Manage"), self.manage)
+        self.appendMenu(translate("Workbench", "&Annotation"), self.annotationtools)
+        self.appendMenu(translate("Workbench", "&Snapping"), self.snap)
+        self.appendMenu(translate("Workbench", "&Modify"), self.modify)
+        self.appendMenu(translate("Workbench", "&Manage"), self.manage)
         if flamingo:
-            self.appendMenu(translate("BIM", "&Flamingo"), flamingo)
+            self.appendMenu(translate("Workbench", "&Flamingo"), flamingo)
         if fasteners:
-            self.appendMenu(translate("BIM", "&Fasteners"), fasteners)
-        self.appendMenu(translate("BIM", "&Utils"), self.utils)
+            self.appendMenu(translate("Workbench", "&Fasteners"), fasteners)
+        self.appendMenu(translate("Workbench", "&Utils"), self.utils)
         self.appendMenu(
-            [translate("BIM", "&Utils"), QT_TRANSLATE_NOOP("BIM", "Nudge")], nudge
+            [translate("Workbench", "&Utils"), QT_TRANSLATE_NOOP("Workbench", "Nudge")], nudge
         )
         self.appendMenu("&Help", ["BIM_Welcome", "BIM_Help", "BIM_Tutorial"])
 
