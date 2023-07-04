@@ -151,13 +151,14 @@ if __name__ == "__main__":
 
     # getting API key stored in ~/.crowdin-freecad
     configfile = os.path.expanduser("~") + os.sep + ".crowdin-freecadaddons"
-    if not os.path.exists(configfile):
-        print("Config file not found!")
-        sys.exit()
-    f = open(configfile)
-    url = "https://api.crowdin.com/api/project/freecad-addons/"
-    key = "?login=" + USERNAME + "&account-key=" + f.read().strip()
-    f.close()
+    if arg != "install":
+        if not os.path.exists(configfile):
+            print("Config file not found!")
+            sys.exit()
+        f = open(configfile)
+        url = "https://api.crowdin.com/api/project/freecad-addons/"
+        key = "?login=" + USERNAME + "&account-key=" + f.read().strip()
+        f.close()
 
     basepath = os.path.abspath(BASEPATH)
     transpath = os.path.join(basepath, TRANSLATIONSPATH)
