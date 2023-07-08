@@ -53,7 +53,7 @@ class ShapeGroup(object):
         return
 
     def attach(self, obj):
-        obj.addExtension("App::GeoFeatureGroupExtensionPython", None)
+        obj.addExtension("App::GeoFeatureGroupExtensionPython")
 
     def onDocumentRestored(self, obj):
         self.Object = obj
