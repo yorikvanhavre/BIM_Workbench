@@ -142,7 +142,7 @@ class ViewProviderArchView(object):
             vobj.CutMargin = 1
 
     def attach(self, vobj):
-        vobj.addExtension("Gui::ViewProviderGeoFeatureGroupExtensionPython", None)
+        vobj.addExtension("Gui::ViewProviderGeoFeatureGroupExtensionPython")
         self.ViewObject = vobj
         self.set_properties(vobj)
 
