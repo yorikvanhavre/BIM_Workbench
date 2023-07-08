@@ -138,7 +138,7 @@ class ArchView(object):
 
     def attach(self, obj):
         # print("running" + obj.Name + "attach() method\n")
-        obj.addExtension("App::GeoFeatureGroupExtensionPython", None)
+        obj.addExtension("App::GeoFeatureGroupExtensionPython")
         self.set_properties(obj)
 
     def execute(self, obj):
