@@ -51,7 +51,7 @@ class ViewProviderShapeGroup(object):
             self.ViewObject = None
 
     def attach(self, vobj):
-        vobj.addExtension("Gui::ViewProviderGeoFeatureGroupExtensionPython", None)
+        vobj.addExtension("Gui::ViewProviderGeoFeatureGroupExtensionPython")
         self.ViewObject = vobj
         self.setupShapeGroup()
 
