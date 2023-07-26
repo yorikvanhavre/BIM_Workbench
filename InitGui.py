@@ -573,22 +573,22 @@ static char * IFC_xpm[] = {
         if self.rebar:
             self.appendMenu(
                 [
-                    translate("Workbench", "&3D/BIM"),
+                    QT_TRANSLATE_NOOP("Workbench", "&3D/BIM"),
                     QT_TRANSLATE_NOOP("Arch_RebarTools", "Reinforcement tools"),
                 ],
                 self.rebar,
             )
-        self.appendMenu(translate("Workbench", "&Annotation"), self.annotationtools)
-        self.appendMenu(translate("Workbench", "&Snapping"), self.snap)
-        self.appendMenu(translate("Workbench", "&Modify"), self.modify)
-        self.appendMenu(translate("Workbench", "&Manage"), self.manage)
+        self.appendMenu(QT_TRANSLATE_NOOP("Workbench", "&Annotation"), self.annotationtools)
+        self.appendMenu(QT_TRANSLATE_NOOP("Workbench", "&Snapping"), self.snap)
+        self.appendMenu(QT_TRANSLATE_NOOP("Workbench", "&Modify"), self.modify)
+        self.appendMenu(QT_TRANSLATE_NOOP("Workbench", "&Manage"), self.manage)
         if flamingo:
-            self.appendMenu(translate("Workbench", "&Flamingo"), flamingo)
+            self.appendMenu(QT_TRANSLATE_NOOP("Workbench", "&Flamingo"), flamingo)
         if fasteners:
-            self.appendMenu(translate("Workbench", "&Fasteners"), fasteners)
-        self.appendMenu(translate("Workbench", "&Utils"), self.utils)
+            self.appendMenu(QT_TRANSLATE_NOOP("Workbench", "&Fasteners"), fasteners)
+        self.appendMenu(QT_TRANSLATE_NOOP("Workbench", "&Utils"), self.utils)
         self.appendMenu(
-            [translate("Workbench", "&Utils"), QT_TRANSLATE_NOOP("Workbench", "Nudge")], nudge
+            [QT_TRANSLATE_NOOP("Workbench", "&Utils"), QT_TRANSLATE_NOOP("Workbench", "Nudge")], nudge
         )
         self.appendMenu("&Help", ["BIM_Welcome", "BIM_Help", "BIM_Tutorial"])
 
