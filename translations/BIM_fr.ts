@@ -369,12 +369,12 @@
     <message>
       <location filename="../BimLayers.py" line="190"/>
       <source>Warning: The new layer was added to the project</source>
-      <translation type="unfinished">Warning: The new layer was added to the project</translation>
+      <translation>Attention : le nouveau calque a été ajouté au projet</translation>
     </message>
     <message>
       <location filename="../BimLayers.py" line="199"/>
       <source>There is no IFC project in this document</source>
-      <translation type="unfinished">There is no IFC project in this document</translation>
+      <translation>Il n'y a pas de projet IFC dans ce document</translation>
     </message>
     <message>
       <location filename="../BimLayers.py" line="311"/>
@@ -989,7 +989,7 @@ CTRL+/ pour passer du mode automatique au mode manuel</translation>
     <message>
       <location filename="../BimViews.py" line="125"/>
       <source>BIM Views manager</source>
-      <translation>Gestionnaire de vues de BIM</translation>
+      <translation>Gestionnaire des vues BIM</translation>
     </message>
     <message>
       <location filename="../BimWindows.py" line="262"/>
@@ -2158,7 +2158,7 @@ Vous pourrez de nouveau accéder à cette boîte de dialogue n’importe quand d
     <message>
       <location filename="../BimTrash.py" line="36"/>
       <source>Move to Trash</source>
-      <translation>Déplacer vers la corbeille</translation>
+      <translation>Mettre à la corbeille</translation>
     </message>
     <message>
       <location filename="../BimTrash.py" line="39"/>
@@ -2197,7 +2197,7 @@ Vous pourrez de nouveau accéder à cette boîte de dialogue n’importe quand d
     <message>
       <location filename="../BimViews.py" line="37"/>
       <source>Views manager</source>
-      <translation>Gestionnaire de vues</translation>
+      <translation>Gestionnaire des vues BIM</translation>
     </message>
     <message>
       <location filename="../BimViews.py" line="40"/>
@@ -2453,7 +2453,7 @@ Vous pourrez de nouveau accéder à cette boîte de dialogue n’importe quand d
     <message>
       <location filename="../dialogLayers.ui" line="36"/>
       <source>Adds this layer to an IFC project</source>
-      <translation type="unfinished">Adds this layer to an IFC project</translation>
+      <translation>Ajoute ce calque à un projet IFC</translation>
     </message>
     <message>
       <location filename="../dialogLayers.ui" line="46"/>
@@ -2474,12 +2474,12 @@ Vous pourrez de nouveau accéder à cette boîte de dialogue n’importe quand d
     <message>
       <location filename="../dialogLayers.ui" line="74"/>
       <source>Assign selected objects to the selected layer</source>
-      <translation type="unfinished">Assign selected objects to the selected layer</translation>
+      <translation>Affecter les objets sélectionnés au calque sélectionné</translation>
     </message>
     <message>
       <location filename="../dialogLayers.ui" line="77"/>
       <source>Assign</source>
-      <translation type="unfinished">Assign</translation>
+      <translation>Affecter</translation>
     </message>
     <message>
       <location filename="../dialogLayers.ui" line="97"/>
@@ -2974,7 +2974,7 @@ Vous pourrez de nouveau accéder à cette boîte de dialogue n’importe quand d
     <message>
       <location filename="../dialogClasses.ui" line="14"/>
       <source>classManager</source>
-      <translation>gestionnaire de classe</translation>
+      <translation>Gestionnaire de classes</translation>
     </message>
     <message>
       <location filename="../dialogClasses.ui" line="25"/>
@@ -3698,84 +3698,84 @@ p, li { white-space: pre-wrap; }
     <message>
       <location filename="../InitGui.py" line="547"/>
       <source>Drafting tools</source>
-      <translation type="unfinished">Drafting tools</translation>
+      <translation>Outils de dessin</translation>
     </message>
     <message>
       <location filename="../InitGui.py" line="549"/>
       <source>3D/BIM tools</source>
-      <translation type="unfinished">3D/BIM tools</translation>
+      <translation>Outils 3D/BIM</translation>
     </message>
     <message>
       <location filename="../InitGui.py" line="551"/>
       <source>Annotation tools</source>
-      <translation type="unfinished">Annotation tools</translation>
+      <translation>Outils d'annotation</translation>
     </message>
     <message>
       <location filename="../InitGui.py" line="553"/>
       <source>Modification tools</source>
-      <translation type="unfinished">Modification tools</translation>
+      <translation>Outils de modification</translation>
     </message>
     <message>
       <location filename="../InitGui.py" line="554"/>
       <source>Manage tools</source>
-      <translation type="unfinished">Manage tools</translation>
+      <translation>Outils de gestion</translation>
     </message>
     <message>
       <location filename="../InitGui.py" line="557"/>
       <source>Experimental tools</source>
-      <translation type="unfinished">Experimental tools</translation>
+      <translation>Outils expérimentaux</translation>
     </message>
     <message>
       <location filename="../InitGui.py" line="571"/>
       <source>&amp;2D Drafting</source>
-      <translation type="unfinished">&amp;2D Drafting</translation>
+      <translation>Dessin &amp;2D</translation>
     </message>
     <message>
       <location filename="../InitGui.py" line="572"/>
       <location filename="../InitGui.py" line="576"/>
       <source>&amp;3D/BIM</source>
-      <translation type="unfinished">&amp;3D/BIM</translation>
+      <translation>&amp;3D/BIM</translation>
     </message>
     <message>
       <location filename="../InitGui.py" line="581"/>
       <source>&amp;Annotation</source>
-      <translation type="unfinished">&amp;Annotation</translation>
+      <translation>&amp;Annotation</translation>
     </message>
     <message>
       <location filename="../InitGui.py" line="582"/>
       <source>&amp;Snapping</source>
-      <translation type="unfinished">&amp;Snapping</translation>
+      <translation>A&amp;imantation</translation>
     </message>
     <message>
       <location filename="../InitGui.py" line="583"/>
       <source>&amp;Modify</source>
-      <translation type="unfinished">&amp;Modify</translation>
+      <translation>&amp;Modification</translation>
     </message>
     <message>
       <location filename="../InitGui.py" line="584"/>
       <source>&amp;Manage</source>
-      <translation type="unfinished">&amp;Manage</translation>
+      <translation>&amp;Gestion</translation>
     </message>
     <message>
       <location filename="../InitGui.py" line="586"/>
       <source>&amp;Flamingo</source>
-      <translation type="unfinished">&amp;Flamingo</translation>
+      <translation>&amp;Flamingo</translation>
     </message>
     <message>
       <location filename="../InitGui.py" line="588"/>
       <source>&amp;Fasteners</source>
-      <translation type="unfinished">&amp;Fasteners</translation>
+      <translation>&amp;Fasteners</translation>
     </message>
     <message>
       <location filename="../InitGui.py" line="589"/>
       <location filename="../InitGui.py" line="591"/>
       <source>&amp;Utils</source>
-      <translation type="unfinished">&amp;Utils</translation>
+      <translation>&amp;Utilitaires</translation>
     </message>
     <message>
       <location filename="../InitGui.py" line="591"/>
       <source>Nudge</source>
-      <translation type="unfinished">Nudge</translation>
+      <translation>Petit déplacement</translation>
     </message>
   </context>
 </TS>

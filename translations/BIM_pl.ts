@@ -204,7 +204,7 @@
     <message>
       <location filename="../BimIfcExplorer.py" line="55"/>
       <source>IfcOpenShell was not found on this system. IFC support is disabled</source>
-      <translation>IfcOpenShell nie został znaleziony w tym systemie. Obsługa IFC jest wyłączona</translation>
+      <translation>Biblioteka IfcOpenShell nie została znaleziona w tym systemie. Obsługa IFC jest wyłączona</translation>
     </message>
     <message>
       <location filename="../BimIfcExplorer.py" line="78"/>
@@ -370,12 +370,12 @@
     <message>
       <location filename="../BimLayers.py" line="190"/>
       <source>Warning: The new layer was added to the project</source>
-      <translation type="unfinished">Warning: The new layer was added to the project</translation>
+      <translation>Uwaga: Nowa warstwa została dodana do projektu</translation>
     </message>
     <message>
       <location filename="../BimLayers.py" line="199"/>
       <source>There is no IFC project in this document</source>
-      <translation type="unfinished">There is no IFC project in this document</translation>
+      <translation>Dokument nie zawiera projektu IFC</translation>
     </message>
     <message>
       <location filename="../BimLayers.py" line="311"/>
@@ -2453,7 +2453,7 @@ CTRL+/ do przełączania między trybem automatycznym i ręcznym</translation>
     <message>
       <location filename="../dialogLayers.ui" line="36"/>
       <source>Adds this layer to an IFC project</source>
-      <translation type="unfinished">Adds this layer to an IFC project</translation>
+      <translation>Dodaje tę warstwę do projektu IFC</translation>
     </message>
     <message>
       <location filename="../dialogLayers.ui" line="46"/>
@@ -2474,12 +2474,12 @@ CTRL+/ do przełączania między trybem automatycznym i ręcznym</translation>
     <message>
       <location filename="../dialogLayers.ui" line="74"/>
       <source>Assign selected objects to the selected layer</source>
-      <translation type="unfinished">Assign selected objects to the selected layer</translation>
+      <translation>Przypisz zaznaczony obiekt do wybranej warstwy</translation>
     </message>
     <message>
       <location filename="../dialogLayers.ui" line="77"/>
       <source>Assign</source>
-      <translation type="unfinished">Assign</translation>
+      <translation>Przypisz</translation>
     </message>
     <message>
       <location filename="../dialogLayers.ui" line="97"/>
@@ -3698,84 +3698,84 @@ p, li { white-space: pre-wrap; }
     <message>
       <location filename="../InitGui.py" line="547"/>
       <source>Drafting tools</source>
-      <translation type="unfinished">Drafting tools</translation>
+      <translation>Narzędzia kreślarskie</translation>
     </message>
     <message>
       <location filename="../InitGui.py" line="549"/>
       <source>3D/BIM tools</source>
-      <translation type="unfinished">3D/BIM tools</translation>
+      <translation>Narzędzia 3D / BIM</translation>
     </message>
     <message>
       <location filename="../InitGui.py" line="551"/>
       <source>Annotation tools</source>
-      <translation type="unfinished">Annotation tools</translation>
+      <translation>Narzędzia opisów</translation>
     </message>
     <message>
       <location filename="../InitGui.py" line="553"/>
       <source>Modification tools</source>
-      <translation type="unfinished">Modification tools</translation>
+      <translation>Narzędzia modyfikujące</translation>
     </message>
     <message>
       <location filename="../InitGui.py" line="554"/>
       <source>Manage tools</source>
-      <translation type="unfinished">Manage tools</translation>
+      <translation>Narzędzia do zarządzania</translation>
     </message>
     <message>
       <location filename="../InitGui.py" line="557"/>
       <source>Experimental tools</source>
-      <translation type="unfinished">Experimental tools</translation>
+      <translation>Narzędzia eksperymentalne</translation>
     </message>
     <message>
       <location filename="../InitGui.py" line="571"/>
       <source>&amp;2D Drafting</source>
-      <translation type="unfinished">&amp;2D Drafting</translation>
+      <translation>&amp;Kreślenie 2D</translation>
     </message>
     <message>
       <location filename="../InitGui.py" line="572"/>
       <location filename="../InitGui.py" line="576"/>
       <source>&amp;3D/BIM</source>
-      <translation type="unfinished">&amp;3D/BIM</translation>
+      <translation>&amp;3D / BIM</translation>
     </message>
     <message>
       <location filename="../InitGui.py" line="581"/>
       <source>&amp;Annotation</source>
-      <translation type="unfinished">&amp;Annotation</translation>
+      <translation>&amp;Opisy</translation>
     </message>
     <message>
       <location filename="../InitGui.py" line="582"/>
       <source>&amp;Snapping</source>
-      <translation type="unfinished">&amp;Snapping</translation>
+      <translation>Prz&amp;yciąganie</translation>
     </message>
     <message>
       <location filename="../InitGui.py" line="583"/>
       <source>&amp;Modify</source>
-      <translation type="unfinished">&amp;Modify</translation>
+      <translation>&amp;Modyfikacja</translation>
     </message>
     <message>
       <location filename="../InitGui.py" line="584"/>
       <source>&amp;Manage</source>
-      <translation type="unfinished">&amp;Manage</translation>
+      <translation>&amp;Zarządzaj</translation>
     </message>
     <message>
       <location filename="../InitGui.py" line="586"/>
       <source>&amp;Flamingo</source>
-      <translation type="unfinished">&amp;Flamingo</translation>
+      <translation>&amp;Konstrukcje ramowe</translation>
     </message>
     <message>
       <location filename="../InitGui.py" line="588"/>
       <source>&amp;Fasteners</source>
-      <translation type="unfinished">&amp;Fasteners</translation>
+      <translation>&amp;Elementy złączne</translation>
     </message>
     <message>
       <location filename="../InitGui.py" line="589"/>
       <location filename="../InitGui.py" line="591"/>
       <source>&amp;Utils</source>
-      <translation type="unfinished">&amp;Utils</translation>
+      <translation>&amp;Narzędzia</translation>
     </message>
     <message>
       <location filename="../InitGui.py" line="591"/>
       <source>Nudge</source>
-      <translation type="unfinished">Nudge</translation>
+      <translation>Małe przemieszczenie</translation>
     </message>
   </context>
 </TS>
