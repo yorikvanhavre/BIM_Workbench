@@ -279,147 +279,147 @@
     <message>
       <location filename="../BimIfcExplorer.py" line="184"/>
       <source>IFC files (*.ifc)</source>
-      <translation type="unfinished">IFC files (*.ifc)</translation>
+      <translation>Arquivos IFC (*.ifc)</translation>
     </message>
     <message>
       <location filename="../BimIfcExplorer.py" line="193"/>
       <source>File not found</source>
-      <translation type="unfinished">File not found</translation>
+      <translation>Arquivo não encontrado</translation>
     </message>
     <message>
       <location filename="../BimIfcExplorer.py" line="198"/>
       <source>IFC Explorer</source>
-      <translation type="unfinished">IFC Explorer</translation>
+      <translation>Explorador Ifc</translation>
     </message>
     <message>
       <location filename="../BimIfcExplorer.py" line="477"/>
       <source>Error in entity</source>
-      <translation type="unfinished">Error in entity</translation>
+      <translation>Erro em entidade</translation>
     </message>
     <message>
       <location filename="../BimIfcProperties.py" line="135"/>
       <source>Custom properties sets can be defined in</source>
-      <translation type="unfinished">Custom properties sets can be defined in</translation>
+      <translation>Conjuntos de propriedades personalizados podem ser definidos em</translation>
     </message>
     <message>
       <location filename="../BimIfcProperties.py" line="141"/>
       <source>Add property...</source>
-      <translation type="unfinished">Add property...</translation>
+      <translation>Adicionar propriedade...</translation>
     </message>
     <message>
       <location filename="../BimIfcProperties.py" line="144"/>
       <source>Add property set...</source>
-      <translation type="unfinished">Add property set...</translation>
+      <translation>Adicione conjunto de propriedades...</translation>
     </message>
     <message>
       <location filename="../BimIfcProperties.py" line="145"/>
       <source>New...</source>
-      <translation type="unfinished">New...</translation>
+      <translation>Novo...</translation>
     </message>
     <message>
       <location filename="../BimIfcProperties.py" line="245"/>
       <source>Search results</source>
-      <translation type="unfinished">Search results</translation>
+      <translation>Resultados da busca</translation>
     </message>
     <message>
       <location filename="../BimIfcProperties.py" line="439"/>
       <source>Warning: object %1 has old-styled IfcProperties and cannot be updated</source>
-      <translation type="unfinished">Warning: object %1 has old-styled IfcProperties and cannot be updated</translation>
+      <translation>Aviso: objeto %1 tem atributo IfcProperties antigo e não pode ser atualizado</translation>
     </message>
     <message>
       <location filename="../BimIfcProperties.py" line="711"/>
       <source>Please select or create a property set first in which the new property should be placed.</source>
-      <translation type="unfinished">Please select or create a property set first in which the new property should be placed.</translation>
+      <translation>Por favor crie ou selecione um conjunto primeiro, do qual esta propriedade deve ser parte.</translation>
     </message>
     <message>
       <location filename="../BimIfcProperties.py" line="726"/>
       <source>New property set</source>
-      <translation type="unfinished">New property set</translation>
+      <translation>Conjunto de propriedades novo</translation>
     </message>
     <message>
       <location filename="../BimIfcProperties.py" line="727"/>
       <source>Property set name:</source>
-      <translation type="unfinished">Property set name:</translation>
+      <translation>Nome do conjunto:</translation>
     </message>
     <message>
       <location filename="../BimIfcQuantities.py" line="44"/>
       <source>Area</source>
-      <translation type="unfinished">Area</translation>
+      <translation>Área</translation>
     </message>
     <message>
       <location filename="../BimIfcQuantities.py" line="45"/>
       <source>Horizontal Area</source>
-      <translation type="unfinished">Horizontal Area</translation>
+      <translation>Área horizontal</translation>
     </message>
     <message>
       <location filename="../BimIfcQuantities.py" line="46"/>
       <source>Vertical Area</source>
-      <translation type="unfinished">Vertical Area</translation>
+      <translation>Área vertical</translation>
     </message>
     <message>
       <location filename="../BimIfcQuantities.py" line="47"/>
       <source>Volume</source>
-      <translation type="unfinished">Volume</translation>
+      <translation>Volume</translation>
     </message>
     <message>
       <location filename="../BimIfcQuantities.py" line="309"/>
       <source>Cannot save quantities settings for object %1</source>
-      <translation type="unfinished">Cannot save quantities settings for object %1</translation>
+      <translation>Não foi possível salvar quantidades para o objeto %1</translation>
     </message>
     <message>
       <location filename="../BimLayers.py" line="190"/>
       <source>Warning: The new layer was added to the project</source>
-      <translation type="unfinished">Warning: The new layer was added to the project</translation>
+      <translation>Aviso: A camada nova foi incluída no projeto</translation>
     </message>
     <message>
       <location filename="../BimLayers.py" line="199"/>
       <source>There is no IFC project in this document</source>
-      <translation type="unfinished">There is no IFC project in this document</translation>
+      <translation>Não há projetos IFC neste documento</translation>
     </message>
     <message>
       <location filename="../BimLayers.py" line="311"/>
       <source>On</source>
-      <translation type="unfinished">On</translation>
+      <translation>Ativo</translation>
     </message>
     <message>
       <location filename="../BimLayers.py" line="312"/>
       <source>Name</source>
-      <translation type="unfinished">Name</translation>
+      <translation>Nome</translation>
     </message>
     <message>
       <location filename="../BimLayers.py" line="313"/>
       <source>Line width</source>
-      <translation type="unfinished">Line width</translation>
+      <translation>Espessura de linha</translation>
     </message>
     <message>
       <location filename="../BimLayers.py" line="314"/>
       <source>Draw style</source>
-      <translation type="unfinished">Draw style</translation>
+      <translation>Estilo de linha</translation>
     </message>
     <message>
       <location filename="../BimLayers.py" line="315"/>
       <source>Line color</source>
-      <translation type="unfinished">Line color</translation>
+      <translation>Cor de linha</translation>
     </message>
     <message>
       <location filename="../BimLayers.py" line="316"/>
       <source>Face color</source>
-      <translation type="unfinished">Face color</translation>
+      <translation>Cor de face</translation>
     </message>
     <message>
       <location filename="../BimLayers.py" line="317"/>
       <source>Transparency</source>
-      <translation type="unfinished">Transparency</translation>
+      <translation>Transparência</translation>
     </message>
     <message>
       <location filename="../BimLayers.py" line="318"/>
       <source>Line print color</source>
-      <translation type="unfinished">Line print color</translation>
+      <translation>Cor de impressão de linha</translation>
     </message>
     <message>
       <location filename="../BimLayers.py" line="345"/>
       <source>New Layer</source>
-      <translation type="unfinished">New Layer</translation>
+      <translation>Nova Camada</translation>
     </message>
     <message>
       <location filename="../BimLibrary.py" line="198"/>
@@ -427,109 +427,109 @@
       <location filename="../BimLibrary.py" line="999"/>
       <location filename="../BimLibrary.py" line="1003"/>
       <source>Preview</source>
-      <translation type="unfinished">Preview</translation>
+      <translation>Pré-visualização</translation>
     </message>
     <message>
       <location filename="../BimLibrary.py" line="204"/>
       <location filename="../BimLibrary.py" line="989"/>
       <location filename="../BimLibrary.py" line="992"/>
       <source>Options</source>
-      <translation type="unfinished">Options</translation>
+      <translation>Opções</translation>
     </message>
     <message>
       <location filename="../BimLibrary.py" line="526"/>
       <source>No structure in cache. Please refresh.</source>
-      <translation type="unfinished">No structure in cache. Please refresh.</translation>
+      <translation>Não há estrutura no cache. Por favor atualize o documento</translation>
     </message>
     <message>
       <location filename="../BimLibrary.py" line="592"/>
       <source>It is not possible to insert this object because the document has been closed.</source>
-      <translation type="unfinished">It is not possible to insert this object because the document has been closed.</translation>
+      <translation>Não foi possível inserir este objeto porque o documento já foi fechado.</translation>
     </message>
     <message>
       <location filename="../BimLibrary.py" line="640"/>
       <source>Error: Unable to import SAT files - InventorLoader or CadExchanger addon must be installed</source>
-      <translation type="unfinished">Error: Unable to import SAT files - InventorLoader or CadExchanger addon must be installed</translation>
+      <translation>Erro: Impossível importar arquivos SAT - O addon InventorLoader ou CadExchanger deve estar instalado</translation>
     </message>
     <message>
       <location filename="../BimLibrary.py" line="665"/>
       <source>Error: Unable to download</source>
-      <translation type="unfinished">Error: Unable to download</translation>
+      <translation>Erro: Não foi possível baixar</translation>
     </message>
     <message>
       <location filename="../BimLibrary.py" line="705"/>
       <source>Insertion point</source>
-      <translation type="unfinished">Insertion point</translation>
+      <translation>Ponto de intersecção</translation>
     </message>
     <message>
       <location filename="../BimLibrary.py" line="718"/>
       <source>Origin</source>
-      <translation type="unfinished">Origin</translation>
+      <translation>Origem</translation>
     </message>
     <message>
       <location filename="../BimLibrary.py" line="719"/>
       <source>Top left</source>
-      <translation type="unfinished">Top left</translation>
+      <translation>Superior esquerdo</translation>
     </message>
     <message>
       <location filename="../BimLibrary.py" line="720"/>
       <source>Top center</source>
-      <translation type="unfinished">Top center</translation>
+      <translation>Superior centro</translation>
     </message>
     <message>
       <location filename="../BimLibrary.py" line="721"/>
       <source>Top right</source>
-      <translation type="unfinished">Top right</translation>
+      <translation>Superior direito</translation>
     </message>
     <message>
       <location filename="../BimLibrary.py" line="722"/>
       <source>Middle left</source>
-      <translation type="unfinished">Middle left</translation>
+      <translation>Meio esquerdo</translation>
     </message>
     <message>
       <location filename="../BimLibrary.py" line="723"/>
       <source>Middle center</source>
-      <translation type="unfinished">Middle center</translation>
+      <translation>Meio centro</translation>
     </message>
     <message>
       <location filename="../BimLibrary.py" line="724"/>
       <source>Middle right</source>
-      <translation type="unfinished">Middle right</translation>
+      <translation>Meio direita</translation>
     </message>
     <message>
       <location filename="../BimLibrary.py" line="725"/>
       <source>Bottom left</source>
-      <translation type="unfinished">Bottom left</translation>
+      <translation>Inferior esquerdo</translation>
     </message>
     <message>
       <location filename="../BimLibrary.py" line="726"/>
       <source>Bottom center</source>
-      <translation type="unfinished">Bottom center</translation>
+      <translation>Inferior centro</translation>
     </message>
     <message>
       <location filename="../BimLibrary.py" line="727"/>
       <source>Bottom right</source>
-      <translation type="unfinished">Bottom right</translation>
+      <translation>Inferior direito</translation>
     </message>
     <message>
       <location filename="../BimLibrary.py" line="829"/>
       <source>Cannot open URL</source>
-      <translation type="unfinished">Cannot open URL</translation>
+      <translation>Não é possível abrir o URL</translation>
     </message>
     <message>
       <location filename="../BimLibrary.py" line="875"/>
       <source>Could not fetch library contents</source>
-      <translation type="unfinished">Could not fetch library contents</translation>
+      <translation>Não foi possível baixar o conteúdo da biblioteca</translation>
     </message>
     <message>
       <location filename="../BimLibrary.py" line="880"/>
       <source>No results fetched from online library</source>
-      <translation type="unfinished">No results fetched from online library</translation>
+      <translation>Nenhum resultado obtido da biblioteca online</translation>
     </message>
     <message>
       <location filename="../BimLibrary.py" line="934"/>
       <source>Warning, this can take several minutes!</source>
-      <translation type="unfinished">Warning, this can take several minutes!</translation>
+      <translation>Cuidado, isto pode levar alguns minutos!</translation>
     </message>
     <message>
       <location filename="../BimMaterial.py" line="74"/>
@@ -789,128 +789,128 @@
     <message>
       <location filename="../BimProjectManager.py" line="216"/>
       <source>Horizontal Axes</source>
-      <translation type="unfinished">Horizontal Axes</translation>
+      <translation>Eixos horizontais</translation>
     </message>
     <message>
       <location filename="../BimProjectManager.py" line="238"/>
       <source>Axes</source>
-      <translation type="unfinished">Axes</translation>
+      <translation>Eixos</translation>
     </message>
     <message>
       <location filename="../BimProjectManager.py" line="249"/>
       <source>Level</source>
-      <translation type="unfinished">Level</translation>
+      <translation>Nível</translation>
     </message>
     <message>
       <location filename="../BimProjectManager.py" line="266"/>
       <source>Level Axes</source>
-      <translation type="unfinished">Level Axes</translation>
+      <translation>Eixos de nível</translation>
     </message>
     <message>
       <location filename="../BimProjectManager.py" line="314"/>
       <source>New Group</source>
-      <translation type="unfinished">New Group</translation>
+      <translation>Grupo novo</translation>
     </message>
     <message>
       <location filename="../BimProjectManager.py" line="329"/>
       <source>Save preset</source>
-      <translation type="unfinished">Save preset</translation>
+      <translation>Salvar configuração</translation>
     </message>
     <message>
       <location filename="../BimProjectManager.py" line="330"/>
       <source>Preset name:</source>
-      <translation type="unfinished">Preset name:</translation>
+      <translation>Nome da configuração:</translation>
     </message>
     <message>
       <location filename="../BimProjectManager.py" line="395"/>
       <source>User preset...</source>
-      <translation type="unfinished">User preset...</translation>
+      <translation>Configuração parsonalizada...</translation>
     </message>
     <message>
       <location filename="../BimProjectManager.py" line="563"/>
       <source>Save template file</source>
-      <translation type="unfinished">Save template file</translation>
+      <translation>Salvar modelo</translation>
     </message>
     <message>
       <location filename="../BimProjectManager.py" line="573"/>
       <source>Template saved successfully</source>
-      <translation type="unfinished">Template saved successfully</translation>
+      <translation>Modelo salvo com sucesso</translation>
     </message>
     <message>
       <location filename="../BimProjectManager.py" line="585"/>
       <source>Open template file</source>
-      <translation type="unfinished">Open template file</translation>
+      <translation>Abrir modelo</translation>
     </message>
     <message>
       <location filename="../BimProjectManager.py" line="707"/>
       <source>Template successfully loaded into current document</source>
-      <translation type="unfinished">Template successfully loaded into current document</translation>
+      <translation>Modelo inserido com sucesso no documento ativo</translation>
     </message>
     <message>
       <location filename="../BimReextrude.py" line="165"/>
       <source>Error: Please select exactly one base face</source>
-      <translation type="unfinished">Error: Please select exactly one base face</translation>
+      <translation>Erro: Por favor selecione apenas uma face</translation>
     </message>
     <message>
       <location filename="../BimReorder.py" line="55"/>
       <source>You must choose a group object before using this command</source>
-      <translation type="unfinished">You must choose a group object before using this command</translation>
+      <translation>Selecione um grupo antes de utilizar este comando</translation>
     </message>
     <message>
       <location filename="../BimSetup.py" line="132"/>
       <source>Some additional workbenches are not installed, that extend BIM functionality:</source>
-      <translation type="unfinished">Some additional workbenches are not installed, that extend BIM functionality:</translation>
+      <translation>Alguns addons que podem ampliar as funcionalidades BIM não estão instalados:</translation>
     </message>
     <message>
       <location filename="../BimSetup.py" line="138"/>
       <source>You can install them from menu Tools -&gt; Addon manager.</source>
-      <translation type="unfinished">You can install them from menu Tools -&gt; Addon manager.</translation>
+      <translation>Você pode instalá-los a partir do menu Ferramentas -> Addon mamager</translation>
     </message>
     <message>
       <location filename="../BimSetup.py" line="677"/>
       <source>IfcOpenShell not found</source>
-      <translation type="unfinished">IfcOpenShell not found</translation>
+      <translation>IfcOpenShell não foi encontrado</translation>
     </message>
     <message>
       <location filename="../BimSetup.py" line="681"/>
       <source>IfcOpenShell is needed to import and export IFC files. It appears to be missing on your system. Would you like to download and install it now? It will be installed in FreeCAD&apos;s Macros directory.</source>
-      <translation type="unfinished">IfcOpenShell is needed to import and export IFC files. It appears to be missing on your system. Would you like to download and install it now? It will be installed in FreeCAD&apos;s Macros directory.</translation>
+      <translation>IfcOpenShell é necessário para importar e exportar arquivos IFC. Aparentemente não está instalado neste computador. Deseja baixar e instalar o IfcOpenShell agora? Será instalado na pasta de Macros do FreeCAD.</translation>
     </message>
     <message>
       <location filename="../BimStatusBar.py" line="49"/>
       <source>Millimeters</source>
-      <translation type="unfinished">Millimeters</translation>
+      <translation>Milímetros</translation>
     </message>
     <message>
       <location filename="../BimStatusBar.py" line="50"/>
       <source>Centimeters</source>
-      <translation type="unfinished">Centimeters</translation>
+      <translation>Centímetros</translation>
     </message>
     <message>
       <location filename="../BimStatusBar.py" line="51"/>
       <source>Meters</source>
-      <translation type="unfinished">Meters</translation>
+      <translation>Metros</translation>
     </message>
     <message>
       <location filename="../BimStatusBar.py" line="52"/>
       <source>Inches</source>
-      <translation type="unfinished">Inches</translation>
+      <translation>Polegadas</translation>
     </message>
     <message>
       <location filename="../BimStatusBar.py" line="53"/>
       <source>Feet</source>
-      <translation type="unfinished">Feet</translation>
+      <translation>Pés</translation>
     </message>
     <message>
       <location filename="../BimStatusBar.py" line="54"/>
       <source>Architectural</source>
-      <translation type="unfinished">Architectural</translation>
+      <translation>Arquitetônico</translation>
     </message>
     <message>
       <location filename="../BimStatusBar.py" line="58"/>
       <location filename="../BimStatusBar.py" line="68"/>
       <source>Custom...</source>
-      <translation type="unfinished">Custom...</translation>
+      <translation>Personalizado...</translation>
     </message>
     <message>
       <location filename="../BimStatusBar.py" line="243"/>
@@ -922,109 +922,109 @@ CTRL+. to rotate right
 CTRL+PgUp to extend extrusion
 CTRL+PgDown to shrink extrusion
 CTRL+/ to switch between auto and manual mode</source>
-      <translation type="unfinished">The value of the nudge movement (rotation is always 45°).
+      <translation>O valor do movimento do nudge (rotações são sempre de 45˚).
 
-CTRL+arrows to move
-CTRL+, to rotate left
-CTRL+. to rotate right
-CTRL+PgUp to extend extrusion
-CTRL+PgDown to shrink extrusion
-CTRL+/ to switch between auto and manual mode</translation>
+CTRL+setas para deslocar
+CTRL+, para rotacionar para a esquerda
+CTRL+. para rotacionar para a direita
+CTRL+PgUp para aumentar a extrusão
+CTRL+PgDown para reduzir a extrusão
+CTRL+/ para alternar entre modo manual e auto</translation>
     </message>
     <message>
       <location filename="../BimStatusBar.py" line="290"/>
       <source>The preferred unit you are currently working with. You can still use any other unit anywhere in FreeCAD</source>
-      <translation type="unfinished">The preferred unit you are currently working with. You can still use any other unit anywhere in FreeCAD</translation>
+      <translation>A unidade na qual você prefere trabalhar. Você sempre pode usar outras unidades quando quiser, em todos os lugares do FreeCAD</translation>
     </message>
     <message>
       <location filename="../BimStatusBar.py" line="309"/>
       <source>Toggle report panels on/off (Ctrl+0)</source>
-      <translation type="unfinished">Toggle report panels on/off (Ctrl+0)</translation>
+      <translation>Liga/desliga os paineis de relatório (Ctrl+0)</translation>
     </message>
     <message>
       <location filename="../BimStatusBar.py" line="339"/>
       <source>Toggle BIM views panel on/off (Ctrl+9)</source>
-      <translation type="unfinished">Toggle BIM views panel on/off (Ctrl+9)</translation>
+      <translation>Alterna os painéis de vista (Ctrl+9)</translation>
     </message>
     <message>
       <location filename="../BimStatusBar.py" line="366"/>
       <source>Toggle 3D view background between simple and gradient</source>
-      <translation type="unfinished">Toggle 3D view background between simple and gradient</translation>
+      <translation>Alterna o fundo das vistas 3D entre gradiente e cor única</translation>
     </message>
     <message>
       <location filename="../BimStatusBar.py" line="385"/>
       <source>An update to the BIM workbench is available. Click here to open the addons manager.</source>
-      <translation type="unfinished">An update to the BIM workbench is available. Click here to open the addons manager.</translation>
+      <translation>Uma atualização da bancada BIM está disponível. Clique aqui para abrir o addons manager.</translation>
     </message>
     <message>
       <location filename="../BimStructure.py" line="99"/>
       <source>Select a planar object</source>
-      <translation type="unfinished">Select a planar object</translation>
+      <translation>Selecione um objeto planar</translation>
     </message>
     <message>
       <location filename="../BimStructure.py" line="120"/>
       <source>Slab</source>
-      <translation type="unfinished">Slab</translation>
+      <translation>Laje</translation>
     </message>
     <message>
       <location filename="../BimTrash.py" line="53"/>
       <source>Trash</source>
-      <translation type="unfinished">Trash</translation>
+      <translation>Lixeira</translation>
     </message>
     <message>
       <location filename="../BimTutorial.py" line="136"/>
       <source>Unable to access the tutorial. Verify that you are online (This is needed only once).</source>
-      <translation type="unfinished">Unable to access the tutorial. Verify that you are online (This is needed only once).</translation>
+      <translation>Nõa foi possível acessar o tutorial. Verifique que você esteja online (só precisa uma vez).</translation>
     </message>
     <message>
       <location filename="../BimTutorial.py" line="164"/>
       <source>Downloading images...</source>
-      <translation type="unfinished">Downloading images...</translation>
+      <translation>Baixando as imagens...</translation>
     </message>
     <message>
       <location filename="../BimTutorial.py" line="252"/>
       <source>BIM Tutorial - step</source>
-      <translation type="unfinished">BIM Tutorial - step</translation>
+      <translation>Tutorial BIM - etapa</translation>
     </message>
     <message>
       <location filename="../BimViews.py" line="125"/>
       <source>BIM Views manager</source>
-      <translation type="unfinished">BIM Views manager</translation>
+      <translation>Gerenciador de vistas BIM</translation>
     </message>
     <message>
       <location filename="../BimWindows.py" line="262"/>
       <source>None</source>
-      <translation type="unfinished">None</translation>
+      <translation>Nenhum</translation>
     </message>
     <message>
       <location filename="../BimWrappedTools.py" line="245"/>
       <source>Select page template</source>
-      <translation type="unfinished">Select page template</translation>
+      <translation>Selecione um modelo de página</translation>
     </message>
     <message>
       <location filename="../BimWrappedTools.py" line="260"/>
       <source>Template</source>
-      <translation type="unfinished">Template</translation>
+      <translation>Modelo</translation>
     </message>
     <message>
       <location filename="../BimWrappedTools.py" line="336"/>
       <source>No section view or draft objects selected, or no page selected, or no page found in document</source>
-      <translation type="unfinished">No section view or draft objects selected, or no page selected, or no page found in document</translation>
+      <translation>Nenhum plano de corte ou objetos Draft selecionados, ou nenhuma página selecionada, ou nenhuma página encontrada no documento</translation>
     </message>
     <message>
       <location filename="../BimWrappedTools.py" line="394"/>
       <source>Select image</source>
-      <translation type="unfinished">Select image</translation>
+      <translation>Selecionar uma imagem</translation>
     </message>
     <message>
       <location filename="../BimWrappedTools.py" line="396"/>
       <source>Image file (*.png *.jpg *.bmp)</source>
-      <translation type="unfinished">Image file (*.png *.jpg *.bmp)</translation>
+      <translation>Imagem (*. png *. jpg *. jpeg)</translation>
     </message>
     <message>
       <location filename="../InitGui.py" line="754"/>
       <source>Snapping</source>
-      <translation type="unfinished">Snapping</translation>
+      <translation>Snap</translation>
     </message>
   </context>
   <context>
@@ -1459,7 +1459,7 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../dialogSetup.ui" line="642"/>
       <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Tip: You are currently using FreeCAD version %1. Consider using the &lt;a href=&quot;https://github.com/FreeCAD/FreeCAD/releases&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;latest development version %2&lt;/span&gt;&lt;/a&gt;, which brings all the latest improvements to FreeCAD.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-      <translation type="unfinished">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Tip: You are currently using FreeCAD version %1. Consider using the &lt;a href=&quot;https://github.com/FreeCAD/FreeCAD/releases&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;latest development version %2&lt;/span&gt;&lt;/a&gt;, which brings all the latest improvements to FreeCAD.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+      <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Dica: Você está usando o FreeCAD versão %1. Considere usar uma &lt;a href=&quot;https://github.com/FreeCAD/FreeCAD/releases&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;versão de desenvolvimento %2&lt;/span&gt;&lt;/a&gt;, que trará as últimas melhorias do FreeCAD.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
       <location filename="../dialogSetup.ui" line="655"/>
@@ -1469,7 +1469,7 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../dialogSetup.ui" line="665"/>
       <source>&lt;b&gt;IfcOpenShell&lt;/b&gt; is missing on your system. IfcOpenShell is needed to import or export IFC files to/from FreeCAD. Check &lt;a href=&quot;https://www.freecadweb.org/wiki/Arch_IFC&quot;&gt;this wiki page&lt;/a&gt; to know more, or &lt;a href=&quot;#install&quot;&gt;download and install it&lt;/a&gt; directly.&lt;/p&gt;</source>
-      <translation type="unfinished">&lt;b&gt;IfcOpenShell&lt;/b&gt; is missing on your system. IfcOpenShell is needed to import or export IFC files to/from FreeCAD. Check &lt;a href=&quot;https://www.freecadweb.org/wiki/Arch_IFC&quot;&gt;this wiki page&lt;/a&gt; to know more, or &lt;a href=&quot;#install&quot;&gt;download and install it&lt;/a&gt; directly.&lt;/p&gt;</translation>
+      <translation>&lt;b&gt;IfcOpenShell&lt;/b&gt; está faltando no seu sistema. IfcOpenShell é necessário para importar ou exportar arquivos IFC de / para o FreeCAD. Verifique &lt;a href=&quot;https://www.freecadweb.org/wiki/Arch_IFC&quot;&gt;esta página wiki&lt;/a&gt; para saber mais.&lt;a href=&quot;#install&quot;&gt;</translation>
     </message>
   </context>
   <context>
@@ -1477,12 +1477,12 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../BimCommands.py" line="437"/>
       <source>Toggle background</source>
-      <translation type="unfinished">Toggle background</translation>
+      <translation>Alternar fundo</translation>
     </message>
     <message>
       <location filename="../BimCommands.py" line="441"/>
       <source>Toggles the background of the 3D view between simple and gradient</source>
-      <translation type="unfinished">Toggles the background of the 3D view between simple and gradient</translation>
+      <translation>Alterna o fundo da vista 3D entre cor única e gradiente</translation>
     </message>
   </context>
   <context>
@@ -1490,7 +1490,7 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../BimStructure.py" line="61"/>
       <source>Beam</source>
-      <translation type="unfinished">Beam</translation>
+      <translation>Viga</translation>
     </message>
     <message>
       <location filename="../BimStructure.py" line="64"/>
@@ -1817,7 +1817,7 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../BimLibrary.py" line="89"/>
       <source>Opens the objects library</source>
-      <translation type="unfinished">Opens the objects library</translation>
+      <translation>Abre a biblioteca de objetos</translation>
     </message>
   </context>
   <context>
@@ -1825,12 +1825,12 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../BimMaterial.py" line="53"/>
       <source>Material</source>
-      <translation type="unfinished">Material</translation>
+      <translation>Material</translation>
     </message>
     <message>
       <location filename="../BimMaterial.py" line="57"/>
       <source>Sets or creates a material for selected objects</source>
-      <translation type="unfinished">Sets or creates a material for selected objects</translation>
+      <translation>Attribui ou cria um material para os objetos selecionados</translation>
     </message>
   </context>
   <context>
@@ -1838,12 +1838,12 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../BimCommands.py" line="463"/>
       <source>Move view...</source>
-      <translation type="unfinished">Move view...</translation>
+      <translation>Mover vista...</translation>
     </message>
     <message>
       <location filename="../BimCommands.py" line="466"/>
       <source>Moves this view to an existing page</source>
-      <translation type="unfinished">Moves this view to an existing page</translation>
+      <translation>Move esta vista para uma página selecionada</translation>
     </message>
   </context>
   <context>
@@ -1851,7 +1851,7 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../BimNudge.py" line="178"/>
       <source>Nudge Down</source>
-      <translation type="unfinished">Nudge Down</translation>
+      <translation>Para baixo</translation>
     </message>
   </context>
   <context>
@@ -1859,7 +1859,7 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../BimNudge.py" line="241"/>
       <source>Nudge Extend</source>
-      <translation type="unfinished">Nudge Extend</translation>
+      <translation>Extensão</translation>
     </message>
   </context>
   <context>
@@ -1867,7 +1867,7 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../BimNudge.py" line="199"/>
       <source>Nudge Left</source>
-      <translation type="unfinished">Nudge Left</translation>
+      <translation>Para a esquerda</translation>
     </message>
   </context>
   <context>
@@ -1875,7 +1875,7 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../BimNudge.py" line="220"/>
       <source>Nudge Right</source>
-      <translation type="unfinished">Nudge Right</translation>
+      <translation>Para a direita</translation>
     </message>
   </context>
   <context>
@@ -1883,7 +1883,7 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../BimNudge.py" line="291"/>
       <source>Nudge Rotate Left</source>
-      <translation type="unfinished">Nudge Rotate Left</translation>
+      <translation>Rotação para a esquerda</translation>
     </message>
   </context>
   <context>
@@ -1891,7 +1891,7 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../BimNudge.py" line="320"/>
       <source>Nudge Rotate Right</source>
-      <translation type="unfinished">Nudge Rotate Right</translation>
+      <translation>Rotação para a direita</translation>
     </message>
   </context>
   <context>
@@ -1899,7 +1899,7 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../BimNudge.py" line="266"/>
       <source>Nudge Shrink</source>
-      <translation type="unfinished">Nudge Shrink</translation>
+      <translation>Redução</translation>
     </message>
   </context>
   <context>
@@ -1907,7 +1907,7 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../BimNudge.py" line="131"/>
       <source>Nudge Switch</source>
-      <translation type="unfinished">Nudge Switch</translation>
+      <translation>Modo auto/manual</translation>
     </message>
   </context>
   <context>
@@ -1915,7 +1915,7 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../BimNudge.py" line="157"/>
       <source>Nudge Up</source>
-      <translation type="unfinished">Nudge Up</translation>
+      <translation>Para cima</translation>
     </message>
   </context>
   <context>
@@ -1923,12 +1923,12 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../BimPreflight.py" line="60"/>
       <source>Preflight checks...</source>
-      <translation type="unfinished">Preflight checks...</translation>
+      <translation>Verificações preliminares...</translation>
     </message>
     <message>
       <location filename="../BimPreflight.py" line="64"/>
       <source>Checks several characteristics of this model before exporting to IFC</source>
-      <translation type="unfinished">Checks several characteristics of this model before exporting to IFC</translation>
+      <translation>Verifica várias características deste modelo antes de exportar para o IFC</translation>
     </message>
   </context>
   <context>
@@ -1936,17 +1936,17 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../BimWrappedTools.py" line="52"/>
       <source>Create an empty NativeIFC project</source>
-      <translation type="unfinished">Create an empty NativeIFC project</translation>
+      <translation>Cria um projeto NativeIFC novo</translation>
     </message>
     <message>
       <location filename="../BimWrappedTools.py" line="55"/>
       <source>Create an empty BIM project</source>
-      <translation type="unfinished">Create an empty BIM project</translation>
+      <translation>Cria um projeto BIM novo</translation>
     </message>
     <message>
       <location filename="../BimWrappedTools.py" line="57"/>
       <source>Project</source>
-      <translation type="unfinished">Project</translation>
+      <translation>Projeto</translation>
     </message>
   </context>
   <context>
@@ -1954,12 +1954,12 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../BimProjectManager.py" line="38"/>
       <source>Manage project...</source>
-      <translation type="unfinished">Manage project...</translation>
+      <translation>Gerenciar projeto...</translation>
     </message>
     <message>
       <location filename="../BimProjectManager.py" line="41"/>
       <source>Setup your BIM project</source>
-      <translation type="unfinished">Setup your BIM project</translation>
+      <translation>Configura seu projeto BIM</translation>
     </message>
   </context>
   <context>
@@ -1967,12 +1967,12 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../BimReextrude.py" line="38"/>
       <source>Reextrude</source>
-      <translation type="unfinished">Reextrude</translation>
+      <translation>Extrudar novamente</translation>
     </message>
     <message>
       <location filename="../BimReextrude.py" line="41"/>
       <source>Recreates an extruded Structure from a selected face</source>
-      <translation type="unfinished">Recreates an extruded Structure from a selected face</translation>
+      <translation>Recria uma estrutura extrudada a partir de uma face selecionada</translation>
     </message>
   </context>
   <context>
@@ -1980,12 +1980,12 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../BimReorder.py" line="37"/>
       <source>Reorder children</source>
-      <translation type="unfinished">Reorder children</translation>
+      <translation>Reordenar descendentes</translation>
     </message>
     <message>
       <location filename="../BimReorder.py" line="41"/>
       <source>Reorder children of selected object</source>
-      <translation type="unfinished">Reorder children of selected object</translation>
+      <translation>Reordena os objetos incluidos neste objeto</translation>
     </message>
   </context>
   <context>
@@ -1993,12 +1993,12 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../BimClone.py" line="71"/>
       <source>Reset colors</source>
-      <translation type="unfinished">Reset colors</translation>
+      <translation>Reinicializar as cores</translation>
     </message>
     <message>
       <location filename="../BimClone.py" line="75"/>
       <source>Resets the colors of this object from its cloned original</source>
-      <translation type="unfinished">Resets the colors of this object from its cloned original</translation>
+      <translation>Reinicializa as cores deste ojeto a partir do seu original</translation>
     </message>
   </context>
   <context>
@@ -2006,12 +2006,12 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../BimCommands.py" line="321"/>
       <source>Rewire</source>
-      <translation type="unfinished">Rewire</translation>
+      <translation>Recriar polilinhas</translation>
     </message>
     <message>
       <location filename="../BimCommands.py" line="324"/>
       <source>Recreates wires from selected objects</source>
-      <translation type="unfinished">Recreates wires from selected objects</translation>
+      <translation>Recria os arames do objeto selecionado</translation>
     </message>
   </context>
   <context>
@@ -2019,12 +2019,12 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../BimWorkingPlaneTools.py" line="53"/>
       <source>Working Plane Front</source>
-      <translation type="unfinished">Working Plane Front</translation>
+      <translation>Plano de trabalho frontal</translation>
     </message>
     <message>
       <location filename="../BimWorkingPlaneTools.py" line="56"/>
       <source>Set the working plane to Front</source>
-      <translation type="unfinished">Set the working plane to Front</translation>
+      <translation>Coloca o plano de trabalho em posição frontal</translation>
     </message>
   </context>
   <context>
@@ -2032,12 +2032,12 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../BimWorkingPlaneTools.py" line="70"/>
       <source>Working Plane Side</source>
-      <translation type="unfinished">Working Plane Side</translation>
+      <translation>Plano de trabalho lateral</translation>
     </message>
     <message>
       <location filename="../BimWorkingPlaneTools.py" line="73"/>
       <source>Set the working plane to Side</source>
-      <translation type="unfinished">Set the working plane to Side</translation>
+      <translation>Coloca o plano de trabalho em posição lateral</translation>
     </message>
   </context>
   <context>
@@ -2045,12 +2045,12 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../BimWorkingPlaneTools.py" line="36"/>
       <source>Working Plane Top</source>
-      <translation type="unfinished">Working Plane Top</translation>
+      <translation>Plano de trabalho cima</translation>
     </message>
     <message>
       <location filename="../BimWorkingPlaneTools.py" line="39"/>
       <source>Set the working plane to Top</source>
-      <translation type="unfinished">Set the working plane to Top</translation>
+      <translation>Coloca o plano de trabalho em posição horizontal</translation>
     </message>
   </context>
   <context>
@@ -2058,12 +2058,12 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../BimSetup.py" line="34"/>
       <source>BIM Setup...</source>
-      <translation type="unfinished">BIM Setup...</translation>
+      <translation>Configuração BIM...</translation>
     </message>
     <message>
       <location filename="../BimSetup.py" line="37"/>
       <source>Set some common FreeCAD preferences for BIM workflow</source>
-      <translation type="unfinished">Set some common FreeCAD preferences for BIM workflow</translation>
+      <translation>Define algumas preferências do FreeCAD típicas para o fluxo de trabalho BIM</translation>
     </message>
   </context>
   <context>
@@ -2071,7 +2071,7 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../BimWrappedTools.py" line="583"/>
       <source>Shape-based view</source>
-      <translation type="unfinished">Shape-based view</translation>
+      <translation>Vista 2D no modelo</translation>
     </message>
   </context>
   <context>
@@ -2079,12 +2079,12 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../BimCommands.py" line="97"/>
       <source>Sketch</source>
-      <translation type="unfinished">Sketch</translation>
+      <translation>Esboço</translation>
     </message>
     <message>
       <location filename="../BimCommands.py" line="100"/>
       <source>Creates a new sketch in the current working plane</source>
-      <translation type="unfinished">Creates a new sketch in the current working plane</translation>
+      <translation>Cria um novo esboço no plano de trabalho atual</translation>
     </message>
   </context>
   <context>
@@ -2092,12 +2092,12 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../BimStructure.py" line="77"/>
       <source>Slab</source>
-      <translation type="unfinished">Slab</translation>
+      <translation>Laje</translation>
     </message>
     <message>
       <location filename="../BimStructure.py" line="80"/>
       <source>Creates a slab from a planar shape</source>
-      <translation type="unfinished">Creates a slab from a planar shape</translation>
+      <translation>Cria uma laje a partir de uma forma plana</translation>
     </message>
   </context>
   <context>
@@ -2105,12 +2105,12 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../BimWrappedTools.py" line="298"/>
       <source>View</source>
-      <translation type="unfinished">View</translation>
+      <translation>Vista 2D em página</translation>
     </message>
     <message>
       <location filename="../BimWrappedTools.py" line="302"/>
       <source>Creates a TechDraw view from a section plane or 2D objects</source>
-      <translation type="unfinished">Creates a TechDraw view from a section plane or 2D objects</translation>
+      <translation>Cria uma vista TechDraw a partir de um plano de corte ou objetos 2D</translation>
     </message>
   </context>
   <context>
@@ -2118,12 +2118,12 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../BimWrappedTools.py" line="222"/>
       <source>Page</source>
-      <translation type="unfinished">Page</translation>
+      <translation>Página</translation>
     </message>
     <message>
       <location filename="../BimWrappedTools.py" line="225"/>
       <source>Creates a new TechDraw page from a template</source>
-      <translation type="unfinished">Creates a new TechDraw page from a template</translation>
+      <translation>Cria uma nova página TechDraw a partir de um modelo</translation>
     </message>
   </context>
   <context>
@@ -2131,12 +2131,12 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../BimWrappedTools.py" line="528"/>
       <source>Text</source>
-      <translation type="unfinished">Text</translation>
+      <translation>Texto</translation>
     </message>
     <message>
       <location filename="../BimWrappedTools.py" line="531"/>
       <source>Create a text in the current 3D view or TechDraw page</source>
-      <translation type="unfinished">Create a text in the current 3D view or TechDraw page</translation>
+      <translation>Cria um texto na vista 3D atual ou numa página TechDraw</translation>
     </message>
   </context>
   <context>
@@ -2144,12 +2144,12 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../BimTogglePanels.py" line="38"/>
       <source>Toggle bottom panels</source>
-      <translation type="unfinished">Toggle bottom panels</translation>
+      <translation>Ativa/desativa os paineis na parte de baixo da tela</translation>
     </message>
     <message>
       <location filename="../BimTogglePanels.py" line="41"/>
       <source>Toggle bottom dock panels on/off</source>
-      <translation type="unfinished">Toggle bottom dock panels on/off</translation>
+      <translation>Ativa/desativa os paineis da parte de baixo da tela</translation>
     </message>
   </context>
   <context>
@@ -3000,7 +3000,7 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../dialogCustomProperties.ui" line="30"/>
       <source>Can only contain alphanumerical characters and no spaces. Use CamelCase typing to define spaces automatically</source>
-      <translation type="unfinished">Can only contain alphanumerical characters and no spaces. Use CamelCase typing to define spaces automatically</translation>
+      <translation>Pode apenas conter caráteres alfanuméricos e nenhum espaço. Escreva em CamelCase para definir espaços automaticamente</translation>
     </message>
     <message>
       <location filename="../dialogCustomProperties.ui" line="37"/>
@@ -3011,22 +3011,22 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../dialogCustomProperties.ui" line="44"/>
       <source>A description for this property, can be in any language.</source>
-      <translation type="unfinished">A description for this property, can be in any language.</translation>
+      <translation>Uma descrição desta propriedade. Pode ser em qualquer idioma.</translation>
     </message>
     <message>
       <location filename="../dialogCustomProperties.ui" line="51"/>
       <source>The property will be hidden in the interface, and can only be modified via python script</source>
-      <translation type="unfinished">The property will be hidden in the interface, and can only be modified via python script</translation>
+      <translation>A propriedade nõa será visível na interface, e poderá somente ser modificada por script Python</translation>
     </message>
     <message>
       <location filename="../dialogCustomProperties.ui" line="54"/>
       <source>Hidden</source>
-      <translation type="unfinished">Hidden</translation>
+      <translation>Oculto</translation>
     </message>
     <message>
       <location filename="../dialogCustomProperties.ui" line="61"/>
       <source>The property is visible but cannot be modified by the user</source>
-      <translation type="unfinished">The property is visible but cannot be modified by the user</translation>
+      <translation>A propriedade é visível mas não pode ser modificada pelo usuário</translation>
     </message>
     <message>
       <location filename="../dialogCustomProperties.ui" line="64"/>
@@ -3046,122 +3046,122 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../dialogLibrary.ui" line="14"/>
       <source>Library browser</source>
-      <translation type="unfinished">Library browser</translation>
+      <translation>Explorador de biblioteca</translation>
     </message>
     <message>
       <location filename="../dialogLibrary.ui" line="29"/>
       <source>Inserts the selected object in the current document</source>
-      <translation type="unfinished">Inserts the selected object in the current document</translation>
+      <translation>Insere o objeto selecionado no documento ativo</translation>
     </message>
     <message>
       <location filename="../dialogLibrary.ui" line="32"/>
       <source>Insert</source>
-      <translation type="unfinished">Insert</translation>
+      <translation>Inserir</translation>
     </message>
     <message>
       <location filename="../dialogLibrary.ui" line="39"/>
       <source>or</source>
-      <translation type="unfinished">or</translation>
+      <translation>ou</translation>
     </message>
     <message>
       <location filename="../dialogLibrary.ui" line="49"/>
       <source>Links the selected object in the current document. Only works in Offline mode</source>
-      <translation type="unfinished">Links the selected object in the current document. Only works in Offline mode</translation>
+      <translation>Cria um link do objeto selecionado no documento ativo. Só funciona em modo offline</translation>
     </message>
     <message>
       <location filename="../dialogLibrary.ui" line="52"/>
       <source>Link</source>
-      <translation type="unfinished">Link</translation>
+      <translation>Link</translation>
     </message>
     <message>
       <location filename="../dialogLibrary.ui" line="63"/>
       <source>Search:</source>
-      <translation type="unfinished">Search:</translation>
+      <translation>Pesquisar:</translation>
     </message>
     <message>
       <location filename="../dialogLibrary.ui" line="79"/>
       <source>Search external websites</source>
-      <translation type="unfinished">Search external websites</translation>
+      <translation>Pesquisa em sites externos</translation>
     </message>
     <message>
       <location filename="../dialogLibrary.ui" line="83"/>
       <source>...</source>
-      <translation type="unfinished">...</translation>
+      <translation>...</translation>
     </message>
     <message>
       <location filename="../dialogLibrary.ui" line="95"/>
       <source>Preview</source>
-      <translation type="unfinished">Preview</translation>
+      <translation>Pré-visualização</translation>
     </message>
     <message>
       <location filename="../dialogLibrary.ui" line="153"/>
       <source>Options</source>
-      <translation type="unfinished">Options</translation>
+      <translation>Opções</translation>
     </message>
     <message>
       <location filename="../dialogLibrary.ui" line="181"/>
       <source>Save thumbnails when saving a file</source>
-      <translation type="unfinished">Save thumbnails when saving a file</translation>
+      <translation>Criar miniatura ao salvar o arquivo</translation>
     </message>
     <message>
       <location filename="../dialogLibrary.ui" line="193"/>
       <source>If this is checked, the library doesn&apos;t need to be installed. Contents will be fetched online.</source>
-      <translation type="unfinished">If this is checked, the library doesn&apos;t need to be installed. Contents will be fetched online.</translation>
+      <translation>Se isto for ativado, a biblioteca não precisa ser instalada. O conteúdo será obtido online.</translation>
     </message>
     <message>
       <location filename="../dialogLibrary.ui" line="196"/>
       <source>Online mode</source>
-      <translation type="unfinished">Online mode</translation>
+      <translation>Modo online</translation>
     </message>
     <message>
       <location filename="../dialogLibrary.ui" line="206"/>
       <source>Open the search results inside FreeCAD&apos;s web browser instead of the system browser</source>
-      <translation type="unfinished">Open the search results inside FreeCAD&apos;s web browser instead of the system browser</translation>
+      <translation>Abre os resultados da busca no navegador web integrado do FreeCAD, e não no navegador do sistema</translation>
     </message>
     <message>
       <location filename="../dialogLibrary.ui" line="209"/>
       <source>Open search in FreeCAD web view</source>
-      <translation type="unfinished">Open search in FreeCAD web view</translation>
+      <translation>Abrir busca no FreeCAD</translation>
     </message>
     <message>
       <location filename="../dialogLibrary.ui" line="216"/>
       <source>Opens a 3D preview of the selected file.</source>
-      <translation type="unfinished">Opens a 3D preview of the selected file.</translation>
+      <translation>Cria uma pre-visualização 3D do arquivo selecionado.</translation>
     </message>
     <message>
       <location filename="../dialogLibrary.ui" line="219"/>
       <source>Preview model in 3D view</source>
-      <translation type="unfinished">Preview model in 3D view</translation>
+      <translation>Pre-visualização na vista 3D</translation>
     </message>
     <message>
       <location filename="../dialogLibrary.ui" line="229"/>
       <source>Show available alternative file formats for library items (STEP, IFC, etc...)</source>
-      <translation type="unfinished">Show available alternative file formats for library items (STEP, IFC, etc...)</translation>
+      <translation>Mostrar formatos alternativos (STEP, IFC, etc...) disponíveis</translation>
     </message>
     <message>
       <location filename="../dialogLibrary.ui" line="232"/>
       <source>Display alternative formats</source>
-      <translation type="unfinished">Display alternative formats</translation>
+      <translation>Mostrar formatos alternativos</translation>
     </message>
     <message>
       <location filename="../dialogLibrary.ui" line="239"/>
       <source>Note: STEP and BREP files can be placed at custom location. FCStd and IFC files will be placed where objects are defined in the file.</source>
-      <translation type="unfinished">Note: STEP and BREP files can be placed at custom location. FCStd and IFC files will be placed where objects are defined in the file.</translation>
+      <translation>Nota: Arquivos STEP e BREP podem ser posicionados ao inserir. Arquivos FCStd e IFC serão posicionados automaticamente.</translation>
     </message>
     <message>
       <location filename="../dialogLibrary.ui" line="252"/>
       <source>Save thumbnails</source>
-      <translation type="unfinished">Save thumbnails</translation>
+      <translation>Salvar miniaturas</translation>
     </message>
     <message>
       <location filename="../dialogLibrary.ui" line="262"/>
       <source>Save as...</source>
-      <translation type="unfinished">Save as...</translation>
+      <translation>Salvar como...</translation>
     </message>
     <message>
       <location filename="../dialogPreflight.ui" line="14"/>
       <source>IFC Preflight</source>
-      <translation type="unfinished">IFC Preflight</translation>
+      <translation>Checklist IFC</translation>
     </message>
     <message>
       <location filename="../dialogPreflight.ui" line="20"/>
@@ -3171,17 +3171,17 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../dialogPreflight.ui" line="30"/>
       <source>Warning, this can take some time!</source>
-      <translation type="unfinished">Warning, this can take some time!</translation>
+      <translation>Cuidado, isto pode levar alguns minutos!</translation>
     </message>
     <message>
       <location filename="../dialogPreflight.ui" line="33"/>
       <source>Run all tests</source>
-      <translation type="unfinished">Run all tests</translation>
+      <translation>Executar todos os testes</translation>
     </message>
     <message>
       <location filename="../dialogPreflight.ui" line="40"/>
       <source>Work on</source>
-      <translation type="unfinished">Work on</translation>
+      <translation>Atuar sobre</translation>
     </message>
     <message>
       <location filename="../dialogPreflight.ui" line="46"/>
@@ -3191,27 +3191,27 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../dialogPreflight.ui" line="53"/>
       <source>All visible objects</source>
-      <translation type="unfinished">All visible objects</translation>
+      <translation>Todos os objetos visíveis</translation>
     </message>
     <message>
       <location filename="../dialogPreflight.ui" line="63"/>
       <source>Whole document</source>
-      <translation type="unfinished">Whole document</translation>
+      <translation>Documento inteiro</translation>
     </message>
     <message>
       <location filename="../dialogPreflight.ui" line="73"/>
       <source>IFC export</source>
-      <translation type="unfinished">IFC export</translation>
+      <translation>Exportação IFC</translation>
     </message>
     <message>
       <location filename="../dialogPreflight.ui" line="79"/>
       <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;IFC export in FreeCAD is performed by an open-source third-party library called IfcOpenShell. To be able to export to the newer IFC4 standard, IfcOpenShell must have been compiled with IFC4 support enabled.  This test will check if IFC4 support is available in your version of IfcOpenShell. If not, you will only be able to export IFC files in the older IFC2x3 standard. Note that some applications out there still have incomplete or inexistent IFC4 support, so in some cases IFC2x3 might still work better.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-      <translation type="unfinished">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;IFC export in FreeCAD is performed by an open-source third-party library called IfcOpenShell. To be able to export to the newer IFC4 standard, IfcOpenShell must have been compiled with IFC4 support enabled.  This test will check if IFC4 support is available in your version of IfcOpenShell. If not, you will only be able to export IFC files in the older IFC2x3 standard. Note that some applications out there still have incomplete or inexistent IFC4 support, so in some cases IFC2x3 might still work better.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+      <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;A exportação para o formato IFC no FreeCAD é feita através de um aplicativo externo chamado IfcOpenShell. Para poder exportar para a versão IFC4, o IfcOpenShell tem que ter sido compilado com suporte para IFC4.  Este teste irá verificar se o suporte ao IFC4 é disponível. Caso não, você só poderá exportar para a versão mais antiga IFC2x3. Note que alguns aplicativos BIM ainda tem péssimo suporte ao IFC4, por tanto o IFC2x3 pode funcionar melhor para você.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
       <location filename="../dialogPreflight.ui" line="82"/>
       <source>Is IFC4 support enabled?</source>
-      <translation type="unfinished">Is IFC4 support enabled?</translation>
+      <translation>O suporte ao IFC4 está disponível?</translation>
     </message>
     <message>
       <location filename="../dialogPreflight.ui" line="92"/>
@@ -3236,7 +3236,7 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../dialogPreflight.ui" line="102"/>
       <source>Project structure</source>
-      <translation type="unfinished">Project structure</translation>
+      <translation>Estrutura do modelo</translation>
     </message>
     <message>
       <location filename="../dialogPreflight.ui" line="115"/>
@@ -3246,7 +3246,7 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../dialogPreflight.ui" line="118"/>
       <source>Are all storeys part of a building?</source>
-      <translation type="unfinished">Are all storeys part of a building?</translation>
+      <translation>Todos os pavimentos fazem parte de um prédio?</translation>
     </message>
     <message>
       <location filename="../dialogPreflight.ui" line="128"/>
@@ -3256,7 +3256,7 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../dialogPreflight.ui" line="131"/>
       <source>Are all BIM objects part of a level?</source>
-      <translation type="unfinished">Are all BIM objects part of a level?</translation>
+      <translation>Todos os objetos BIM fazem parte de algum pavimento?</translation>
     </message>
     <message>
       <location filename="../dialogPreflight.ui" line="148"/>
@@ -3266,7 +3266,7 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../dialogPreflight.ui" line="151"/>
       <source>Are all buildings part of a site?</source>
-      <translation type="unfinished">Are all buildings part of a site?</translation>
+      <translation>Todos os prédios estão em algum sítio?</translation>
     </message>
     <message>
       <location filename="../dialogPreflight.ui" line="168"/>
@@ -3276,12 +3276,12 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../dialogPreflight.ui" line="171"/>
       <source>Is there at least one site, one building and one level in the model?</source>
-      <translation type="unfinished">Is there at least one site, one building and one level in the model?</translation>
+      <translation>Existe pelo menos um sítio, um prédio e um pavimento no modelo?</translation>
     </message>
     <message>
       <location filename="../dialogPreflight.ui" line="191"/>
       <source>Geometry</source>
-      <translation type="unfinished">Geometry</translation>
+      <translation>Geometria</translation>
     </message>
     <message>
       <location filename="../dialogPreflight.ui" line="204"/>
@@ -3291,7 +3291,7 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../dialogPreflight.ui" line="207"/>
       <source>Are all BIM objects solid and valid?</source>
-      <translation type="unfinished">Are all BIM objects solid and valid?</translation>
+      <translation>Todos os objetos BIM são sólidos e válidos?</translation>
     </message>
     <message>
       <location filename="../dialogPreflight.ui" line="217"/>
@@ -3301,7 +3301,7 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../dialogPreflight.ui" line="220"/>
       <source>Are all BIM objects of a defined IFC type?</source>
-      <translation type="unfinished">Are all BIM objects of a defined IFC type?</translation>
+      <translation>Todos os objetos BIM tem seu tipo IFC definido?</translation>
     </message>
     <message>
       <location filename="../dialogPreflight.ui" line="240"/>
@@ -3316,37 +3316,37 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../dialogPreflight.ui" line="249"/>
       <source>Do all BIM objects and materials have a standard classification code defined?</source>
-      <translation type="unfinished">Do all BIM objects and materials have a standard classification code defined?</translation>
+      <translation>Todos os objetos BIM e materiais tem uma classificação definida?</translation>
     </message>
     <message>
       <location filename="../dialogPreflight.ui" line="273"/>
       <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The IFC standard offers standard, predefined property sets for many object types. for example, the property set Pset_WallCommon contains properties that the IFC standard thinks all walls should have. This test will check that all BIM objects have the right property set, if available.&lt;/p&gt;&lt;p&gt;Note that this is by no means a formal requirement, and these will inflate the size of your IFC file consequently. We suggest you add standard property sets only if you are actually using any of them.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-      <translation type="unfinished">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The IFC standard offers standard, predefined property sets for many object types. for example, the property set Pset_WallCommon contains properties that the IFC standard thinks all walls should have. This test will check that all BIM objects have the right property set, if available.&lt;/p&gt;&lt;p&gt;Note that this is by no means a formal requirement, and these will inflate the size of your IFC file consequently. We suggest you add standard property sets only if you are actually using any of them.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+      <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;O formato IFC define conjuntos de propriedades padrão para vários tipos de elements. Por exemplo, o conjunto Pset_WallCommon contém propriedades que o IFC considere que todas as paredes deveriam ter. Este teste verificará que todos os objetos para os quais existe um conjunto padrão tenham esse conjunto.&lt;/p&gt;&lt;p&gt;Note que isto não é um requerimento formal do formato, e irá também inflar muito o tamanho do seu arquivo. Sugerimos usar conjuntos padrão somento se você precisar especificamente deles por alguma razão.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
       <location filename="../dialogPreflight.ui" line="276"/>
       <source>Do all common IFC types have the corresponding Property Set?</source>
-      <translation type="unfinished">Do all common IFC types have the corresponding Property Set?</translation>
+      <translation>Todos os tipos IFC comuns tem o conjunto padrão corespondente?</translation>
     </message>
     <message>
       <location filename="../dialogPreflight.ui" line="286"/>
       <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;IFC objects have a geometry representation, which defines the shape of the object, but can also have some or their dimensions, such as height, width or area, explicitly stated. This is very useful for BIM applications that don&apos;t process the geometry, such as spreadsheets. Those applications are still able to get and estimate quantities from IFC objects without the need to analyze the geometry.&lt;/p&gt;&lt;p&gt;It is also a possibility for errors (or even fraud), as nothing guarantees that those explicitly stated dimensions match what is inside the geometry.&lt;/p&gt;&lt;p&gt;This test will find any BIM object that has available dimension properties such as width or height, for example walls and structures, but such properties are not marked for explicit export to IFC.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-      <translation type="unfinished">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;IFC objects have a geometry representation, which defines the shape of the object, but can also have some or their dimensions, such as height, width or area, explicitly stated. This is very useful for BIM applications that don&apos;t process the geometry, such as spreadsheets. Those applications are still able to get and estimate quantities from IFC objects without the need to analyze the geometry.&lt;/p&gt;&lt;p&gt;It is also a possibility for errors (or even fraud), as nothing guarantees that those explicitly stated dimensions match what is inside the geometry.&lt;/p&gt;&lt;p&gt;This test will find any BIM object that has available dimension properties such as width or height, for example walls and structures, but such properties are not marked for explicit export to IFC.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+      <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Objetos IFC tem uma representação geométrica, que define a forma do objeto, mas podem também ter algumas das suas dimensões, como altura ou comprimento, também gravadas explicitamente. Isto é muito útil para aplicativos que não processam geometrias, como planilhas. Esses aplicativos conseguem extrair essas dimensões sem precisar analisar a geometria.&lt;/p&gt;&lt;p&gt;No entanto, também abre a possibilidade de erros (ou até fraude), posi nada garante que essas dimensões correspondem á geometria do objeto.&lt;/p&gt;&lt;p&gt;Este teste irá verificar todos os objetos que possuem propriedades comuns como altura, largura ou comprimento, e marcará todos os que não estão configurados para exportar essas dimensões.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
       <location filename="../dialogPreflight.ui" line="289"/>
       <source>Do all geometric BIM objects have explicit dimensions set?</source>
-      <translation type="unfinished">Do all geometric BIM objects have explicit dimensions set?</translation>
+      <translation>Todos os objetos BIM tem dimensões exportadas?</translation>
     </message>
     <message>
       <location filename="../dialogPreflight.ui" line="299"/>
       <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Although there is no requirement for IFC objects to have a material defined, in the real world, it is an important layer of information to be added to you model. This test will find BIM objects without a material defined.&lt;/p&gt;&lt;p&gt;If a BIM object is exported without a material, it will nevertheless be assigned an IfcSurfaceStyle, which will be created from the object color. Some BIM applications actually disregard materials, and only consider the surface style of an object. No IfcMaterial will be attributed to that object.&lt;/p&gt;&lt;p&gt;If a BIM object has a material defined, a surface style will still be created (an IfcMaterial too) but its surface style will take the same name and properties as the material, thus giving more consistency to your file, no matter what other BIM consider, surface style, material, or both.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-      <translation type="unfinished">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Although there is no requirement for IFC objects to have a material defined, in the real world, it is an important layer of information to be added to you model. This test will find BIM objects without a material defined.&lt;/p&gt;&lt;p&gt;If a BIM object is exported without a material, it will nevertheless be assigned an IfcSurfaceStyle, which will be created from the object color. Some BIM applications actually disregard materials, and only consider the surface style of an object. No IfcMaterial will be attributed to that object.&lt;/p&gt;&lt;p&gt;If a BIM object has a material defined, a surface style will still be created (an IfcMaterial too) but its surface style will take the same name and properties as the material, thus giving more consistency to your file, no matter what other BIM consider, surface style, material, or both.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+      <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Apesar de não ser nenhum requerimento oficial no formato IFC, é boa prática sempre ter um material definido para cada objeto BIM, afinal é assim no mundo real. Este teste achará todos os objetos BIM sem material definido.&lt;/p&gt;&lt;p&gt;Se um objeto não tiver material, mesmo assim ele será exportado com um IfcSurfaceStyle derivado da cor dele. Alguns aplicativos BIM na verdade descartam informações de material, e somente consideram o IfcSurfaceStyle. Estes objetos virão sem IfcMaterial.&lt;/p&gt;&lt;p&gt;Se um objeto BIM tiver um material definido, serão exportados ambos um IfcMaterial e um IfcSurfaceStyle com a mesma cor. Isto permite que funcione melhor com qualquer aplicativo, tanto os que leem o IfcMaterial quanto os outros.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
       <location filename="../dialogPreflight.ui" line="302"/>
       <source>Do all BIM objects have a material?</source>
-      <translation type="unfinished">Do all BIM objects have a material?</translation>
+      <translation>Todos os objetos BIM tem material?</translation>
     </message>
     <message>
       <location filename="../dialogPreflight.ui" line="319"/>
@@ -3356,12 +3356,12 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../dialogPreflight.ui" line="322"/>
       <source>Do all standard Property Set contain the correct properties?</source>
-      <translation type="unfinished">Do all standard Property Set contain the correct properties?</translation>
+      <translation>Todos os conjubtos de propriedades padrão possuem as propriedades corretas?</translation>
     </message>
     <message>
       <location filename="../dialogPreflight.ui" line="349"/>
       <source>Optional/Compatibility</source>
-      <translation type="unfinished">Optional/Compatibility</translation>
+      <translation>Opcional/Compatibilidade</translation>
     </message>
     <message>
       <location filename="../dialogPreflight.ui" line="362"/>
@@ -3371,7 +3371,7 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../dialogPreflight.ui" line="365"/>
       <source>Are all object exportable as extrusions?</source>
-      <translation type="unfinished">Are all object exportable as extrusions?</translation>
+      <translation>Todos os objetos exportáveis são extrusões?</translation>
     </message>
     <message>
       <location filename="../dialogPreflight.ui" line="375"/>
@@ -3381,7 +3381,7 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../dialogPreflight.ui" line="378"/>
       <source>Are all walls, beams and columns based on a single line or profile (standard case)?</source>
-      <translation type="unfinished">Are all walls, beams and columns based on a single line or profile (standard case)?</translation>
+      <translation>Todas as paredes, vigas e colunas estão baseadas em uma única linha ou perfil (Standard Case)?</translation>
     </message>
     <message>
       <location filename="../dialogPreflight.ui" line="395"/>
@@ -3391,7 +3391,7 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../dialogPreflight.ui" line="398"/>
       <source>Are all lines bigger than 1/32 inches (minimum accepted by Revit)?</source>
-      <translation type="unfinished">Are all lines bigger than 1/32 inches (minimum accepted by Revit)?</translation>
+      <translation>Todas as linhas tem um comprimento mínimo de 1/32 inch (o mínimo aceito pelo Revit)?</translation>
     </message>
     <message>
       <location filename="../dialogPreflight.ui" line="415"/>
@@ -3401,28 +3401,28 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../dialogPreflight.ui" line="418"/>
       <source>Is IfcRectangleProfileDef export disabled? (Revit only)</source>
-      <translation type="unfinished">Is IfcRectangleProfileDef export disabled? (Revit only)</translation>
+      <translation>IfcRectangleProfileDef é desativado? (Revit somente)</translation>
     </message>
     <message>
       <location filename="../dialogReorder.ui" line="14"/>
       <location filename="../dialogViews.ui" line="14"/>
       <source>Form</source>
-      <translation type="unfinished">Form</translation>
+      <translation>Conteúdo</translation>
     </message>
     <message>
       <location filename="../dialogReorder.ui" line="20"/>
       <source>Drag items to reorder then press OK to accept</source>
-      <translation type="unfinished">Drag items to reorder then press OK to accept</translation>
+      <translation>Arraste itens para reordenar, aperte OK para aceitar</translation>
     </message>
     <message>
       <location filename="../dialogReorder.ui" line="37"/>
       <source>Order alphabetically</source>
-      <translation type="unfinished">Order alphabetically</translation>
+      <translation>Ordenar alfabeticamente</translation>
     </message>
     <message>
       <location filename="../dialogTutorial.ui" line="14"/>
       <source>BIM tutorial</source>
-      <translation type="unfinished">BIM tutorial</translation>
+      <translation>Tutorial BIM</translation>
     </message>
     <message>
       <location filename="../dialogTutorial.ui" line="20"/>
@@ -3448,23 +3448,23 @@ p, li { white-space: pre-wrap; }
     <message>
       <location filename="../dialogTutorial.ui" line="41"/>
       <source>Tasks to complete:</source>
-      <translation type="unfinished">Tasks to complete:</translation>
+      <translation>Tarefas para completar:</translation>
     </message>
     <message>
       <location filename="../dialogTutorial.ui" line="50"/>
       <source>Goal1</source>
-      <translation type="unfinished">Goal1</translation>
+      <translation>Alvo1</translation>
     </message>
     <message>
       <location filename="../dialogTutorial.ui" line="60"/>
       <location filename="../dialogTutorial.ui" line="77"/>
       <source>icon</source>
-      <translation type="unfinished">icon</translation>
+      <translation>ícone</translation>
     </message>
     <message>
       <location filename="../dialogTutorial.ui" line="70"/>
       <source>Goal2</source>
-      <translation type="unfinished">Goal2</translation>
+      <translation>Alvo2</translation>
     </message>
     <message>
       <location filename="../dialogTutorial.ui" line="91"/>
@@ -3479,7 +3479,7 @@ p, li { white-space: pre-wrap; }
     <message>
       <location filename="../dialogViews.ui" line="45"/>
       <source>Level/Proxy</source>
-      <translation type="unfinished">Level/Proxy</translation>
+      <translation>Nível/Proxy</translation>
     </message>
     <message>
       <location filename="../dialogViews.ui" line="50"/>
@@ -3489,57 +3489,57 @@ p, li { white-space: pre-wrap; }
     <message>
       <location filename="../dialogViews.ui" line="66"/>
       <source>Add a new level (BuildingPart)</source>
-      <translation type="unfinished">Add a new level (BuildingPart)</translation>
+      <translation>Adicionar um novo nível (BuildingPart)</translation>
     </message>
     <message>
       <location filename="../dialogViews.ui" line="85"/>
       <source>Adds a new Working Plane proxy</source>
-      <translation type="unfinished">Adds a new Working Plane proxy</translation>
+      <translation>Adicionar um novo proxy de plano de trabalho</translation>
     </message>
     <message>
       <location filename="../dialogViews.ui" line="104"/>
       <source>Deletes the selected items</source>
-      <translation type="unfinished">Deletes the selected items</translation>
+      <translation>Exclui os itens selecionados</translation>
     </message>
     <message>
       <location filename="../dialogViews.ui" line="123"/>
       <source>Toggles selected items on/off</source>
-      <translation type="unfinished">Toggles selected items on/off</translation>
+      <translation>Ativa/desativa os elementos selecionados</translation>
     </message>
     <message>
       <location filename="../dialogViews.ui" line="142"/>
       <source>Turns all items off except the selected ones</source>
-      <translation type="unfinished">Turns all items off except the selected ones</translation>
+      <translation>Desliga todos os elementos exceto os que estão selecionados</translation>
     </message>
     <message>
       <location filename="../dialogViews.ui" line="161"/>
       <source>Saves the current camera position to the selected items</source>
-      <translation type="unfinished">Saves the current camera position to the selected items</translation>
+      <translation>Grava a posição da camera nos elementos selecionados</translation>
     </message>
     <message>
       <location filename="../dialogViews.ui" line="180"/>
       <source>Rename the selected item</source>
-      <translation type="unfinished">Rename the selected item</translation>
+      <translation>Renomeia o elemento selecionado</translation>
     </message>
     <message>
       <location filename="../dialogWindows.ui" line="14"/>
       <source>Doors and windows</source>
-      <translation type="unfinished">Doors and windows</translation>
+      <translation>Portas e janelas</translation>
     </message>
     <message>
       <location filename="../dialogWindows.ui" line="20"/>
       <source>This screen lists all the windows of the current document. You can modify them individually or together</source>
-      <translation type="unfinished">This screen lists all the windows of the current document. You can modify them individually or together</translation>
+      <translation>Esta janela mostra todas as portas e janelas do documento. Você pode modificá-las individualmente ou juntas</translation>
     </message>
     <message>
       <location filename="../dialogWindows.ui" line="32"/>
       <source>Group by:</source>
-      <translation type="unfinished">Group by:</translation>
+      <translation>Agrupar por:</translation>
     </message>
     <message>
       <location filename="../dialogWindows.ui" line="40"/>
       <source>Do not group</source>
-      <translation type="unfinished">Do not group</translation>
+      <translation>Não agrupar</translation>
     </message>
     <message>
       <location filename="../dialogWindows.ui" line="50"/>
@@ -3556,23 +3556,23 @@ p, li { white-space: pre-wrap; }
       <location filename="../dialogWindows.ui" line="151"/>
       <location filename="../dialogWindows.ui" line="196"/>
       <source>Tag</source>
-      <translation type="unfinished">Tag</translation>
+      <translation>Etiqueta</translation>
     </message>
     <message>
       <location filename="../dialogWindows.ui" line="97"/>
       <source>Total number of doors:</source>
-      <translation type="unfinished">Total number of doors:</translation>
+      <translation>Número total de portas:</translation>
     </message>
     <message>
       <location filename="../dialogWindows.ui" line="104"/>
       <source>Total number of windows:</source>
-      <translation type="unfinished">Total number of windows:</translation>
+      <translation>Número total de janelas:</translation>
     </message>
     <message>
       <location filename="../dialogWindows.ui" line="111"/>
       <location filename="../dialogWindows.ui" line="121"/>
       <source>0</source>
-      <translation type="unfinished">0</translation>
+      <translation>0</translation>
     </message>
     <message>
       <location filename="../dialogWindows.ui" line="161"/>
@@ -3606,12 +3606,12 @@ p, li { white-space: pre-wrap; }
     <message>
       <location filename="../BimWrappedTools.py" line="80"/>
       <source>Shape builder...</source>
-      <translation type="unfinished">Shape builder...</translation>
+      <translation>Gerador de formas...</translation>
     </message>
     <message>
       <location filename="../BimWrappedTools.py" line="83"/>
       <source>Advanced utility to create shapes</source>
-      <translation type="unfinished">Advanced utility to create shapes</translation>
+      <translation>Utilitário avançado para criar formas</translation>
     </message>
   </context>
   <context>
@@ -3619,12 +3619,12 @@ p, li { white-space: pre-wrap; }
     <message>
       <location filename="../BimWrappedTools.py" line="167"/>
       <source>Intersection</source>
-      <translation type="unfinished">Intersection</translation>
+      <translation>Interseção</translation>
     </message>
     <message>
       <location filename="../BimWrappedTools.py" line="170"/>
       <source>Make an intersection of two shapes</source>
-      <translation type="unfinished">Make an intersection of two shapes</translation>
+      <translation>Cria uma interseção entre duas formas</translation>
     </message>
   </context>
   <context>
@@ -3632,12 +3632,12 @@ p, li { white-space: pre-wrap; }
     <message>
       <location filename="../BimWrappedTools.py" line="186"/>
       <source>Make compound</source>
-      <translation type="unfinished">Make compound</translation>
+      <translation>Criar composto</translation>
     </message>
     <message>
       <location filename="../BimWrappedTools.py" line="189"/>
       <source>Make a compound of several shapes</source>
-      <translation type="unfinished">Make a compound of several shapes</translation>
+      <translation>Cria um composto a partir de várias formas</translation>
     </message>
   </context>
   <context>
@@ -3645,12 +3645,12 @@ p, li { white-space: pre-wrap; }
     <message>
       <location filename="../BimWrappedTools.py" line="118"/>
       <source>Extrude...</source>
-      <translation type="unfinished">Extrude...</translation>
+      <translation>Extrudar...</translation>
     </message>
     <message>
       <location filename="../BimWrappedTools.py" line="119"/>
       <source>Extrude a selected sketch</source>
-      <translation type="unfinished">Extrude a selected sketch</translation>
+      <translation>Extrudar um esboço selecionado</translation>
     </message>
   </context>
   <context>
@@ -3658,12 +3658,12 @@ p, li { white-space: pre-wrap; }
     <message>
       <location filename="../BimWrappedTools.py" line="150"/>
       <source>Union</source>
-      <translation type="unfinished">Union</translation>
+      <translation>União</translation>
     </message>
     <message>
       <location filename="../BimWrappedTools.py" line="151"/>
       <source>Make a union of several shapes</source>
-      <translation type="unfinished">Make a union of several shapes</translation>
+      <translation>Cria uma união entre várias formas</translation>
     </message>
   </context>
   <context>
@@ -3671,12 +3671,12 @@ p, li { white-space: pre-wrap; }
     <message>
       <location filename="../BimWrappedTools.py" line="99"/>
       <source>2D Offset...</source>
-      <translation type="unfinished">2D Offset...</translation>
+      <translation>Deslocamento 2D...</translation>
     </message>
     <message>
       <location filename="../BimWrappedTools.py" line="102"/>
       <source>Utility to offset planar shapes</source>
-      <translation type="unfinished">Utility to offset planar shapes</translation>
+      <translation>Utilidade para fazer offsets de formas planas</translation>
     </message>
   </context>
   <context>
@@ -3684,12 +3684,12 @@ p, li { white-space: pre-wrap; }
     <message>
       <location filename="../BimWrappedTools.py" line="203"/>
       <source>Create simple copy</source>
-      <translation type="unfinished">Create simple copy</translation>
+      <translation>Cópia simples</translation>
     </message>
     <message>
       <location filename="../BimWrappedTools.py" line="206"/>
       <source>Create a simple non-parametric copy</source>
-      <translation type="unfinished">Create a simple non-parametric copy</translation>
+      <translation>Cria uma cópia simples, não paramétrica</translation>
     </message>
   </context>
   <context>
@@ -3697,84 +3697,84 @@ p, li { white-space: pre-wrap; }
     <message>
       <location filename="../InitGui.py" line="547"/>
       <source>Drafting tools</source>
-      <translation type="unfinished">Drafting tools</translation>
+      <translation>Ferramentas de traço</translation>
     </message>
     <message>
       <location filename="../InitGui.py" line="549"/>
       <source>3D/BIM tools</source>
-      <translation type="unfinished">3D/BIM tools</translation>
+      <translation>Ferramentas 3D/BIM</translation>
     </message>
     <message>
       <location filename="../InitGui.py" line="551"/>
       <source>Annotation tools</source>
-      <translation type="unfinished">Annotation tools</translation>
+      <translation>Ferramentas de anotação</translation>
     </message>
     <message>
       <location filename="../InitGui.py" line="553"/>
       <source>Modification tools</source>
-      <translation type="unfinished">Modification tools</translation>
+      <translation>Ferramentas de modificação</translation>
     </message>
     <message>
       <location filename="../InitGui.py" line="554"/>
       <source>Manage tools</source>
-      <translation type="unfinished">Manage tools</translation>
+      <translation>Ferramentas de gestão</translation>
     </message>
     <message>
       <location filename="../InitGui.py" line="557"/>
       <source>Experimental tools</source>
-      <translation type="unfinished">Experimental tools</translation>
+      <translation>Ferramentas experimentais</translation>
     </message>
     <message>
       <location filename="../InitGui.py" line="571"/>
       <source>&amp;2D Drafting</source>
-      <translation type="unfinished">&amp;2D Drafting</translation>
+      <translation>Desenho &amp;2D</translation>
     </message>
     <message>
       <location filename="../InitGui.py" line="572"/>
       <location filename="../InitGui.py" line="576"/>
       <source>&amp;3D/BIM</source>
-      <translation type="unfinished">&amp;3D/BIM</translation>
+      <translation>&amp;3D/BIM</translation>
     </message>
     <message>
       <location filename="../InitGui.py" line="581"/>
       <source>&amp;Annotation</source>
-      <translation type="unfinished">&amp;Annotation</translation>
+      <translation>&amp;Anotação</translation>
     </message>
     <message>
       <location filename="../InitGui.py" line="582"/>
       <source>&amp;Snapping</source>
-      <translation type="unfinished">&amp;Snapping</translation>
+      <translation>&amp;Snap</translation>
     </message>
     <message>
       <location filename="../InitGui.py" line="583"/>
       <source>&amp;Modify</source>
-      <translation type="unfinished">&amp;Modify</translation>
+      <translation>&amp;Modificar</translation>
     </message>
     <message>
       <location filename="../InitGui.py" line="584"/>
       <source>&amp;Manage</source>
-      <translation type="unfinished">&amp;Manage</translation>
+      <translation>&amp;Gerenciar</translation>
     </message>
     <message>
       <location filename="../InitGui.py" line="586"/>
       <source>&amp;Flamingo</source>
-      <translation type="unfinished">&amp;Flamingo</translation>
+      <translation>&amp;Flamingo</translation>
     </message>
     <message>
       <location filename="../InitGui.py" line="588"/>
       <source>&amp;Fasteners</source>
-      <translation type="unfinished">&amp;Fasteners</translation>
+      <translation>&amp;Fasteners</translation>
     </message>
     <message>
       <location filename="../InitGui.py" line="589"/>
       <location filename="../InitGui.py" line="591"/>
       <source>&amp;Utils</source>
-      <translation type="unfinished">&amp;Utils</translation>
+      <translation>&amp;Utilidades</translation>
     </message>
     <message>
       <location filename="../InitGui.py" line="591"/>
       <source>Nudge</source>
-      <translation type="unfinished">Nudge</translation>
+      <translation>Deslocar</translation>
     </message>
   </context>
 </TS>
