@@ -52,7 +52,7 @@ class Arch_Wall:
                 os.path.dirname(__file__), "..", "icons", "Arch_Wall_Experimental.svg"
             ),
             "MenuText": "Wall_EXPERIMENTAL",
-            "Accel": "W, A",
+            "Accel": "X, W, A",
             "ToolTip": "EXPERIMENTAL\nCreate a wall object from scratch.",
         }
 
