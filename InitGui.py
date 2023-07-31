@@ -574,7 +574,7 @@ static char * IFC_xpm[] = {
             self.appendMenu(
                 [
                     QT_TRANSLATE_NOOP("Workbench", "&3D/BIM"),
-                    QT_TRANSLATE_NOOP("Arch_RebarTools", "Reinforcement tools"),
+                    QT_TRANSLATE_NOOP("Workbench", "Reinforcement tools"),
                 ],
                 self.rebar,
             )
