@@ -6,7 +6,7 @@
     <message>
       <location filename="../BimIfcProperties.py" line="457"/>
       <source>IFC properties of this object</source>
-      <translation type="unfinished">IFC properties of this object</translation>
+      <translation>IFC lastnosti tega predmeta</translation>
     </message>
   </context>
   <context>
@@ -14,27 +14,27 @@
     <message>
       <location filename="../BimIfcProperties.py" line="503"/>
       <source>Property</source>
-      <translation type="unfinished">Property</translation>
+      <translation>Lastnost</translation>
     </message>
     <message>
       <location filename="../BimIfcProperties.py" line="504"/>
       <source>Type</source>
-      <translation type="unfinished">Type</translation>
+      <translation>Vrsta</translation>
     </message>
     <message>
       <location filename="../BimIfcProperties.py" line="505"/>
       <source>Value</source>
-      <translation type="unfinished">Value</translation>
+      <translation>Vrednost</translation>
     </message>
     <message>
       <location filename="../BimIfcProperties.py" line="675"/>
       <source>New property</source>
-      <translation type="unfinished">New property</translation>
+      <translation>Nova lastnost</translation>
     </message>
     <message>
       <location filename="../BimIfcProperties.py" line="724"/>
       <source>New property set</source>
-      <translation type="unfinished">New property set</translation>
+      <translation>Nov nabor lastnosti</translation>
     </message>
   </context>
   <context>
@@ -42,9 +42,8 @@
     <message>
       <location filename="../InitGui.py" line="436"/>
       <location filename="../InitGui.py" line="439"/>
-      <location filename="../InitGui.py" line="577"/>
       <source>Reinforcement tools</source>
-      <translation type="unfinished">Reinforcement tools</translation>
+      <translation>Armaturna orodja</translation>
     </message>
   </context>
   <context>
@@ -52,374 +51,374 @@
     <message>
       <location filename="../BimBox.py" line="211"/>
       <source>Box dimensions</source>
-      <translation type="unfinished">Box dimensions</translation>
+      <translation>Mere kvadra</translation>
     </message>
     <message>
       <location filename="../BimBox.py" line="214"/>
       <location filename="../BimIfcQuantities.py" line="41"/>
       <source>Length</source>
-      <translation type="unfinished">Length</translation>
+      <translation>Dolžina</translation>
     </message>
     <message>
       <location filename="../BimBox.py" line="222"/>
       <location filename="../BimIfcQuantities.py" line="42"/>
       <source>Width</source>
-      <translation type="unfinished">Width</translation>
+      <translation>Širina</translation>
     </message>
     <message>
       <location filename="../BimBox.py" line="230"/>
       <location filename="../BimIfcQuantities.py" line="43"/>
       <source>Height</source>
-      <translation type="unfinished">Height</translation>
+      <translation>Višina</translation>
     </message>
     <message>
       <location filename="../BimClassification.py" line="85"/>
       <location filename="../BimMaterial.py" line="95"/>
       <source>Search...</source>
-      <translation type="unfinished">Search...</translation>
+      <translation>Iskanje ...</translation>
     </message>
     <message>
       <location filename="../BimClassification.py" line="86"/>
       <source>Searches classes</source>
-      <translation type="unfinished">Searches classes</translation>
+      <translation>Išče razrede</translation>
     </message>
     <message>
       <location filename="../BimClassification.py" line="105"/>
       <source>Editing</source>
-      <translation type="unfinished">Editing</translation>
+      <translation>Urejanje</translation>
     </message>
     <message>
       <location filename="../BimClone.py" line="193"/>
       <source>Draft Clones are not supported yet!</source>
-      <translation type="unfinished">Draft Clones are not supported yet!</translation>
+      <translation>Osnutkovni dvojniki niso še podprti!</translation>
     </message>
     <message>
       <location filename="../BimClone.py" line="197"/>
       <source>The selected object is not a clone</source>
-      <translation type="unfinished">The selected object is not a clone</translation>
+      <translation>Izbrani predmet ni dvojnik</translation>
     </message>
     <message>
       <location filename="../BimClone.py" line="201"/>
       <source>Please select exactly one object</source>
-      <translation type="unfinished">Please select exactly one object</translation>
+      <translation>Izberite natanko en predmet</translation>
     </message>
     <message>
       <location filename="../BimCommands.py" line="425"/>
       <source>Create Leader</source>
-      <translation type="unfinished">Create Leader</translation>
+      <translation>Ustvari opisnico</translation>
     </message>
     <message>
       <location filename="../BimDiff.py" line="72"/>
       <source>The document currently viewed must be your main one. The other contains newer objects that you wish to merge into this one. Make sure only the objects you wish to compare are visible in both. Proceed?</source>
-      <translation type="unfinished">The document currently viewed must be your main one. The other contains newer objects that you wish to merge into this one. Make sure only the objects you wish to compare are visible in both. Proceed?</translation>
+      <translation>Dokument, ki ga trenutno gledate, mora biti vaš glavni. Drugi vsebuje novejše predmete, ki jih želite spojiti vanj. Preverite, da so v obeh vidni le predmeti, ki bi jih radi primerjali. Želite nadaljevati?</translation>
     </message>
     <message>
       <location filename="../BimDiff.py" line="354"/>
       <source>objects still have the same shape but have a different material. Do you wish to update them in the main document?</source>
-      <translation type="unfinished">objects still have the same shape but have a different material. Do you wish to update them in the main document?</translation>
+      <translation>predmeti imajo še vedno enako geometrijo, vendar so iz druge snovi. Ali jih v glavnem dokumentu želite posodobiti?</translation>
     </message>
     <message>
       <location filename="../BimDiff.py" line="411"/>
       <source>objects have no IFC ID in the main document, but an identical object with an ID exists in the new document. Transfer these IDs to the original objects?</source>
-      <translation type="unfinished">objects have no IFC ID in the main document, but an identical object with an ID exists in the new document. Transfer these IDs to the original objects?</translation>
+      <translation>predmeti v glavnem dokumentu nimajo IFC-jevega določilnika, enaki predmeti v novem dokumentu pa ga imajo. Ali želite prenesti določilnike na izvorne predmete?</translation>
     </message>
     <message>
       <location filename="../BimDiff.py" line="432"/>
       <source>objects had their name changed. Rename them?</source>
-      <translation type="unfinished">objects had their name changed. Rename them?</translation>
+      <translation>predmetom so bila spremenjena imena. Ali jih želite preimenovati?</translation>
     </message>
     <message>
       <location filename="../BimDiff.py" line="451"/>
       <source>objects had their properties changed. Update?</source>
-      <translation type="unfinished">objects had their properties changed. Update?</translation>
+      <translation>predmetom so bile spremenjene lastnosti. Posodobi?</translation>
     </message>
     <message>
       <location filename="../BimDiff.py" line="470"/>
       <source>objects have their location changed. Move them to their new position?</source>
-      <translation type="unfinished">objects have their location changed. Move them to their new position?</translation>
+      <translation>predmetom je bilo spremenjeno mesto. Ali jih želite premakniti na novo mesto?</translation>
     </message>
     <message>
       <location filename="../BimDiff.py" line="489"/>
       <source>Do you wish to colorize the objects that have moved in yellow in the other file (to serve as a diff)?</source>
-      <translation type="unfinished">Do you wish to colorize the objects that have moved in yellow in the other file (to serve as a diff)?</translation>
+      <translation>Ali želite, da se v drugi datoteki predmeti, ki so bili prestavljeni, obarvajo rumeno (za lažje razlikovanje)?</translation>
     </message>
     <message>
       <location filename="../BimDiff.py" line="510"/>
       <source>Do you wish to colorize the objects that have been modified in orange in the other file (to serve as a diff)?</source>
-      <translation type="unfinished">Do you wish to colorize the objects that have been modified in orange in the other file (to serve as a diff)?</translation>
+      <translation>Ali želite, da se v drugi datoteki predmeti, ki so bili preoblikovani, obarvajo oranžno (za lažje razlikovanje)?</translation>
     </message>
     <message>
       <location filename="../BimDiff.py" line="533"/>
       <source>objects don&apos;t exist anymore in the new document. Move them to a &apos;To Delete&apos; group?</source>
-      <translation type="unfinished">objects don&apos;t exist anymore in the new document. Move them to a &apos;To Delete&apos; group?</translation>
+      <translation>predmeti v novem dokumentu ne obstajajo več. Ali jih želite prestaviti v skupino &apos;Za izbris&apos;?</translation>
     </message>
     <message>
       <location filename="../BimDiff.py" line="550"/>
       <source>Do you wish to colorize the objects that have been removed in red in the other file (to serve as a diff)?</source>
-      <translation type="unfinished">Do you wish to colorize the objects that have been removed in red in the other file (to serve as a diff)?</translation>
+      <translation>Ali želite, da se v drugi datoteki predmeti, ki so bili odstranjeni, obarvajo rdeče (za lažje razlikovanje)?</translation>
     </message>
     <message>
       <location filename="../BimDiff.py" line="569"/>
       <source>Do you wish to colorize the objects that have been added in green in the other file (to serve as a diff)?</source>
-      <translation type="unfinished">Do you wish to colorize the objects that have been added in green in the other file (to serve as a diff)?</translation>
+      <translation>Ali želite, da se v drugi datoteki predmeti, ki so bili dodani, obarvajo zeleno (za lažje razlikovanje)?</translation>
     </message>
     <message>
       <location filename="../BimDiff.py" line="590"/>
       <source>You need two documents open to run this tool. One which is your main document, and one that contains new objects that you wish to compare against the existing one. Make sure only the objects you wish to compare in both documents are visible.</source>
-      <translation type="unfinished">You need two documents open to run this tool. One which is your main document, and one that contains new objects that you wish to compare against the existing one. Make sure only the objects you wish to compare in both documents are visible.</translation>
+      <translation>Za zagon tega orodja morate imeti odprta dva dokumenta: eden je vaš glavni dokument, drugi pa vsebuje nove predmete, ki jih želite primerjati z obstoječimi. Preverite, da so v obeh dokumentih vidni le predmeti, ki jih želite primerjati.</translation>
     </message>
     <message>
       <location filename="../BimIfcElements.py" line="96"/>
       <location filename="../BimIfcElements.py" line="494"/>
       <location filename="../BimMaterial.py" line="119"/>
       <source>Create new material</source>
-      <translation type="unfinished">Create new material</translation>
+      <translation>Ustvari novo snov</translation>
     </message>
     <message>
       <location filename="../BimIfcElements.py" line="97"/>
       <location filename="../BimIfcElements.py" line="497"/>
       <location filename="../BimMaterial.py" line="127"/>
       <source>Create new multi-material</source>
-      <translation type="unfinished">Create new multi-material</translation>
+      <translation>Ustvari novo sestavljeno snov</translation>
     </message>
     <message>
       <location filename="../BimIfcElements.py" line="162"/>
       <location filename="../BimIfcProperties.py" line="243"/>
       <location filename="../BimIfcQuantities.py" line="154"/>
       <source>Label</source>
-      <translation type="unfinished">Label</translation>
+      <translation>Oznaka</translation>
     </message>
     <message>
       <location filename="../BimIfcElements.py" line="163"/>
       <location filename="../BimIfcProperties.py" line="244"/>
       <source>IFC type</source>
-      <translation type="unfinished">IFC type</translation>
+      <translation>IFC zvrst</translation>
     </message>
     <message>
       <location filename="../BimIfcElements.py" line="164"/>
       <source>Material</source>
-      <translation type="unfinished">Material</translation>
+      <translation>Snov</translation>
     </message>
     <message>
       <location filename="../BimIfcExplorer.py" line="55"/>
       <source>IfcOpenShell was not found on this system. IFC support is disabled</source>
-      <translation type="unfinished">IfcOpenShell was not found on this system. IFC support is disabled</translation>
+      <translation>IfcOpenShell-a ni mogoče najti v vašem sistemu. Podpora IFC-ja je onemogočena</translation>
     </message>
     <message>
       <location filename="../BimIfcExplorer.py" line="78"/>
       <source>Objects structure</source>
-      <translation type="unfinished">Objects structure</translation>
+      <translation>Ustroj predmeta</translation>
     </message>
     <message>
       <location filename="../BimIfcExplorer.py" line="88"/>
       <source>Attribute</source>
-      <translation type="unfinished">Attribute</translation>
+      <translation>Značilka</translation>
     </message>
     <message>
       <location filename="../BimIfcExplorer.py" line="89"/>
       <location filename="../BimIfcExplorer.py" line="100"/>
       <source>Value</source>
-      <translation type="unfinished">Value</translation>
+      <translation>Vrednost</translation>
     </message>
     <message>
       <location filename="../BimIfcExplorer.py" line="99"/>
       <source>Property</source>
-      <translation type="unfinished">Property</translation>
+      <translation>Lastnost</translation>
     </message>
     <message>
       <location filename="../BimIfcExplorer.py" line="105"/>
       <source>Ifc Explorer</source>
-      <translation type="unfinished">Ifc Explorer</translation>
+      <translation>Ifc-raziskovalec</translation>
     </message>
     <message>
       <location filename="../BimIfcExplorer.py" line="120"/>
       <source>Open</source>
-      <translation type="unfinished">Open</translation>
+      <translation>Odpri</translation>
     </message>
     <message>
       <location filename="../BimIfcExplorer.py" line="121"/>
       <source>Open another IFC file...</source>
-      <translation type="unfinished">Open another IFC file...</translation>
+      <translation>Odpri novo datoteko IFC ...</translation>
     </message>
     <message>
       <location filename="../BimIfcExplorer.py" line="126"/>
       <source>Back</source>
-      <translation type="unfinished">Back</translation>
+      <translation>Nazaj</translation>
     </message>
     <message>
       <location filename="../BimIfcExplorer.py" line="127"/>
       <source>Go back to last item selected</source>
-      <translation type="unfinished">Go back to last item selected</translation>
+      <translation>Pojdi na zadnje izbrani predmet</translation>
     </message>
     <message>
       <location filename="../BimIfcExplorer.py" line="132"/>
       <source>Insert</source>
-      <translation type="unfinished">Insert</translation>
+      <translation>Vstavi</translation>
     </message>
     <message>
       <location filename="../BimIfcExplorer.py" line="138"/>
       <source>Inserts the selected object and its children in the active document</source>
-      <translation type="unfinished">Inserts the selected object and its children in the active document</translation>
+      <translation>Vstavi izbrani predmet in pripadajoče podrejenike v dejavni dokument</translation>
     </message>
     <message>
       <location filename="../BimIfcExplorer.py" line="144"/>
       <source>Mesh</source>
-      <translation type="unfinished">Mesh</translation>
+      <translation>Ploskovje</translation>
     </message>
     <message>
       <location filename="../BimIfcExplorer.py" line="145"/>
       <source>Turn mesh display on/off</source>
-      <translation type="unfinished">Turn mesh display on/off</translation>
+      <translation>Vklopi/izklopi prikazovanje ploskovja</translation>
     </message>
     <message>
       <location filename="../BimIfcExplorer.py" line="182"/>
       <source>Select an IFC file</source>
-      <translation type="unfinished">Select an IFC file</translation>
+      <translation>Izberite datoteko IFC</translation>
     </message>
     <message>
       <location filename="../BimIfcExplorer.py" line="184"/>
       <source>IFC files (*.ifc)</source>
-      <translation type="unfinished">IFC files (*.ifc)</translation>
+      <translation>Datoteke IFC (*.ifc)</translation>
     </message>
     <message>
       <location filename="../BimIfcExplorer.py" line="193"/>
       <source>File not found</source>
-      <translation type="unfinished">File not found</translation>
+      <translation>Datoteke ni mogoče najti</translation>
     </message>
     <message>
       <location filename="../BimIfcExplorer.py" line="198"/>
       <source>IFC Explorer</source>
-      <translation type="unfinished">IFC Explorer</translation>
+      <translation>IFC-raziskovalec</translation>
     </message>
     <message>
       <location filename="../BimIfcExplorer.py" line="477"/>
       <source>Error in entity</source>
-      <translation type="unfinished">Error in entity</translation>
+      <translation>Napaka enote</translation>
     </message>
     <message>
       <location filename="../BimIfcProperties.py" line="135"/>
       <source>Custom properties sets can be defined in</source>
-      <translation type="unfinished">Custom properties sets can be defined in</translation>
+      <translation>Nabore lastnosti po meri je mogoče določiti v</translation>
     </message>
     <message>
       <location filename="../BimIfcProperties.py" line="141"/>
       <source>Add property...</source>
-      <translation type="unfinished">Add property...</translation>
+      <translation>Dodaj lastnost ...</translation>
     </message>
     <message>
       <location filename="../BimIfcProperties.py" line="144"/>
       <source>Add property set...</source>
-      <translation type="unfinished">Add property set...</translation>
+      <translation>Dodaj nabor lastnosti ...</translation>
     </message>
     <message>
       <location filename="../BimIfcProperties.py" line="145"/>
       <source>New...</source>
-      <translation type="unfinished">New...</translation>
+      <translation>Novo ...</translation>
     </message>
     <message>
       <location filename="../BimIfcProperties.py" line="245"/>
       <source>Search results</source>
-      <translation type="unfinished">Search results</translation>
+      <translation>Zadetki iskanja</translation>
     </message>
     <message>
       <location filename="../BimIfcProperties.py" line="439"/>
       <source>Warning: object %1 has old-styled IfcProperties and cannot be updated</source>
-      <translation type="unfinished">Warning: object %1 has old-styled IfcProperties and cannot be updated</translation>
+      <translation>Opozorilo: predmet %1 ima zastarele IfcLastnosti - IfcProperties in ga ni mogoče posodobiti</translation>
     </message>
     <message>
       <location filename="../BimIfcProperties.py" line="711"/>
       <source>Please select or create a property set first in which the new property should be placed.</source>
-      <translation type="unfinished">Please select or create a property set first in which the new property should be placed.</translation>
+      <translation>Izberite ali ustvarite najprej nabor lastnosti, v katerega želite vstaviti novo lastnost.</translation>
     </message>
     <message>
       <location filename="../BimIfcProperties.py" line="726"/>
       <source>New property set</source>
-      <translation type="unfinished">New property set</translation>
+      <translation>Nov nabor lastnosti</translation>
     </message>
     <message>
       <location filename="../BimIfcProperties.py" line="727"/>
       <source>Property set name:</source>
-      <translation type="unfinished">Property set name:</translation>
+      <translation>Ime nabora lastnosti:</translation>
     </message>
     <message>
       <location filename="../BimIfcQuantities.py" line="44"/>
       <source>Area</source>
-      <translation type="unfinished">Area</translation>
+      <translation>Površina</translation>
     </message>
     <message>
       <location filename="../BimIfcQuantities.py" line="45"/>
       <source>Horizontal Area</source>
-      <translation type="unfinished">Horizontal Area</translation>
+      <translation>Vodoravna površina</translation>
     </message>
     <message>
       <location filename="../BimIfcQuantities.py" line="46"/>
       <source>Vertical Area</source>
-      <translation type="unfinished">Vertical Area</translation>
+      <translation>Navpična površina</translation>
     </message>
     <message>
       <location filename="../BimIfcQuantities.py" line="47"/>
       <source>Volume</source>
-      <translation type="unfinished">Volume</translation>
+      <translation>Prostornina</translation>
     </message>
     <message>
       <location filename="../BimIfcQuantities.py" line="309"/>
       <source>Cannot save quantities settings for object %1</source>
-      <translation type="unfinished">Cannot save quantities settings for object %1</translation>
+      <translation>Nastavitev količin predmeta %1 ni mogoče shraniti</translation>
     </message>
     <message>
       <location filename="../BimLayers.py" line="190"/>
       <source>Warning: The new layer was added to the project</source>
-      <translation type="unfinished">Warning: The new layer was added to the project</translation>
+      <translation>Pozor: Projektu je bila dodana nova plast</translation>
     </message>
     <message>
       <location filename="../BimLayers.py" line="199"/>
       <source>There is no IFC project in this document</source>
-      <translation type="unfinished">There is no IFC project in this document</translation>
+      <translation>V tem dokumentu ni IFC projekta</translation>
     </message>
     <message>
       <location filename="../BimLayers.py" line="311"/>
       <source>On</source>
-      <translation type="unfinished">On</translation>
+      <translation>Prižgana</translation>
     </message>
     <message>
       <location filename="../BimLayers.py" line="312"/>
       <source>Name</source>
-      <translation type="unfinished">Name</translation>
+      <translation>Naziv</translation>
     </message>
     <message>
       <location filename="../BimLayers.py" line="313"/>
       <source>Line width</source>
-      <translation type="unfinished">Line width</translation>
+      <translation>Debelina črte</translation>
     </message>
     <message>
       <location filename="../BimLayers.py" line="314"/>
       <source>Draw style</source>
-      <translation type="unfinished">Draw style</translation>
+      <translation>Slog risanja</translation>
     </message>
     <message>
       <location filename="../BimLayers.py" line="315"/>
       <source>Line color</source>
-      <translation type="unfinished">Line color</translation>
+      <translation>Barva črte</translation>
     </message>
     <message>
       <location filename="../BimLayers.py" line="316"/>
       <source>Face color</source>
-      <translation type="unfinished">Face color</translation>
+      <translation>Barve ploskev</translation>
     </message>
     <message>
       <location filename="../BimLayers.py" line="317"/>
       <source>Transparency</source>
-      <translation type="unfinished">Transparency</translation>
+      <translation>Prozornost</translation>
     </message>
     <message>
       <location filename="../BimLayers.py" line="318"/>
       <source>Line print color</source>
-      <translation type="unfinished">Line print color</translation>
+      <translation>Barva tiskanja črt</translation>
     </message>
     <message>
       <location filename="../BimLayers.py" line="345"/>
       <source>New Layer</source>
-      <translation type="unfinished">New Layer</translation>
+      <translation>Nova plast</translation>
     </message>
     <message>
       <location filename="../BimLibrary.py" line="198"/>
@@ -427,185 +426,185 @@
       <location filename="../BimLibrary.py" line="999"/>
       <location filename="../BimLibrary.py" line="1003"/>
       <source>Preview</source>
-      <translation type="unfinished">Preview</translation>
+      <translation>Predogled</translation>
     </message>
     <message>
       <location filename="../BimLibrary.py" line="204"/>
       <location filename="../BimLibrary.py" line="989"/>
       <location filename="../BimLibrary.py" line="992"/>
       <source>Options</source>
-      <translation type="unfinished">Options</translation>
+      <translation>Možnosti</translation>
     </message>
     <message>
       <location filename="../BimLibrary.py" line="526"/>
       <source>No structure in cache. Please refresh.</source>
-      <translation type="unfinished">No structure in cache. Please refresh.</translation>
+      <translation>V predpomnilniku ni zgradbe. Osvežite.</translation>
     </message>
     <message>
       <location filename="../BimLibrary.py" line="592"/>
       <source>It is not possible to insert this object because the document has been closed.</source>
-      <translation type="unfinished">It is not possible to insert this object because the document has been closed.</translation>
+      <translation>Tega predmeta ni mogoče vstaviti, ker je dokument zaprt.</translation>
     </message>
     <message>
       <location filename="../BimLibrary.py" line="640"/>
       <source>Error: Unable to import SAT files - InventorLoader or CadExchanger addon must be installed</source>
-      <translation type="unfinished">Error: Unable to import SAT files - InventorLoader or CadExchanger addon must be installed</translation>
+      <translation>Napaka: datoteke SAT ni mogoče uvoziti - nameščen mora biti dodatek InventorLoader ali CadExchange</translation>
     </message>
     <message>
       <location filename="../BimLibrary.py" line="665"/>
       <source>Error: Unable to download</source>
-      <translation type="unfinished">Error: Unable to download</translation>
+      <translation>Napaka: Ni mogoče prenesti</translation>
     </message>
     <message>
       <location filename="../BimLibrary.py" line="705"/>
       <source>Insertion point</source>
-      <translation type="unfinished">Insertion point</translation>
+      <translation>Vstavitvena točka</translation>
     </message>
     <message>
       <location filename="../BimLibrary.py" line="718"/>
       <source>Origin</source>
-      <translation type="unfinished">Origin</translation>
+      <translation>Izhodišče</translation>
     </message>
     <message>
       <location filename="../BimLibrary.py" line="719"/>
       <source>Top left</source>
-      <translation type="unfinished">Top left</translation>
+      <translation>Zgoraj levo</translation>
     </message>
     <message>
       <location filename="../BimLibrary.py" line="720"/>
       <source>Top center</source>
-      <translation type="unfinished">Top center</translation>
+      <translation>Zgoraj sredinsko</translation>
     </message>
     <message>
       <location filename="../BimLibrary.py" line="721"/>
       <source>Top right</source>
-      <translation type="unfinished">Top right</translation>
+      <translation>Zgoraj desno</translation>
     </message>
     <message>
       <location filename="../BimLibrary.py" line="722"/>
       <source>Middle left</source>
-      <translation type="unfinished">Middle left</translation>
+      <translation>Levo v sredini</translation>
     </message>
     <message>
       <location filename="../BimLibrary.py" line="723"/>
       <source>Middle center</source>
-      <translation type="unfinished">Middle center</translation>
+      <translation>V središču</translation>
     </message>
     <message>
       <location filename="../BimLibrary.py" line="724"/>
       <source>Middle right</source>
-      <translation type="unfinished">Middle right</translation>
+      <translation>Desno v sredini</translation>
     </message>
     <message>
       <location filename="../BimLibrary.py" line="725"/>
       <source>Bottom left</source>
-      <translation type="unfinished">Bottom left</translation>
+      <translation>Spodaj levo</translation>
     </message>
     <message>
       <location filename="../BimLibrary.py" line="726"/>
       <source>Bottom center</source>
-      <translation type="unfinished">Bottom center</translation>
+      <translation>Spodaj sredinsko</translation>
     </message>
     <message>
       <location filename="../BimLibrary.py" line="727"/>
       <source>Bottom right</source>
-      <translation type="unfinished">Bottom right</translation>
+      <translation>Spodaj desno</translation>
     </message>
     <message>
       <location filename="../BimLibrary.py" line="829"/>
       <source>Cannot open URL</source>
-      <translation type="unfinished">Cannot open URL</translation>
+      <translation>Spletnega naslova ni mogoče odpreti</translation>
     </message>
     <message>
       <location filename="../BimLibrary.py" line="875"/>
       <source>Could not fetch library contents</source>
-      <translation type="unfinished">Could not fetch library contents</translation>
+      <translation>Vsebin knjižnice ni bilo mogoče prenesti</translation>
     </message>
     <message>
       <location filename="../BimLibrary.py" line="880"/>
       <source>No results fetched from online library</source>
-      <translation type="unfinished">No results fetched from online library</translation>
+      <translation>Ni prenešenih zadetkov s spletne knjižnice</translation>
     </message>
     <message>
       <location filename="../BimLibrary.py" line="934"/>
       <source>Warning, this can take several minutes!</source>
-      <translation type="unfinished">Warning, this can take several minutes!</translation>
+      <translation>Pozor, lahko traja precej časa!</translation>
     </message>
     <message>
       <location filename="../BimMaterial.py" line="74"/>
       <source>Select material</source>
-      <translation type="unfinished">Select material</translation>
+      <translation>Izberite snov</translation>
     </message>
     <message>
       <location filename="../BimMaterial.py" line="96"/>
       <source>Searches object labels</source>
-      <translation type="unfinished">Searches object labels</translation>
+      <translation>Poišče oznake predmetov</translation>
     </message>
     <message>
       <location filename="../BimMaterial.py" line="110"/>
       <source>Clears the search field</source>
-      <translation type="unfinished">Clears the search field</translation>
+      <translation>Počisti iskalno polje</translation>
     </message>
     <message>
       <location filename="../BimMaterial.py" line="137"/>
       <source>Merge duplicates</source>
-      <translation type="unfinished">Merge duplicates</translation>
+      <translation>Združi podvojene</translation>
     </message>
     <message>
       <location filename="../BimMaterial.py" line="145"/>
       <source>Delete unused</source>
-      <translation type="unfinished">Delete unused</translation>
+      <translation>Izbriši neuporabljene</translation>
     </message>
     <message>
       <location filename="../BimMaterial.py" line="164"/>
       <source>Rename</source>
-      <translation type="unfinished">Rename</translation>
+      <translation>Preimenuj</translation>
     </message>
     <message>
       <location filename="../BimMaterial.py" line="168"/>
       <source>Duplicate</source>
-      <translation type="unfinished">Duplicate</translation>
+      <translation>Podvoji</translation>
     </message>
     <message>
       <location filename="../BimMaterial.py" line="172"/>
       <source>Merge to...</source>
-      <translation type="unfinished">Merge to...</translation>
+      <translation>Spoji s ...</translation>
     </message>
     <message>
       <location filename="../BimMaterial.py" line="176"/>
       <source>Delete</source>
-      <translation type="unfinished">Delete</translation>
+      <translation>Izbriši</translation>
     </message>
     <message>
       <location filename="../BimMaterial.py" line="249"/>
       <location filename="../BimMaterial.py" line="262"/>
       <source>Merging duplicate material</source>
-      <translation type="unfinished">Merging duplicate material</translation>
+      <translation>Združevanje podvojenih snovi</translation>
     </message>
     <message>
       <location filename="../BimMaterial.py" line="273"/>
       <source>Unable to delete material</source>
-      <translation type="unfinished">Unable to delete material</translation>
+      <translation>Snovi ni mogoče izbrisati</translation>
     </message>
     <message>
       <location filename="../BimMaterial.py" line="277"/>
       <source>InList not empty</source>
-      <translation type="unfinished">InList not empty</translation>
+      <translation>InList ni prazen</translation>
     </message>
     <message>
       <location filename="../BimMaterial.py" line="307"/>
       <source>Deleting unused material</source>
-      <translation type="unfinished">Deleting unused material</translation>
+      <translation>Brisanje neuporabljenih snovi</translation>
     </message>
     <message>
       <location filename="../BimMaterial.py" line="367"/>
       <source>Select material to merge to</source>
-      <translation type="unfinished">Select material to merge to</translation>
+      <translation>Izberite snov, s katero naj se združi</translation>
     </message>
     <message>
       <location filename="../BimMaterial.py" line="417"/>
       <source>This material is used by:</source>
-      <translation type="unfinished">This material is used by:</translation>
+      <translation>To snov uporablja:</translation>
     </message>
     <message>
       <location filename="../BimNudge.py" line="72"/>
@@ -613,304 +612,304 @@
       <location filename="../BimStatusBar.py" line="65"/>
       <location filename="../BimStatusBar.py" line="75"/>
       <source>Auto</source>
-      <translation type="unfinished">Auto</translation>
+      <translation>Samodejno</translation>
     </message>
     <message>
       <location filename="../BimPreflight.py" line="95"/>
       <location filename="../BimPreflight.py" line="203"/>
       <source>Press to perform the test</source>
-      <translation type="unfinished">Press to perform the test</translation>
+      <translation>Pritisnite za izvedbo preizkusa</translation>
     </message>
     <message>
       <location filename="../BimPreflight.py" line="178"/>
       <source>Passed</source>
-      <translation type="unfinished">Passed</translation>
+      <translation>Narejen</translation>
     </message>
     <message>
       <location filename="../BimPreflight.py" line="181"/>
       <source>This test has succeeded.</source>
-      <translation type="unfinished">This test has succeeded.</translation>
+      <translation>Preizkus je uspel.</translation>
     </message>
     <message>
       <location filename="../BimPreflight.py" line="192"/>
       <source>This test has failed. Press the button to know more</source>
-      <translation type="unfinished">This test has failed. Press the button to know more</translation>
+      <translation>Ta preizkus je spodletel. Za več podatkov pritisnite gumb</translation>
     </message>
     <message>
       <location filename="../BimPreflight.py" line="200"/>
       <source>Test</source>
-      <translation type="unfinished">Test</translation>
+      <translation>Preizkus</translation>
     </message>
     <message>
       <location filename="../BimPreflight.py" line="336"/>
       <source>ifcopenshell is not installed on your system or not available to FreeCAD. This library is responsible for IFC support in FreeCAD, and therefore IFC support is currently disabled. Check https://www.freecadweb.org/wiki/Extra_python_modules#IfcOpenShell to obtain more information.</source>
-      <translation type="unfinished">ifcopenshell is not installed on your system or not available to FreeCAD. This library is responsible for IFC support in FreeCAD, and therefore IFC support is currently disabled. Check https://www.freecadweb.org/wiki/Extra_python_modules#IfcOpenShell to obtain more information.</translation>
+      <translation>ifcopenshell ni nameščen ali pa ni dosegljiv FreeCADu. Ta knjižnica omogoča FreeCADu podporo za IFC, zato je trenutno ta onemogočena. Če želite več podatkov, pojdite na https://www.freecadweb.org/wiki/Extra_python_modules#IfcOpenShell.</translation>
     </message>
     <message>
       <location filename="../BimPreflight.py" line="355"/>
       <source>The version of ifcopenshell installed on your system will produce files with this schema version:</source>
-      <translation type="unfinished">The version of ifcopenshell installed on your system will produce files with this schema version:</translation>
+      <translation>Različica ifcopenshell-a, ki je nameščena na vašem sistemu, bo dala datoteke s to različico sheme:</translation>
     </message>
     <message>
       <location filename="../BimPreflight.py" line="406"/>
       <source>The following types were not found in the project:</source>
-      <translation type="unfinished">The following types were not found in the project:</translation>
+      <translation>Naslednjih zvrsti ni bilo mogoče najti v projektu:</translation>
     </message>
     <message>
       <location filename="../BimPreflight.py" line="469"/>
       <source>The following Building objects have been found to not be included in any Site. You can resolve the situation by creating a Site object, if none is present in your model, and drag and drop the Building objects into it in the tree view:</source>
-      <translation type="unfinished">The following Building objects have been found to not be included in any Site. You can resolve the situation by creating a Site object, if none is present in your model, and drag and drop the Building objects into it in the tree view:</translation>
+      <translation>Najdeni so bili naslednji stavbni predmeti, ki niso vključeni v nobeno Lokacijo. To lahko uredite tako, da ustvarite predmet Lokacija, če ga še ni v oblikovancu, in vanj v drevesnem pogledu povlecete-spustite stavbne predmete:</translation>
     </message>
     <message>
       <location filename="../BimPreflight.py" line="519"/>
       <source>The following Building Storey (BuildingParts with their IFC role set as &quot;Building Storey&quot;) objects have been found to not be included in any Building. You can resolve the situation by creating a Building object, if none is present in your model, and drag and drop the Building Storey objects into it in the tree view:</source>
-      <translation type="unfinished">The following Building Storey (BuildingParts with their IFC role set as &quot;Building Storey&quot;) objects have been found to not be included in any Building. You can resolve the situation by creating a Building object, if none is present in your model, and drag and drop the Building Storey objects into it in the tree view:</translation>
+      <translation>Najdena so bila naslednja nadstropja (stavbni deli, ki jim je določena vloga &quot;Nadstropja"&quot; v IFCju), ki niso vključeni v nobeno Stavbo. To lahko uredite tako, da ustvarite predmet Stavbo, če ga še ni v oblikovancu, in vanj v drevesnem pogledu povlecete-spustite nadstropja:</translation>
     </message>
     <message>
       <location filename="../BimPreflight.py" line="572"/>
       <source>The following BIM objects have been found to not be included in any Building Storey (BuildingParts with their IFC role set as &quot;Building Storey&quot;). You can resolve the situation by creating a Building Storey object, if none is present in your model, and drag and drop these objects into it in the tree view:</source>
-      <translation type="unfinished">The following BIM objects have been found to not be included in any Building Storey (BuildingParts with their IFC role set as &quot;Building Storey&quot;). You can resolve the situation by creating a Building Storey object, if none is present in your model, and drag and drop these objects into it in the tree view:</translation>
+      <translation>Najdeni so bili naslednji BIM predmeti, ki niso vključeni v nobeno Nadstropje (stavbni del, ki ima nastavljeno IFC vlogo na &quot;Nastropje&quot;). To lahko uredite tako, da ustvarite predmet Nadstropje, če ga še ni v oblikovancu, in vanj v drevesnem pogledu povlecete-spustite te predmete:</translation>
     </message>
     <message>
       <location filename="../BimPreflight.py" line="619"/>
       <source>The following BIM objects have the &quot;Undefined&quot; type:</source>
-      <translation type="unfinished">The following BIM objects have the &quot;Undefined&quot; type:</translation>
+      <translation>Naslednji BIM predmeti imajo zvrst &quot;Nedoločeno&quot;:</translation>
     </message>
     <message>
       <location filename="../BimPreflight.py" line="626"/>
       <source>The following objects are not BIM objects:</source>
-      <translation type="unfinished">The following objects are not BIM objects:</translation>
+      <translation>Naslednji predmeti niso BIM predmeti:</translation>
     </message>
     <message>
       <location filename="../BimPreflight.py" line="634"/>
       <source>You can turn these objects into BIM objects by using the Utils -&gt; Make Component tool.</source>
-      <translation type="unfinished">You can turn these objects into BIM objects by using the Utils -&gt; Make Component tool.</translation>
+      <translation>Te predmete lahko v BIM predmete spremenite s pomočjo Pripomočkov -&gt; Ustvarjalnik sestavin.</translation>
     </message>
     <message>
       <location filename="../BimPreflight.py" line="669"/>
       <source>The following BIM objects have an invalid or non-solid geometry:</source>
-      <translation type="unfinished">The following BIM objects have an invalid or non-solid geometry:</translation>
+      <translation>Naslednji BIM predmeti imajo neveljavno ali netelesno geometrijo:</translation>
     </message>
     <message>
       <location filename="../BimPreflight.py" line="713"/>
       <source>The objects below have Length, Width or Height properties, but these properties won&apos;t be explicitly exported to IFC. This is not necessarily an issue, unless you specifically want these quantities to be exported:</source>
-      <translation type="unfinished">The objects below have Length, Width or Height properties, but these properties won&apos;t be explicitly exported to IFC. This is not necessarily an issue, unless you specifically want these quantities to be exported:</translation>
+      <translation>Spodnji predmeti imajo lastnost dolžine, širine in višine, vendar se te lastnosti ne bodo izrecno izvozile v IFC. To sicer ni nujno težava, razen če želite izvoziti prav te količine:</translation>
     </message>
     <message>
       <location filename="../BimPreflight.py" line="721"/>
       <source>To enable exporting of these quantities, use the IFC quantities manager tool located under menu Manage -&gt; Manage IFC Quantities...</source>
-      <translation type="unfinished">To enable exporting of these quantities, use the IFC quantities manager tool located under menu Manage -&gt; Manage IFC Quantities...</translation>
+      <translation>Če želite omogočiti izvažanje teh količin, uporabite upravljalnik IFC količin iz menija Upravljaj -&gt;Upravljaj IFC količine ...</translation>
     </message>
     <message>
       <location filename="../BimPreflight.py" line="789"/>
       <source>The objects below have a defined IFC type but do not have the associated common property set:</source>
-      <translation type="unfinished">The objects below have a defined IFC type but do not have the associated common property set:</translation>
+      <translation>Spodnjim predmetom je določena IFC zvrst, vendar nimajo povezanega skupnega nabora lastnosti:</translation>
     </message>
     <message>
       <location filename="../BimPreflight.py" line="797"/>
       <source>To add common property sets to these objects, use the IFC properties manager tool located under menu Manage -&gt; Manage IFC Properties...</source>
-      <translation type="unfinished">To add common property sets to these objects, use the IFC properties manager tool located under menu Manage -&gt; Manage IFC Properties...</translation>
+      <translation>Če želite dodati tem predmetom skupni nabor lastnosti, uporabite upravljalnik IFC lastnosti, ki ga lahko najdete v meniju Upravljaj -&gt; Upravljaj IFC lastnosti ...</translation>
     </message>
     <message>
       <location filename="../BimPreflight.py" line="873"/>
       <source>The objects below have a common property set but that property set doesn&apos;t contain all the needed properties:</source>
-      <translation type="unfinished">The objects below have a common property set but that property set doesn&apos;t contain all the needed properties:</translation>
+      <translation>Spodnji predmeti imajo skupen nabor lastnosti, vendar ta ne vsebuje vseh potrebnih lastnosti:</translation>
     </message>
     <message>
       <location filename="../BimPreflight.py" line="883"/>
       <source>Verify which properties a certain property set must contain on http://www.buildingsmart-tech.org/ifc/IFC4/Add2/html/annex/annex-b/alphabeticalorder_psets.htm</source>
-      <translation type="unfinished">Verify which properties a certain property set must contain on http://www.buildingsmart-tech.org/ifc/IFC4/Add2/html/annex/annex-b/alphabeticalorder_psets.htm</translation>
+      <translation>Katere lastnosti mora določen nabor lastnosti vsebovati lahko preverite na http://www.buildingsmart-tech.org/ifc/IFC4/Add2/html/annex/annex-b/alphabeticalorder_psets.htm</translation>
     </message>
     <message>
       <location filename="../BimPreflight.py" line="889"/>
       <source>To fix the property sets of these objects, use the IFC properties manager tool located under menu Manage -&gt; Manage IFC Properties...</source>
-      <translation type="unfinished">To fix the property sets of these objects, use the IFC properties manager tool located under menu Manage -&gt; Manage IFC Properties...</translation>
+      <translation>Če želite popraviti nabore lastnosti teh premetov, uporabite upravljalnik IFC lastnosti, ki ga lahko najdete v meniju Upravljaj -&gt; Upravljaj IFC lastnosti ...</translation>
     </message>
     <message>
       <location filename="../BimPreflight.py" line="920"/>
       <source>The following BIM objects have no material attributed:</source>
-      <translation type="unfinished">The following BIM objects have no material attributed:</translation>
+      <translation>Naslednji BIM predmeti nimajo dodeljene snovi:</translation>
     </message>
     <message>
       <location filename="../BimPreflight.py" line="961"/>
       <source>The following BIM objects have no defined standard code:</source>
-      <translation type="unfinished">The following BIM objects have no defined standard code:</translation>
+      <translation>Naslednji BIM predmeti nimajo določene stadardne številke:</translation>
     </message>
     <message>
       <location filename="../BimPreflight.py" line="1013"/>
       <source>The following BIM objects are not extrusions:</source>
-      <translation type="unfinished">The following BIM objects are not extrusions:</translation>
+      <translation>Naslednji predmeti niso izrivi:</translation>
     </message>
     <message>
       <location filename="../BimPreflight.py" line="1055"/>
       <source>The following BIM objects are not standard cases:</source>
-      <translation type="unfinished">The following BIM objects are not standard cases:</translation>
+      <translation>Naslednji BIM predmeti niso standardni primeri:</translation>
     </message>
     <message>
       <location filename="../BimPreflight.py" line="1104"/>
       <source>The objects below have lines smaller than 1/32 inch or 0.79 mm, which is the smallest line size that Revit accepts. These objects will be discarded when imported into Revit:</source>
-      <translation type="unfinished">The objects below have lines smaller than 1/32 inch or 0.79 mm, which is the smallest line size that Revit accepts. These objects will be discarded when imported into Revit:</translation>
+      <translation>Spodnji predmeti imajo črte manjše od 0,79 mm oz. 1/23 palca, kar je najmanjša črta, ki jo sprejeme Revit. Ti predmeti bodo pri uvažanju v Revit zavrženi:</translation>
     </message>
     <message>
       <location filename="../BimPreflight.py" line="1114"/>
       <source>An additional object, called &quot;TinyLinesResult&quot; has been added to this model, and selected. It contains all the tiny lines found, so you can inspect them and fix the needed objects. Be sure to delete the TinyLinesResult object when you are done!</source>
-      <translation type="unfinished">An additional object, called &quot;TinyLinesResult&quot; has been added to this model, and selected. It contains all the tiny lines found, so you can inspect them and fix the needed objects. Be sure to delete the TinyLinesResult object when you are done!</translation>
+      <translation>Oblikovancu je bil dodan in izbran predmet, ki se imenuje &quot;NajdeneDrobneČrtice (TinyLinesResult)&quot;. Vsebuje vse najdene drobne črtice, da jih lahko pregledate in opravite potrebne popravke na predmetih. Ko končate, ne pozabite izbrisati predmeta NajdeneDrobneČrtice (TinyLinesResult)!</translation>
     </message>
     <message>
       <location filename="../BimPreflight.py" line="1120"/>
       <source>Tip: The results are best viewed in Wireframe mode (menu Views -&gt; Draw Style -&gt; Wireframe)</source>
-      <translation type="unfinished">Tip: The results are best viewed in Wireframe mode (menu Views -&gt; Draw Style -&gt; Wireframe)</translation>
+      <translation>Namig: Izid je najbolje pregledati v žičnem prikazu (meni Pogledi -&gt; Slog risbe -&gt; Žični prikaz)</translation>
     </message>
     <message>
       <location filename="../BimProjectManager.py" line="119"/>
       <source>No active document, aborting.</source>
-      <translation type="unfinished">No active document, aborting.</translation>
+      <translation>Ni dejavnega dokumenta. Prekinjanje.</translation>
     </message>
     <message>
       <location filename="../BimProjectManager.py" line="163"/>
       <source>Building Outline</source>
-      <translation type="unfinished">Building Outline</translation>
+      <translation>Obris stavbe</translation>
     </message>
     <message>
       <location filename="../BimProjectManager.py" line="168"/>
       <source>Building Layout</source>
-      <translation type="unfinished">Building Layout</translation>
+      <translation>Postavitev stavbe</translation>
     </message>
     <message>
       <location filename="../BimProjectManager.py" line="183"/>
       <source>Building Label</source>
-      <translation type="unfinished">Building Label</translation>
+      <translation>Oznaka stavbe</translation>
     </message>
     <message>
       <location filename="../BimProjectManager.py" line="193"/>
       <source>Vertical Axes</source>
-      <translation type="unfinished">Vertical Axes</translation>
+      <translation>Navpične osi</translation>
     </message>
     <message>
       <location filename="../BimProjectManager.py" line="216"/>
       <source>Horizontal Axes</source>
-      <translation type="unfinished">Horizontal Axes</translation>
+      <translation>Vodoravne osi</translation>
     </message>
     <message>
       <location filename="../BimProjectManager.py" line="238"/>
       <source>Axes</source>
-      <translation type="unfinished">Axes</translation>
+      <translation>Osi</translation>
     </message>
     <message>
       <location filename="../BimProjectManager.py" line="249"/>
       <source>Level</source>
-      <translation type="unfinished">Level</translation>
+      <translation>Ravèn</translation>
     </message>
     <message>
       <location filename="../BimProjectManager.py" line="266"/>
       <source>Level Axes</source>
-      <translation type="unfinished">Level Axes</translation>
+      <translation>Osi ravní</translation>
     </message>
     <message>
       <location filename="../BimProjectManager.py" line="314"/>
       <source>New Group</source>
-      <translation type="unfinished">New Group</translation>
+      <translation>Nova skupina</translation>
     </message>
     <message>
       <location filename="../BimProjectManager.py" line="329"/>
       <source>Save preset</source>
-      <translation type="unfinished">Save preset</translation>
+      <translation>Shrani prednastavitev</translation>
     </message>
     <message>
       <location filename="../BimProjectManager.py" line="330"/>
       <source>Preset name:</source>
-      <translation type="unfinished">Preset name:</translation>
+      <translation>Ime prednastavitve:</translation>
     </message>
     <message>
       <location filename="../BimProjectManager.py" line="395"/>
       <source>User preset...</source>
-      <translation type="unfinished">User preset...</translation>
+      <translation>Uporabniške prenastavitve ...</translation>
     </message>
     <message>
       <location filename="../BimProjectManager.py" line="563"/>
       <source>Save template file</source>
-      <translation type="unfinished">Save template file</translation>
+      <translation>Shrani predlogo</translation>
     </message>
     <message>
       <location filename="../BimProjectManager.py" line="573"/>
       <source>Template saved successfully</source>
-      <translation type="unfinished">Template saved successfully</translation>
+      <translation>Predloga uspešno shranjena</translation>
     </message>
     <message>
       <location filename="../BimProjectManager.py" line="585"/>
       <source>Open template file</source>
-      <translation type="unfinished">Open template file</translation>
+      <translation>Odpri predlogo</translation>
     </message>
     <message>
       <location filename="../BimProjectManager.py" line="707"/>
       <source>Template successfully loaded into current document</source>
-      <translation type="unfinished">Template successfully loaded into current document</translation>
+      <translation>Predloga uspešno naložena v trenutni dokument</translation>
     </message>
     <message>
       <location filename="../BimReextrude.py" line="165"/>
       <source>Error: Please select exactly one base face</source>
-      <translation type="unfinished">Error: Please select exactly one base face</translation>
+      <translation>Napaka: Izberite natanko eno izhodiščno ploskev</translation>
     </message>
     <message>
       <location filename="../BimReorder.py" line="55"/>
       <source>You must choose a group object before using this command</source>
-      <translation type="unfinished">You must choose a group object before using this command</translation>
+      <translation>Pred tem ukazom morate izbrati skupinski predmet</translation>
     </message>
     <message>
       <location filename="../BimSetup.py" line="132"/>
       <source>Some additional workbenches are not installed, that extend BIM functionality:</source>
-      <translation type="unfinished">Some additional workbenches are not installed, that extend BIM functionality:</translation>
+      <translation>Nekatera dodatna delovna okolja, ki razširjajo BIM zmožnosti, niso nameščena:</translation>
     </message>
     <message>
       <location filename="../BimSetup.py" line="138"/>
       <source>You can install them from menu Tools -&gt; Addon manager.</source>
-      <translation type="unfinished">You can install them from menu Tools -&gt; Addon manager.</translation>
+      <translation>Namestite jih lahko preko menija Orodja -&gt; Upravljalnik dodatkov.</translation>
     </message>
     <message>
       <location filename="../BimSetup.py" line="677"/>
       <source>IfcOpenShell not found</source>
-      <translation type="unfinished">IfcOpenShell not found</translation>
+      <translation>IfcOpenShell-a ni mogoče najti</translation>
     </message>
     <message>
       <location filename="../BimSetup.py" line="681"/>
       <source>IfcOpenShell is needed to import and export IFC files. It appears to be missing on your system. Would you like to download and install it now? It will be installed in FreeCAD&apos;s Macros directory.</source>
-      <translation type="unfinished">IfcOpenShell is needed to import and export IFC files. It appears to be missing on your system. Would you like to download and install it now? It will be installed in FreeCAD&apos;s Macros directory.</translation>
+      <translation>IfcOpenShell je potreben pri uvažanju in izvažanju datotek IFC. Kaže, da ga ni na vašem sistemu. Ali ga želite sedaj prenesti in namestiti? Nameščen bo v mapo FreeCADovih makrov.</translation>
     </message>
     <message>
       <location filename="../BimStatusBar.py" line="49"/>
       <source>Millimeters</source>
-      <translation type="unfinished">Millimeters</translation>
+      <translation>Milimetri</translation>
     </message>
     <message>
       <location filename="../BimStatusBar.py" line="50"/>
       <source>Centimeters</source>
-      <translation type="unfinished">Centimeters</translation>
+      <translation>Centimetri</translation>
     </message>
     <message>
       <location filename="../BimStatusBar.py" line="51"/>
       <source>Meters</source>
-      <translation type="unfinished">Meters</translation>
+      <translation>Metri</translation>
     </message>
     <message>
       <location filename="../BimStatusBar.py" line="52"/>
       <source>Inches</source>
-      <translation type="unfinished">Inches</translation>
+      <translation>Palci</translation>
     </message>
     <message>
       <location filename="../BimStatusBar.py" line="53"/>
       <source>Feet</source>
-      <translation type="unfinished">Feet</translation>
+      <translation>Čevlji</translation>
     </message>
     <message>
       <location filename="../BimStatusBar.py" line="54"/>
       <source>Architectural</source>
-      <translation type="unfinished">Architectural</translation>
+      <translation>Anglosaške</translation>
     </message>
     <message>
       <location filename="../BimStatusBar.py" line="58"/>
       <location filename="../BimStatusBar.py" line="68"/>
       <source>Custom...</source>
-      <translation type="unfinished">Custom...</translation>
+      <translation>Po meri ...</translation>
     </message>
     <message>
       <location filename="../BimStatusBar.py" line="243"/>
@@ -922,109 +921,109 @@ CTRL+. to rotate right
 CTRL+PgUp to extend extrusion
 CTRL+PgDown to shrink extrusion
 CTRL+/ to switch between auto and manual mode</source>
-      <translation type="unfinished">The value of the nudge movement (rotation is always 45°).
+      <translation>Vrednost dregljaja pri premikanju (pri sukanju je vedno 45°).
 
-CTRL+arrows to move
-CTRL+, to rotate left
-CTRL+. to rotate right
-CTRL+PgUp to extend extrusion
-CTRL+PgDown to shrink extrusion
-CTRL+/ to switch between auto and manual mode</translation>
+Krmilka+puščica za premikanje
+Krmilka+, za sukanje v levo
+Krmilka+. za sukanje v desno
+Krmilka+Stran ↑ za podaljšanje izriva
+Krmilka+Stran ↓ za skranjšanje izriva
+Krmilka+/ za preklapljanje med samodejnim in ročnim načinom</translation>
     </message>
     <message>
       <location filename="../BimStatusBar.py" line="290"/>
       <source>The preferred unit you are currently working with. You can still use any other unit anywhere in FreeCAD</source>
-      <translation type="unfinished">The preferred unit you are currently working with. You can still use any other unit anywhere in FreeCAD</translation>
+      <translation>Prednostna enota, v kateri trenutno delate. Še vedno lahko uporabite katerokoli enoto kjerkoli v FreeCADu</translation>
     </message>
     <message>
       <location filename="../BimStatusBar.py" line="309"/>
       <source>Toggle report panels on/off (Ctrl+0)</source>
-      <translation type="unfinished">Toggle report panels on/off (Ctrl+0)</translation>
+      <translation>Vklopi/izklopi poročilna podokna (Krmilka+0)</translation>
     </message>
     <message>
       <location filename="../BimStatusBar.py" line="339"/>
       <source>Toggle BIM views panel on/off (Ctrl+9)</source>
-      <translation type="unfinished">Toggle BIM views panel on/off (Ctrl+9)</translation>
+      <translation>Vklopi/izklopi podokna z BIM pogledi (Krmilka+9)</translation>
     </message>
     <message>
       <location filename="../BimStatusBar.py" line="366"/>
       <source>Toggle 3D view background between simple and gradient</source>
-      <translation type="unfinished">Toggle 3D view background between simple and gradient</translation>
+      <translation>Preklopi med enobarvnim in prelivnim ozadjem prostorskega pogleda</translation>
     </message>
     <message>
       <location filename="../BimStatusBar.py" line="385"/>
       <source>An update to the BIM workbench is available. Click here to open the addons manager.</source>
-      <translation type="unfinished">An update to the BIM workbench is available. Click here to open the addons manager.</translation>
+      <translation>Na voljo je posodobitev za BIM delovno okolje. Za odprtje upravljalnika dodatkov kliknite sem.</translation>
     </message>
     <message>
       <location filename="../BimStructure.py" line="99"/>
       <source>Select a planar object</source>
-      <translation type="unfinished">Select a planar object</translation>
+      <translation>Izberite ravninski predmet</translation>
     </message>
     <message>
       <location filename="../BimStructure.py" line="120"/>
       <source>Slab</source>
-      <translation type="unfinished">Slab</translation>
+      <translation>Plošča</translation>
     </message>
     <message>
       <location filename="../BimTrash.py" line="53"/>
       <source>Trash</source>
-      <translation type="unfinished">Trash</translation>
+      <translation>Smetnjak</translation>
     </message>
     <message>
       <location filename="../BimTutorial.py" line="136"/>
       <source>Unable to access the tutorial. Verify that you are online (This is needed only once).</source>
-      <translation type="unfinished">Unable to access the tutorial. Verify that you are online (This is needed only once).</translation>
+      <translation>Do vodnika ni mogoče dostopati. Preverite ali imate vzpostavljeno povezave (potrebno le enkrat).</translation>
     </message>
     <message>
       <location filename="../BimTutorial.py" line="164"/>
       <source>Downloading images...</source>
-      <translation type="unfinished">Downloading images...</translation>
+      <translation>Prenašanje slik ...</translation>
     </message>
     <message>
       <location filename="../BimTutorial.py" line="252"/>
       <source>BIM Tutorial - step</source>
-      <translation type="unfinished">BIM Tutorial - step</translation>
+      <translation>BIM vodnik - korak</translation>
     </message>
     <message>
       <location filename="../BimViews.py" line="125"/>
       <source>BIM Views manager</source>
-      <translation type="unfinished">BIM Views manager</translation>
+      <translation>Upravljalnik BIM pogledov</translation>
     </message>
     <message>
       <location filename="../BimWindows.py" line="262"/>
       <source>None</source>
-      <translation type="unfinished">None</translation>
+      <translation>Brez</translation>
     </message>
     <message>
       <location filename="../BimWrappedTools.py" line="245"/>
       <source>Select page template</source>
-      <translation type="unfinished">Select page template</translation>
+      <translation>Izberite predlogo strani</translation>
     </message>
     <message>
       <location filename="../BimWrappedTools.py" line="260"/>
       <source>Template</source>
-      <translation type="unfinished">Template</translation>
+      <translation>Predloga</translation>
     </message>
     <message>
       <location filename="../BimWrappedTools.py" line="336"/>
       <source>No section view or draft objects selected, or no page selected, or no page found in document</source>
-      <translation type="unfinished">No section view or draft objects selected, or no page selected, or no page found in document</translation>
+      <translation>Izbranega ni nobenega prereznega pogleda ali izrisnega predmeta, lahko ni izbrana nobena stran ali pa v dokumentu ni mogoče najti nobene strani</translation>
     </message>
     <message>
       <location filename="../BimWrappedTools.py" line="394"/>
       <source>Select image</source>
-      <translation type="unfinished">Select image</translation>
+      <translation>Izberite sliko</translation>
     </message>
     <message>
       <location filename="../BimWrappedTools.py" line="396"/>
       <source>Image file (*.png *.jpg *.bmp)</source>
-      <translation type="unfinished">Image file (*.png *.jpg *.bmp)</translation>
+      <translation>Slikovna datoteka (*.png *.jpg *.bmp)</translation>
     </message>
     <message>
       <location filename="../InitGui.py" line="754"/>
       <source>Snapping</source>
-      <translation type="unfinished">Snapping</translation>
+      <translation>Pripenjanje</translation>
     </message>
   </context>
   <context>
@@ -1404,7 +1403,7 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../dialogSetup.ui" line="536"/>
       <source>Gradient top:</source>
-      <translation type="unfinished">Gradient top:</translation>
+      <translation>Vrh preliva:</translation>
     </message>
     <message>
       <location filename="../dialogSetup.ui" line="543"/>
@@ -1414,7 +1413,7 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../dialogSetup.ui" line="550"/>
       <source>Gradient bottom:</source>
-      <translation type="unfinished">Gradient bottom:</translation>
+      <translation>Dno preliva:</translation>
     </message>
     <message>
       <location filename="../dialogSetup.ui" line="557"/>
@@ -1424,27 +1423,27 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../dialogSetup.ui" line="564"/>
       <source>Plain background::</source>
-      <translation type="unfinished">Plain background::</translation>
+      <translation>Enobarvno ozadje:</translation>
     </message>
     <message>
       <location filename="../dialogSetup.ui" line="571"/>
       <source>Text:</source>
-      <translation type="unfinished">Text:</translation>
+      <translation>Napis:</translation>
     </message>
     <message>
       <location filename="../dialogSetup.ui" line="578"/>
       <source>The background color when switched to simple color</source>
-      <translation type="unfinished">The background color when switched to simple color</translation>
+      <translation>Barva ozadja pri preklopu na enobarvnost</translation>
     </message>
     <message>
       <location filename="../dialogSetup.ui" line="585"/>
       <source>The color to use for texts and dimensions</source>
-      <translation type="unfinished">The color to use for texts and dimensions</translation>
+      <translation>Pisava napisov in kót</translation>
     </message>
     <message>
       <location filename="../dialogSetup.ui" line="596"/>
       <source>3D view background</source>
-      <translation type="unfinished">3D view background</translation>
+      <translation>Ozadje prostorskega pogleda</translation>
     </message>
     <message>
       <location filename="../dialogSetup.ui" line="610"/>
@@ -1477,12 +1476,12 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../BimCommands.py" line="437"/>
       <source>Toggle background</source>
-      <translation type="unfinished">Toggle background</translation>
+      <translation>Preklopi ozadje</translation>
     </message>
     <message>
       <location filename="../BimCommands.py" line="441"/>
       <source>Toggles the background of the 3D view between simple and gradient</source>
-      <translation type="unfinished">Toggles the background of the 3D view between simple and gradient</translation>
+      <translation>Preklaplja med enobarvnim in prelivnim ozadjem prostorskega pogleda</translation>
     </message>
   </context>
   <context>
@@ -1490,12 +1489,12 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../BimStructure.py" line="61"/>
       <source>Beam</source>
-      <translation type="unfinished">Beam</translation>
+      <translation>Nosilec</translation>
     </message>
     <message>
       <location filename="../BimStructure.py" line="64"/>
       <source>Creates a beam between two points</source>
-      <translation type="unfinished">Creates a beam between two points</translation>
+      <translation>Ustvari nosilec med dvema točkama</translation>
     </message>
   </context>
   <context>
@@ -1503,12 +1502,12 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../BimBox.py" line="36"/>
       <source>Box</source>
-      <translation type="unfinished">Box</translation>
+      <translation>Kvader</translation>
     </message>
     <message>
       <location filename="../BimBox.py" line="39"/>
       <source>Graphically creates a generic box in the current document</source>
-      <translation type="unfinished">Graphically creates a generic box in the current document</translation>
+      <translation>Grafično ustvari kvader v trenutnem dokumentu</translation>
     </message>
   </context>
   <context>
@@ -1516,12 +1515,12 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../BimClassification.py" line="41"/>
       <source>Manage classification...</source>
-      <translation type="unfinished">Manage classification...</translation>
+      <translation>Upravljaj razvrstitev ...</translation>
     </message>
     <message>
       <location filename="../BimClassification.py" line="45"/>
       <source>Manage how the different materials of this documents use classification systems</source>
-      <translation type="unfinished">Manage how the different materials of this documents use classification systems</translation>
+      <translation>Upravljaj, kako različne snovi iz tega dokumenta uporabljajo razvrstilne sisteme</translation>
     </message>
   </context>
   <context>
@@ -1529,12 +1528,12 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../BimClone.py" line="57"/>
       <source>Clone</source>
-      <translation type="unfinished">Clone</translation>
+      <translation>Kloniraj</translation>
     </message>
     <message>
       <location filename="../BimClone.py" line="60"/>
       <source>Clones selected objects to another location</source>
-      <translation type="unfinished">Clones selected objects to another location</translation>
+      <translation>Podvoji izbrane predmete na drugo mesto</translation>
     </message>
   </context>
   <context>
@@ -1542,12 +1541,12 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../BimStructure.py" line="44"/>
       <source>Column</source>
-      <translation type="unfinished">Column</translation>
+      <translation>Steber</translation>
     </message>
     <message>
       <location filename="../BimStructure.py" line="47"/>
       <source>Creates a column at a specified location</source>
-      <translation type="unfinished">Creates a column at a specified location</translation>
+      <translation>Ustvari steber na določenem mestu</translation>
     </message>
   </context>
   <context>
@@ -1555,22 +1554,22 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../BimCommands.py" line="191"/>
       <source>Convert to BIM</source>
-      <translation type="unfinished">Convert to BIM</translation>
+      <translation>Pretvori v BIM</translation>
     </message>
     <message>
       <location filename="../BimCommands.py" line="194"/>
       <source>Converts any object to a BIM component</source>
-      <translation type="unfinished">Converts any object to a BIM component</translation>
+      <translation>Pretvori vsak predmet v BIM gradnik</translation>
     </message>
     <message>
       <location filename="../BimCommands.py" line="266"/>
       <source>Remove from group</source>
-      <translation type="unfinished">Remove from group</translation>
+      <translation>Odstrani iz skupine</translation>
     </message>
     <message>
       <location filename="../BimCommands.py" line="269"/>
       <source>Removes this object from its parent group</source>
-      <translation type="unfinished">Removes this object from its parent group</translation>
+      <translation>Odstrani ta predmet iz nadrejene skupine</translation>
     </message>
   </context>
   <context>
@@ -1578,12 +1577,12 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../BimClone.py" line="41"/>
       <source>Copy</source>
-      <translation type="unfinished">Copy</translation>
+      <translation>Kopiraj</translation>
     </message>
     <message>
       <location filename="../BimClone.py" line="44"/>
       <source>Copies selected objects to another location</source>
-      <translation type="unfinished">Copies selected objects to another location</translation>
+      <translation>Kopira izbrane predmete na drugo mesto</translation>
     </message>
   </context>
   <context>
@@ -1591,12 +1590,12 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../BimCurtainWall.py" line="38"/>
       <source>Curtain wall</source>
-      <translation type="unfinished">Curtain wall</translation>
+      <translation>Steklena fasada</translation>
     </message>
     <message>
       <location filename="../BimCurtainWall.py" line="41"/>
       <source>Builds a curtain wall from a selected object</source>
-      <translation type="unfinished">Builds a curtain wall from a selected object</translation>
+      <translation>Izgradi na podlagi izbranega predmeta stekleno fasado</translation>
     </message>
   </context>
   <context>
@@ -1604,12 +1603,12 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../BimWrappedTools.py" line="133"/>
       <source>Difference</source>
-      <translation type="unfinished">Difference</translation>
+      <translation>Razlika</translation>
     </message>
     <message>
       <location filename="../BimWrappedTools.py" line="136"/>
       <source>Make a difference between two shapes</source>
-      <translation type="unfinished">Make a difference between two shapes</translation>
+      <translation>Naredi razliko med oblikama</translation>
     </message>
   </context>
   <context>
@@ -1617,12 +1616,12 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../BimDiff.py" line="39"/>
       <source>IFC Diff</source>
-      <translation type="unfinished">IFC Diff</translation>
+      <translation>IFC razlika</translation>
     </message>
     <message>
       <location filename="../BimDiff.py" line="42"/>
       <source>Shows the difference between two IFC-based documents</source>
-      <translation type="unfinished">Shows the difference between two IFC-based documents</translation>
+      <translation>Prikaže razliko me dokumentoma, temelječima na IFC</translation>
     </message>
   </context>
   <context>
@@ -1630,12 +1629,12 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../BimWrappedTools.py" line="468"/>
       <source>Aligned dimension</source>
-      <translation type="unfinished">Aligned dimension</translation>
+      <translation>Priravnana kota</translation>
     </message>
     <message>
       <location filename="../BimWrappedTools.py" line="471"/>
       <source>Create an aligned dimension</source>
-      <translation type="unfinished">Create an aligned dimension</translation>
+      <translation>Ustvari priravnano koto</translation>
     </message>
   </context>
   <context>
@@ -1643,12 +1642,12 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../BimWrappedTools.py" line="487"/>
       <source>Horizontal dimension</source>
-      <translation type="unfinished">Horizontal dimension</translation>
+      <translation>Vodoravna kota</translation>
     </message>
     <message>
       <location filename="../BimWrappedTools.py" line="490"/>
       <source>Create an horizontal dimension</source>
-      <translation type="unfinished">Create an horizontal dimension</translation>
+      <translation>Ustvari vodoravno koto</translation>
     </message>
   </context>
   <context>
@@ -1656,12 +1655,12 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../BimWrappedTools.py" line="510"/>
       <source>Vertical dimension</source>
-      <translation type="unfinished">Vertical dimension</translation>
+      <translation>Navpična kota</translation>
     </message>
     <message>
       <location filename="../BimWrappedTools.py" line="513"/>
       <source>Create a vertical dimension</source>
-      <translation type="unfinished">Create a vertical dimension</translation>
+      <translation>Ustvari navpično koto</translation>
     </message>
   </context>
   <context>
@@ -1669,12 +1668,12 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../BimCommands.py" line="307"/>
       <source>Door</source>
-      <translation type="unfinished">Door</translation>
+      <translation>Vrata</translation>
     </message>
     <message>
       <location filename="../BimCommands.py" line="310"/>
       <source>Places a door at a given location</source>
-      <translation type="unfinished">Places a door at a given location</translation>
+      <translation>Vstavi vrata na podano mesto</translation>
     </message>
   </context>
   <context>
@@ -1682,12 +1681,12 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../BimTrash.py" line="80"/>
       <source>Clean Trash</source>
-      <translation type="unfinished">Clean Trash</translation>
+      <translation>Izprazni smetnjak</translation>
     </message>
     <message>
       <location filename="../BimTrash.py" line="84"/>
       <source>Deletes from the trash bin all objects that are not used by any other</source>
-      <translation type="unfinished">Deletes from the trash bin all objects that are not used by any other</translation>
+      <translation>Izbriše iz smetnjaka vse predmete, ki niso nikjer uporabljeni</translation>
     </message>
   </context>
   <context>
@@ -1695,12 +1694,12 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../BimCommands.py" line="56"/>
       <source>Glue</source>
-      <translation type="unfinished">Glue</translation>
+      <translation>Leplenje</translation>
     </message>
     <message>
       <location filename="../BimCommands.py" line="59"/>
       <source>Joins selected shapes into one non-parametric shape</source>
-      <translation type="unfinished">Joins selected shapes into one non-parametric shape</translation>
+      <translation>Združi izbrane oblike v eno, nedoločilovno obliko</translation>
     </message>
   </context>
   <context>
@@ -1708,12 +1707,12 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../BimCommands.py" line="39"/>
       <source>BIM Help</source>
-      <translation type="unfinished">BIM Help</translation>
+      <translation>BIM Pomoč</translation>
     </message>
     <message>
       <location filename="../BimCommands.py" line="43"/>
       <source>Opens the BIM help page on the FreeCAD documentation website</source>
-      <translation type="unfinished">Opens the BIM help page on the FreeCAD documentation website</translation>
+      <translation>Odpre stran z BIM pomočjo na spletišču FreeCADove dokumentacije</translation>
     </message>
   </context>
   <context>
@@ -1721,12 +1720,12 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../BimIfcElements.py" line="39"/>
       <source>Manage IFC elements...</source>
-      <translation type="unfinished">Manage IFC elements...</translation>
+      <translation>Upravljaj IFC prvine ...</translation>
     </message>
     <message>
       <location filename="../BimIfcElements.py" line="43"/>
       <source>Manage how the different elements of of your BIM project will be exported to IFC</source>
-      <translation type="unfinished">Manage how the different elements of of your BIM project will be exported to IFC</translation>
+      <translation>Upravljaj način izvažanja različnih prvin vašega BIM projekta v IFC</translation>
     </message>
   </context>
   <context>
@@ -1734,12 +1733,12 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../BimIfcExplorer.py" line="39"/>
       <source>IFC explorer</source>
-      <translation type="unfinished">IFC explorer</translation>
+      <translation>IFC-raziskovalec</translation>
     </message>
     <message>
       <location filename="../BimIfcExplorer.py" line="40"/>
       <source>IFC explorer utility</source>
-      <translation type="unfinished">IFC explorer utility</translation>
+      <translation>Pripomoček IFC-raziskovalec</translation>
     </message>
   </context>
   <context>
@@ -1747,12 +1746,12 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../BimIfcProperties.py" line="40"/>
       <source>Manage IFC properties...</source>
-      <translation type="unfinished">Manage IFC properties...</translation>
+      <translation>Upravljaj IFC lastnosti ...</translation>
     </message>
     <message>
       <location filename="../BimIfcProperties.py" line="44"/>
       <source>Manage the different IFC properties of your BIM objects</source>
-      <translation type="unfinished">Manage the different IFC properties of your BIM objects</translation>
+      <translation>Upravljaj z različnimi IFC lastnostmi vaših BIM predmetov</translation>
     </message>
   </context>
   <context>
@@ -1760,12 +1759,12 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../BimIfcQuantities.py" line="59"/>
       <source>Manage IFC quantities...</source>
-      <translation type="unfinished">Manage IFC quantities...</translation>
+      <translation>Upravljaj IFC količine ...</translation>
     </message>
     <message>
       <location filename="../BimIfcQuantities.py" line="63"/>
       <source>Manage how the quantities of different elements of of your BIM project will be exported to IFC</source>
-      <translation type="unfinished">Manage how the quantities of different elements of of your BIM project will be exported to IFC</translation>
+      <translation>Upravljaj način izvažanja količin različnih prvin vašega BIM projekta v IFC</translation>
     </message>
   </context>
   <context>
@@ -1773,12 +1772,12 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../BimWrappedTools.py" line="368"/>
       <source>Image plane</source>
-      <translation type="unfinished">Image plane</translation>
+      <translation>Ravnina slike</translation>
     </message>
     <message>
       <location filename="../BimWrappedTools.py" line="371"/>
       <source>Creates a plane from an image</source>
-      <translation type="unfinished">Creates a plane from an image</translation>
+      <translation>Ustvari ravnino iz slike</translation>
     </message>
   </context>
   <context>
@@ -1786,12 +1785,12 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../BimLayers.py" line="53"/>
       <source>Manage layers...</source>
-      <translation type="unfinished">Manage layers...</translation>
+      <translation>Upravljanje plasti ...</translation>
     </message>
     <message>
       <location filename="../BimLayers.py" line="56"/>
       <source>Set/modify the different layers of your BIM project</source>
-      <translation type="unfinished">Set/modify the different layers of your BIM project</translation>
+      <translation>Nastavi/spremeni različne plasti svojega BIM projekta</translation>
     </message>
   </context>
   <context>
@@ -1799,12 +1798,12 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../BimCommands.py" line="376"/>
       <source>Leader</source>
-      <translation type="unfinished">Leader</translation>
+      <translation>Opisnica</translation>
     </message>
     <message>
       <location filename="../BimCommands.py" line="379"/>
       <source>Creates a polyline with an arrow at its endpoint</source>
-      <translation type="unfinished">Creates a polyline with an arrow at its endpoint</translation>
+      <translation>Ustvari črtovje s puščico na konici</translation>
     </message>
   </context>
   <context>
@@ -1812,12 +1811,12 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../BimLibrary.py" line="88"/>
       <source>Objects library</source>
-      <translation type="unfinished">Objects library</translation>
+      <translation>Knjižnica predmetov</translation>
     </message>
     <message>
       <location filename="../BimLibrary.py" line="89"/>
       <source>Opens the objects library</source>
-      <translation type="unfinished">Opens the objects library</translation>
+      <translation>Odpre knjižnico predmetov</translation>
     </message>
   </context>
   <context>
@@ -1825,12 +1824,12 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../BimMaterial.py" line="53"/>
       <source>Material</source>
-      <translation type="unfinished">Material</translation>
+      <translation>Snov</translation>
     </message>
     <message>
       <location filename="../BimMaterial.py" line="57"/>
       <source>Sets or creates a material for selected objects</source>
-      <translation type="unfinished">Sets or creates a material for selected objects</translation>
+      <translation>Nastavi ali spremeni snov izbranim predmetom</translation>
     </message>
   </context>
   <context>
@@ -1838,12 +1837,12 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../BimCommands.py" line="463"/>
       <source>Move view...</source>
-      <translation type="unfinished">Move view...</translation>
+      <translation>Premakni pogled ...</translation>
     </message>
     <message>
       <location filename="../BimCommands.py" line="466"/>
       <source>Moves this view to an existing page</source>
-      <translation type="unfinished">Moves this view to an existing page</translation>
+      <translation>Prestavi ta pogled na obstoječo stran</translation>
     </message>
   </context>
   <context>
@@ -1851,7 +1850,7 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../BimNudge.py" line="178"/>
       <source>Nudge Down</source>
-      <translation type="unfinished">Nudge Down</translation>
+      <translation>Dregni navzdol</translation>
     </message>
   </context>
   <context>
@@ -1859,7 +1858,7 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../BimNudge.py" line="241"/>
       <source>Nudge Extend</source>
-      <translation type="unfinished">Nudge Extend</translation>
+      <translation>Podaljšaj z dregljajem</translation>
     </message>
   </context>
   <context>
@@ -1867,7 +1866,7 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../BimNudge.py" line="199"/>
       <source>Nudge Left</source>
-      <translation type="unfinished">Nudge Left</translation>
+      <translation>Dregni levo</translation>
     </message>
   </context>
   <context>
@@ -1875,7 +1874,7 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../BimNudge.py" line="220"/>
       <source>Nudge Right</source>
-      <translation type="unfinished">Nudge Right</translation>
+      <translation>Dregni desno</translation>
     </message>
   </context>
   <context>
@@ -1883,7 +1882,7 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../BimNudge.py" line="291"/>
       <source>Nudge Rotate Left</source>
-      <translation type="unfinished">Nudge Rotate Left</translation>
+      <translation>Zasukaj za dregljaj v levo</translation>
     </message>
   </context>
   <context>
@@ -1891,7 +1890,7 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../BimNudge.py" line="320"/>
       <source>Nudge Rotate Right</source>
-      <translation type="unfinished">Nudge Rotate Right</translation>
+      <translation>Zasukaj za dregljaj v desno</translation>
     </message>
   </context>
   <context>
@@ -1899,7 +1898,7 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../BimNudge.py" line="266"/>
       <source>Nudge Shrink</source>
-      <translation type="unfinished">Nudge Shrink</translation>
+      <translation>Zmanjšaj za dregljaj</translation>
     </message>
   </context>
   <context>
@@ -1907,7 +1906,7 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../BimNudge.py" line="131"/>
       <source>Nudge Switch</source>
-      <translation type="unfinished">Nudge Switch</translation>
+      <translation>Preklopnik dregljaja</translation>
     </message>
   </context>
   <context>
@@ -1915,7 +1914,7 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../BimNudge.py" line="157"/>
       <source>Nudge Up</source>
-      <translation type="unfinished">Nudge Up</translation>
+      <translation>Dregni navzgor</translation>
     </message>
   </context>
   <context>
@@ -1923,12 +1922,12 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../BimPreflight.py" line="60"/>
       <source>Preflight checks...</source>
-      <translation type="unfinished">Preflight checks...</translation>
+      <translation>Predpregledne preveritve ...</translation>
     </message>
     <message>
       <location filename="../BimPreflight.py" line="64"/>
       <source>Checks several characteristics of this model before exporting to IFC</source>
-      <translation type="unfinished">Checks several characteristics of this model before exporting to IFC</translation>
+      <translation>Preveri več značilnosti tega oblikovanca pred izvozom v IFC</translation>
     </message>
   </context>
   <context>
@@ -1936,17 +1935,17 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../BimWrappedTools.py" line="52"/>
       <source>Create an empty NativeIFC project</source>
-      <translation type="unfinished">Create an empty NativeIFC project</translation>
+      <translation>Ustvari prazen Native IFC projekt</translation>
     </message>
     <message>
       <location filename="../BimWrappedTools.py" line="55"/>
       <source>Create an empty BIM project</source>
-      <translation type="unfinished">Create an empty BIM project</translation>
+      <translation>Ustvari prazen BIM projekt</translation>
     </message>
     <message>
       <location filename="../BimWrappedTools.py" line="57"/>
       <source>Project</source>
-      <translation type="unfinished">Project</translation>
+      <translation>Projekt</translation>
     </message>
   </context>
   <context>
@@ -1954,12 +1953,12 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../BimProjectManager.py" line="38"/>
       <source>Manage project...</source>
-      <translation type="unfinished">Manage project...</translation>
+      <translation>Upravljanje projekta ...</translation>
     </message>
     <message>
       <location filename="../BimProjectManager.py" line="41"/>
       <source>Setup your BIM project</source>
-      <translation type="unfinished">Setup your BIM project</translation>
+      <translation>Nastavite svoj BIM projekt</translation>
     </message>
   </context>
   <context>
@@ -1967,12 +1966,12 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../BimReextrude.py" line="38"/>
       <source>Reextrude</source>
-      <translation type="unfinished">Reextrude</translation>
+      <translation>Poizriv</translation>
     </message>
     <message>
       <location filename="../BimReextrude.py" line="41"/>
       <source>Recreates an extruded Structure from a selected face</source>
-      <translation type="unfinished">Recreates an extruded Structure from a selected face</translation>
+      <translation>Poustvari izrinjeno strukturo iz izbrane ploskve</translation>
     </message>
   </context>
   <context>
@@ -1980,12 +1979,12 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../BimReorder.py" line="37"/>
       <source>Reorder children</source>
-      <translation type="unfinished">Reorder children</translation>
+      <translation>Prerazvrsti podrejenike</translation>
     </message>
     <message>
       <location filename="../BimReorder.py" line="41"/>
       <source>Reorder children of selected object</source>
-      <translation type="unfinished">Reorder children of selected object</translation>
+      <translation>Prerazvrsti podrejenike izbranega predmeta</translation>
     </message>
   </context>
   <context>
@@ -1993,12 +1992,12 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../BimClone.py" line="71"/>
       <source>Reset colors</source>
-      <translation type="unfinished">Reset colors</translation>
+      <translation>Ponastavi barve</translation>
     </message>
     <message>
       <location filename="../BimClone.py" line="75"/>
       <source>Resets the colors of this object from its cloned original</source>
-      <translation type="unfinished">Resets the colors of this object from its cloned original</translation>
+      <translation>Ponastavi barvo tega predmeta glede na barvo izvirnika podvojitve</translation>
     </message>
   </context>
   <context>
@@ -2006,12 +2005,12 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../BimCommands.py" line="321"/>
       <source>Rewire</source>
-      <translation type="unfinished">Rewire</translation>
+      <translation>Ponovno obriši</translation>
     </message>
     <message>
       <location filename="../BimCommands.py" line="324"/>
       <source>Recreates wires from selected objects</source>
-      <translation type="unfinished">Recreates wires from selected objects</translation>
+      <translation>Poustvari črtovje iz izbranih predmetov</translation>
     </message>
   </context>
   <context>
@@ -2019,12 +2018,12 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../BimWorkingPlaneTools.py" line="53"/>
       <source>Working Plane Front</source>
-      <translation type="unfinished">Working Plane Front</translation>
+      <translation>Delavna ravnina čelno</translation>
     </message>
     <message>
       <location filename="../BimWorkingPlaneTools.py" line="56"/>
       <source>Set the working plane to Front</source>
-      <translation type="unfinished">Set the working plane to Front</translation>
+      <translation>Nastavi delavno ravnino na čelo</translation>
     </message>
   </context>
   <context>
@@ -2032,12 +2031,12 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../BimWorkingPlaneTools.py" line="70"/>
       <source>Working Plane Side</source>
-      <translation type="unfinished">Working Plane Side</translation>
+      <translation>Delavna ravnina stransko</translation>
     </message>
     <message>
       <location filename="../BimWorkingPlaneTools.py" line="73"/>
       <source>Set the working plane to Side</source>
-      <translation type="unfinished">Set the working plane to Side</translation>
+      <translation>Nastavi delavno ravnino na stranico</translation>
     </message>
   </context>
   <context>
@@ -2045,12 +2044,12 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../BimWorkingPlaneTools.py" line="36"/>
       <source>Working Plane Top</source>
-      <translation type="unfinished">Working Plane Top</translation>
+      <translation>Delavna ravnina zvrha</translation>
     </message>
     <message>
       <location filename="../BimWorkingPlaneTools.py" line="39"/>
       <source>Set the working plane to Top</source>
-      <translation type="unfinished">Set the working plane to Top</translation>
+      <translation>Nastavi delavno ravnino na vrh</translation>
     </message>
   </context>
   <context>
@@ -2058,12 +2057,12 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../BimSetup.py" line="34"/>
       <source>BIM Setup...</source>
-      <translation type="unfinished">BIM Setup...</translation>
+      <translation>Nastavitev BIMa ...</translation>
     </message>
     <message>
       <location filename="../BimSetup.py" line="37"/>
       <source>Set some common FreeCAD preferences for BIM workflow</source>
-      <translation type="unfinished">Set some common FreeCAD preferences for BIM workflow</translation>
+      <translation>Nastavi nekaj običajnih FreeCADovih prednastavitev BIM delotoka</translation>
     </message>
   </context>
   <context>
@@ -2079,12 +2078,12 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../BimCommands.py" line="97"/>
       <source>Sketch</source>
-      <translation type="unfinished">Sketch</translation>
+      <translation>Očrt</translation>
     </message>
     <message>
       <location filename="../BimCommands.py" line="100"/>
       <source>Creates a new sketch in the current working plane</source>
-      <translation type="unfinished">Creates a new sketch in the current working plane</translation>
+      <translation>Ustvari nov očrt na trenutni delovni ravnini</translation>
     </message>
   </context>
   <context>
@@ -2092,12 +2091,12 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../BimStructure.py" line="77"/>
       <source>Slab</source>
-      <translation type="unfinished">Slab</translation>
+      <translation>Plošča</translation>
     </message>
     <message>
       <location filename="../BimStructure.py" line="80"/>
       <source>Creates a slab from a planar shape</source>
-      <translation type="unfinished">Creates a slab from a planar shape</translation>
+      <translation>Ustvari ploščo iz ravninske oblike</translation>
     </message>
   </context>
   <context>
@@ -2105,12 +2104,12 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../BimWrappedTools.py" line="298"/>
       <source>View</source>
-      <translation type="unfinished">View</translation>
+      <translation>Pogled</translation>
     </message>
     <message>
       <location filename="../BimWrappedTools.py" line="302"/>
       <source>Creates a TechDraw view from a section plane or 2D objects</source>
-      <translation type="unfinished">Creates a TechDraw view from a section plane or 2D objects</translation>
+      <translation>Ustvari pogled TehRisbe (TechDraw) iz prerezne ravnine ali 2D predmetov</translation>
     </message>
   </context>
   <context>
@@ -2118,12 +2117,12 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../BimWrappedTools.py" line="222"/>
       <source>Page</source>
-      <translation type="unfinished">Page</translation>
+      <translation>Stran</translation>
     </message>
     <message>
       <location filename="../BimWrappedTools.py" line="225"/>
       <source>Creates a new TechDraw page from a template</source>
-      <translation type="unfinished">Creates a new TechDraw page from a template</translation>
+      <translation>Ustvari novo stran TehRisbe (TechDraw) iz predloge</translation>
     </message>
   </context>
   <context>
@@ -2131,12 +2130,12 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../BimWrappedTools.py" line="528"/>
       <source>Text</source>
-      <translation type="unfinished">Text</translation>
+      <translation>Napis</translation>
     </message>
     <message>
       <location filename="../BimWrappedTools.py" line="531"/>
       <source>Create a text in the current 3D view or TechDraw page</source>
-      <translation type="unfinished">Create a text in the current 3D view or TechDraw page</translation>
+      <translation>Ustvari napis v trenutnem 3D pogledu ali na strani TehRisbe (TechDraw)</translation>
     </message>
   </context>
   <context>
@@ -2144,12 +2143,12 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../BimTogglePanels.py" line="38"/>
       <source>Toggle bottom panels</source>
-      <translation type="unfinished">Toggle bottom panels</translation>
+      <translation>Preklapljaj med spodnjimi podokni</translation>
     </message>
     <message>
       <location filename="../BimTogglePanels.py" line="41"/>
       <source>Toggle bottom dock panels on/off</source>
-      <translation type="unfinished">Toggle bottom dock panels on/off</translation>
+      <translation>Vključi oz. izključi spodaj zasidrana podokna</translation>
     </message>
   </context>
   <context>
@@ -2157,12 +2156,12 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../BimTrash.py" line="36"/>
       <source>Move to Trash</source>
-      <translation type="unfinished">Move to Trash</translation>
+      <translation>Premakni v smetnjak</translation>
     </message>
     <message>
       <location filename="../BimTrash.py" line="39"/>
       <source>Moves the selected objects to the Trash folder</source>
-      <translation type="unfinished">Moves the selected objects to the Trash folder</translation>
+      <translation>Prestavi izbrane predmete v mapo smetnjaka</translation>
     </message>
   </context>
   <context>
@@ -2170,12 +2169,12 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../BimTutorial.py" line="47"/>
       <source>BIM Tutorial</source>
-      <translation type="unfinished">BIM Tutorial</translation>
+      <translation>BIM vodnik</translation>
     </message>
     <message>
       <location filename="../BimTutorial.py" line="50"/>
       <source>Starts or continues the BIM in-game tutorial</source>
-      <translation type="unfinished">Starts or continues the BIM in-game tutorial</translation>
+      <translation>Začne ali nadaljuje z vigrsko BIM vadnico</translation>
     </message>
   </context>
   <context>
@@ -2183,12 +2182,12 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../BimClone.py" line="93"/>
       <source>Unclone</source>
-      <translation type="unfinished">Unclone</translation>
+      <translation>Odpodvoji (odkloniraj)</translation>
     </message>
     <message>
       <location filename="../BimClone.py" line="97"/>
       <source>Makes a selected clone object independent from its original</source>
-      <translation type="unfinished">Makes a selected clone object independent from its original</translation>
+      <translation>Naredi izbrani podvojeni predmet neodvisen od izvirnika</translation>
     </message>
   </context>
   <context>
@@ -2196,12 +2195,12 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../BimViews.py" line="37"/>
       <source>Views manager</source>
-      <translation type="unfinished">Views manager</translation>
+      <translation>Upravljalnik pogledov</translation>
     </message>
     <message>
       <location filename="../BimViews.py" line="40"/>
       <source>Shows or hides the views manager</source>
-      <translation type="unfinished">Shows or hides the views manager</translation>
+      <translation>Prikaže ali skrije upravljalnik pogledov</translation>
     </message>
   </context>
   <context>
@@ -2209,12 +2208,12 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../BimCommands.py" line="140"/>
       <source>Working Plane View</source>
-      <translation type="unfinished">Working Plane View</translation>
+      <translation>Pogled delovne ravnine</translation>
     </message>
     <message>
       <location filename="../BimCommands.py" line="144"/>
       <source>Aligns the view on the current item in BIM Views window or on the current working plane</source>
-      <translation type="unfinished">Aligns the view on the current item in BIM Views window or on the current working plane</translation>
+      <translation>Priravna pogled na trenutni predmet v oknu BIM pogledi ali na trenutno delovno ravnino</translation>
     </message>
   </context>
   <context>
@@ -2222,12 +2221,12 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../BimWelcome.py" line="36"/>
       <source>BIM Welcome screen</source>
-      <translation type="unfinished">BIM Welcome screen</translation>
+      <translation>BIM pozdravni zaslon</translation>
     </message>
     <message>
       <location filename="../BimWelcome.py" line="39"/>
       <source>Show the BIM workbench welcome screen</source>
-      <translation type="unfinished">Show the BIM workbench welcome screen</translation>
+      <translation>Prikaži pozdravni zaslon delovnega okolja BIM</translation>
     </message>
   </context>
   <context>
@@ -2235,12 +2234,12 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../BimWindows.py" line="36"/>
       <source>Manage doors and windows...</source>
-      <translation type="unfinished">Manage doors and windows...</translation>
+      <translation>Upravljanje vrat in oken ...</translation>
     </message>
     <message>
       <location filename="../BimWindows.py" line="40"/>
       <source>Manage the different doors and windows of your BIM project</source>
-      <translation type="unfinished">Manage the different doors and windows of your BIM project</translation>
+      <translation>Upravljajte z različnimi vrati in okni v vašem BIM projektu</translation>
     </message>
   </context>
   <context>
@@ -2452,7 +2451,7 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../dialogLayers.ui" line="36"/>
       <source>Adds this layer to an IFC project</source>
-      <translation type="unfinished">Adds this layer to an IFC project</translation>
+      <translation>Dodat to plast IFC projektu</translation>
     </message>
     <message>
       <location filename="../dialogLayers.ui" line="46"/>
@@ -2473,12 +2472,12 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../dialogLayers.ui" line="74"/>
       <source>Assign selected objects to the selected layer</source>
-      <translation type="unfinished">Assign selected objects to the selected layer</translation>
+      <translation>Dodeli izbranim predmetom izbrano plast</translation>
     </message>
     <message>
       <location filename="../dialogLayers.ui" line="77"/>
       <source>Assign</source>
-      <translation type="unfinished">Assign</translation>
+      <translation>Dodeli</translation>
     </message>
     <message>
       <location filename="../dialogLayers.ui" line="97"/>
@@ -2519,12 +2518,12 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../dialogPhases.ui" line="20"/>
       <source>Below are the phases currently configured for this model:</source>
-      <translation type="unfinished">Below are the phases currently configured for this model:</translation>
+      <translation>Spodaj so za ta oblikovanec trenutno nastavljene stopnje:</translation>
     </message>
     <message>
       <location filename="../dialogPhases.ui" line="48"/>
       <source>Add...</source>
-      <translation type="unfinished">Add...</translation>
+      <translation>Dodaj ...</translation>
     </message>
     <message>
       <location filename="../dialogPreflightResults.ui" line="14"/>
@@ -3051,27 +3050,27 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../dialogLibrary.ui" line="29"/>
       <source>Inserts the selected object in the current document</source>
-      <translation type="unfinished">Inserts the selected object in the current document</translation>
+      <translation>Vstavi izbrani predmet v trenutni dokument</translation>
     </message>
     <message>
       <location filename="../dialogLibrary.ui" line="32"/>
       <source>Insert</source>
-      <translation type="unfinished">Insert</translation>
+      <translation>Vstavi</translation>
     </message>
     <message>
       <location filename="../dialogLibrary.ui" line="39"/>
       <source>or</source>
-      <translation type="unfinished">or</translation>
+      <translation>ali</translation>
     </message>
     <message>
       <location filename="../dialogLibrary.ui" line="49"/>
       <source>Links the selected object in the current document. Only works in Offline mode</source>
-      <translation type="unfinished">Links the selected object in the current document. Only works in Offline mode</translation>
+      <translation>Poveže izbrane predmete v trenutni dokument. Deluje le v nepovezanem načinu</translation>
     </message>
     <message>
       <location filename="../dialogLibrary.ui" line="52"/>
       <source>Link</source>
-      <translation type="unfinished">Link</translation>
+      <translation>Povezava</translation>
     </message>
     <message>
       <location filename="../dialogLibrary.ui" line="63"/>
@@ -3081,17 +3080,17 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../dialogLibrary.ui" line="79"/>
       <source>Search external websites</source>
-      <translation type="unfinished">Search external websites</translation>
+      <translation>Preišči zunanja spletišča</translation>
     </message>
     <message>
       <location filename="../dialogLibrary.ui" line="83"/>
       <source>...</source>
-      <translation type="unfinished">...</translation>
+      <translation>...</translation>
     </message>
     <message>
       <location filename="../dialogLibrary.ui" line="95"/>
       <source>Preview</source>
-      <translation type="unfinished">Preview</translation>
+      <translation>Predogled</translation>
     </message>
     <message>
       <location filename="../dialogLibrary.ui" line="153"/>
@@ -3101,7 +3100,7 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../dialogLibrary.ui" line="181"/>
       <source>Save thumbnails when saving a file</source>
-      <translation type="unfinished">Save thumbnails when saving a file</translation>
+      <translation>Pri shranjevanju datoteke shrani tudi sličico</translation>
     </message>
     <message>
       <location filename="../dialogLibrary.ui" line="193"/>
@@ -3126,22 +3125,22 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../dialogLibrary.ui" line="216"/>
       <source>Opens a 3D preview of the selected file.</source>
-      <translation type="unfinished">Opens a 3D preview of the selected file.</translation>
+      <translation>Odpre prostorski predogled izbrane datoteke.</translation>
     </message>
     <message>
       <location filename="../dialogLibrary.ui" line="219"/>
       <source>Preview model in 3D view</source>
-      <translation type="unfinished">Preview model in 3D view</translation>
+      <translation>Predoglej oblikovanec v 3D pogledu</translation>
     </message>
     <message>
       <location filename="../dialogLibrary.ui" line="229"/>
       <source>Show available alternative file formats for library items (STEP, IFC, etc...)</source>
-      <translation type="unfinished">Show available alternative file formats for library items (STEP, IFC, etc...)</translation>
+      <translation>Prikaži razpoložljive alternativne datotečne zapise knjižničnih predmetov (STEP, IFC, ...)</translation>
     </message>
     <message>
       <location filename="../dialogLibrary.ui" line="232"/>
       <source>Display alternative formats</source>
-      <translation type="unfinished">Display alternative formats</translation>
+      <translation>Prikaži alternativne zapise</translation>
     </message>
     <message>
       <location filename="../dialogLibrary.ui" line="239"/>
@@ -3151,12 +3150,12 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../dialogLibrary.ui" line="252"/>
       <source>Save thumbnails</source>
-      <translation type="unfinished">Save thumbnails</translation>
+      <translation>Shrani sličice</translation>
     </message>
     <message>
       <location filename="../dialogLibrary.ui" line="262"/>
       <source>Save as...</source>
-      <translation type="unfinished">Save as...</translation>
+      <translation>Shrani kot ...</translation>
     </message>
     <message>
       <location filename="../dialogPreflight.ui" line="14"/>
@@ -3206,7 +3205,7 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../dialogPreflight.ui" line="79"/>
       <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;IFC export in FreeCAD is performed by an open-source third-party library called IfcOpenShell. To be able to export to the newer IFC4 standard, IfcOpenShell must have been compiled with IFC4 support enabled.  This test will check if IFC4 support is available in your version of IfcOpenShell. If not, you will only be able to export IFC files in the older IFC2x3 standard. Note that some applications out there still have incomplete or inexistent IFC4 support, so in some cases IFC2x3 might still work better.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-      <translation type="unfinished">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;IFC export in FreeCAD is performed by an open-source third-party library called IfcOpenShell. To be able to export to the newer IFC4 standard, IfcOpenShell must have been compiled with IFC4 support enabled.  This test will check if IFC4 support is available in your version of IfcOpenShell. If not, you will only be able to export IFC files in the older IFC2x3 standard. Note that some applications out there still have incomplete or inexistent IFC4 support, so in some cases IFC2x3 might still work better.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+      <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;IFC iz FreeCADa izvaža knjižnica odprtokodnega zunanjega ponudnika IfcOpenShell. Da bi mogli izvoziti v novejšem standardu IFC4, mora biti IfcOpenShell kodno preveden z omogočeno podporo IFC4. S tem preizkusom preverite ali vaša različica IfcOpenShella podpira IFC4. Če ga ne, boste lahko izvozili IFC datoteke le v starejšem, IFC2x3 standardu. Vedite, da nekateri programi še vedno slabo podpirajo ali sploh ne podpirajo IFC4, zato lahko takrat različica IFC2x3 še vedno deluje bolje. &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
       <location filename="../dialogPreflight.ui" line="82"/>
@@ -3412,12 +3411,12 @@ CTRL+/ to switch between auto and manual mode</translation>
     <message>
       <location filename="../dialogReorder.ui" line="20"/>
       <source>Drag items to reorder then press OK to accept</source>
-      <translation type="unfinished">Drag items to reorder then press OK to accept</translation>
+      <translation>Z vlečenje prerazvrstite predmete in potrdite z V redu</translation>
     </message>
     <message>
       <location filename="../dialogReorder.ui" line="37"/>
       <source>Order alphabetically</source>
-      <translation type="unfinished">Order alphabetically</translation>
+      <translation>Razvrsti po abecedi</translation>
     </message>
     <message>
       <location filename="../dialogTutorial.ui" line="14"/>
@@ -3606,12 +3605,12 @@ p, li { white-space: pre-wrap; }
     <message>
       <location filename="../BimWrappedTools.py" line="80"/>
       <source>Shape builder...</source>
-      <translation type="unfinished">Shape builder...</translation>
+      <translation>Graditelj oblik ...</translation>
     </message>
     <message>
       <location filename="../BimWrappedTools.py" line="83"/>
       <source>Advanced utility to create shapes</source>
-      <translation type="unfinished">Advanced utility to create shapes</translation>
+      <translation>Napreden pripomoček za ustvarjanje oblik</translation>
     </message>
   </context>
   <context>
@@ -3619,12 +3618,12 @@ p, li { white-space: pre-wrap; }
     <message>
       <location filename="../BimWrappedTools.py" line="167"/>
       <source>Intersection</source>
-      <translation type="unfinished">Intersection</translation>
+      <translation>Presek</translation>
     </message>
     <message>
       <location filename="../BimWrappedTools.py" line="170"/>
       <source>Make an intersection of two shapes</source>
-      <translation type="unfinished">Make an intersection of two shapes</translation>
+      <translation>Naredi presek dveh oblik</translation>
     </message>
   </context>
   <context>
@@ -3632,12 +3631,12 @@ p, li { white-space: pre-wrap; }
     <message>
       <location filename="../BimWrappedTools.py" line="186"/>
       <source>Make compound</source>
-      <translation type="unfinished">Make compound</translation>
+      <translation>Ustvari sestav</translation>
     </message>
     <message>
       <location filename="../BimWrappedTools.py" line="189"/>
       <source>Make a compound of several shapes</source>
-      <translation type="unfinished">Make a compound of several shapes</translation>
+      <translation>Ustvari sestav iz več oblik</translation>
     </message>
   </context>
   <context>
@@ -3645,12 +3644,12 @@ p, li { white-space: pre-wrap; }
     <message>
       <location filename="../BimWrappedTools.py" line="118"/>
       <source>Extrude...</source>
-      <translation type="unfinished">Extrude...</translation>
+      <translation>Izrini ...</translation>
     </message>
     <message>
       <location filename="../BimWrappedTools.py" line="119"/>
       <source>Extrude a selected sketch</source>
-      <translation type="unfinished">Extrude a selected sketch</translation>
+      <translation>Izrini izbrani očrt</translation>
     </message>
   </context>
   <context>
@@ -3658,12 +3657,12 @@ p, li { white-space: pre-wrap; }
     <message>
       <location filename="../BimWrappedTools.py" line="150"/>
       <source>Union</source>
-      <translation type="unfinished">Union</translation>
+      <translation>Seštevek</translation>
     </message>
     <message>
       <location filename="../BimWrappedTools.py" line="151"/>
       <source>Make a union of several shapes</source>
-      <translation type="unfinished">Make a union of several shapes</translation>
+      <translation>Ustvari seštevek več oblik</translation>
     </message>
   </context>
   <context>
@@ -3671,12 +3670,12 @@ p, li { white-space: pre-wrap; }
     <message>
       <location filename="../BimWrappedTools.py" line="99"/>
       <source>2D Offset...</source>
-      <translation type="unfinished">2D Offset...</translation>
+      <translation>2D odmik ...</translation>
     </message>
     <message>
       <location filename="../BimWrappedTools.py" line="102"/>
       <source>Utility to offset planar shapes</source>
-      <translation type="unfinished">Utility to offset planar shapes</translation>
+      <translation>Pripomoček za odmikanje ravninskih oblik</translation>
     </message>
   </context>
   <context>
@@ -3684,12 +3683,12 @@ p, li { white-space: pre-wrap; }
     <message>
       <location filename="../BimWrappedTools.py" line="203"/>
       <source>Create simple copy</source>
-      <translation type="unfinished">Create simple copy</translation>
+      <translation>Ustvari preprosto kopijo</translation>
     </message>
     <message>
       <location filename="../BimWrappedTools.py" line="206"/>
       <source>Create a simple non-parametric copy</source>
-      <translation type="unfinished">Create a simple non-parametric copy</translation>
+      <translation>Ustvari preprosto, nedoločilovno kopijo</translation>
     </message>
   </context>
   <context>
@@ -3697,84 +3696,89 @@ p, li { white-space: pre-wrap; }
     <message>
       <location filename="../InitGui.py" line="547"/>
       <source>Drafting tools</source>
-      <translation type="unfinished">Drafting tools</translation>
+      <translation>Izrisna orodja</translation>
     </message>
     <message>
       <location filename="../InitGui.py" line="549"/>
       <source>3D/BIM tools</source>
-      <translation type="unfinished">3D/BIM tools</translation>
+      <translation>3D/BIM orodja</translation>
     </message>
     <message>
       <location filename="../InitGui.py" line="551"/>
       <source>Annotation tools</source>
-      <translation type="unfinished">Annotation tools</translation>
+      <translation>Pripisovalna orodja</translation>
     </message>
     <message>
       <location filename="../InitGui.py" line="553"/>
       <source>Modification tools</source>
-      <translation type="unfinished">Modification tools</translation>
+      <translation>Preoblikovalna orodja</translation>
     </message>
     <message>
       <location filename="../InitGui.py" line="554"/>
       <source>Manage tools</source>
-      <translation type="unfinished">Manage tools</translation>
+      <translation>Upravljalna orodja</translation>
     </message>
     <message>
       <location filename="../InitGui.py" line="557"/>
       <source>Experimental tools</source>
-      <translation type="unfinished">Experimental tools</translation>
+      <translation>Poskusna orodja</translation>
     </message>
     <message>
       <location filename="../InitGui.py" line="571"/>
       <source>&amp;2D Drafting</source>
-      <translation type="unfinished">&amp;2D Drafting</translation>
+      <translation>&amp;2D Risanje</translation>
     </message>
     <message>
       <location filename="../InitGui.py" line="572"/>
       <location filename="../InitGui.py" line="576"/>
       <source>&amp;3D/BIM</source>
-      <translation type="unfinished">&amp;3D/BIM</translation>
+      <translation>&amp;3D/BIM</translation>
+    </message>
+    <message>
+      <location filename="../InitGui.py" line="577"/>
+      <source>Reinforcement tools</source>
+      <translation type="unfinished">Reinforcement tools</translation>
     </message>
     <message>
       <location filename="../InitGui.py" line="581"/>
       <source>&amp;Annotation</source>
-      <translation type="unfinished">&amp;Annotation</translation>
+      <translation>&amp;Pripisi</translation>
     </message>
     <message>
       <location filename="../InitGui.py" line="582"/>
       <source>&amp;Snapping</source>
-      <translation type="unfinished">&amp;Snapping</translation>
+      <translation>P&amp;ripenjanje</translation>
     </message>
     <message>
       <location filename="../InitGui.py" line="583"/>
       <source>&amp;Modify</source>
-      <translation type="unfinished">&amp;Modify</translation>
+      <translation>&amp;Spremeni</translation>
     </message>
     <message>
       <location filename="../InitGui.py" line="584"/>
       <source>&amp;Manage</source>
-      <translation type="unfinished">&amp;Manage</translation>
+      <translation>&amp;Upravljaj</translation>
     </message>
     <message>
       <location filename="../InitGui.py" line="586"/>
       <source>&amp;Flamingo</source>
-      <translation type="unfinished">&amp;Flamingo</translation>
+      <translation>&amp;Flamingo</translation>
     </message>
     <message>
       <location filename="../InitGui.py" line="588"/>
       <source>&amp;Fasteners</source>
-      <translation type="unfinished">&amp;Fasteners</translation>
+      <translation>Pr&amp;itrdila</translation>
     </message>
     <message>
       <location filename="../InitGui.py" line="589"/>
       <location filename="../InitGui.py" line="591"/>
       <source>&amp;Utils</source>
-      <translation type="unfinished">&amp;Utils</translation>
+      <translation>Pripo&amp;močki</translation>
     </message>
     <message>
       <location filename="../InitGui.py" line="591"/>
       <source>Nudge</source>
-      <translation type="unfinished">Nudge</translation>
+      <translation>Dregljaj</translation>
     </message>
   </context>
 </TS>

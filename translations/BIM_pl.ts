@@ -42,7 +42,6 @@
     <message>
       <location filename="../InitGui.py" line="436"/>
       <location filename="../InitGui.py" line="439"/>
-      <location filename="../InitGui.py" line="577"/>
       <source>Reinforcement tools</source>
       <translation>Narzędzia zbrojenia</translation>
     </message>
@@ -3735,6 +3734,11 @@ p, li { white-space: pre-wrap; }
       <location filename="../InitGui.py" line="576"/>
       <source>&amp;3D/BIM</source>
       <translation>&amp;3D / BIM</translation>
+    </message>
+    <message>
+      <location filename="../InitGui.py" line="577"/>
+      <source>Reinforcement tools</source>
+      <translation type="unfinished">Reinforcement tools</translation>
     </message>
     <message>
       <location filename="../InitGui.py" line="581"/>
