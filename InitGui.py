@@ -568,8 +568,8 @@ static char * IFC_xpm[] = {
         if "Arch_RebarTools" in self.bimtools_menu:
             self.bimtools_menu.remove("Arch_RebarTools")
 
-        self.appendMenu(translate("Workbench", "&2D Drafting"), self.draftingtools)
-        self.appendMenu(translate("Workbench", "&3D/BIM"), self.bimtools_menu)
+        self.appendMenu(QT_TRANSLATE_NOOP("Workbench", "&2D Drafting"), self.draftingtools)
+        self.appendMenu(QT_TRANSLATE_NOOP("Workbench", "&3D/BIM"), self.bimtools_menu)
         if self.rebar:
             self.appendMenu(
                 [
