@@ -3737,7 +3737,7 @@ p, li { white-space: pre-wrap; }
     <message>
       <location filename="../InitGui.py" line="577"/>
       <source>Reinforcement tools</source>
-      <translation type="unfinished">Reinforcement tools</translation>
+      <translation>Armaturna orodja</translation>
     </message>
     <message>
       <location filename="../InitGui.py" line="581"/>

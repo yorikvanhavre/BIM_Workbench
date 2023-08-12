@@ -43,7 +43,7 @@
       <location filename="../InitGui.py" line="436"/>
       <location filename="../InitGui.py" line="439"/>
       <source>Reinforcement tools</source>
-      <translation type="unfinished">Reinforcement tools</translation>
+      <translation>Bewehrungswerkzeuge</translation>
     </message>
   </context>
   <context>
@@ -3737,7 +3737,7 @@ p, li { white-space: pre-wrap; }
     <message>
       <location filename="../InitGui.py" line="577"/>
       <source>Reinforcement tools</source>
-      <translation type="unfinished">Reinforcement tools</translation>
+      <translation>Bewehrungswerkzeuge</translation>
     </message>
     <message>
       <location filename="../InitGui.py" line="581"/>
