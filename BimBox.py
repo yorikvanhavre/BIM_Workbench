@@ -213,7 +213,7 @@ class BIM_Box:
 
         label1 = QtGui.QLabel(translate("BIM", "Length"))
         self.Length = ui.createWidget("Gui::InputField")
-        self.Length.setText(str(self.LengthValue) + "mm")
+        self.Length.setText(FreeCAD.Units.Quantity(self.LengthValue, FreeCAD.Units.Length).UserString)
         grid.addWidget(label1, 0, 0, 1, 1)
         grid.addWidget(self.Length, 0, 1, 1, 1)
         if self.LengthValue:
@@ -221,7 +221,7 @@ class BIM_Box:
 
         label2 = QtGui.QLabel(translate("BIM", "Width"))
         self.Width = ui.createWidget("Gui::InputField")
-        self.Width.setText(str(self.WidthValue) + "mm")
+        self.Width.setText(FreeCAD.Units.Quantity(self.WidthValue, FreeCAD.Units.Length).UserString)
         grid.addWidget(label2, 1, 0, 1, 1)
         grid.addWidget(self.Width, 1, 1, 1, 1)
         if self.WidthValue or (not self.LengthValue):
@@ -229,7 +229,7 @@ class BIM_Box:
 
         label3 = QtGui.QLabel(translate("BIM", "Height"))
         self.Height = ui.createWidget("Gui::InputField")
-        self.Height.setText(str(self.HeightValue) + "mm")
+        self.Height.setText(FreeCAD.Units.Quantity(self.HeightValue, FreeCAD.Units.Length).UserString)
         grid.addWidget(label3, 2, 0, 1, 1)
         grid.addWidget(self.Height, 2, 1, 1, 1)
         if not self.WidthValue:
