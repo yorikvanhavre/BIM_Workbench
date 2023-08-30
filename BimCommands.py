@@ -386,7 +386,7 @@ class BIM_Leader(gui_lines.Line):
         import FreeCADGui
 
         self.removeTemporaryObject()
-        if self.oldWP:
+        if getattr(self,"oldWP",None):
             FreeCAD.DraftWorkingPlane = self.oldWP
             if hasattr(Gui, "Snapper"):
                 FreeCADGui.Snapper.setGrid()
