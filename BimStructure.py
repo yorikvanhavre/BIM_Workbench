@@ -122,6 +122,7 @@ class BIM_Slab:
                 FreeCADGui.doCommand('s.IfcType = "Slab"')
             elif hasattr(FreeCAD.ActiveDocument.Objects[-1], "IfcRole"):
                 FreeCADGui.doCommand('s.IfcRole = "Slab"')
+            FreeCADGui.doCommand("s.Normal = FreeCAD.Vector(0,0,-1)")
             FreeCAD.ActiveDocument.commitTransaction()
             FreeCAD.ActiveDocument.recompute()
         self.finish()
