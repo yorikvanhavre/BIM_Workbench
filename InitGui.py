@@ -114,6 +114,7 @@ static char * IFC_xpm[] = {
 
         # these should be move out of BimCommands
         FreeCADGui.addCommand("BIM_Help", BimCommands.BIM_Help())
+        FreeCADGui.addCommand("BIM_Examples", BimCommands.BIM_Examples())
         FreeCADGui.addCommand("BIM_Glue", BimCommands.BIM_Glue())
         FreeCADGui.addCommand("BIM_Sketch", BimCommands.BIM_Sketch())
         FreeCADGui.addCommand("BIM_WPView", BimCommands.BIM_WPView())
@@ -590,7 +591,7 @@ static char * IFC_xpm[] = {
         self.appendMenu(
             [QT_TRANSLATE_NOOP("Workbench", "&Utils"), QT_TRANSLATE_NOOP("Workbench", "Nudge")], nudge
         )
-        self.appendMenu("&Help", ["BIM_Welcome", "BIM_Help", "BIM_Tutorial"])
+        self.appendMenu("&Help", ["BIM_Welcome", "BIM_Help", "BIM_Tutorial", "BIM_Examples"])
 
         # load Arch & Draft preference pages
 

@@ -49,6 +49,23 @@ class BIM_Help:
         QtGui.QDesktopServices.openUrl("https://www.freecadweb.org/wiki/BIM_Workbench")
 
 
+class BIM_Examples:
+    def GetResources(self):
+        return {
+            "Pixmap": os.path.join(os.path.dirname(__file__), "icons", "BIM_Help.svg"),
+            "MenuText": QT_TRANSLATE_NOOP("BIM_Examples", "BIM Examples"),
+            "ToolTip": QT_TRANSLATE_NOOP(
+                "BIM_Examples",
+                "Download examples of BIM files made with FreeCAD",
+            ),
+        }
+
+    def Activated(self):
+        from PySide import QtCore, QtGui
+
+        QtGui.QDesktopServices.openUrl("https://github.com/yorikvanhavre/FreeCAD-BIM-examples")
+
+
 class BIM_Glue:
     def GetResources(self):
         return {
