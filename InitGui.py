@@ -547,12 +547,9 @@ static char * IFC_xpm[] = {
         try:
             import ifc_commands
         except ImportError:
-            print("no ifc_commands")
             ifctools = None
         else:
-            FreeCADGui.addCommand("IFC_Diff", ifc_commands.IFC_Diff())
-            FreeCADGui.addCommand("IFC_Expand", ifc_commands.IFC_Expand())
-            ifctools = ["IFC_Diff", "IFC_Expand"]
+            ifctools = ifc_commands.get_commands()
 
 
         # create toolbars
