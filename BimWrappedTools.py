@@ -58,17 +58,11 @@ class BIM_Project:
             "ToolTip": descr,
         }
 
-    def IsActive(self):
-        if "IfcFilePath" in FreeCAD.ActiveDocument.propertiesList():
-            return False
-        else:
-            return True
-
     def Activated(self):
         if self.NativeIFC:
             import ifc_tools
 
-            project = ifc_tools.create_document(FreeCAD.ActiveDocument)
+            project = ifc_tools.create_document_object(FreeCAD.ActiveDocument)
             project.Modified = True
             FreeCAD.ActiveDocument.recompute()
         else:

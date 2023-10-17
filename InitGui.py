@@ -542,6 +542,19 @@ static char * IFC_xpm[] = {
                 if not isinstance(c, tuple)
             ]
 
+        # load Native IFC tools
+
+        try:
+            import ifc_commands
+        except ImportError:
+            print("no ifc_commands")
+            ifctools = None
+        else:
+            FreeCADGui.addCommand("IFC_Diff", ifc_commands.IFC_Diff())
+            FreeCADGui.addCommand("IFC_Expand", ifc_commands.IFC_Expand())
+            ifctools = ["IFC_Diff", "IFC_Expand"]
+
+
         # create toolbars
 
         self.appendToolbar(
@@ -583,6 +596,8 @@ static char * IFC_xpm[] = {
         self.appendMenu(QT_TRANSLATE_NOOP("Workbench", "&Snapping"), self.snap)
         self.appendMenu(QT_TRANSLATE_NOOP("Workbench", "&Modify"), self.modify)
         self.appendMenu(QT_TRANSLATE_NOOP("Workbench", "&Manage"), self.manage)
+        if ifctools:
+            self.appendMenu(QT_TRANSLATE_NOOP("Workbench", "&IFC"), ifctools)
         if flamingo:
             self.appendMenu(QT_TRANSLATE_NOOP("Workbench", "&Flamingo"), flamingo)
         if fasteners:
