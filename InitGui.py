@@ -640,6 +640,9 @@ static char * IFC_xpm[] = {
             FreeCADGui.draftToolBar.Activated()
         if hasattr(FreeCADGui, "Snapper"):
             FreeCADGui.Snapper.show()
+        import WorkingPlane
+        if hasattr(WorkingPlane, "_view_observer_start"):
+            WorkingPlane._view_observer_start()
 
         from DraftGui import todo
         import BimStatusBar
@@ -703,6 +706,9 @@ static char * IFC_xpm[] = {
             FreeCADGui.draftToolBar.Deactivated()
         if hasattr(FreeCADGui, "Snapper"):
             FreeCADGui.Snapper.hide()
+        import WorkingPlane
+        if hasattr(WorkingPlane, "_view_observer_stop"):
+            WorkingPlane._view_observer_stop()
 
         from DraftGui import todo
         import BimStatusBar
