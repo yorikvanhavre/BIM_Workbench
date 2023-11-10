@@ -52,6 +52,8 @@ class BIM_Reextrude:
     def Activated(self):
         import FreeCADGui
         import Draft
+        import Part
+        import Arch
 
         # get selected object and face
         sel = FreeCADGui.Selection.getSelectionEx()
