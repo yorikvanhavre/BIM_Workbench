@@ -617,6 +617,13 @@ static char * IFC_xpm[] = {
             if not hasattr(FreeCADGui.draftToolBar, "loadedPreferences"):
                 import Draft_rc
 
+                try:
+                    from draftutils import params
+                except ImportError:
+                    pass
+                else:
+                    params._param_observer_start()
+
                 FreeCADGui.addPreferencePage(":/ui/preferences-draft.ui", "Draft")
                 FreeCADGui.addPreferencePage(":/ui/preferences-draftsnap.ui", "Draft")
                 FreeCADGui.addPreferencePage(":/ui/preferences-draftvisual.ui", "Draft")
