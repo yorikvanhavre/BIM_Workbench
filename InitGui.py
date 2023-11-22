@@ -625,6 +625,7 @@ static char * IFC_xpm[] = {
                     params._param_observer_start()
 
                 FreeCADGui.addPreferencePage(":/ui/preferences-draft.ui", "Draft")
+                FreeCADGui.addPreferencePage(":/ui/preferences-draftinterface.ui", "Draft")
                 FreeCADGui.addPreferencePage(":/ui/preferences-draftsnap.ui", "Draft")
                 FreeCADGui.addPreferencePage(":/ui/preferences-draftvisual.ui", "Draft")
                 FreeCADGui.addPreferencePage(":/ui/preferences-drafttexts.ui", "Draft")
