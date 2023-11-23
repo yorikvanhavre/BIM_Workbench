@@ -292,23 +292,10 @@ static char * IFC_xpm[] = {
             "BIM_SimpleCopy",
         ]
 
-        self.snap = [
-            "Draft_ToggleGrid",
-            "Draft_Snap_Lock",
-            "Draft_Snap_Midpoint",
-            "Draft_Snap_Perpendicular",
-            "Draft_Snap_Grid",
-            "Draft_Snap_Intersection",
-            "Draft_Snap_Parallel",
-            "Draft_Snap_Endpoint",
-            "Draft_Snap_Angle",
-            "Draft_Snap_Center",
-            "Draft_Snap_Extension",
-            "Draft_Snap_Near",
-            "Draft_Snap_Ortho",
-            "Draft_Snap_Special",
-            "Draft_Snap_Dimensions",
-            "Draft_Snap_WorkingPlane",
+        from draftutils import init_tools
+        self.snapbar = init_tools.get_draft_snap_commands()
+
+        self.snapmenu = self.snapbar + [
             "BIM_SetWPTop",
             "BIM_SetWPFront",
             "BIM_SetWPSide",
@@ -557,6 +544,7 @@ static char * IFC_xpm[] = {
         self.appendToolbar(
             QT_TRANSLATE_NOOP("Workbench", "Drafting tools"), self.draftingtools
         )
+        self.appendToolbar(QT_TRANSLATE_NOOP("Workbench", "Draft snap"), self.snapbar)
         self.appendToolbar(QT_TRANSLATE_NOOP("Workbench", "3D/BIM tools"), self.bimtools)
         self.appendToolbar(
             QT_TRANSLATE_NOOP("Workbench", "Annotation tools"), self.annotationtools
@@ -590,7 +578,7 @@ static char * IFC_xpm[] = {
                 self.rebar,
             )
         self.appendMenu(QT_TRANSLATE_NOOP("Workbench", "&Annotation"), self.annotationtools)
-        self.appendMenu(QT_TRANSLATE_NOOP("Workbench", "&Snapping"), self.snap)
+        self.appendMenu(QT_TRANSLATE_NOOP("Workbench", "&Snapping"), self.snapmenu)
         self.appendMenu(QT_TRANSLATE_NOOP("Workbench", "&Modify"), self.modify)
         self.appendMenu(QT_TRANSLATE_NOOP("Workbench", "&Manage"), self.manage)
         if ifctools:
@@ -778,7 +766,7 @@ static char * IFC_xpm[] = {
             ):
                 self.appendContextMenu("", ["BIM_EmptyTrash"])
         elif recipient == "View":
-            self.appendContextMenu(translate("BIM", "Snapping"), self.snap)
+            self.appendContextMenu(translate("BIM", "Snapping"), self.snapmenu)
         if FreeCADGui.Selection.getSelection():
             if FreeCADGui.Selection.getSelection()[0].Name != "Trash":
                 self.appendContextMenu("", ["BIM_Trash"])
