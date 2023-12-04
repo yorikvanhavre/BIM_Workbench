@@ -1108,6 +1108,7 @@ class BIM_Preflight_TaskPanel:
                                 if not obj in objs:
                                     objs.append(obj)
             if edges:
+                import Part
                 result = FreeCAD.ActiveDocument.addObject(
                     "Part::Feature", "TinyLinesResult"
                 )
