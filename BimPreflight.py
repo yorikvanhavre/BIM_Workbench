@@ -341,10 +341,29 @@ class BIM_Preflight_TaskPanel:
                     ifcopenshell, "schema_identifier"
                 ) and ifcopenshell.schema_identifier.startswith("IFC4"):
                     self.passed(test)
-                elif hasattr(ifcopenshell, "version") and (
-                    float(ifcopenshell.version[:3]) >= 0.6
-                ):
-                    self.passed(test)
+                elif hasattr(ifcopenshell, "version"):
+                    try:
+                        from packaging import version
+                        cur_version = version.parse(ifcopenshell.version)
+                        min_version = version.parse("0.6")
+                        if type(cur_version) == version.LegacyVersion:
+                            # Prebuild version have a version like 'v0.7.0-<GIT_COMMIT_ID>,
+                            # trying to remove the commit id.
+                            cur_version = version.parse(ifcopenshell.version.split('-')[0])
+                        if cur_version >= min_version:
+                            self.passed(test)
+                        else:
+                            msg = self.getToolTip(test)
+                            msg = (
+                                translate(
+                                    "BIM",
+                                    "The version of ifcopenshell installed on your system could not be parsed",
+                                )
+                                + " "
+                            )
+                            self.failed(test)
+                    except Exception as e:
+                        self.failed(test)
                 else:
                     msg = self.getToolTip(test)
                     msg += (
