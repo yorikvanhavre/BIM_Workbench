@@ -350,9 +350,10 @@ class BIM_Setup:
             st = mw.statusBar()
             statuswidget = st.findChild(QtGui.QToolBar, "BIMStatusWidget")
             if statuswidget:
-                statuswidget.unitLabel.setText(
-                    statuswidget.unitsList[self.form.settingUnits.currentIndex()]
-                )
+                if hasattr(statuswidget, "unitLabel"):
+                    statuswidget.unitLabel.setText(
+                        statuswidget.unitsList[self.form.settingUnits.currentIndex()]
+                    )
                 # change the unit of the nudge button
                 nudgeactions = statuswidget.nudge.menu().actions()
                 if unit in [2, 3, 5, 7]:
