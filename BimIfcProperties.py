@@ -808,6 +808,8 @@ if FreeCAD.GuiUp:
             self.plabels = plabels
 
         def createEditor(self, parent, option, index):
+            import FreeCADGui
+
             if index.column() == 0:  # property name
                 editor = QtGui.QLineEdit(parent)
             elif index.column() == 1:  # property type
@@ -846,12 +848,12 @@ if FreeCAD.GuiUp:
                 if "Integer" in editor.objectName():
                     try:
                         editor.setValue(int(index.data()))
-                    except (ValueError, AttributeError):
+                    except (TypeError, ValueError, AttributeError):
                         editor.setValue(0)
                 elif "Real" in editor.objectName():
                     try:
                         editor.setValue(float(index.data()))
-                    except (ValueError, AttributeError):
+                    except (TypeError, ValueError, AttributeError):
                         editor.setValue(0)
                 elif ("Boolean" in editor.objectName()) or (
                     "Logical" in editor.objectName()
