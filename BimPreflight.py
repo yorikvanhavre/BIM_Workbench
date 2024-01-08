@@ -568,14 +568,22 @@ class BIM_Preflight_TaskPanel:
                     and (not obj.IfcType in ["Building", "Building Storey", "Site"])
                 ):
                     ok = False
-                    for parent in obj.InListRecursive:
+                    ancestors = obj.InListRecursive
+                    # append extra objects not in InList
+                    if hasattr(obj,"Host") and not obj.Host in ancestors:
+                        ancestors.append(obj.Host)
+                    if hasattr(obj,"Hosts"):
+                        for h in obj.Hosts:
+                            if not h in ancestors:
+                                ancestors.append(h)
+                    for parent in ancestors:
                         # just check if any of the ancestors is a Building Storey for now. Don't check any further...
                         if (
                             hasattr(parent, "IfcRole")
-                            and (parent.IfcRole == "Building Storey")
+                            and (parent.IfcRole in ["Building Storey", "Building"])
                         ) or (
                             hasattr(parent, "IfcType")
-                            and (parent.IfcType == "Building Storey")
+                            and (parent.IfcType in ["Building Storey", "Building"])
                         ):
                             ok = True
                             break
