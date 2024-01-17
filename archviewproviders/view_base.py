@@ -161,3 +161,9 @@ class ViewProviderShapeGroup(object):
 
     def __setstate__(self, _state):
         return None
+
+    def dumps(self):
+        return None
+
+    def loads(self, _state):
+        return None
