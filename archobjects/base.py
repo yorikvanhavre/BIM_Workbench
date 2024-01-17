@@ -52,6 +52,12 @@ class ShapeGroup(object):
     def __setstate__(self, _state):
         return
 
+    def dumps(self):
+        return
+
+    def loads(self, _state):
+        return
+    
     def attach(self, obj):
         obj.addExtension("App::GeoFeatureGroupExtensionPython")
 

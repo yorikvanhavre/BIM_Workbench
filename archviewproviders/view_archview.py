@@ -236,6 +236,12 @@ class ViewProviderArchView(object):
     def __setstate__(self, _state):
         return None
 
+    def dumps(self):
+        return None
+
+    def loads(self, _state):
+        return None
+    
     def doubleClicked(self, vobj):
         self.toggle_activate(vobj)
 
