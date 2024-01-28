@@ -59,6 +59,7 @@ TEMPLIBPATH = os.path.join(FreeCAD.getUserAppDataDir(), "BIM", "OfflineLibrary")
 THUMBNAILSPATH = os.path.join(TEMPLIBPATH, "__thumbcache__")
 LIBRARYURL = "https://github.com/FreeCAD/FreeCAD-library/tree/master"
 RAWURL = LIBRARYURL.replace("/tree", "/raw")
+LIBINDEXFILE = "OfflineLibrary.py"
 USE_API = True  # True to use github API instead of web fetching... Way faster
 REFRESH_INTERVAL = (
     3600  # Min seconds between allowing a new API calls (3600 = one hour)
@@ -520,7 +521,7 @@ class BIM_Library_TaskPanel:
                     dp += root + "/" + k
             return dp, dn, fn
 
-        templibfile = os.path.join(TEMPLIBPATH, "OfflineLibrary.py")
+        templibfile = os.path.join(TEMPLIBPATH, LIBINDEXFILE)
         if not os.path.exists(templibfile):
             FreeCAD.Console.PrintError(
                 translate("BIM", "No structure in cache. Please refresh.") + "\n"
@@ -880,7 +881,7 @@ class BIM_Library_TaskPanel:
                 translate("BIM", "No results fetched from online library") + "\n"
             )
         else:
-            FreeCAD.Console.PrintLog("BIM Library: Reloaded " + str(count) + " files")
+            FreeCAD.Console.PrintLog("BIM Library: Reloaded " + str(count) + " files\n")
         return result
 
     def onCheckOnline(self, state=None):
@@ -893,15 +894,17 @@ class BIM_Library_TaskPanel:
         if state:
             # online
             if USE_API:
+                needrefresh = True
                 timestamp = datetime.datetime.now()
-                stored = self.p.GetUnsigned("LibraryTimeStamp", 0)
-                if stored:
-                    stored = datetime.datetime.fromordinal(stored)
-                    if (timestamp - stored).total_seconds() > REFRESH_INTERVAL:
-                        self.p.SetUnsigned("LibraryTimeStamp", timestamp.toordinal())
-                        self.onRefresh()
-                    else:
-                        FreeCAD.Console.PrintLog("BIM Library: Using cached library\n")
+                if os.path.exists(os.path.join(TEMPLIBPATH, LIBINDEXFILE)):
+                    stored = self.p.GetUnsigned("LibraryTimeStamp", 0)
+                    if stored:
+                        stored = datetime.datetime.fromtimestamp(stored)
+                        if (timestamp - stored).total_seconds() < REFRESH_INTERVAL:
+                            needrefresh = False
+                if needrefresh:
+                    self.p.SetUnsigned("LibraryTimeStamp", int(timestamp.timestamp()))
+                    self.onRefresh()
                 else:
                     FreeCAD.Console.PrintLog("BIM Library: Using cached library\n")
             self.setOnlineModel()
@@ -920,10 +923,13 @@ class BIM_Library_TaskPanel:
             else:
                 rootfiles = self.getOnlineContentsWEB(LIBRARYURL)
             if rootfiles:
-                templibfile = os.path.join(TEMPLIBPATH, "OfflineLibrary.py")
-                tf = open(templibfile, "w")
-                tf.write("library=" + str(rootfiles))
+                templibfile = os.path.join(TEMPLIBPATH, LIBINDEXFILE)
+                os.makedirs(TEMPLIBPATH, exist_ok=True)
+                tf = open(templibfile, "w", encoding="utf8")
+                tf.write("library=" + str(rootfiles) + "\n")
                 tf.close()
+                self.setOnlineModel()
+
 
         from PySide import QtCore, QtGui
 
@@ -941,7 +947,8 @@ class BIM_Library_TaskPanel:
             QtCore.QTimer.singleShot(1, writeOfflineLib)
             self.form.setEnabled(True)
             QtGui.QApplication.restoreOverrideCursor()
-        self.setOnlineModel()
+        else:
+            self.setOnlineModel()
 
     def onCheckFCStdOnly(self, state):
         """if the FCStd only checkbox is clicked"""
