@@ -162,7 +162,7 @@ class BIM_Layers:
                     FreeCAD.ActiveDocument.openTransaction("Layers change")
                     changed = True
                 if self.model.item(row, 1).icon().isNull():
-                    obj = Draft.makeLayer(self.model.item(row, 1).text())
+                    obj = Draft.make_layer(self.model.item(row, 1).text())
                 else:
                     import ifc_tools
                     import FreeCADGui
