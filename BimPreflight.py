@@ -344,12 +344,13 @@ class BIM_Preflight_TaskPanel:
                 elif hasattr(ifcopenshell, "version"):
                     try:
                         from packaging import version
-                        cur_version = version.parse(ifcopenshell.version)
-                        min_version = version.parse("0.6")
-                        if type(cur_version) == version.LegacyVersion:
+                        if "-" in ifcopenshell.version:
                             # Prebuild version have a version like 'v0.7.0-<GIT_COMMIT_ID>,
                             # trying to remove the commit id.
                             cur_version = version.parse(ifcopenshell.version.split('-')[0])
+                        else:
+                            cur_version = version.parse(ifcopenshell.version)
+                        min_version = version.parse("0.6")
                         if cur_version >= min_version:
                             self.passed(test)
                         else:
