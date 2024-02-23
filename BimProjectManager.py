@@ -25,7 +25,9 @@
 
 import os
 import sys
+
 import FreeCAD
+
 from BimTranslateUtils import *
 
 
@@ -43,7 +45,6 @@ class BIM_ProjectManager:
 
     def Activated(self):
         import FreeCADGui
-
         # load dialog
         from PySide import QtCore, QtGui
 
@@ -104,10 +105,10 @@ class BIM_ProjectManager:
         return True
 
     def accept(self):
-        import Draft
         import Arch
-        import Part
+        import Draft
         import FreeCADGui
+        import Part
 
         if self.form.groupNewDocument.isChecked() or (FreeCAD.ActiveDocument is None):
             doc = FreeCAD.newDocument()
@@ -157,15 +158,15 @@ class BIM_ProjectManager:
             distHAxes = FreeCAD.Units.Quantity(self.form.distHAxes.text()).Value
             levelHeight = FreeCAD.Units.Quantity(self.form.levelHeight.text()).Value
             color = self.form.lineColor.property("color").getRgbF()[:3]
+            grp = FreeCAD.ActiveDocument.addObject("App::DocumentObjectGroup")
+            grp.Label = translate("BIM", "Building Layout")
+            building.addObject(grp)
             if buildingWidth and buildingLength:
                 outline = Draft.makeRectangle(buildingLength, buildingWidth, face=False)
                 outline.Label = translate("BIM", "Building Outline")
                 outline.ViewObject.DrawStyle = "Dashed"
                 outline.ViewObject.LineColor = color
                 outline.ViewObject.LineWidth = self.form.lineWidth.value() * 2
-                grp = FreeCAD.ActiveDocument.addObject("App::DocumentObjectGroup")
-                grp.Label = translate("BIM", "Building Layout")
-                building.addObject(grp)
                 grp.addObject(outline)
                 if self.form.buildingName.text():
                     buildingname = self.form.buildingName.text()
@@ -182,8 +183,8 @@ class BIM_ProjectManager:
                     outtext.Label = translate("BIM", "Building Label")
                     outtext.ViewObject.TextColor = color
                     grp.addObject(outtext)
-                if human:
-                    grp.addObject(human)
+            if human:
+                grp.addObject(human)
             axisV = None
             if self.form.countVAxes.value() and distVAxes:
                 axisV = Arch.makeAxis(
@@ -244,6 +245,9 @@ class BIM_ProjectManager:
             if self.form.countLevels.value() and levelHeight:
                 h = 0
                 alabels = []
+                groups = []
+                for i in range(self.form.groupsList.count()):
+                    groups.append(self.form.groupsList.item(i).text())
                 for i in range(self.form.countLevels.value()):
                     lev = Arch.makeFloor()
                     lev.Label = translate("BIM", "Level") + " " + str(i)
@@ -256,6 +260,12 @@ class BIM_ProjectManager:
                         prx.Placement.move(FreeCAD.Vector(0, 0, h))
                         lev.addObject(prx)
                     h += levelHeight
+                    for group in groups:
+                        levGroup = FreeCAD.ActiveDocument.addObject(
+                            "App::DocumentObjectGroup"
+                        )
+                        levGroup.Label = group
+                        lev.addObject(levGroup)
                 if self.form.levelsAxis.isChecked():
                     axisL = Arch.makeAxis(
                         num=self.form.countLevels.value(),
@@ -290,13 +300,12 @@ class BIM_ProjectManager:
                         axisL.setExpression(
                             "Placement.Base.y", outline.Name + ".Placement.Base.y"
                         )
-                        grp.addObject(axisL)
-                        axisL.ViewObject.LabelOffset.Base = FreeCAD.Vector(
-                            -axisL.Length.Value
-                            + Draft.getParam("textheight", 0.20) * 0.43,
-                            0,
-                            Draft.getParam("textheight", 0.20) * 0.43,
-                        )
+                    grp.addObject(axisL)
+                    axisL.ViewObject.LabelOffset.Base = FreeCAD.Vector(
+                        -axisL.Length.Value + Draft.getParam("textheight", 0.20) * 0.43,
+                        0,
+                        Draft.getParam("textheight", 0.20) * 0.43,
+                    )
         self.form.hide()
         FreeCAD.ActiveDocument.recompute()
         if outline:
@@ -321,8 +330,8 @@ class BIM_ProjectManager:
             self.form.groupsList.takeItem(r)
 
     def savePreset(self):
-        from PySide import QtCore, QtGui
         import Arch
+        from PySide import QtCore, QtGui
 
         res = QtGui.QInputDialog.getText(
             None,
