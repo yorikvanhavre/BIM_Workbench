@@ -1,2 +1,13 @@
 *.pyc
 utils/freecad-addons.zip
+# poetry
+poetry.lock
+pyproject.toml
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
