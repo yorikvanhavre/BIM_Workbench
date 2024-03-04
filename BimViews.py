@@ -23,11 +23,14 @@
 """This module contains FreeCAD commands for the BIM workbench"""
 
 
-import os, sys
+import os
+import sys
+
 import FreeCAD
+
 from BimTranslateUtils import *
 
-UPDATEINTERVAL = 2000  # number of milliseconds between BIM Views window update
+UPDATEINTERVAL = 2500  # number of milliseconds between BIM Views window update
 
 
 class BIM_Views:
@@ -95,8 +98,9 @@ class BIM_Views:
                 button.setMaximumSize(QtCore.QSize(size + 4, size + 4))
                 button.setIconSize(QtCore.QSize(size, size))
 
-            # set button icons
-            import Arch_rc, Draft_rc
+            # # set button icons
+            # import Arch_rc
+            # import Draft_rc
 
             dialog.buttonAddLevel.setIcon(QtGui.QIcon(":/icons/Arch_Floor.svg"))
             dialog.buttonAddProxy.setIcon(QtGui.QIcon(":/icons/Draft_SelectPlane.svg"))
@@ -141,8 +145,7 @@ class BIM_Views:
     def update(self, retrigger=True):
         "updates the view manager"
 
-        from PySide import QtCore, QtGui
-        import FreeCADGui
+        from PySide import QtCore
 
         vm = findWidget()
         if vm and FreeCAD.ActiveDocument:
@@ -150,28 +153,70 @@ class BIM_Views:
                 vm.tree.clear()
                 import Draft
 
+                treeViewItemsHold = []
+                soloProxyHold = []
                 for obj in FreeCAD.ActiveDocument.Objects:
                     t = Draft.getType(obj)
-                    if obj and (t in ["Building", "BuildingPart", "WorkingPlaneProxy"]):
-                        u = ""
-                        if t in ["Building", "BuildingPart"]:
-                            u = FreeCAD.Units.Quantity(
-                                obj.Placement.Base.z, FreeCAD.Units.Length
-                            ).UserString
-                        it = QtGui.QTreeWidgetItem([obj.Label, u])
-                        it.setFlags(it.flags() | QtCore.Qt.ItemIsEditable)
-                        it.setToolTip(0, obj.Name)
-                        if obj.ViewObject:
-                            if hasattr(obj.ViewObject, "Proxy") and hasattr(
-                                obj.ViewObject.Proxy, "getIcon"
+                    if obj and (t in ["Building", "BuildingPart"]):
+                        if obj.IfcType == "Building":
+                            building, _ = getTreeViewItem(obj)
+                            subObjs = obj.Group
+                            # find every levels belongs to the floor
+                            for subObj in subObjs:
+                                if Draft.getType(subObj) == "BuildingPart":
+                                    lv, lvH = getTreeViewItem(subObj)
+                                    subSubObjs = subObj.Group
+                                    # find every working plane proxy belongs to the level
+                                    for subSubObj in subSubObjs:
+                                        if (
+                                            Draft.getType(subSubObj)
+                                            == "WorkingPlaneProxy"
+                                        ):
+                                            wp, _ = getTreeViewItem(subSubObj)
+                                            lv.addChild(wp)
+                                    treeViewItemsHold.append((lv, lvH))
+                            sortTreeViewItemsHold = sorted(
+                                treeViewItemsHold, key=lambda x: x[1]
+                            )
+                            treeViewItemsSort = [
+                                item[0] for item in sortTreeViewItemsHold
+                            ]
+                            for lvItem in treeViewItemsSort:
+                                building.addChild(lvItem)
+                            vm.tree.addTopLevelItem(building)
+                            treeViewItemsHold = []
+
+                        if obj.IfcType == "Building Storey":
+                            if obj.getParent() and (
+                                obj.getParent().IfcType == "Building"
                             ):
-                                it.setIcon(
-                                    0, QtGui.QIcon(obj.ViewObject.Proxy.getIcon())
-                                )
-                        vm.tree.addTopLevelItem(it)
-                        # if obj.Name in selected:
-                        if obj in FreeCADGui.Selection.getSelection():
-                            it.setSelected(True)
+                                continue
+                            lv, lvH = getTreeViewItem(obj)
+                            subObjs = obj.Group
+                            # find every working plane proxy belongs to the level
+                            for subObj in subObjs:
+                                if Draft.getType(subObj) == "WorkingPlaneProxy":
+                                    wp, _ = getTreeViewItem(subObj)
+                                    lv.addChild(wp)
+                            treeViewItemsHold.append((lv, lvH))
+                    if obj and (t == "WorkingPlaneProxy"):
+                        if (
+                            obj.getParent()
+                            and obj.getParent().IfcType == "Building Storey"
+                        ):
+                            continue
+                        wp, _ = getTreeViewItem(obj)
+                        soloProxyHold.append(wp)
+                sortTreeViewItemsHold = sorted(treeViewItemsHold, key=lambda x: x[1])
+                treeViewItemsSort = [item[0] for item in sortTreeViewItemsHold]
+                vm.tree.addTopLevelItems(treeViewItemsSort)
+                vm.tree.addTopLevelItems(soloProxyHold)
+
+                # TODO select and edit from View can modify objects
+
+                #         # if obj.Name in selected:
+                #         if obj in FreeCADGui.Selection.getSelection():
+                #             it.setSelected(True)
         if retrigger:
             QtCore.QTimer.singleShot(UPDATEINTERVAL, self.update)
 
@@ -179,6 +224,9 @@ class BIM_Views:
         pref = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM")
         pref.SetInt("ViewManagerColumnWidth", vm.tree.columnWidth(0))
         pref.SetBool("ViewManagerFloating", vm.isFloating())
+
+        # expand
+        vm.tree.expandAll()
 
     def select(self, item, column=None):
         "selects a doc object corresponding to an item"
@@ -334,3 +382,26 @@ def show(item, column=None):
             vm.lastSelected = item
         else:
             vm.lastSelected = item.toolTip(0)
+
+
+def getTreeViewItem(obj):
+    """
+    from FreeCAD object make the TreeWidgetItem including icon Label and LevelHeight
+    and also make a level height in number to sort the order after
+    """
+
+    from PySide import QtCore, QtGui
+
+    lvHStr = FreeCAD.Units.Quantity(
+        obj.Placement.Base.z, FreeCAD.Units.Length
+    ).UserString
+    lvH = round(float(lvHStr.split(" ")[0]), 2)
+    it = QtGui.QTreeWidgetItem([obj.Label, lvHStr])
+    it.setFlags(it.flags() | QtCore.Qt.ItemIsEditable)
+    it.setToolTip(0, obj.Name)
+    if obj.ViewObject:
+        if hasattr(obj.ViewObject, "Proxy") and hasattr(
+            obj.ViewObject.Proxy, "getIcon"
+        ):
+            it.setIcon(0, QtGui.QIcon(obj.ViewObject.Proxy.getIcon()))
+    return (it, lvH)
