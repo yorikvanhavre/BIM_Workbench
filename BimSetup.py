@@ -688,7 +688,7 @@ def getIfcOpenShell(force=False):
                 "Loading list of latest IfcOpenBot builds from https://github.com/IfcOpenBot/IfcOpenShell..."
             )
             url1 = "https://api.github.com/repos/IfcOpenBot/IfcOpenShell/comments?per_page=100"
-            u = urllib.request.urlopen(url1)
+            u = request.urlopen(url1)
             if u:
                 r = u.read()
                 u.close()
@@ -722,7 +722,7 @@ def getIfcOpenShell(force=False):
                             "MacroPath",
                             os.path.join(FreeCAD.getUserAppDataDir(), "Macros"),
                         )
-                        u = urllib.request.urlopen(link)
+                        u = request.urlopen(link)
                         if u:
                             if sys.version_info.major < 3:
                                 import StringIO as io
