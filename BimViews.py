@@ -30,7 +30,7 @@ import FreeCAD
 
 from BimTranslateUtils import *
 
-UPDATEINTERVAL = 2500  # number of milliseconds between BIM Views window update
+UPDATEINTERVAL = 2000  # number of milliseconds between BIM Views window update
 
 
 class BIM_Views:
@@ -99,9 +99,6 @@ class BIM_Views:
                 button.setIconSize(QtCore.QSize(size, size))
 
             # # set button icons
-            # import Arch_rc
-            # import Draft_rc
-
             dialog.buttonAddLevel.setIcon(QtGui.QIcon(":/icons/Arch_Floor.svg"))
             dialog.buttonAddProxy.setIcon(QtGui.QIcon(":/icons/Draft_SelectPlane.svg"))
             dialog.buttonDelete.setIcon(QtGui.QIcon(":/icons/delete.svg"))
@@ -145,6 +142,7 @@ class BIM_Views:
     def update(self, retrigger=True):
         "updates the view manager"
 
+        import FreeCADGui
         from PySide import QtCore
 
         vm = findWidget()
@@ -153,7 +151,8 @@ class BIM_Views:
                 vm.tree.clear()
                 import Draft
 
-                treeViewItemsHold = []
+                treeViewItems = []  # QTreeWidgetItem to Display in tree
+                lvHold = []
                 soloProxyHold = []
                 for obj in FreeCAD.ActiveDocument.Objects:
                     t = Draft.getType(obj)
@@ -161,7 +160,7 @@ class BIM_Views:
                         if obj.IfcType == "Building":
                             building, _ = getTreeViewItem(obj)
                             subObjs = obj.Group
-                            # find every levels belongs to the floor
+                            # find every levels belongs to the building
                             for subObj in subObjs:
                                 if Draft.getType(subObj) == "BuildingPart":
                                     lv, lvH = getTreeViewItem(subObj)
@@ -174,17 +173,13 @@ class BIM_Views:
                                         ):
                                             wp, _ = getTreeViewItem(subSubObj)
                                             lv.addChild(wp)
-                                    treeViewItemsHold.append((lv, lvH))
-                            sortTreeViewItemsHold = sorted(
-                                treeViewItemsHold, key=lambda x: x[1]
-                            )
-                            treeViewItemsSort = [
-                                item[0] for item in sortTreeViewItemsHold
-                            ]
-                            for lvItem in treeViewItemsSort:
+                                    lvHold.append((lv, lvH))
+                            sortLvHold = sorted(lvHold, key=lambda x: x[1])
+                            sortLvItems = [item[0] for item in sortLvHold]
+                            for lvItem in sortLvItems:
                                 building.addChild(lvItem)
-                            vm.tree.addTopLevelItem(building)
-                            treeViewItemsHold = []
+                            treeViewItems.append(building)
+                            lvHold.clear()
 
                         if obj.IfcType == "Building Storey":
                             if obj.getParent() and (
@@ -198,7 +193,7 @@ class BIM_Views:
                                 if Draft.getType(subObj) == "WorkingPlaneProxy":
                                     wp, _ = getTreeViewItem(subObj)
                                     lv.addChild(wp)
-                            treeViewItemsHold.append((lv, lvH))
+                            lvHold.append((lv, lvH))
                     if obj and (t == "WorkingPlaneProxy"):
                         if (
                             obj.getParent()
@@ -207,16 +202,20 @@ class BIM_Views:
                             continue
                         wp, _ = getTreeViewItem(obj)
                         soloProxyHold.append(wp)
-                sortTreeViewItemsHold = sorted(treeViewItemsHold, key=lambda x: x[1])
-                treeViewItemsSort = [item[0] for item in sortTreeViewItemsHold]
-                vm.tree.addTopLevelItems(treeViewItemsSort)
-                vm.tree.addTopLevelItems(soloProxyHold)
+                sortLvHold = sorted(lvHold, key=lambda x: x[1])
+                sortLvItems = [item[0] for item in sortLvHold]
+                treeViewItems = treeViewItems + sortLvItems + soloProxyHold
+                vm.tree.addTopLevelItems(treeViewItems)
 
-                # TODO select and edit from View can modify objects
+                # set TreeVinew Item selected if obj is selected
+                objSelected = FreeCADGui.Selection.getSelection()
+                objNameSelected = [obj.Label for obj in objSelected]
 
-                #         # if obj.Name in selected:
-                #         if obj in FreeCADGui.Selection.getSelection():
-                #             it.setSelected(True)
+                allItemsInTree = getAllItemsInTree(vm.tree)
+                for item in allItemsInTree:
+                    if item.text(0) in objNameSelected:
+                        item.setSelected(True)
+
         if retrigger:
             QtCore.QTimer.singleShot(UPDATEINTERVAL, self.update)
 
@@ -233,6 +232,7 @@ class BIM_Views:
 
         import FreeCADGui
 
+        item.setSelected(True)
         name = item.toolTip(0)
         obj = FreeCAD.ActiveDocument.getObject(name)
         if obj:
@@ -389,7 +389,6 @@ def getTreeViewItem(obj):
     from FreeCAD object make the TreeWidgetItem including icon Label and LevelHeight
     and also make a level height in number to sort the order after
     """
-
     from PySide import QtCore, QtGui
 
     lvHStr = FreeCAD.Units.Quantity(
@@ -405,3 +404,29 @@ def getTreeViewItem(obj):
         ):
             it.setIcon(0, QtGui.QIcon(obj.ViewObject.Proxy.getIcon()))
     return (it, lvH)
+
+
+def getAllItemsInTree(tree_widget):
+    "return list of all items in QtreeWidget"
+
+    def get_child_items(parent_item):
+        child_items = []
+        # get how many sub items
+        child_count = parent_item.childCount()
+        for j in range(child_count):
+            child_item = parent_item.child(j)
+            child_items.append(child_item)
+            child_items.extend(get_child_items(child_item))
+
+        return child_items
+
+    all_items = []
+    # get top level items
+    top_level_item_count = tree_widget.topLevelItemCount()
+    for i in range(top_level_item_count):
+        top_level_item = tree_widget.topLevelItem(i)
+        all_items.append(top_level_item)
+        # iterate sub-items
+        all_items.extend(get_child_items(top_level_item))
+
+    return all_items
