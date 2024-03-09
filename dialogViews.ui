@@ -7,14 +7,14 @@
     <x>0</x>
     <y>0</y>
     <width>291</width>
-    <height>352</height>
+    <height>667</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
-   <property name="margin">
+   <property name="margin" stdset="0">
     <number>0</number>
    </property>
    <item>
@@ -22,10 +22,28 @@
      <property name="editTriggers">
       <set>QAbstractItemView::EditKeyPressed</set>
      </property>
+     <property name="showDropIndicator" stdset="0">
+      <bool>false</bool>
+     </property>
+     <property name="autoExpandDelay">
+      <number>-1</number>
+     </property>
+     <property name="indentation">
+      <number>18</number>
+     </property>
      <property name="rootIsDecorated">
       <bool>false</bool>
      </property>
-     <property name="itemsExpandable">
+     <property name="uniformRowHeights">
+      <bool>false</bool>
+     </property>
+     <property name="sortingEnabled">
+      <bool>false</bool>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+     <property name="expandsOnDoubleClick">
       <bool>false</bool>
      </property>
      <property name="columnCount">
