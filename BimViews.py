@@ -119,7 +119,7 @@ class BIM_Views:
             dialog.buttonRename.clicked.connect(self.rename)
             dialog.tree.itemClicked.connect(self.select)
             dialog.tree.itemDoubleClicked.connect(show)
-            dialog.tree.itemChanged.connect(self.renameObject)
+            dialog.tree.itemChanged.connect(self.editObject)
 
             # set the dock widget
             vm.setObjectName("BIM Views Manager")
@@ -286,13 +286,15 @@ class BIM_Views:
                     item = vm.tree.selectedItems()[-1]
                     vm.tree.editItem(item, 0)
 
-    def renameObject(self, item, column):
-        "renames the actual object"
+    def editObject(self, item, column):
+        "renames or edit height of the actual object"
 
-        if column == 0:
-            obj = FreeCAD.ActiveDocument.getObject(item.toolTip(column))
-            if obj:
+        obj = FreeCAD.ActiveDocument.getObject(item.toolTip(0))
+        if obj:
+            if column == 0:
                 obj.Label = item.text(column)
+            if column == 1:
+                obj.Placement.Base.z = FreeCAD.Units.parseQuantity(item.text(column))
 
     def toggle(self):
         "toggle selected item on/off"
