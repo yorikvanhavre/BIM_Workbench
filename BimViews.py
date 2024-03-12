@@ -27,11 +27,13 @@ import os
 import sys
 
 import FreeCAD
+import FreeCADGui
 
 from BimTranslateUtils import *
 
-UPDATEINTERVAL = 2000  # number of milliseconds between BIM Views window update
 
+UPDATEINTERVAL = 2000  # number of milliseconds between BIM Views window update
+PREFS = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM")
 
 class BIM_Views:
     def GetResources(self):
@@ -45,7 +47,6 @@ class BIM_Views:
         }
 
     def Activated(self):
-        import FreeCADGui
         from PySide import QtCore, QtGui
 
         vm = findWidget()
@@ -61,16 +62,12 @@ class BIM_Views:
                 vm.hide()
                 if bimviewsbutton:
                     bimviewsbutton.setChecked(False)
-                    FreeCAD.ParamGet(
-                        "User parameter:BaseApp/Preferences/Mod/BIM"
-                    ).SetBool("RestoreBimViews", False)
+                    PREFS.SetBool("RestoreBimViews", False)
             else:
                 vm.show()
                 if bimviewsbutton:
                     bimviewsbutton.setChecked(True)
-                    FreeCAD.ParamGet(
-                        "User parameter:BaseApp/Preferences/Mod/BIM"
-                    ).SetBool("RestoreBimViews", True)
+                    PREFS.SetBool("RestoreBimViews", True)
                 self.update()
         else:
             vm = QtGui.QDockWidget()
@@ -120,29 +117,29 @@ class BIM_Views:
             dialog.tree.itemClicked.connect(self.select)
             dialog.tree.itemDoubleClicked.connect(show)
             dialog.tree.itemChanged.connect(self.editObject)
+            vm.dockLocationChanged.connect(self.onDockLocationChanged)
 
             # set the dock widget
+            area = PREFS.GetInt("BimViewArea", 1)
             vm.setObjectName("BIM Views Manager")
-            vm.setWindowTitle(translate("BIM", "BIM Views manager"))
+            vm.setWindowTitle(translate("BIM", "BIM"))
             mw = FreeCADGui.getMainWindow()
-            mw.addDockWidget(QtCore.Qt.LeftDockWidgetArea, vm)
+            mw.addDockWidget(self.getDockArea(area), vm)
 
             # restore saved settings
-            pref = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM")
-            vm.tree.setColumnWidth(0, pref.GetInt("ViewManagerColumnWidth", 100))
-            vm.setFloating(pref.GetBool("ViewManagerFloating", False))
+            vm.tree.setColumnWidth(0, PREFS.GetInt("ViewManagerColumnWidth", 100))
+            vm.setFloating(PREFS.GetBool("ViewManagerFloating", False))
 
             # check the status bar button
             if bimviewsbutton:
                 bimviewsbutton.setChecked(True)
-            pref.SetBool("RestoreBimViews", True)
+            PREFS.SetBool("RestoreBimViews", True)
 
             self.update()
 
     def update(self, retrigger=True):
         "updates the view manager"
 
-        import FreeCADGui
         from PySide import QtCore
 
         vm = findWidget()
@@ -220,17 +217,14 @@ class BIM_Views:
             QtCore.QTimer.singleShot(UPDATEINTERVAL, self.update)
 
         # save state
-        pref = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM")
-        pref.SetInt("ViewManagerColumnWidth", vm.tree.columnWidth(0))
-        pref.SetBool("ViewManagerFloating", vm.isFloating())
+        PREFS.SetInt("ViewManagerColumnWidth", vm.tree.columnWidth(0))
+        PREFS.SetBool("ViewManagerFloating", vm.isFloating())
 
         # expand
         vm.tree.expandAll()
 
     def select(self, item, column=None):
         "selects a doc object corresponding to an item"
-
-        import FreeCADGui
 
         item.setSelected(True)
         name = item.toolTip(0)
@@ -333,6 +327,31 @@ class BIM_Views:
                         obj.ViewObject.Proxy.writeCamera()
         FreeCAD.ActiveDocument.recompute()
 
+    def onDockLocationChanged(self, area):
+        """Saves dock widget size and location"""
+
+        PREFS.SetInt("BimViewArea", int(area))
+        mw = FreeCADGui.getMainWindow()
+        vm = findWidget()
+        if vm:
+            PREFS.SetBool("BimViewFloat", vm.isFloating())
+            PREFS.SetInt("BimViewWidth", vm.width())
+            PREFS.SetInt("BimViewHeight", vm.height())
+
+    def getDockArea(self, area):
+        """Turns an int into a qt dock area"""
+
+        from PySide import QtCore
+
+        if area == 1:
+            return QtCore.Qt.LeftDockWidgetArea
+        elif area == 4:
+            return QtCore.Qt.TopDockWidgetArea
+        elif area == 8:
+            return QtCore.Qt.BottomDockWidgetArea
+        else:
+            return QtCore.Qt.RightDockWidgetArea
+
 
 # These functions need to be localized outside the command class, as they are used outside this module
 
@@ -340,7 +359,6 @@ class BIM_Views:
 def findWidget():
     "finds the manager widget, if present"
 
-    import FreeCADGui
     from PySide import QtGui
 
     mw = FreeCADGui.getMainWindow()
@@ -352,8 +370,6 @@ def findWidget():
 
 def show(item, column=None):
     "item has been double-clicked"
-
-    import FreeCADGui
 
     obj = None
     vm = findWidget()
