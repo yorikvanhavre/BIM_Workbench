@@ -121,9 +121,14 @@ class BIM_Views:
 
             # set the dock widget
             area = PREFS.GetInt("BimViewArea", 1)
+            floating = PREFS.GetBool("BimViewFloat", True)
+            height = PREFS.GetBool("BimViewWidth", 200)
+            width = PREFS.GetBool("BimViewHeight", 300)
             vm.setObjectName("BIM Views Manager")
             vm.setWindowTitle(translate("BIM", "BIM"))
             mw = FreeCADGui.getMainWindow()
+            vm.setFloating(floating)
+            vm.setGeometry(vm.x(), vm.y(), width, height)
             mw.addDockWidget(self.getDockArea(area), vm)
 
             # restore saved settings

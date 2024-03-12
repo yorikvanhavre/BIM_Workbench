@@ -6,15 +6,24 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>291</width>
-    <height>667</height>
+    <width>268</width>
+    <height>322</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
-   <property name="margin" stdset="0">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
     <number>0</number>
    </property>
    <item>

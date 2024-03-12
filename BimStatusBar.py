@@ -146,7 +146,7 @@ def setStatusIcons(show=True):
                 statuswidget = st.findChild(QtGui.QToolBar, "BIMStatusWidget")
                 if statuswidget:
                     updatebutton = statuswidget.findChild(
-                        QtGui.QPushButton, "UpdateButton"
+                        QtGui.QAction, "UpdateButton"
                     )
                     if updatebutton:
                         # updatebutton.show() # doesn't work for some reason
@@ -157,6 +157,7 @@ def setStatusIcons(show=True):
             del FreeCAD.bim_update_checker
 
     def toggleContextMenu(point):
+        # DISABLED - TODO need to find a way to add a context menu to a QAction...
         FreeCADGui.BimToggleMenu = QtGui.QMenu()
         for t in ["Report view", "Python console", "Selection view", "Combo View"]:
             a = QtGui.QAction(t)
@@ -188,6 +189,106 @@ def setStatusIcons(show=True):
             else:
                 statuswidget = QtGui.QToolBar()
                 statuswidget.setObjectName("BIMStatusWidget")
+                s = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/General").GetInt("ToolbarIconSize", 24)
+                statuswidget.setIconSize(QtCore.QSize(s,s))
+                st.insertPermanentWidget(2, statuswidget)
+
+                # report panels toggle button
+                togglebutton = QtGui.QAction()
+                togglemenu = QtGui.QMenu()
+                for t in ["Toggle", "Report view", "Python console", "Selection view", "Combo View"]:
+                    a = QtGui.QAction(t)
+                    togglemenu.addAction(a)
+                togglemenu.triggered.connect(toggleSaveSettings)
+                togglebutton.setIcon(
+                    QtGui.QIcon(
+                        os.path.join(
+                            os.path.dirname(__file__), "icons", "BIM_TogglePanels.svg"
+                        )
+                    )
+                )
+                togglebutton.setText("")
+                togglebutton.setToolTip(
+                    translate("BIM", "Toggle report panels on/off (Ctrl+0)")
+                )
+                togglebutton.setCheckable(True)
+                rv = mw.findChild(QtGui.QWidget, "Python console")
+                if rv and rv.isVisible():
+                    togglebutton.setChecked(True)
+                statuswidget.togglebutton = togglebutton
+                #togglebutton.setMenu(togglemenu)
+                togglebutton.triggered.connect(toggle)
+                statuswidget.addAction(togglebutton)
+
+                # bim views widget toggle button
+                import BimViews
+
+                bimviewsbutton = QtGui.QAction()
+                bimviewsbutton.setIcon(
+                    QtGui.QIcon(
+                        os.path.join(
+                            os.path.dirname(__file__), "icons", "BIM_Views.svg"
+                        )
+                    )
+                )
+                bimviewsbutton.setText("")
+                bimviewsbutton.setToolTip(
+                    translate("BIM", "Toggle BIM views panel on/off (Ctrl+9)")
+                )
+                bimviewsbutton.setCheckable(True)
+                if BimViews.findWidget():
+                    bimviewsbutton.setChecked(True)
+                statuswidget.bimviewsbutton = bimviewsbutton
+                bimviewsbutton.triggered.connect(toggleBimViews)
+                statuswidget.addAction(bimviewsbutton)
+
+                # background toggle button
+                bgbutton = QtGui.QAction()
+                #bwidth = bgbutton.fontMetrics().boundingRect("AAAA").width()
+                #bgbutton.setMaximumWidth(bwidth)
+                bgbutton.setIcon(
+                    QtGui.QIcon(
+                        os.path.join(
+                            os.path.dirname(__file__), "icons", "BIM_Background.svg"
+                        )
+                    )
+                )
+                bgbutton.setText("")
+                bgbutton.setToolTip(
+                    translate(
+                        "BIM", "Toggle 3D view background between simple and gradient"
+                    )
+                )
+                statuswidget.bgbutton = bgbutton
+                bgbutton.triggered.connect(toggleBackground)
+                statuswidget.addAction(bgbutton)
+
+                # ifc widgets
+                try:
+                    import ifc_status
+                except:
+                    pass
+                else:
+                    ifc_status.set_status_widget(statuswidget)
+
+                # update notifier button (starts hidden)
+                updatebutton = QtGui.QAction()
+                updatebutton.setObjectName("UpdateButton")
+                #updatebutton.setMaximumWidth(bwidth)
+                updatebutton.setIcon(QtGui.QIcon(":/icons/view-refresh.svg"))
+                updatebutton.setText("")
+                updatebutton.setToolTip(
+                    translate(
+                        "BIM",
+                        "An update to the BIM workbench is available. Click here to open the addons manager.",
+                    )
+                )
+                updatebutton.triggered.connect(addonMgr)
+                updatebutton.setVisible(False)
+                statuswidget.addAction(updatebutton)
+                QtCore.QTimer.singleShot(
+                    2500, checkUpdates
+                )  # delay a bit the check for BIM WB update...
 
                 # nudge button
                 nudge = QtGui.QPushButton(nudgeLabelsM[-1])
@@ -218,116 +319,6 @@ def setStatusIcons(show=True):
                 statuswidget.nudgeLabelsI = nudgeLabelsI
                 statuswidget.nudgeLabelsM = nudgeLabelsM
 
-                st.addPermanentWidget(statuswidget)
-
-                # report panels toggle button
-                togglebutton = QtGui.QPushButton()
-                bwidth = togglebutton.fontMetrics().boundingRect("AAAA").width()
-                togglebutton.setMaximumWidth(bwidth)
-                togglebutton.setIcon(
-                    QtGui.QIcon(
-                        os.path.join(
-                            os.path.dirname(__file__), "icons", "BIM_TogglePanels.svg"
-                        )
-                    )
-                )
-                togglebutton.setText("")
-                togglebutton.setToolTip(
-                    translate("BIM", "Toggle report panels on/off (Ctrl+0)")
-                )
-                togglebutton.setFlat(True)
-                togglebutton.setCheckable(True)
-                togglebutton.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
-                togglebutton.customContextMenuRequested.connect(toggleContextMenu)
-                rv = mw.findChild(QtGui.QWidget, "Python console")
-                if rv and rv.isVisible():
-                    togglebutton.setChecked(True)
-                statuswidget.togglebutton = togglebutton
-                QtCore.QObject.connect(
-                    togglebutton, QtCore.SIGNAL("clicked(bool)"), toggle
-                )
-                statuswidget.addWidget(togglebutton)
-
-                # bim views widget toggle button
-                import BimViews
-
-                bimviewsbutton = QtGui.QPushButton()
-                bwidth = bimviewsbutton.fontMetrics().boundingRect("AAAA").width()
-                bimviewsbutton.setMaximumWidth(bwidth)
-                bimviewsbutton.setIcon(
-                    QtGui.QIcon(
-                        os.path.join(
-                            os.path.dirname(__file__), "icons", "BIM_Views.svg"
-                        )
-                    )
-                )
-                bimviewsbutton.setText("")
-                bimviewsbutton.setToolTip(
-                    translate("BIM", "Toggle BIM views panel on/off (Ctrl+9)")
-                )
-                bimviewsbutton.setFlat(True)
-                bimviewsbutton.setCheckable(True)
-                if BimViews.findWidget():
-                    bimviewsbutton.setChecked(True)
-                statuswidget.bimviewsbutton = bimviewsbutton
-                QtCore.QObject.connect(
-                    bimviewsbutton, QtCore.SIGNAL("clicked(bool)"), toggleBimViews
-                )
-                statuswidget.addWidget(bimviewsbutton)
-
-                # background toggle button
-                bgbutton = QtGui.QPushButton()
-                bwidth = bgbutton.fontMetrics().boundingRect("AAAA").width()
-                bgbutton.setMaximumWidth(bwidth)
-                bgbutton.setIcon(
-                    QtGui.QIcon(
-                        os.path.join(
-                            os.path.dirname(__file__), "icons", "BIM_Background.svg"
-                        )
-                    )
-                )
-                bgbutton.setText("")
-                bgbutton.setToolTip(
-                    translate(
-                        "BIM", "Toggle 3D view background between simple and gradient"
-                    )
-                )
-                bgbutton.setFlat(True)
-                statuswidget.bgbutton = bgbutton
-                QtCore.QObject.connect(
-                    bgbutton, QtCore.SIGNAL("clicked(bool)"), toggleBackground
-                )
-                statuswidget.addWidget(bgbutton)
-
-                # ifc widgets
-                try:
-                    import ifc_status
-                except:
-                    pass
-                else:
-                    ifc_status.set_status_widget(statuswidget)
-
-                # update notifier button (starts hidden)
-                updatebutton = QtGui.QPushButton()
-                updatebutton.setObjectName("UpdateButton")
-                updatebutton.setMaximumWidth(bwidth)
-                updatebutton.setIcon(QtGui.QIcon(":/icons/view-refresh.svg"))
-                updatebutton.setText("")
-                updatebutton.setToolTip(
-                    translate(
-                        "BIM",
-                        "An update to the BIM workbench is available. Click here to open the addons manager.",
-                    )
-                )
-                updatebutton.setFlat(True)
-                QtCore.QObject.connect(
-                    updatebutton, QtCore.SIGNAL("pressed()"), addonMgr
-                )
-                updatebutton.hide()
-                statuswidget.addWidget(updatebutton)
-                QtCore.QTimer.singleShot(
-                    2500, checkUpdates
-                )  # delay a bit the check for BIM WB update...
         else:
             if statuswidget is None:
                 # when switching workbenches, the toolbar sometimes "jumps"
