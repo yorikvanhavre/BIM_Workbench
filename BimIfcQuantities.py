@@ -82,6 +82,11 @@ class BIM_IfcQuantities:
             role = self.getRole(obj)
             if role:
                 self.objectslist[obj.Name] = role
+                # support for arrays
+                array = self.getArray(obj)
+                for i in range(array):
+                    if i > 0: # the first item already went above
+                        self.objectslist[obj.Name+"+array"+str(i)] = role
         try:
             import ArchIFC
 
@@ -137,6 +142,17 @@ class BIM_IfcQuantities:
         self.update()
         self.form.show()
 
+    def getArray(self, obj):
+        "returns a count number if this object needs to be duplicated"
+
+        import Draft
+
+        if len(obj.InList) == 1:
+            parent = obj.InList[0]
+            if Draft.getType(parent) == "Array":
+                return parent.Count
+        return 0
+
     def decamelize(self, s):
         return "".join([" " + c if c.isupper() else c for c in s]).strip(" ")
 
@@ -167,6 +183,8 @@ class BIM_IfcQuantities:
                 groups.setdefault(role, []).append(name)
             for names in groups.values():
                 for name in names:
+                    if "+array" in name:
+                        name = name.split("+array")[0]
                     obj = FreeCAD.ActiveDocument.getObject(name)
                     if obj:
                         if (
