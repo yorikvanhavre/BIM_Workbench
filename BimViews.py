@@ -132,12 +132,20 @@ class BIM_Views:
             floating = PREFS.GetBool("BimViewFloat", True)
             height = PREFS.GetBool("BimViewWidth", 200)
             width = PREFS.GetBool("BimViewHeight", 300)
+            tabs = PREFS.GetString("BimViewTabs", "")
             vm.setObjectName("BIM Views Manager")
             vm.setWindowTitle(translate("BIM", "BIM"))
             mw = FreeCADGui.getMainWindow()
             vm.setFloating(floating)
             vm.setGeometry(vm.x(), vm.y(), width, height)
             mw.addDockWidget(self.getDockArea(area), vm)
+            if tabs:
+                tabs = tabs.split("+")
+                for tab in tabs:
+                    dw = mw.findChild(QtGui.QDockWidget, tab)
+                    if dw:
+                        mw.tabifyDockWidget(dw, vm)
+                        break
 
             # restore saved settings
             vm.tree.setColumnWidth(0, PREFS.GetInt("ViewManagerColumnWidth", 100))
@@ -350,6 +358,8 @@ class BIM_Views:
             PREFS.SetBool("BimViewFloat", vm.isFloating())
             PREFS.SetInt("BimViewWidth", vm.width())
             PREFS.SetInt("BimViewHeight", vm.height())
+            tabs = "+".join([o.objectName() for o in mw.tabifiedDockWidgets(vm)])
+            PREFS.SetString("BimViewTabs", tabs)
 
     def getDockArea(self, area):
         """Turns an int into a qt dock area"""
