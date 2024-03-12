@@ -299,6 +299,14 @@ def setStatusIcons(show=True):
                 )
                 statuswidget.addWidget(bgbutton)
 
+                # ifc widgets
+                try:
+                    import ifc_status
+                except:
+                    pass
+                else:
+                    ifc_status.set_status_widget(statuswidget)
+
                 # update notifier button (starts hidden)
                 updatebutton = QtGui.QPushButton()
                 updatebutton.setObjectName("UpdateButton")
