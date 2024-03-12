@@ -83,17 +83,16 @@ class BIM_Views:
             size = FreeCAD.ParamGet(
                 "User parameter:BaseApp/Preferences/General"
             ).GetInt("ToolbarIconSize", 24)
-            for button in [
-                dialog.buttonAddLevel,
-                dialog.buttonAddProxy,
-                dialog.buttonDelete,
-                dialog.buttonToggle,
-                dialog.buttonIsolate,
-                dialog.buttonSaveView,
-                dialog.buttonRename,
-            ]:
-                button.setMaximumSize(QtCore.QSize(size + 4, size + 4))
-                button.setIconSize(QtCore.QSize(size, size))
+            toolbar = QtGui.QToolBar()
+            toolbar.setIconSize(QtCore.QSize(size, size))
+            dialog.horizontalLayout.addWidget(toolbar)
+            for button in ["AddLevel","AddProxy",
+                           "Delete","Toggle",
+                           "Isolate","SaveView",
+                           "Rename",]:
+                action = QtGui.QAction()
+                toolbar.addAction(action)
+                setattr(dialog,"button"+button, action)
 
             # # set button icons
             dialog.buttonAddLevel.setIcon(QtGui.QIcon(":/icons/Arch_Floor.svg"))
@@ -105,15 +104,24 @@ class BIM_Views:
             dialog.buttonRename.setIcon(
                 QtGui.QIcon(":/icons/accessories-text-editor.svg")
             )
+            
+            # set tooltips
+            dialog.buttonAddLevel.setToolTip(translate("BIM","Creates a new level"))
+            dialog.buttonAddProxy.setToolTip(translate("BIM","Creates a new Working Plane Proxy"))
+            dialog.buttonDelete.setToolTip(translate("BIM","Deletes the selected item"))
+            dialog.buttonToggle.setToolTip(translate("BIM","Toggles selected items on/off"))
+            dialog.buttonIsolate.setToolTip(translate("BIM","Turns all items off except the selected ones"))
+            dialog.buttonSaveView.setToolTip(translate("BIM","Saves the current camera position to the selected items"))
+            dialog.buttonRename.setToolTip(translate("BIM","Renames the selected item"))
 
             # connect signals
-            dialog.buttonAddLevel.clicked.connect(self.addLevel)
-            dialog.buttonAddProxy.clicked.connect(self.addProxy)
-            dialog.buttonDelete.clicked.connect(self.delete)
-            dialog.buttonToggle.clicked.connect(self.toggle)
-            dialog.buttonIsolate.clicked.connect(self.isolate)
-            dialog.buttonSaveView.clicked.connect(self.saveView)
-            dialog.buttonRename.clicked.connect(self.rename)
+            dialog.buttonAddLevel.triggered.connect(self.addLevel)
+            dialog.buttonAddProxy.triggered.connect(self.addProxy)
+            dialog.buttonDelete.triggered.connect(self.delete)
+            dialog.buttonToggle.triggered.connect(self.toggle)
+            dialog.buttonIsolate.triggered.connect(self.isolate)
+            dialog.buttonSaveView.triggered.connect(self.saveView)
+            dialog.buttonRename.triggered.connect(self.rename)
             dialog.tree.itemClicked.connect(self.select)
             dialog.tree.itemDoubleClicked.connect(show)
             dialog.tree.itemChanged.connect(self.editObject)
