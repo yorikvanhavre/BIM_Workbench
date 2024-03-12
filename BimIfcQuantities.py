@@ -182,9 +182,11 @@ class BIM_IfcQuantities:
             for name, role in self.objectslist.items():
                 groups.setdefault(role, []).append(name)
             for names in groups.values():
+                suffix = ""
                 for name in names:
                     if "+array" in name:
                         name = name.split("+array")[0]
+                        suffix = " (duplicate)"
                     obj = FreeCAD.ActiveDocument.getObject(name)
                     if obj:
                         if (
@@ -193,8 +195,8 @@ class BIM_IfcQuantities:
                             if obj.isDerivedFrom("Part::Feature") and not (
                                 Draft.getType(obj) == "Site"
                             ):
-                                it1 = QtGui.QStandardItem(obj.Label)
-                                it1.setToolTip(name)
+                                it1 = QtGui.QStandardItem(obj.Label + suffix)
+                                it1.setToolTip(name + suffix)
                                 it1.setEditable(False)
                                 if QtCore.QFileInfo(
                                     ":/icons/Arch_" + obj.Proxy.Type + "_Tree.svg"
