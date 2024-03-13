@@ -69,7 +69,7 @@
      </attribute>
      <column>
       <property name="text">
-       <string>Level/Proxy</string>
+       <string>Element</string>
       </property>
      </column>
      <column>

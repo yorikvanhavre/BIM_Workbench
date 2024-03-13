@@ -95,7 +95,7 @@ class BIM_Views:
                 setattr(dialog,"button"+button, action)
 
             # # set button icons
-            dialog.buttonAddLevel.setIcon(QtGui.QIcon(":/icons/Arch_Floor.svg"))
+            dialog.buttonAddLevel.setIcon(QtGui.QIcon(":/icons/Arch_Floor_Tree.svg"))
             dialog.buttonAddProxy.setIcon(QtGui.QIcon(":/icons/Draft_SelectPlane.svg"))
             dialog.buttonDelete.setIcon(QtGui.QIcon(":/icons/delete.svg"))
             dialog.buttonToggle.setIcon(QtGui.QIcon(":/icons/dagViewVisible.svg"))
@@ -125,7 +125,8 @@ class BIM_Views:
             dialog.tree.itemClicked.connect(self.select)
             dialog.tree.itemDoubleClicked.connect(show)
             dialog.tree.itemChanged.connect(self.editObject)
-            vm.dockLocationChanged.connect(self.onDockLocationChanged)
+            # delay connecting after FreeCAD finishes setting up
+            QtCore.QTimer.singleShot(UPDATEINTERVAL, self.connectDock)
 
             # set the dock widget
             area = PREFS.GetInt("BimViewArea", 1)
@@ -158,6 +159,13 @@ class BIM_Views:
 
             self.update()
 
+    def connectDock(self):
+        "watch for dock location"
+
+        vm = findWidget()
+        if vm:
+            vm.dockLocationChanged.connect(self.onDockLocationChanged)
+
     def update(self, retrigger=True):
         "updates the view manager"
 
@@ -174,13 +182,13 @@ class BIM_Views:
                 soloProxyHold = []
                 for obj in FreeCAD.ActiveDocument.Objects:
                     t = Draft.getType(obj)
-                    if obj and (t in ["Building", "BuildingPart"]):
-                        if obj.IfcType == "Building":
+                    if obj and (t in ["Building", "BuildingPart", "IfcBuilding", "IfcBuildingStorey"]):
+                        if t in ["Building", "IfcBuilding"]:
                             building, _ = getTreeViewItem(obj)
                             subObjs = obj.Group
                             # find every levels belongs to the building
                             for subObj in subObjs:
-                                if Draft.getType(subObj) == "BuildingPart":
+                                if Draft.getType(subObj) in ["BuildingPart", "Building Storey", "IfcBuildingStorey"]:
                                     lv, lvH = getTreeViewItem(subObj)
                                     subSubObjs = subObj.Group
                                     # find every working plane proxy belongs to the level
@@ -199,10 +207,8 @@ class BIM_Views:
                             treeViewItems.append(building)
                             lvHold.clear()
 
-                        if obj.IfcType == "Building Storey":
-                            if obj.getParent() and (
-                                obj.getParent().IfcType == "Building"
-                            ):
+                        if t in ["Building Storey", "IfcBuildingStorey"]:
+                            if Draft.getType(getParent(obj)) in ["Building", "IfcBuilding"]:
                                 continue
                             lv, lvH = getTreeViewItem(obj)
                             subObjs = obj.Group
@@ -435,6 +441,12 @@ def getTreeViewItem(obj):
     lvHStr = FreeCAD.Units.Quantity(
         obj.Placement.Base.z, FreeCAD.Units.Length
     ).UserString
+    if lvHStr == 0:
+        # override with Elevation property if available
+        if hasattr(obj, "Elevation"):
+            lvHStr = FreeCAD.Units.Quantity(
+                obj.Elevation, FreeCAD.Units.Length
+            ).UserString
     lvH = round(float(lvHStr.split(" ")[0]), 2)
     it = QtGui.QTreeWidgetItem([obj.Label, lvHStr])
     it.setFlags(it.flags() | QtCore.Qt.ItemIsEditable)
@@ -471,3 +483,14 @@ def getAllItemsInTree(tree_widget):
         all_items.extend(get_child_items(top_level_item))
 
     return all_items
+
+
+def getParent(obj):
+    "return the first parent of this object"
+
+    if obj.getParent():
+        return obj.getParent()
+    else:
+        for parent in obj.InList:
+            if hasattr(parent, "Group") and obj in parent.Group:
+                return parent
