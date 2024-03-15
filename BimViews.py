@@ -438,10 +438,9 @@ def getTreeViewItem(obj):
     """
     from PySide import QtCore, QtGui
 
-    lvHStr = FreeCAD.Units.Quantity(
-        obj.Placement.Base.z, FreeCAD.Units.Length
-    ).UserString
-    if lvHStr == 0:
+    z = FreeCAD.Units.Quantity(obj.Placement.Base.z, FreeCAD.Units.Length)
+    lvHStr = z.UserString
+    if z.Value == 0:
         # override with Elevation property if available
         if hasattr(obj, "Elevation"):
             lvHStr = FreeCAD.Units.Quantity(
