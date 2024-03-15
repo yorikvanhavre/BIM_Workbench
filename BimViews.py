@@ -183,7 +183,7 @@ class BIM_Views:
                 for obj in FreeCAD.ActiveDocument.Objects:
                     t = Draft.getType(obj)
                     if obj and (t in ["Building", "BuildingPart", "IfcBuilding", "IfcBuildingStorey"]):
-                        if t in ["Building", "IfcBuilding"]:
+                        if t in ["Building", "IfcBuilding"] or getattr(obj, "IfcType", "") == "Building":
                             building, _ = getTreeViewItem(obj)
                             subObjs = obj.Group
                             # find every levels belongs to the building
@@ -207,8 +207,8 @@ class BIM_Views:
                             treeViewItems.append(building)
                             lvHold.clear()
 
-                        if t in ["Building Storey", "IfcBuildingStorey"]:
-                            if Draft.getType(getParent(obj)) in ["Building", "IfcBuilding"]:
+                        if t in ["Building Storey", "IfcBuildingStorey"] or getattr(obj, "IfcType", "") == "Building Storey":
+                            if Draft.getType(getParent(obj)) in ["Building", "IfcBuilding"] or getattr(getParent(obj), "IfcType", "") == "Building":
                                 continue
                             lv, lvH = getTreeViewItem(obj)
                             subObjs = obj.Group
