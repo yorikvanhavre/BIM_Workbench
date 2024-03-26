@@ -731,6 +731,14 @@ static char * IFC_xpm[] = {
 
         Log("BIM workbench deactivated\n")
 
+        # Ifc stuff
+
+        try:
+            import ifc_status
+            ifc_status.toggle_lock(False)
+        except:
+            pass
+
     def ContextMenu(self, recipient):
         translate = FreeCAD.Qt.translate
 
