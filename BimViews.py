@@ -31,9 +31,9 @@ import FreeCADGui
 
 from BimTranslateUtils import *
 
-
 UPDATEINTERVAL = 2000  # number of milliseconds between BIM Views window update
 PREFS = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/BIM")
+
 
 class BIM_Views:
     def GetResources(self):
@@ -86,13 +86,18 @@ class BIM_Views:
             toolbar = QtGui.QToolBar()
             toolbar.setIconSize(QtCore.QSize(size, size))
             dialog.horizontalLayout.addWidget(toolbar)
-            for button in ["AddLevel","AddProxy",
-                           "Delete","Toggle",
-                           "Isolate","SaveView",
-                           "Rename",]:
+            for button in [
+                "AddLevel",
+                "AddProxy",
+                "Delete",
+                "Toggle",
+                "Isolate",
+                "SaveView",
+                "Rename",
+            ]:
                 action = QtGui.QAction()
                 toolbar.addAction(action)
-                setattr(dialog,"button"+button, action)
+                setattr(dialog, "button" + button, action)
 
             # # set button icons
             dialog.buttonAddLevel.setIcon(QtGui.QIcon(":/icons/Arch_Floor_Tree.svg"))
@@ -104,15 +109,29 @@ class BIM_Views:
             dialog.buttonRename.setIcon(
                 QtGui.QIcon(":/icons/accessories-text-editor.svg")
             )
-            
+
             # set tooltips
-            dialog.buttonAddLevel.setToolTip(translate("BIM","Creates a new level"))
-            dialog.buttonAddProxy.setToolTip(translate("BIM","Creates a new Working Plane Proxy"))
-            dialog.buttonDelete.setToolTip(translate("BIM","Deletes the selected item"))
-            dialog.buttonToggle.setToolTip(translate("BIM","Toggles selected items on/off"))
-            dialog.buttonIsolate.setToolTip(translate("BIM","Turns all items off except the selected ones"))
-            dialog.buttonSaveView.setToolTip(translate("BIM","Saves the current camera position to the selected items"))
-            dialog.buttonRename.setToolTip(translate("BIM","Renames the selected item"))
+            dialog.buttonAddLevel.setToolTip(translate("BIM", "Creates a new level"))
+            dialog.buttonAddProxy.setToolTip(
+                translate("BIM", "Creates a new Working Plane Proxy")
+            )
+            dialog.buttonDelete.setToolTip(
+                translate("BIM", "Deletes the selected item")
+            )
+            dialog.buttonToggle.setToolTip(
+                translate("BIM", "Toggles selected items on/off")
+            )
+            dialog.buttonIsolate.setToolTip(
+                translate("BIM", "Turns all items off except the selected ones")
+            )
+            dialog.buttonSaveView.setToolTip(
+                translate(
+                    "BIM", "Saves the current camera position to the selected items"
+                )
+            )
+            dialog.buttonRename.setToolTip(
+                translate("BIM", "Renames the selected item")
+            )
 
             # connect signals
             dialog.buttonAddLevel.triggered.connect(self.addLevel)
@@ -182,13 +201,28 @@ class BIM_Views:
                 soloProxyHold = []
                 for obj in FreeCAD.ActiveDocument.Objects:
                     t = Draft.getType(obj)
-                    if obj and (t in ["Building", "BuildingPart", "IfcBuilding", "IfcBuildingStorey"]):
-                        if t in ["Building", "IfcBuilding"] or getattr(obj, "IfcType", "") == "Building":
+                    if obj and (
+                        t
+                        in [
+                            "Building",
+                            "BuildingPart",
+                            "IfcBuilding",
+                            "IfcBuildingStorey",
+                        ]
+                    ):
+                        if (
+                            t in ["Building", "IfcBuilding"]
+                            or getattr(obj, "IfcType", "") == "Building"
+                        ):
                             building, _ = getTreeViewItem(obj)
                             subObjs = obj.Group
                             # find every levels belongs to the building
                             for subObj in subObjs:
-                                if Draft.getType(subObj) in ["BuildingPart", "Building Storey", "IfcBuildingStorey"]:
+                                if Draft.getType(subObj) in [
+                                    "BuildingPart",
+                                    "Building Storey",
+                                    "IfcBuildingStorey",
+                                ]:
                                     lv, lvH = getTreeViewItem(subObj)
                                     subSubObjs = subObj.Group
                                     # find every working plane proxy belongs to the level
@@ -207,8 +241,15 @@ class BIM_Views:
                             treeViewItems.append(building)
                             lvHold.clear()
 
-                        if t in ["Building Storey", "IfcBuildingStorey"] or getattr(obj, "IfcType", "") == "Building Storey":
-                            if Draft.getType(getParent(obj)) in ["Building", "IfcBuilding"] or getattr(getParent(obj), "IfcType", "") == "Building":
+                        if (
+                            t in ["Building Storey", "IfcBuildingStorey"]
+                            or getattr(obj, "IfcType", "") == "Building Storey"
+                        ):
+                            if (
+                                Draft.getType(getParent(obj))
+                                in ["Building", "IfcBuilding"]
+                                or getattr(getParent(obj), "IfcType", "") == "Building"
+                            ):
                                 continue
                             lv, lvH = getTreeViewItem(obj)
                             subObjs = obj.Group
@@ -443,10 +484,9 @@ def getTreeViewItem(obj):
     if z.Value == 0:
         # override with Elevation property if available
         if hasattr(obj, "Elevation"):
-            lvHStr = FreeCAD.Units.Quantity(
-                obj.Elevation, FreeCAD.Units.Length
-            ).UserString
-    lvH = round(float(lvHStr.split(" ")[0]), 2)
+            z = FreeCAD.Units.Quantity(obj.Elevation, FreeCAD.Units.Length)
+            lvHStr = z.UserString
+    lvH = z.Value
     it = QtGui.QTreeWidgetItem([obj.Label, lvHStr])
     it.setFlags(it.flags() | QtCore.Qt.ItemIsEditable)
     it.setToolTip(0, obj.Name)
