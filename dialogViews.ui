@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>268</width>
+    <width>326</width>
     <height>322</height>
    </rect>
   </property>
@@ -56,7 +56,7 @@
       <bool>false</bool>
      </property>
      <property name="columnCount">
-      <number>2</number>
+      <number>3</number>
      </property>
      <attribute name="headerVisible">
       <bool>true</bool>
@@ -70,6 +70,11 @@
      <column>
       <property name="text">
        <string>Element</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Height</string>
       </property>
      </column>
      <column>

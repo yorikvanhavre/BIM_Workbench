@@ -355,7 +355,7 @@ class BIM_Views:
         if obj:
             if column == 0:
                 obj.Label = item.text(column)
-            if column == 1:
+            if column == 2:
                 obj.Placement.Base.z = FreeCAD.Units.parseQuantity(item.text(column))
 
     def toggle(self):
@@ -480,6 +480,9 @@ def getTreeViewItem(obj):
     from PySide import QtCore, QtGui
 
     z = FreeCAD.Units.Quantity(obj.Placement.Base.z, FreeCAD.Units.Length)
+    h = ""
+    if hasattr(obj, "Height"):
+        h = FreeCAD.Units.Quantity(obj.Height, FreeCAD.Units.Length).UserString
     lvHStr = z.UserString
     if z.Value == 0:
         # override with Elevation property if available
@@ -487,9 +490,11 @@ def getTreeViewItem(obj):
             z = FreeCAD.Units.Quantity(obj.Elevation, FreeCAD.Units.Length)
             lvHStr = z.UserString
     lvH = z.Value
-    it = QtGui.QTreeWidgetItem([obj.Label, lvHStr])
+    it = QtGui.QTreeWidgetItem([obj.Label, h, lvHStr])
     it.setFlags(it.flags() | QtCore.Qt.ItemIsEditable)
     it.setToolTip(0, obj.Name)
+    it.setToolTip(1, "Double Clicked or Press F2 to edit")
+    it.setToolTip(2, "Press F2 to edit")
     if obj.ViewObject:
         if hasattr(obj.ViewObject, "Proxy") and hasattr(
             obj.ViewObject.Proxy, "getIcon"
