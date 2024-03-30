@@ -355,8 +355,13 @@ class BIM_Views:
         if obj:
             if column == 0:
                 obj.Label = item.text(column)
+            if column == 1:
+                obj.Height = FreeCAD.Units.parseQuantity(item.text(column))
+                # TODO update every floors level which above the edited floor
+
             if column == 2:
                 obj.Placement.Base.z = FreeCAD.Units.parseQuantity(item.text(column))
+                # TODO update the floor height which 1 floor above/below the edited floor
 
     def toggle(self):
         "toggle selected item on/off"
@@ -450,8 +455,8 @@ def show(item, column=None):
         obj = FreeCAD.ActiveDocument.getObject(item)
     else:
         # called from GUI
-        if column == 1:
-            # user clicked the level field
+        if column != 0:
+            # user clicked all field (except the name field
             if vm:
                 vm.tree.editItem(item, column)
                 return
@@ -494,7 +499,7 @@ def getTreeViewItem(obj):
     it.setFlags(it.flags() | QtCore.Qt.ItemIsEditable)
     it.setToolTip(0, obj.Name)
     it.setToolTip(1, "Double Clicked or Press F2 to edit")
-    it.setToolTip(2, "Press F2 to edit")
+    it.setToolTip(2, "Double Clicked or Press F2 to edit")
     if obj.ViewObject:
         if hasattr(obj.ViewObject, "Proxy") and hasattr(
             obj.ViewObject.Proxy, "getIcon"
