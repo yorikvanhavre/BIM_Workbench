@@ -197,7 +197,7 @@ class BIM_Views:
                 import Draft
 
                 treeViewItems = []  # QTreeWidgetItem to Display in tree
-                lvHold = []
+                lvHold = []  # temporary keep all the level items in the same building
                 soloProxyHold = []
                 for obj in FreeCAD.ActiveDocument.Objects:
                     t = Draft.getType(obj)
@@ -357,11 +357,13 @@ class BIM_Views:
                 obj.Label = item.text(column)
             if column == 1:
                 obj.Height = FreeCAD.Units.parseQuantity(item.text(column))
-                # TODO update every floors level which above the edited floor
-
+                # update every floors level which above the edited floor
+                _updateFloorLevel(obj)
             if column == 2:
                 obj.Placement.Base.z = FreeCAD.Units.parseQuantity(item.text(column))
-                # TODO update the floor height which 1 floor above/below the edited floor
+                # update the floor height which 1 floor below the edited floor and self
+                _updateFloorHeight(obj)
+            FreeCAD.ActiveDocument.recompute()
 
     def toggle(self):
         "toggle selected item on/off"
@@ -498,8 +500,8 @@ def getTreeViewItem(obj):
     it = QtGui.QTreeWidgetItem([obj.Label, h, lvHStr])
     it.setFlags(it.flags() | QtCore.Qt.ItemIsEditable)
     it.setToolTip(0, obj.Name)
-    it.setToolTip(1, "Double Clicked or Press F2 to edit")
-    it.setToolTip(2, "Double Clicked or Press F2 to edit")
+    it.setToolTip(1, "Double-Click or Press F2 to edit")
+    it.setToolTip(2, "Double-Click or Press F2 to edit")
     if obj.ViewObject:
         if hasattr(obj.ViewObject, "Proxy") and hasattr(
             obj.ViewObject.Proxy, "getIcon"
@@ -543,3 +545,61 @@ def getParent(obj):
         for parent in obj.InList:
             if hasattr(parent, "Group") and obj in parent.Group:
                 return parent
+
+
+def _updateFloorLevel(obj):
+    "update every floors level which above the edited floor"
+
+    floors = _getSiblingFloors(obj)
+    editedFloorIndex = floors.index(obj)
+    for i in range(editedFloorIndex + 1, len(floors)):
+        updateFloor = floors[i]
+        updateFloor.Placement.Base.z = FreeCAD.Units.Quantity(
+            floors[i - 1].Placement.Base.z, FreeCAD.Units.Length
+        ) + FreeCAD.Units.Quantity(floors[i - 1].Height, FreeCAD.Units.Length)
+
+
+def _updateFloorHeight(obj):
+    "update the floor height which 1 floor below the edited floor and self"
+
+    floors = _getSiblingFloors(obj)
+    editedFloorIndex = floors.index(obj)
+    floorEdited = floors[editedFloorIndex]
+    if editedFloorIndex > 0:
+        floorBelow = floors[editedFloorIndex - 1]
+        floorBelow.Height = FreeCAD.Units.Quantity(
+            floorEdited.Placement.Base.z, FreeCAD.Units.Length
+        ) - FreeCAD.Units.Quantity(floorBelow.Placement.Base.z, FreeCAD.Units.Length)
+    if editedFloorIndex < (len(floors) - 1):
+        floorAbove = floors[editedFloorIndex + 1]
+        floorEdited.Height = FreeCAD.Units.Quantity(
+            floorAbove.Placement.Base.z, FreeCAD.Units.Length
+        ) - FreeCAD.Units.Quantity(floorEdited.Placement.Base.z, FreeCAD.Units.Length)
+
+
+def _getSiblingFloors(obj):
+    "get all floors from the same building and sort by the Placement z"
+    import Draft
+
+    if (
+        Draft.getType(getParent(obj)) in ["Building", "IfcBuilding"]
+        or getattr(getParent(obj), "IfcType", "") == "Building"
+    ):
+        # find all floors belongs to the same building and sorted by its level
+        building = getParent(obj)
+        floors = []
+        for floor in building.Group:
+            if (
+                Draft.getType(floor) in ["Building Storey", "IfcBuildingStorey"]
+                or getattr(floor, "IfcType", "") == "Building Storey"
+            ):
+                floors.append(floor)
+        sortedFloors = _sortFloorsByLevel(floors)
+        return sortedFloors
+    else:
+        return []
+
+
+def _sortFloorsByLevel(floors):
+    sortFloors = sorted(floors, key=lambda floor: floor.Placement.Base.z)
+    return sortFloors
