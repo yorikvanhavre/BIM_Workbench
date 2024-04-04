@@ -25,9 +25,11 @@
 """This module contains FreeCAD commands for the BIM workbench"""
 
 import os
-import FreeCAD
-from BimTranslateUtils import *
+
 import ArchStructure
+import FreeCAD
+
+from BimTranslateUtils import *
 
 
 class BIM_Column(ArchStructure._CommandStructure):
@@ -85,8 +87,8 @@ class BIM_Slab:
         return not FreeCAD.ActiveDocument is None
 
     def Activated(self):
-        import FreeCADGui
         import DraftTools
+        import FreeCADGui
 
         self.removeCallback()
         sel = FreeCADGui.Selection.getSelection()
@@ -108,13 +110,13 @@ class BIM_Slab:
         import FreeCADGui
 
         self.removeCallback()
-        sel = FreeCADGui.Selection.getSelection()
-        if len(sel) == 1:
+        sels = FreeCADGui.Selection.getSelection()
+        for sel in sels:
             FreeCADGui.addModule("Arch")
             FreeCAD.ActiveDocument.openTransaction("Create Slab")
             FreeCADGui.doCommand(
                 "s = Arch.makeStructure(FreeCAD.ActiveDocument."
-                + sel[0].Name
+                + sel.Name
                 + ",height=200)"
             )
             FreeCADGui.doCommand('s.Label = "' + translate("BIM", "Slab") + '"')
