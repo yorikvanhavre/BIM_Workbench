@@ -800,4 +800,23 @@ static char * IFC_xpm[] = {
         return "Gui::PythonWorkbench"
 
 
-FreeCADGui.addWorkbench(BIMWorkbench)
+# check for new integrated BIM
+
+def warn_uninstall():
+    from PySide import QtGui
+    QtGui.QMessageBox.warning(None,"BIM workbench migration","The BIM, Arch and NativeIFC workbenches have been merged into the FreeCAD built-in code. Please uninstall both the NativeIFC and the BIM add-ons and restart FreeCAD!")
+
+try:
+    from nativeifc import ifc_tools
+except:
+    try:
+        import Arch_rc
+    except:
+        from PySide import QtCore
+        QtCore.QTimer.singleShot(0,warn_uninstall)
+    else:
+        FreeCADGui.addWorkbench(BIMWorkbench)
+else:
+    # new BIM WB is found
+    from PySide import QtCore
+    QtCore.QTimer.singleShot(0,warn_uninstall)
