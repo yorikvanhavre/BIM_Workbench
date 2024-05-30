@@ -23,7 +23,7 @@
 # main workbench class
 
 
-class BIMWorkbench(Workbench):
+class BIMWorkbench21(Workbench):
     def __init__(self):
         self.__class__.MenuText = "BIM"
         self.__class__.ToolTip = "BIM workbench"
@@ -800,4 +800,11 @@ static char * IFC_xpm[] = {
         return "Gui::PythonWorkbench"
 
 
-FreeCADGui.addWorkbench(BIMWorkbench)
+# Do not load if new integrated BIM is available
+try:
+    from nativeifc import ifc_tools
+    # the new BIM WB is there, do nothing, do not load this one
+    FreeCAD.Console.PrintLog("BIM addon is disabled because the built-in BIM workbench is present\n")
+except:
+    # this is 0.21 - load the BIM WB
+    FreeCADGui.addWorkbench(BIMWorkbench21)
