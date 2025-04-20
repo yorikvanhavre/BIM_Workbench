@@ -11,7 +11,7 @@
 
   <content>
     <workbench>
-      <classname>BIMWorkbench21</classname>
+      <classname>BIMWorkbench</classname>
       <subdirectory>./</subdirectory>
       <depend kind="freecad">Arch</depend>
     </workbench>
